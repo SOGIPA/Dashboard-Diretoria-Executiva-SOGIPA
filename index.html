@@ -427,7 +427,7 @@
     <div class="nav-item" data-page="vendas"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v30"/></svg></span> <span class="nav-text">Vendas</span></div>
     <div class="nav-item" data-page="retencao"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> <span class="nav-text">Retenção</span></div>
     <div class="nav-item" data-page="rh"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span> <span class="nav-text">RH</span></div>
-    <div class="nav-item" data-page="locacoes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span> <span class="nav-text">Locações</span></div>
+    <div class="nav-item" data-page="locacoes" style="display:none;"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span> <span class="nav-text">Locações</span></div>
     <div class="nav-item" data-page="obras"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M2 20h20"/><path d="M4 20V10l4-3 4 3v10"/><path d="M12 20V6l4-3 4 3v14"/><path d="M8 20v-4h2v4"/></svg></span> <span class="nav-text">Obras</span></div>
   </div>
   <div class="sidebar-foot">
@@ -528,8 +528,9 @@
       <div class="section-title">Fluxo de Caixa &amp; Composição<div class="line"></div></div>
       <div class="grid-3">
         <div class="card">
-          <div class="card-label">Composição do Saldo em Banco</div>
-          <div id="vgDonutSaldo" class="donut-wrap"></div>
+          <div class="card-label" id="vgSaldoCompLabel">Composição do Saldo em Banco</div>
+          <div id="vgSaldoCompBar" style="display:flex; height:34px; border-radius:8px; overflow:hidden; border:1px solid var(--border); margin:14px 0 10px;"></div>
+          <div id="vgSaldoCompLegend"></div>
         </div>
         <div class="card">
           <div class="card-label">Pagamentos — Distribuição por Faixa de Valor</div>
@@ -582,7 +583,7 @@
             <div style="font-size:18px; font-weight:900;" id="vgHESetorMaior"></div>
             <div style="font-size:14px; color:var(--red); font-weight:700; margin-top:2px;" id="vgHEValorMaior"></div>
           </div>
-          <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+          <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border); display:none;">
             <div class="card-label" style="margin-bottom:10px;">🏛️ Locações — <span id="vgLocPeriodo" style="color:var(--text); text-transform:none; letter-spacing:0;"></span></div>
             <div class="mini-stat-row">
               <div class="mini-stat"><div class="mini-stat-label">Meta do Mês</div><div class="mini-stat-value" style="color:var(--gold);" id="vgLocMeta"></div></div>
@@ -880,7 +881,7 @@
 
     <!-- ══════════════════ OBRAS ══════════════════ -->
     <div class="page-section" id="page-obras">
-      <div class="section-title">Obras — Fundo Índices Construtivos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Atualizado até 16/07/2026</span><div class="line"></div></div>
+      <div class="section-title">Obras — Fundo Índices Construtivos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Atualizado até 20/07/2026</span><div class="line"></div></div>
       <div id="obrasConteudo"></div>
     </div>
 
@@ -1113,7 +1114,35 @@ const LIMITE_CREDITO_TOTAL = 6400000;
 // Conecta com "Fundo Índices Construtivos" e "Compromissos Futuros" já mostrados em Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 const OBRAS_FUNDO = {
-  dataReferencia: '16/07/2026',
+  dataReferencia: '20/07/2026',
+  // Acompanhamento dos Índices Construtivos (mar-jul/26). Fonte: Relatório de Acompanhamento.
+  // Fórmula do fundo: Saldo Final = Saldo Inicial + Entradas − Investimentos do período (saldo rola mês a mês).
+  posicoesLabels: ['31/03','30/04','31/05','30/06','20/07'],
+  acompanhamento: [
+    {label:'31/03', investidoAcum:294665.52, saldo:297163.42, obrasAtivas:1},
+    {label:'30/04', investidoAcum:362444.42, saldo:228719.00, obrasAtivas:2},
+    {label:'31/05', investidoAcum:448151.50, saldo:949373.74, obrasAtivas:4},
+    {label:'30/06', investidoAcum:550614.82, saldo:1666587.37, obrasAtivas:7},
+    {label:'20/07', investidoAcum:790553.80, saldo:2259440.37, obrasAtivas:8}
+  ],
+  fluxoMensal: [
+    {mes:'Fev/26', saldoIni:0.00, entradas:453789.70, investimentos:0.00, saldoFim:453789.70},
+    {mes:'Mar/26', saldoIni:453789.70, entradas:137373.72, investimentos:294000.00, saldoFim:297163.42},
+    {mes:'Abr/26', saldoIni:297163.42, entradas:0.00, investimentos:68444.42, saldoFim:228719.00},
+    {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:85707.08, saldoFim:949373.74},
+    {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:102463.32, saldoFim:1666587.37},
+    {mes:'20/Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:239938.98, saldoFim:2259440.37}
+  ],
+  obrasNoTempo: [
+    {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52], entrou:'31/03', total:341665.52},
+    {nome:'Quadras Recreativas', cor:'#3d7bff', serie:[0.00,52174.42,84447.00,84447.00,84447.00], entrou:'30/04', total:84447.00},
+    {nome:'Sanitários', cor:'#00e5a0', serie:[0.00,0.00,34954.50,80039.70,89999.70], entrou:'31/05', total:89999.70},
+    {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
+    {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08], entrou:'30/06', total:163600.08},
+    {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00], entrou:'30/06', total:20204.00},
+    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,3637.50], entrou:'30/06', total:3637.50},
+    {nome:'Telhado', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00], entrou:'20/07', total:78000.00}
+  ],
   totalRecebido: 3049994.17,
   totalInvestido: 790553.80,
   saldoDisponivel: 2259440.37,
@@ -1507,8 +1536,9 @@ function fmtMil(v){
   return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
 }
 function fmtBRL(v){ return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
-function fmtBRL0(v){ return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:0, maximumFractionDigits:0}); }
+function fmtBRL0(v){ if(v==null || isNaN(v)) return '—'; return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:0, maximumFractionDigits:0}); }
 function fmtMilReais(v){
+  if(v==null || isNaN(v)) return '—';
   const abs = Math.abs(v);
   if(abs >= 1000000){
     const emMilhoes = v/1000000;
@@ -1971,11 +2001,8 @@ function renderCampanhasCombo(elId){
 // ═══════════════════════════════════════════════════════════
 // RENDERIZAÇÃO — VISÃO GERAL
 // ═══════════════════════════════════════════════════════════
-drawDonut('vgDonutSaldo', [
-  {nome:'Caixa Livre', valor:195.8, cor:'#3d7bff', suffix:' mil'},
-  {nome:'Fundo Obras', valor:1845.7, cor:'#a855f7', suffix:' mil'},
-], '2,04', 'R$ milhões');
-// (o donut de pagamentos na Visão Geral é atualizado dentro de renderPagamentosPeriodo, junto com o filtro)
+// (a composição do saldo agora é uma barra dinâmica, pintada por pintarComposicaoSaldo)
+// (o donut de pagamentos na Visão Geral é atualizado dentro de renderPagamentosMeses, junto com o filtro)
 drawNegInadInteractive('vgChartNegociacoes', 'vgLegendaNeg', 'vgSerieDetalhe');
 drawDonut('vgDistribuicaoVendas', VENDAS_CAMPANHAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '19', 'com campanha');
 drawDonut('vgRetencaoDonut', RETENCAO_CATEGORIAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '23', 'desligamentos');
@@ -2013,7 +2040,7 @@ function agregarReingresso(meses){
   const campanhas = Object.values(cmap).sort((a,b)=> b.qtd - a.qtd);
   const alertas = itens.map(h=> h.alerta).filter(Boolean);
   if(!qtdCompleta && itens.length > 1){
-    alertas.push(`Total e ticket médio do período não incluem ${semQtd.map(h=>h.periodoTag).join(', ')}, pois a quantidade de reingressos desse(s) mês(es) ainda não foi informada — o valor arrecadado, sim, está somado.`);
+    alertas.push(`Total e ticket médio do período não incluem ${semQtd.map(h=>h.periodoTag).join(', ')}, pois a quantidade de reingressos ainda não foi informada — o valor arrecadado, sim, está somado.`);
   }
   const tag = itens.length === 1
     ? itens[0].periodoTag
@@ -2247,7 +2274,7 @@ const PAGE_TITLES = {
   retencao:    {t:'Retenção', s:'Desligamentos, retenção e permanência · Jan-Jul/2026'},
   rh:          {t:'RH', s:'Indicadores de RH e DP · Jan-Jun/2026'},
   locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
-  obras:       {t:'Obras', s:'Fundo Índices Construtivos · Posição em 16/07/2026'},
+  obras:       {t:'Obras', s:'Fundo Índices Construtivos · Posição em 20/07/2026'},
 };
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -2919,6 +2946,7 @@ function semanaPagamentosParaIntervalo(de, ate){
 //  agrega o período (soma), e quando o intervalo não tem dado cai pro
 //  ÚLTIMO mês disponível da própria aba. Cada aba mantém sua cobertura.
 // ═══════════════════════════════════════════════════════════
+const MOSTRAR_LOCACOES = false; // Locações ocultado para a apresentação
 const CORES_SERIE = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','#e8192c','#b0b0d0','#5a5c78','#22d3ee'];
 const FMES_EXT = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const FMES_ABR = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -3104,7 +3132,7 @@ function aplicarFiltroMes(){
   renderRetencaoPeriodo(mesKeyRet);
   renderRH(mesKey);
   renderLocacoesPeriodo(mesKey, de, ate);
-  renderDiagnostico(mesKey);
+  renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen);
 
   renderPagamentosMeses(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_PAGAMENTOS));
 
@@ -3899,27 +3927,111 @@ function computarTendenciaCaixa(){
   return {atual, proximoNegativo, recomposicao, pior, diasNegativos, totalDias: futuro.length};
 }
 
-function renderDiagnostico(mesKey){
+// Consolida o período para o Diagnóstico: soma o que é fluxo e usa foto do último mês
+function getRetencaoMes(key){
+  if(!key) return null;
+  if(typeof RETENCAO_EXTRA_MESES !== 'undefined' && RETENCAO_EXTRA_MESES[key]) return RETENCAO_EXTRA_MESES[key];
+  return (DADOS_MES[key] && DADOS_MES[key].retencao) ? DADOS_MES[key].retencao : null;
+}
+
+function consolidarDiagnostico(meses){
+  const itens = meses.map(mk=>({key:mk.key, d:DADOS_MES[mk.key]})).filter(x=>x.d);
+  if(!itens.length) return null;
+  const ult = itens[itens.length-1].d, ultKey = itens[itens.length-1].key;
+  const soma = c => itens.reduce((s,x)=> s + (x.d[c]||0), 0);
+  const parciais = itens.filter(x=>!x.d.fechado).map(x=>x.d.label);
+  return {
+    label: itens.length===1 ? ult.label
+         : `${itens[0].d.label.split('/')[0]} a ${ult.label}`,
+    nMeses: itens.length,
+    ultKey, ultLabel: ult.label,
+    resultadoOper: soma('resultadoOper'),
+    receitaReal: soma('receitaReal'),
+    despesaReal: soma('despesaReal'),
+    caixaLivre: ult.caixaLivre, caixaLivrePct: ult.caixaLivrePct,
+    fundoObras: ult.fundoObras, saldoTotal: ult.saldoTotal,
+    parciais,
+    serieResultado: itens.map(x=>({label:x.d.label.split('/')[0], v:x.d.resultadoOper, fechado:!!x.d.fechado})),
+    primeiro: itens[0].d,
+  };
+}
+// Locações somadas no período (histórico mensal cobre Jan-Jul)
+function locacoesDoPeriodo(meses){
+  const map = {jan:'jan2026',fev:'fev2026',mar:'mar2026',abr:'abr2026',mai:'mai2026',jun:'jun2026',jul:'jul2026'};
+  const keys = meses.map(mk=>mk.key);
+  const linhas = LOCACOES_HISTORICO_MENSAL.filter(l=>{
+    const k = map[l.mes.slice(0,3).toLowerCase()];
+    return k && keys.includes(k);
+  });
+  if(!linhas.length) return null;
+  const comMeta = linhas.filter(l=>l.meta!=null);
+  return {
+    realizado: linhas.reduce((s,l)=>s+l.realizado,0),
+    // o % só compara meses que TÊM meta — senão o percentual fica inflado
+    realizadoComMeta: comMeta.reduce((s,l)=>s+l.realizado,0),
+    meta: comMeta.length ? comMeta.reduce((s,l)=>s+l.meta,0) : null,
+    mesesComMeta: comMeta.length,
+    mesesSemMeta: linhas.length - comMeta.length,
+    nMeses: linhas.length,
+  };
+}
+
+function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
   const el = document.getElementById('diagConteudo');
-  const m = DADOS_MES[mesKey];
-  if(!m){
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados suficientes para diagnosticar o período selecionado.</b> Selecione um intervalo dentro de Junho ou Julho/2026.</div></div>`;
-    return;
+  let lista = mesesFlx, fallback = null;
+  if(!lista.length){
+    const u = ultimoMesCobertura(COBERTURA_FLUXO);
+    if(!u){
+      el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados para diagnosticar.</b></div></div>`;
+      return;
+    }
+    lista = [u]; fallback = DADOS_MES[u.key].label;
   }
-  document.getElementById('diagPeriodoTag').textContent = m.label;
-  const outroMesKey = mesKey==='jul2026' ? 'jun2026' : (mesKey==='jun2026' ? null : null);
-  const outroMes = outroMesKey ? DADOS_MES[outroMesKey] : null;
+  const C = consolidarDiagnostico(lista);
+  if(!C){ el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados para diagnosticar.</b></div></div>`; return; }
+  const m = {
+    label: C.label, resultadoOper: C.resultadoOper, receitaReal: C.receitaReal, despesaReal: C.despesaReal,
+    caixaLivre: C.caixaLivre, caixaLivrePct: C.caixaLivrePct, fundoObras: C.fundoObras, saldoTotal: C.saldoTotal,
+  };
+  const mesKey = C.ultKey;
+  document.getElementById('diagPeriodoTag').textContent = C.label + (C.nMeses>1 ? ` · ${C.nMeses} meses` : '');
+  const outroMes = null;
   const tendCaixa = computarTendenciaCaixa();
+
+  // ── Avisos de leitura: mês parcial, natureza do caixa e volatilidade do resultado ──
+  const posit = C.serieResultado.filter(x=>x.v>0).length;
+  const pior = C.serieResultado.reduce((a,b)=> b.v<a.v?b:a, C.serieResultado[0]);
+  const melhor = C.serieResultado.reduce((a,b)=> b.v>a.v?b:a, C.serieResultado[0]);
+  let avisos = '';
+  if(fallback){
+    avisos += `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Não há fechamento no intervalo selecionado — diagnosticando o último mês disponível (<b>${fallback}</b>).</div></div>`;
+  }
+  if(C.parciais.length){
+    avisos += `<div class="alert-box" style="border-color:var(--red);"><span>⚠️</span><div>
+      <b>Atenção — período ainda em andamento (${C.parciais.join(', ')}).</b>
+      O <b>Resultado Operacional</b> abaixo considera apenas os dias já lançados, não o mês inteiro.
+      Um mês parcial tende a parecer <i>melhor</i> no resultado, porque as receitas de mensalidade entram no início do mês, enquanto boa parte das despesas se concentra depois.
+      <b>Para comparar desempenho, use meses fechados.</b></div></div>`;
+  }
+  avisos += `<div class="alert-box" style="border-color:var(--blue);"><span>🧭</span><div>
+    <b>Como ler Caixa e Resultado.</b>
+    O <b>Resultado Operacional é volátil por natureza</b> — depende de quando caem a folha, os impostos e os pagamentos a fornecedores.
+    ${C.nMeses>1
+      ? `No período, <b>${posit} de ${C.nMeses} meses</b> ficaram positivos, variando de <b style="color:var(--red);">${fmtMil(pior.v)}</b> (${pior.label}) a <b style="color:var(--green);">${fmtMil(melhor.v)}</b> (${melhor.label}). Olhe a tendência, não o mês isolado.`
+      : `Um único mês não define tendência — compare com os meses anteriores na aba Fluxo de Caixa.`}
+    Já o <b>Caixa</b> precisa de uma distinção: do saldo em banco de <b>${fmtMil(C.saldoTotal)}</b> em ${C.ultLabel},
+    <b style="color:var(--gold);">${fmtMil(C.fundoObras)}</b> é fundo de Índices Construtivos, <b>restrito a obras</b>.
+    O que a operação pode de fato usar é o <b style="color:var(--green);">caixa livre de ${fmtMil(C.caixaLivre)}</b>.</div></div>`;
 
   // 1) Resultado Operacional
   const resultadoStatus = m.resultadoOper >= 0 ? 'green' : 'red';
-  const resultadoTrendTxt = outroMes ? (m.resultadoOper >= outroMes.resultadoOper ? `▲ Melhor que ${outroMes.label.split('/')[0]}` : `▼ Pior que ${outroMes.label.split('/')[0]}`) : 'Fechamento do mês';
+  const resultadoTrendTxt = C.nMeses>1 ? `${posit} de ${C.nMeses} meses positivos` : (C.parciais.length ? '⚠ Mês em andamento' : 'Fechamento do mês');
 
   // 2) Caixa Livre
   const caixaStatus = m.caixaLivre >= 0 ? 'green' : 'red';
 
   // 3) Inadimplência — usa o mês do período se existir, senão cai pro mais recente disponível
-  const prefixoMes = mesKey==='jul2026' ? 'jul' : (mesKey==='jun2026' ? 'jun' : null);
+  const prefixoMes = mesKey.slice(0,3);
   const inadDisponivel = INADIMPLENCIA.filter(d=>d.real!=null);
   const inadDoMes = prefixoMes ? inadDisponivel.find(d=>d.mes.toLowerCase().startsWith(prefixoMes)) : null;
   const inad = inadDoMes || inadDisponivel[inadDisponivel.length-1];
@@ -3930,34 +4042,38 @@ function renderDiagnostico(mesKey){
   const inadSubindo = inad.real > inadPrimeira.real;
 
   // 4) Retenção — taxa = retidos / (retidos + desligados)
-  const r = m.retencao;
+  const retKey = (mesesRet && mesesRet.length) ? mesesRet[mesesRet.length-1].key : (ultimoMesCobertura(COBERTURA_RETENCAO)||{}).key;
+  const r = getRetencaoMes(retKey);
   const retidoKpi = r.kpis.find(k=>k.label==='Retidos');
   const retidos = retidoKpi ? parseInt(retidoKpi.valor,10) : 0;
   const taxaRetencao = (retidos/(retidos+r.totalDesligamentos)*100);
-  let taxaRetencaoAnterior = null;
-  if(outroMes){
-    const rOutro = outroMes.retencao;
-    const retidoOutroKpi = rOutro.kpis.find(k=>k.label==='Retidos' || k.label==='Retenção');
-    const retidosOutro = retidoOutroKpi ? parseInt(retidoOutroKpi.valor,10) : 0;
-    taxaRetencaoAnterior = (retidosOutro/(retidosOutro+rOutro.totalDesligamentos)*100);
+  let taxaRetencaoAnterior = null, labelRetAnterior = '';
+  if(mesesRet && mesesRet.length>1){
+    const rOutro = getRetencaoMes(mesesRet[mesesRet.length-2].key);
+    if(rOutro){
+      const k2 = rOutro.kpis.find(k=>k.label==='Retidos' || k.label==='Retenção');
+      const ro = k2 ? parseInt(k2.valor,10) : 0;
+      taxaRetencaoAnterior = (ro/(ro+rOutro.totalDesligamentos)*100);
+      labelRetAnterior = rOutro.periodoTag.split('/')[0];
+    }
   }
-  const retStatus = taxaRetencaoAnterior==null ? 'yellow' : (taxaRetencao > taxaRetencaoAnterior+1 ? 'green' : taxaRetencao < taxaRetencaoAnterior-1 ? 'red' : 'yellow');
+  const retStatus = retidos===0 ? 'red' : (taxaRetencaoAnterior==null ? 'yellow' : (taxaRetencao > taxaRetencaoAnterior+1 ? 'green' : taxaRetencao < taxaRetencaoAnterior-1 ? 'red' : 'yellow'));
 
   // 5) Vendas vs Meta (lê da base consolidada da Gerência Comercial)
-  const vm = getVendasMes(mesKey);
-  const mt = vm ? vm.metas : null;
+  const vAgg = (mesesVen && mesesVen.length) ? agregarVendas(mesesVen) : null;
+  const mt = vAgg ? vAgg.metas : null;
   const pctVendas = mt ? (mt.vendas.real/mt.vendas.orcado*100) : null;
   const vendasStatus = pctVendas==null ? 'yellow' : (pctVendas>=90 ? 'green' : pctVendas>=50 ? 'yellow' : 'red');
 
-  // 6) Locações vs Meta
-  const loc = m.locacoes;
-  const pctLocacoes = (loc.realizado/loc.meta*100);
-  const locStatus = pctLocacoes>=90 ? 'green' : pctLocacoes>=50 ? 'yellow' : 'red';
+  // 6) Locações vs Meta — oculto na apresentação (dados não liberados pela gestão)
+  const loc = locacoesDoPeriodo(lista) || {realizado:0, meta:null, mesesSemMeta:0, nMeses:0};
+  const pctLocacoes = loc.meta ? (loc.realizadoComMeta/loc.meta*100) : null;
+  const locStatus = pctLocacoes==null ? 'yellow' : (pctLocacoes>=90 ? 'green' : pctLocacoes>=50 ? 'yellow' : 'red');
 
   const corIcone = {green:'✅', yellow:'⚠️', red:'❌'};
   const corTrendClass = {green:'up-good', yellow:'attention', red:'up-bad'};
 
-  el.innerHTML = `
+  el.innerHTML = avisos + `
     <div class="status-grid">
       <div class="status-card ${resultadoStatus}">
         <div class="status-icon">💰</div>
@@ -3984,8 +4100,8 @@ function renderDiagnostico(mesKey){
         <div class="status-icon">🔄</div>
         <div class="status-label">Taxa de Retenção</div>
         <div class="status-value">${taxaRetencao.toFixed(1).replace('.',',')}%</div>
-        <div class="status-meta">${retidos} retidos de ${retidos+r.totalDesligamentos} solicitações</div>
-        <div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+outroMes.label.split('/')[0]:'▼ Pior que '+outroMes.label.split('/')[0]) : 'Sem comparativo'}</div>
+        <div class="status-meta">${retidos===0 ? `nenhum retido de ${r.totalDesligamentos} solicitações` : `${retidos} retidos de ${retidos+r.totalDesligamentos} solicitações`}</div>
+        <div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+labelRetAnterior:'▼ Pior que '+labelRetAnterior) : 'Sem comparativo'}</div>
       </div>
       <div class="status-card ${vendasStatus}">
         <div class="status-icon">➕</div>
@@ -3994,13 +4110,13 @@ function renderDiagnostico(mesKey){
         <div class="status-meta">${mt ? `${mt.vendas.real} de ${mt.vendas.orcado} vendas novas` : 'sem meta cadastrada'}</div>
         <div class="status-trend ${corTrendClass[vendasStatus]}">${vendasStatus==='green'?'▲ Meta batida':vendasStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta'}</div>
       </div>
-      <div class="status-card ${locStatus}">
+      ${MOSTRAR_LOCACOES ? `<div class="status-card ${locStatus}">
         <div class="status-icon">🏛️</div>
         <div class="status-label">Locações vs. Meta</div>
-        <div class="status-value">${pctLocacoes.toFixed(1).replace('.',',')}%</div>
-        <div class="status-meta">${fmtMilReais(loc.realizado)} de ${fmtMilReais(loc.meta)}</div>
-        <div class="status-trend ${corTrendClass[locStatus]}">${locStatus==='green'?'▲ Meta batida':locStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta'}</div>
-      </div>
+        <div class="status-value">${pctLocacoes!=null?pctLocacoes.toFixed(1).replace('.',',')+'%':fmtMilReais(loc.realizado)}</div>
+        <div class="status-meta">${loc.meta?`${fmtMilReais(loc.realizadoComMeta)} de ${fmtMilReais(loc.meta)} em ${loc.mesesComMeta} ${loc.mesesComMeta===1?'mês':'meses'} com meta`:`${fmtMilReais(loc.realizado)} realizado`}${loc.mesesSemMeta?` · ${loc.mesesSemMeta} ${loc.mesesSemMeta===1?'mês':'meses'} sem meta (${fmtMilReais(loc.realizado-loc.realizadoComMeta)})`:''}</div>
+        <div class="status-trend ${corTrendClass[locStatus]}">${pctLocacoes==null?'Sem meta no período':(locStatus==='green'?'▲ Meta batida':locStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta')}</div>
+      </div>` : ''}
     </div>
   `;
 
@@ -4027,13 +4143,13 @@ function renderDiagnostico(mesKey){
 
   // ── Monta as listas "O que está bem" / "O que precisa de atenção" dinamicamente ──
   const itens = [
-    {status:resultadoStatus, titulo:'Resultado operacional '+(resultadoStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.resultadoOper)} no acumulado do mês. ${resultadoStatus==='green'?'A operação está gerando mais receita do que despesa.':'As despesas superaram as receitas no período — acompanhar de perto até o fechamento.'}`},
+    {status:resultadoStatus, titulo:'Resultado operacional '+(resultadoStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.resultadoOper)} no período. ${resultadoStatus==='green'?'A operação está gerando mais receita do que despesa.':'As despesas superaram as receitas no período — acompanhar de perto até o fechamento.'}`},
     {status:caixaStatus, titulo:'Caixa operacional '+(caixaStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.caixaLivre)} de caixa livre. ${caixaStatus==='green'?'Há folga de caixa além do fundo de obras.':'O caixa de uso livre está negativo — o clube depende do fundo de obras ou do limite de crédito neste momento.'}`},
     {status:tendStatus, titulo:tendCaixa && tendCaixa.proximoNegativo ? 'Caixa deve virar negativo em breve' : 'Tendência de caixa sob controle', texto: tendCaixa ? (tendCaixa.proximoNegativo ? `Reversão prevista para ${tendCaixa.proximoNegativo.d}, com ponto mais baixo em ${tendCaixa.pior.d} (${fmtBRL0(tendCaixa.pior.banco)}) — ciclo normal do mês (mensalidades no início, folha+impostos e fornecedores entre 20-25).` : `Nenhuma reversão para negativo prevista nos ${tendCaixa.totalDias} dias já projetados pela Controladoria.`) : 'Sem dado de projeção diária disponível no momento.'},
     {status:inadStatus, titulo:'Inadimplência '+(inadStatus==='red'?'acima da meta':inadStatus==='yellow'?'no limite da meta':'dentro da meta'), texto:`${inad.real.toFixed(1).replace('.',',')}% ${inadSemDadoDoMes?'(referente a '+inad.mes+', mês mais recente disponível)':''}, ${inadSubindo?'em trajetória de alta desde '+inadPrimeira.mes+' ('+inadPrimeira.real.toFixed(1).replace('.',',')+'%)':'em queda no período'}.`},
-    {status:retStatus, titulo:'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto:`Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% (${retidos} retidos de ${retidos+r.totalDesligamentos}).${taxaRetencaoAnterior!=null?' Em '+outroMes.label+' era de '+taxaRetencaoAnterior.toFixed(1).replace('.',',')+'%.':''}`},
+    {status: retidos===0 ? 'red' : retStatus, titulo: retidos===0 ? 'Retenção sem resultado no período' : 'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto: retidos===0 ? `Nenhuma das ${r.totalDesligamentos} solicitações de desligamento foi revertida — indica que o processo de retenção ainda não estava sendo executado nesse período.` : `Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% (${retidos} retidos de ${retidos+r.totalDesligamentos}).${taxaRetencaoAnterior!=null?' Antes era de '+taxaRetencaoAnterior.toFixed(1).replace('.',',')+'%.':''}`},
     {status:vendasStatus, titulo:'Vendas '+(vendasStatus==='green'?'batendo a meta':'abaixo da meta'), texto:`${mt?mt.vendas.real:'—'} de ${mt?mt.vendas.orcado:'—'} vendas novas orçadas (${pctVendas!=null?pctVendas.toFixed(0):'—'}%).`},
-    {status:locStatus, titulo:'Locações '+(locStatus==='green'?'batendo a meta':'abaixo da meta'), texto:`${fmtMilReais(loc.realizado)} de ${fmtMilReais(loc.meta)} de meta (${pctLocacoes.toFixed(1).replace('.',',')}%).`},
+    ...(MOSTRAR_LOCACOES ? [{status:locStatus, titulo:'Locações '+(pctLocacoes==null?'sem meta no período':(locStatus==='green'?'batendo a meta':'abaixo da meta')), texto:`${fmtMilReais(loc.realizado)} realizado no período.${loc.meta?` ${loc.mesesComMeta===1?'No mês':'Nos '+loc.mesesComMeta+' meses'} com meta: ${fmtMilReais(loc.realizadoComMeta)} de ${fmtMilReais(loc.meta)} (${pctLocacoes.toFixed(1).replace('.',',')}%).`:' Ainda não havia meta definida nesse período.'}`}] : []),
   ];
   const bem = itens.filter(i=>i.status==='green');
   const atencao = itens.filter(i=>i.status!=='green');
@@ -4063,9 +4179,9 @@ function renderDiagnostico(mesKey){
           <tr><td><strong>Resultado Operacional</strong></td><td><span class="badge ${resultadoStatus}">${corIcone[resultadoStatus]} ${resultadoStatus==='green'?'Positivo':'Negativo'}</span></td><td class="num">${fmtMil(m.resultadoOper)}</td><td>Equilíbrio (≥0)</td><td>${resultadoTrendTxt}</td></tr>
           <tr><td><strong>Caixa Livre</strong></td><td><span class="badge ${caixaStatus}">${corIcone[caixaStatus]} ${caixaStatus==='green'?'Positivo':'Negativo'}</span></td><td class="num">${fmtMil(m.caixaLivre)}</td><td>Equilíbrio (≥0)</td><td>${caixaStatus==='green'?'Estável':'Ver aba Fluxo de Caixa'}</td></tr>
           <tr><td><strong>Inadimplência</strong></td><td><span class="badge ${inadStatus}">${corIcone[inadStatus]} ${inadStatus==='green'?'Ok':inadStatus==='yellow'?'Atenção':'Crítico'}</span></td><td class="num">${inad.real.toFixed(1).replace('.',',')}%</td><td>${inad.meta!=null?inad.meta.toFixed(1).replace('.',',')+'% (meta)':'—'}</td><td>${inadSubindo?'Alta':'Queda'}</td></tr>
-          <tr><td><strong>Retenção</strong></td><td><span class="badge ${retStatus}">${corIcone[retStatus]} ${retStatus==='green'?'Melhorando':retStatus==='red'?'Piorando':'Estável'}</span></td><td class="num">${taxaRetencao.toFixed(1).replace('.',',')}%</td><td>${taxaRetencaoAnterior!=null?taxaRetencaoAnterior.toFixed(1).replace('.',',')+'% ('+outroMes.label.split('/')[0]+')':'—'}</td><td>${taxaRetencaoAnterior!=null?(taxaRetencao>taxaRetencaoAnterior?'▲':'▼'):'—'}</td></tr>
+          <tr><td><strong>Retenção</strong></td><td><span class="badge ${retStatus}">${corIcone[retStatus]} ${retStatus==='green'?'Melhorando':retStatus==='red'?'Piorando':'Estável'}</span></td><td class="num">${taxaRetencao.toFixed(1).replace('.',',')}%</td><td>${taxaRetencaoAnterior!=null?taxaRetencaoAnterior.toFixed(1).replace('.',',')+'%':'—'}</td><td>${taxaRetencaoAnterior!=null?(taxaRetencao>taxaRetencaoAnterior?'▲':'▼'):'—'}</td></tr>
           <tr><td><strong>Vendas</strong></td><td><span class="badge ${vendasStatus}">${corIcone[vendasStatus]} ${vendasStatus==='green'?'Meta batida':vendasStatus==='yellow'?'Abaixo':'Crítico'}</span></td><td class="num">${mt?mt.vendas.real:'—'}</td><td>${mt?mt.vendas.orcado+' (meta)':'—'}</td><td>${pctVendas!=null?pctVendas.toFixed(0)+'%':'—'}</td></tr>
-          <tr><td><strong>Locações</strong></td><td><span class="badge ${locStatus}">${corIcone[locStatus]} ${locStatus==='green'?'Meta batida':locStatus==='yellow'?'Abaixo':'Crítico'}</span></td><td class="num">${fmtMilReais(loc.realizado)}</td><td>${fmtMilReais(loc.meta)} (meta)</td><td>${pctLocacoes.toFixed(1).replace('.',',')}%</td></tr>
+          ${MOSTRAR_LOCACOES ? `<tr><td><strong>Locações</strong></td><td><span class="badge ${locStatus}">${corIcone[locStatus]} ${locStatus==='green'?'Meta batida':locStatus==='yellow'?'Abaixo':'Crítico'}</span></td><td class="num">${fmtMilReais(loc.realizado)}</td><td>${loc.meta?fmtMilReais(loc.meta)+' (meta)':'—'}</td><td>${pctLocacoes!=null?pctLocacoes.toFixed(1).replace('.',',')+'%':'—'}</td></tr>` : ''}
         </tbody>
       </table>
     </div>
@@ -4082,7 +4198,8 @@ function juntarLista(arr){
   return arr.slice(0,-1).join(', ') + ' e ' + arr[arr.length-1];
 }
 function gerarMensagemChave(resultadoStatus, caixaStatus, inadStatus, retStatus, vendasStatus, locStatus, m, inad, taxaRetencao, tendCaixa){
-  const statuses = {resultado:resultadoStatus, caixa:caixaStatus, inadimplencia:inadStatus, retencao:retStatus, vendas:vendasStatus, locacoes:locStatus};
+  const statuses = {resultado:resultadoStatus, caixa:caixaStatus, inadimplencia:inadStatus, retencao:retStatus, vendas:vendasStatus};
+  if(MOSTRAR_LOCACOES) statuses.locacoes = locStatus;
   const nomes = {resultado:'o resultado operacional', caixa:'o caixa livre', inadimplencia:'a inadimplência', retencao:'a retenção', vendas:'as vendas', locacoes:'as locações'};
   const positivos = Object.keys(statuses).filter(k=>statuses[k]==='green');
   const criticos = Object.keys(statuses).filter(k=>statuses[k]==='red');
@@ -4242,6 +4359,48 @@ function renderObras(){
       </div>
     </div>
 
+    <div class="section-title" style="margin-top:26px;">Acompanhamento do Investimento — Março a Julho/2026<div class="line"></div></div>
+    <div class="alert-box"><span>🏗️</span><div>Como o fundo evolui a cada fechamento: quanto <b>entrou</b> (venda de índices), quanto foi <b>investido</b> nas obras e o <b>saldo disponível</b> que sobra. A regra é <b>Saldo Final = Saldo Inicial + Entradas − Investimentos</b>, e o saldo de um mês vira o ponto de partida do mês seguinte.</div></div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-label">Entradas 🟢 × Investimentos 🔴 por Mês</div>
+        <div class="card-meta" style="margin-top:2px;">o que captou vs. o que gastou em cada competência</div>
+        <div id="obrasChartFluxo" class="scrollx" style="margin-top:12px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Saldo Disponível × Investimento Acumulado</div>
+        <div class="card-meta" style="margin-top:2px;">linha do saldo que sobra a cada posição</div>
+        <div id="obrasChartSaldo" class="scrollx" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <div class="card full" style="margin-top:16px;">
+      <div class="card-label">As Obras Entrando no Tempo — de 1 para ${o.acompanhamento[o.acompanhamento.length-1].obrasAtivas} obras</div>
+      <div class="card-meta" style="margin-top:2px;">quando cada reforma começou a receber recurso e como o valor investido cresceu a cada fechamento</div>
+      <div id="obrasChartObrasTempo" class="scrollx" style="margin-top:14px;"></div>
+      <div class="scrollx" style="margin-top:16px;">
+      <table>
+        <thead><tr><th>Obra</th><th>Entrou em</th>${o.posicoesLabels.map(l=>`<th class="num">${l}</th>`).join('')}<th class="num">Atual</th></tr></thead>
+        <tbody>
+          ${o.obrasNoTempo.map(ob=>`<tr>
+            <td><span class="dot" style="background:${ob.cor}; margin-right:8px;"></span>${ob.nome}</td>
+            <td><span class="tag" style="background:${ob.cor}22; color:${ob.cor};">${ob.entrou}</span></td>
+            ${ob.serie.map(v=>`<td class="num ${v>0?'':'muted'}">${v>0?fmtBRL0(v):'—'}</td>`).join('')}
+            <td class="num" style="font-weight:700;">${fmtBRL0(ob.total)}</td></tr>`).join('')}
+          <tr class="total-highlight" style="font-weight:800;">
+            <td colspan="2" style="color:var(--red);">TOTAL INVESTIDO</td>
+            ${o.acompanhamento.map(a=>`<td class="num" style="color:var(--red);">${fmtBRL0(a.investidoAcum)}</td>`).join('')}
+            <td class="num" style="color:var(--red);">${fmtBRL0(o.totalInvestido)}</td></tr>
+          <tr style="color:var(--muted); font-size:12px;">
+            <td colspan="2">Obras ativas</td>
+            ${o.acompanhamento.map(a=>`<td class="num">${a.obrasAtivas}</td>`).join('')}
+            <td class="num">${o.acompanhamento[o.acompanhamento.length-1].obrasAtivas}</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
     <div class="section-title" style="margin-top:26px;">Evolução do Fundo — Fevereiro a Julho/2026<div class="line"></div></div>
     <div class="card full">
       <div class="card-label">Saldo Final Acumulado, com Entradas e Investimentos do Mês</div>
@@ -4293,6 +4452,9 @@ function renderObras(){
   `;
 
   drawObrasPosicao('obrasBarrasPosicao');
+  drawObrasFluxo('obrasChartFluxo');
+  drawObrasSaldo('obrasChartSaldo');
+  drawObrasNoTempo('obrasChartObrasTempo');
   drawObrasEvolucao('obrasChartEvolucao');
   const totalOrigens = o.origens.reduce((s,x)=>s+x.valor,0);
   drawDonut('obrasDonutOrigem', o.origens, fmtMilReais(totalOrigens), 'recebidos');
@@ -4321,6 +4483,94 @@ function drawObrasPosicao(elId){
         <div style="width:${(l.valor/max*100).toFixed(1)}%; height:100%; background:${l.cor}; border-radius:4px;"></div>
       </div>
     </div>`).join('');
+}
+
+function drawObrasFluxo(elId){
+  const el = document.getElementById(elId); if(!el) return;
+  const dados = OBRAS_FUNDO.fluxoMensal;
+  const n = dados.length;
+  const W = Math.max(560, n*95), H = 300, padL=64, padR=16, padT=24, padB=42;
+  const maxV = Math.max(...dados.map(d=>Math.max(d.entradas, d.investimentos))) * 1.15;
+  const grupoW = (W-padL-padR)/n;
+  const y = v => padT + (1-v/maxV)*(H-padT-padB);
+  const y0 = y(0);
+  let grid='';
+  for(let s=0;s<=3;s++){ const v=maxV*s/3, yy=y(v);
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="#40415a" stroke-width="1"/>`;
+    grid += `<text x="${padL-8}" y="${(yy+4).toFixed(1)}" text-anchor="end" fill="#b0b0d0" font-size="10">${fmtIndicadorCurto(v,'moeda')}</text>`; }
+  let bars='', labels='';
+  const bw = grupoW*0.32;
+  dados.forEach((d,i)=>{
+    const gx = padL + i*grupoW + grupoW*0.5;
+    [['entradas','#00e5a0',-bw-2],['investimentos','#e8192c',2]].forEach(([k,cor,off])=>{
+      const v=d[k]; if(!v) return;
+      const yy=y(v);
+      bars += `<rect x="${(gx+off).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y0-yy).toFixed(1)}" fill="${cor}" rx="2"><title>${k==='entradas'?'Entradas':'Investimentos'} — ${d.mes}: ${fmtBRL(v)}</title></rect>`;
+    });
+    labels += `<text x="${gx.toFixed(1)}" y="${H-padB+20}" text-anchor="middle" fill="#b0b0d0" font-size="11">${d.mes.replace('/26','').replace('/Jul/26','Jul')}</text>`;
+  });
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:${W}px;height:auto;">${grid}<line x1="${padL}" y1="${y0.toFixed(1)}" x2="${W-padR}" y2="${y0.toFixed(1)}" stroke="#5c6370" stroke-width="1.4"/>${bars}${labels}</svg>`;
+}
+
+function drawObrasSaldo(elId){
+  const el = document.getElementById(elId); if(!el) return;
+  const dados = OBRAS_FUNDO.acompanhamento;
+  const n = dados.length;
+  const W = Math.max(560, n*105), H = 300, padL=64, padR=16, padT=24, padB=42;
+  const maxV = Math.max(...dados.map(d=>d.saldo)) * 1.15;
+  const stepX = (W-padL-padR)/(n-1||1);
+  const y = v => padT + (1-v/maxV)*(H-padT-padB);
+  const y0 = y(0);
+  let grid='';
+  for(let s=0;s<=3;s++){ const v=maxV*s/3, yy=y(v);
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="#40415a" stroke-width="1"/>`;
+    grid += `<text x="${padL-8}" y="${(yy+4).toFixed(1)}" text-anchor="end" fill="#b0b0d0" font-size="10">${fmtIndicadorCurto(v,'moeda')}</text>`; }
+  let bars='', line='', pts='', labels='';
+  const bw = Math.min(38, stepX*0.4);
+  dados.forEach((d,i)=>{
+    const gx = padL + i*stepX;
+    const yb = y(d.investidoAcum);
+    bars += `<rect x="${(gx-bw/2).toFixed(1)}" y="${yb.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y0-yb).toFixed(1)}" fill="#e8192c" opacity="0.28" rx="2"><title>Investido acumulado — ${d.label}: ${fmtBRL(d.investidoAcum)}</title></rect>`;
+    const ys = y(d.saldo);
+    line += `${gx.toFixed(1)},${ys.toFixed(1)} `;
+    pts += `<circle cx="${gx.toFixed(1)}" cy="${ys.toFixed(1)}" r="4.5" fill="#00e5a0"><title>Saldo disponível — ${d.label}: ${fmtBRL(d.saldo)}</title></circle>`;
+    pts += `<text x="${gx.toFixed(1)}" y="${(ys-10).toFixed(1)}" text-anchor="middle" fill="#00e5a0" font-size="10.5" font-weight="800">${fmtIndicadorCurto(d.saldo,'moeda')}</text>`;
+    labels += `<text x="${gx.toFixed(1)}" y="${H-padB+20}" text-anchor="middle" fill="#b0b0d0" font-size="11">${d.label}</text>`;
+  });
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:${W}px;height:auto;">${grid}<line x1="${padL}" y1="${y0.toFixed(1)}" x2="${W-padR}" y2="${y0.toFixed(1)}" stroke="#5c6370" stroke-width="1.4"/>${bars}<polyline points="${line.trim()}" fill="none" stroke="#00e5a0" stroke-width="2.5"/>${pts}${labels}</svg>`;
+}
+
+function drawObrasNoTempo(elId){
+  const el = document.getElementById(elId); if(!el) return;
+  const obras = OBRAS_FUNDO.obrasNoTempo;
+  const labels = OBRAS_FUNDO.posicoesLabels;
+  const n = labels.length;
+  const W = Math.max(620, n*118), H = 320, padL=64, padR=16, padT=24, padB=42;
+  const totais = labels.map((_,i)=> obras.reduce((s,o)=>s+o.serie[i],0));
+  const maxV = Math.max(...totais) * 1.12;
+  const grupoW = (W-padL-padR)/n;
+  const y = v => padT + (1-v/maxV)*(H-padT-padB);
+  const y0 = y(0);
+  let grid='';
+  for(let s=0;s<=3;s++){ const v=maxV*s/3, yy=y(v);
+    grid += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W-padR}" y2="${yy.toFixed(1)}" stroke="#40415a" stroke-width="1"/>`;
+    grid += `<text x="${padL-8}" y="${(yy+4).toFixed(1)}" text-anchor="end" fill="#b0b0d0" font-size="10">${fmtIndicadorCurto(v,'moeda')}</text>`; }
+  let bars='', labelsX='';
+  const bw = grupoW*0.5;
+  labels.forEach((lb,i)=>{
+    const gx = padL + i*grupoW + grupoW*0.5 - bw/2;
+    let acc = 0;
+    obras.forEach(o=>{
+      const v = o.serie[i]; if(!v) return;
+      const yTop = y(acc+v), yBot = y(acc);
+      bars += `<rect x="${gx.toFixed(1)}" y="${yTop.toFixed(1)}" width="${bw.toFixed(1)}" height="${(yBot-yTop).toFixed(1)}" fill="${o.cor}" rx="1"><title>${o.nome} — ${lb}: ${fmtBRL(v)}</title></rect>`;
+      acc += v;
+    });
+    bars += `<text x="${(gx+bw/2).toFixed(1)}" y="${(y(acc)-6).toFixed(1)}" text-anchor="middle" fill="var(--text)" font-size="10.5" font-weight="800">${fmtIndicadorCurto(acc,'moeda')}</text>`;
+    labelsX += `<text x="${(gx+bw/2).toFixed(1)}" y="${H-padB+20}" text-anchor="middle" fill="#b0b0d0" font-size="11">${lb}</text>`;
+  });
+  const leg = obras.map(o=>`<span style="display:inline-flex; align-items:center; gap:5px; margin:0 10px 6px 0; font-size:11.5px; color:var(--muted);"><span style="width:10px;height:10px;border-radius:2px;background:${o.cor};display:inline-block;"></span>${o.nome}</span>`).join('');
+  el.innerHTML = `<div style="margin-bottom:10px;">${leg}</div><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:${W}px;height:auto;">${grid}<line x1="${padL}" y1="${y0.toFixed(1)}" x2="${W-padR}" y2="${y0.toFixed(1)}" stroke="#5c6370" stroke-width="1.4"/>${bars}${labelsX}</svg>`;
 }
 
 function drawObrasEvolucao(elId){
@@ -5228,6 +5478,7 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate){
   document.getElementById('vgResultadoOper').textContent = (m.resultadoOper<0?'-':'') + 'R$ ' + Math.abs(m.resultadoOper).toFixed(1).replace('.',',') + ' mil';
   document.getElementById('vgResultadoOper').style.color = m.resultadoOper<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('vgFundoObras').textContent = fmtMil(m.fundoObras);
+  pintarComposicaoSaldo('vgSaldo', m);
   document.getElementById('alertaPontoAtencaoVG').innerHTML = m.ptoAtencao + ' Detalhes na aba <b>Fluxo de Caixa</b>.';
   document.getElementById('alertaPontoAtencaoFC').innerHTML = m.ptoAtencao;
   document.getElementById('alertaFechamentoFC').innerHTML = m.fechado
@@ -5242,22 +5493,33 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate){
   document.getElementById('fcVal4').style.color = m.resultadoOper<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('fcMeta4').textContent = `Receita ${fmtMil(m.receitaReal)} − Despesa ${fmtMil(m.despesaReal)}`;
 
-  // Composição do saldo
+  // Composição do saldo — mesma função alimenta Fluxo de Caixa e Visão Geral
+  pintarComposicaoSaldo('fc', m);
+  document.getElementById('fcCompLabel').textContent = `Composição do Saldo em Banco — ${m.label}`;
+  renderVisaoGeralObrasComp();
+}
+
+// Barra única de composição do saldo (caixa livre × fundo de obras), reutilizada em 2 telas.
+// prefixo = 'fc' (Fluxo de Caixa) ou 'vgSaldo' (Visão Geral).
+function pintarComposicaoSaldo(prefixo, m){
+  const bar = document.getElementById(prefixo+'CompBar');
+  const leg = document.getElementById(prefixo==='fc' ? 'fcCompLegend' : 'vgSaldoCompLegend');
+  const lbl = document.getElementById(prefixo==='fc' ? 'fcCompLabel' : 'vgSaldoCompLabel');
+  if(!bar) return;
   if(m.negativo){
-    document.getElementById('fcCompBar').innerHTML = `<div style="width:100%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">Fundo Obras ~100% (caixa operacional negativo não aparece na barra)</div>`;
-    document.getElementById('fcCompLegend').innerHTML = `
+    bar.innerHTML = `<div style="width:100%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">Fundo Obras ~100% (caixa operacional negativo não aparece na barra)</div>`;
+    if(leg) leg.innerHTML = `
       <div class="legend-row"><span class="dot" style="background:var(--red)"></span> Caixa Operacional Livre — <b style="color:var(--red)">-${fmtMil(Math.abs(m.caixaLivre))} (negativo)</b></div>
       <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — ${fmtMil(m.fundoObras)}</div>`;
   } else {
-    document.getElementById('fcCompBar').innerHTML = `
-      <div style="width:${m.caixaLivrePct}%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.caixaLivrePct}%</div>
-      <div style="width:${m.fundoObrasPct}%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.fundoObrasPct}%</div>`;
-    document.getElementById('fcCompLegend').innerHTML = `
+    bar.innerHTML = `
+      <div style="width:${m.caixaLivrePct}%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.caixaLivrePct.toFixed(1).replace('.',',')}%</div>
+      <div style="width:${m.fundoObrasPct}%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.fundoObrasPct.toFixed(1).replace('.',',')}%</div>`;
+    if(leg) leg.innerHTML = `
       <div class="legend-row"><span class="dot" style="background:var(--blue)"></span> Caixa Operacional Livre — ${fmtMil(m.caixaLivre)}</div>
       <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — ${fmtMil(m.fundoObras)}</div>`;
   }
-  document.getElementById('fcCompLabel').textContent = `Composição do Saldo em Banco — ${m.label}`;
-  renderVisaoGeralObrasComp();
+  if(lbl && prefixo==='vgSaldo') lbl.textContent = `Composição do Saldo em Banco — ${m.label}`;
 }
 
 function renderVisaoGeralObrasComp(){
