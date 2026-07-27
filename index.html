@@ -4899,6 +4899,12 @@ function renderIndicadoresGrid(elId, indicadores, pendentes, grupo){
     <div class="alert-box" style="margin-top:4px;"><span>🕓</span><div><b>Aguardando dados da Gerência de RH:</b> ${pendentes.join(', ')}. Esses indicadores serão adicionados ao painel assim que forem enviados.</div></div>` : '';
 
   el.innerHTML = `${regraNota}<div class="kpi-spark-grid">${cards}</div>${pendentesHtml}<div id="detalhe-${grupo}"></div>`;
+
+  // Se havia um indicador aberto neste grupo, reabre com o filtro atualizado
+  const aberto = window._detalheRHAberto && window._detalheRHAberto[grupo];
+  if(aberto && indicadores[aberto]){
+    abrirDetalheIndicador(grupo, aberto);
+  }
 }
 
 // Monta o HTML do delta (seta + cor) conforme a natureza do indicador
@@ -4913,16 +4919,19 @@ function montarDelta(diff, ind, sufixo){
 }
 
 function gerarLeituraExecutiva(ind){
-  const validos = ind.valores.map((v,i)=>({v,i})).filter(o=>o.v!=null);
+  // Considera apenas os meses do período filtrado
+  const idxP = RH_PERIODO_IDX;
+  const validos = ind.valores.map((v,i)=>({v,i})).filter(o=>o.v!=null && idxP.includes(o.i));
+  if(!validos.length) return `<b>${ind.label}</b>: sem dado no período selecionado.`;
   const atual = validos[validos.length-1];
   const primeiro = validos[0];
   const variacaoTotal = atual.v - primeiro.v;
   const mesAtual = MESES_RH[atual.i], mesPrimeiro = MESES_RH[primeiro.i];
   const valorAtualTxt = fmtIndicador(atual.v, ind.formato);
   const valorPrimeiroTxt = fmtIndicador(primeiro.v, ind.formato);
+  const regra = RH_AGG_REGRA[ind === RH_INDICADORES.turnover ? 'turnover' : ''] || null;
   let tendenciaTxt, corTendencia;
   if(ind.formato==='moeda'){
-    // custo subir/cair nem sempre é bom ou ruim (pode refletir crescimento de quadro) — linguagem neutra
     tendenciaTxt = variacaoTotal===0 ? 'estável' : (variacaoTotal>0 ? 'em alta' : 'em queda');
     corTendencia = variacaoTotal===0 ? 'var(--muted)' : 'var(--gold)';
   } else {
@@ -4930,7 +4939,11 @@ function gerarLeituraExecutiva(ind){
     tendenciaTxt = variacaoTotal===0 ? 'estável' : (melhorou ? 'melhorando' : 'piorando');
     corTendencia = variacaoTotal===0 ? 'var(--muted)' : (melhorou ? 'var(--green)' : 'var(--red)');
   }
-  return `<b>${ind.label}</b> está em <b>${valorAtualTxt}</b> em ${mesAtual}, com tendência <b style="color:${corTendencia};">${tendenciaTxt}</b> desde ${mesPrimeiro} (quando estava em ${valorPrimeiroTxt}). Base: ${validos.length} de ${ind.valores.length} meses com dado (${MESES_RH[0]}-${MESES_RH[MESES_RH.length-1]}).`;
+  const umMes = validos.length === 1;
+  const corpo = umMes
+    ? `<b>${ind.label}</b> em <b>${mesAtual}</b>: <b>${valorAtualTxt}</b>.`
+    : `<b>${ind.label}</b> está em <b>${valorAtualTxt}</b> em ${mesAtual}, com tendência <b style="color:${corTendencia};">${tendenciaTxt}</b> desde ${mesPrimeiro} (quando estava em ${valorPrimeiroTxt}).`;
+  return `${corpo} Base: ${validos.length} ${validos.length===1?'mês':'meses'} com dado no período (${rhPeriodoLabel()}).`;
 }
 
 function fmtIndicadorCurto(v, formato){
@@ -4975,6 +4988,8 @@ function drawIndicadorBarChart(elId, ind){
 }
 
 function abrirDetalheIndicador(grupo, chave){
+  window._detalheRHAberto = window._detalheRHAberto || {};
+  window._detalheRHAberto[grupo] = chave;
   const indicadores = grupo==='rh' ? RH_INDICADORES : DP_INDICADORES;
   const ind = indicadores[chave];
   const detalheEl = document.getElementById(`detalhe-${grupo}`);
@@ -5018,8 +5033,8 @@ function abrirDetalheIndicador(grupo, chave){
   detalheEl.innerHTML = `
     <div class="card full" style="margin-top:16px; border-left:4px solid ${ind.cor};">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-        <div class="card-label" style="font-size:15px;">${ind.icone||'📈'} ${titulo} — ${MESES_RH[0]} a ${MESES_RH[MESES_RH.length-1]}</div>
-        <button onclick="document.getElementById('detalhe-${grupo}').innerHTML=''" style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">✕</button>
+        <div class="card-label" style="font-size:15px;">${ind.icone||'📈'} ${titulo} — ${rhPeriodoLabel()}</div>
+        <button onclick="window._detalheRHAberto['${grupo}']=null; document.getElementById('detalhe-${grupo}').innerHTML=''" style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">✕</button>
       </div>
       <div class="alert-box" style="margin-top:12px;"><span>💡</span><div>${leitura}</div></div>
       ${notasHtml}
