@@ -1330,8 +1330,8 @@ const REINGRESSO_HISTORICO = [
   {mesKey:'mai2026', periodoTag:'Maio/2026',      total:46, valor:33172.24, campanhas:null, alerta:null},
   {mesKey:'jun2026', periodoTag:'Junho/2026',     total:28, valor:15167.35,
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
-  {mesKey:'jul2026', periodoTag:'Julho/2026 (parcial, até 11/07)', total:6, valor:4340.38,
-    campanhas: null, alerta: 'Período parcial de julho — ainda sem quebra por campanha específica. Assim que tivermos mais detalhamento, a distribuição por campanha volta a aparecer.'},
+  {mesKey:'jul2026', periodoTag:'Julho/2026 (parcial, até 24/07)', total:25, valor:16617.06,
+    campanhas: null, alerta: 'Período parcial de julho (até 24/07) — ainda sem quebra por campanha específica. Assim que tivermos mais detalhamento, a distribuição por campanha volta a aparecer.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -1341,10 +1341,10 @@ const VENDAS_CAMPANHAS = [
 ];
 // Funil de conversão da Central de Vendas (leads/contatos/visitas/vendas) — dado diário real
 const NEGOCIACOES = [
-  {mes:'Mar/26', valor:59492,  contatos:37},
-  {mes:'Abr/26', valor:23650,  contatos:335},
-  {mes:'Mai/26', valor:36371,  contatos:512},
-  {mes:'Jun/26', valor:148938, contatos:614},
+  {mes:'Mar/26', valor:8944,   contatos:37},
+  {mes:'Abr/26', valor:44827,  contatos:335},
+  {mes:'Mai/26', valor:80505,  contatos:512},
+  {mes:'Jun/26', valor:259750, contatos:614},
 ];
 const INADIMPLENCIA = [
   {mes:'Mar/26', real:12.5, meta:12.5},
@@ -3131,7 +3131,7 @@ function aplicarFiltroMes(){
 
   const uFlx = ultimoMesCobertura(COBERTURA_FLUXO);
   const mesKeyFlx = mesesFlx.length ? mesesFlx[mesesFlx.length-1].key : (uFlx ? uFlx.key : null);
-  renderFluxoCaixaPeriodo(mesKeyFlx, de, ate);
+  renderFluxoCaixaPeriodo(mesKeyFlx, de, ate, mesesFlx);
   renderRetencaoPeriodo(mesKeyRet, mesesRet);
   renderRH(mesKey);
   renderLocacoesPeriodo(mesKey, de, ate);
@@ -5509,8 +5509,26 @@ function renderHistoricoFechamentos(){
   }).join('');
 }
 
-function renderFluxoCaixaPeriodo(mesKey, de, ate){
+function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   const m = DADOS_MES[mesKey];
+
+  // Agregação do período: Resultado, Receita e Despesa SOMAM os meses do intervalo.
+  // Campos "foto" (caixa livre, saldo, fundo, composição) permanecem do último mês.
+  let aggResultado = m ? m.resultadoOper : 0;
+  let aggReceita = m ? m.receitaReal : 0;
+  let aggDespesa = m ? m.despesaReal : 0;
+  let mesesComResultado = m ? 1 : 0;
+  let periodoLabel = m ? m.label : '';
+  if(mesesFlx && mesesFlx.length > 1){
+    const itens = mesesFlx.map(mk=>DADOS_MES[mk.key]).filter(Boolean);
+    if(itens.length > 1){
+      aggResultado = itens.reduce((s,x)=> s + (x.resultadoOper||0), 0);
+      aggReceita   = itens.reduce((s,x)=> s + (x.receitaReal||0), 0);
+      aggDespesa   = itens.reduce((s,x)=> s + (x.despesaReal||0), 0);
+      mesesComResultado = itens.length;
+      periodoLabel = `${itens[0].label.split('/')[0]} a ${itens[itens.length-1].label}`;
+    }
+  }
 
   // A projeção diária (PROJECAO) agora cobre Jan-Set/26 — atualiza os gráficos por dia
   // independente de termos ou não o detalhamento mensal por categoria (só Jun/Jul têm isso)
@@ -5557,9 +5575,14 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate){
   document.getElementById('fcVal1').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toFixed(1).replace('.',',') + ' mil';
   document.getElementById('fcVal1').style.color = m.caixaLivre<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('fcVal2').textContent = fmtMil(m.fundoObras);
-  document.getElementById('fcVal4').textContent = (m.resultadoOper<0?'-':'') + 'R$ ' + Math.abs(m.resultadoOper).toFixed(1).replace('.',',') + ' mil';
-  document.getElementById('fcVal4').style.color = m.resultadoOper<0 ? 'var(--red)' : 'var(--green)';
-  document.getElementById('fcMeta4').textContent = `Receita ${fmtMil(m.receitaReal)} − Despesa ${fmtMil(m.despesaReal)}`;
+  document.getElementById('fcVal4').textContent = (aggResultado<0?'-':'') + 'R$ ' + Math.abs(aggResultado).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('fcVal4').style.color = aggResultado<0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('fcMeta4').textContent = mesesComResultado>1
+    ? `${periodoLabel} · Receita ${fmtMil(aggReceita)} − Despesa ${fmtMil(aggDespesa)}`
+    : `Receita ${fmtMil(aggReceita)} − Despesa ${fmtMil(aggDespesa)}`;
+  // Rótulo do card muda para deixar claro que é soma do período
+  const fcLabel4 = document.getElementById('fcLabel4');
+  if(fcLabel4) fcLabel4.textContent = mesesComResultado>1 ? `Resultado Operacional (soma de ${mesesComResultado} meses)` : 'Resultado Operacional';
 
   // Composição do saldo — mesma função alimenta Fluxo de Caixa e Visão Geral
   pintarComposicaoSaldo('fc', m);
