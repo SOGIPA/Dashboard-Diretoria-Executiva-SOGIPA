@@ -2809,37 +2809,40 @@ const VENDAS_EXTRA_MESES = {
     },
   },
   jul2026: {
-    periodoTag:'Julho/2026 (parcial, até 23/07)',
-    associacoesNovas:'13', valorArrecadado:'R$ 10.901,75', ticketMedio:'R$ 838,60',
+    periodoTag:'Julho/2026 (parcial, até 24/07)',
+    associacoesNovas:'16', valorArrecadado:'R$ 12.952,25', ticketMedio:'R$ 809,52',
     campanhas:[
-      {nome:'Dependente', qtd:2, cor:'#3d7bff'},
-      {nome:'Visita/Aula Expep. Tênis', qtd:2, cor:'#00e5a0'},
-      {nome:'Visita', qtd:2, cor:'#a855f7'},
+      {nome:'Visita', qtd:3, cor:'#3d7bff'},
+      {nome:'Dependente', qtd:2, cor:'#00e5a0'},
+      {nome:'Visita/Aula Expep. Tênis', qtd:2, cor:'#a855f7'},
       {nome:'WhatsApp', qtd:1, cor:'#f2b705'},
-      {nome:'Visita /Sinpefrs', qtd:1, cor:'#06b6d4'},
+      {nome:'Visita/Sinpefrs', qtd:1, cor:'#06b6d4'},
       {nome:'WhatsApp + Tour Guiado', qtd:1, cor:'#fb923c'},
       {nome:'WhatsApp/Sauna', qtd:1, cor:'#e8192c'},
-      {nome:'Captação Usuário De Escola', qtd:1, cor:'#b0b0d0'},
+      {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
       {nome:'WhatsApp/Visita', qtd:1, cor:'#5a5c78'},
       {nome:'WhatsApp/Dohms', qtd:1, cor:'#22d3ee'},
+      {nome:'Promo o Melhor das Férias', qtd:1, cor:'#f472b6'},
+      {nome:'Promo Amigo Indica', qtd:1, cor:'#facc15'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:12, valor:10635.75},
-      {nome:'Claudia', qtd:1, valor:266.0},
+      {nome:'Sabrina', qtd:14, valor:12185.25},
+      {nome:'Claudia', qtd:2, valor:767.00},
     ],
     categorias:[
-      {nome:'Contribuinte', qtd:7},
+      {nome:'Contribuinte', qtd:8},
       {nome:'Contribuinte Individual', qtd:3},
+      {nome:'Contribuinte Senior', qtd:2},
       {nome:'Contribuinte Individual Convênio', qtd:1},
       {nome:'Contribuinte Teen', qtd:1},
-      {nome:'Contribuinte Senior', qtd:1},
+      {nome:'Contribuinte Universitário', qtd:1},
     ],
-    alerta: 'Julho em andamento — 13 associações novas registradas até 23/07, com canal de venda, consultor e categoria identificados em todas.',
+    alerta: 'Julho em andamento — 16 associações novas registradas até 24/07, com canal de venda, consultor e categoria identificados em todas.',
     metas:{
-      vendas:{orcado:23, real:13}, reingressos:{orcado:32, real:null},
-      totalVR:{orcado:55, real:13}, desafioVenda:26, desafioReingresso:40,
-      total:{orcado:66, real:13, gap:-53},
-      taxaAdesao:10901.75, taxaReingresso:0, taxaTotal:10901.75,
+      vendas:{orcado:23, real:16}, reingressos:{orcado:32, real:null},
+      totalVR:{orcado:55, real:16}, desafioVenda:26, desafioReingresso:40,
+      total:{orcado:66, real:16, gap:-50},
+      taxaAdesao:12952.25, taxaReingresso:0, taxaTotal:12952.25,
     },
   },
 };
@@ -2851,7 +2854,6 @@ const VENDAS_FUNIL_DIARIO = [
   {data:'2026-07-08', leads:9, contatos:16, visitas:2, vendas:4, retNeg:1, acomp:8},
   {data:'2026-07-09', leads:17, contatos:14, visitas:0, vendas:2, retNeg:0, acomp:4},
   {data:'2026-07-10', leads:5, contatos:25, visitas:0, vendas:0, retNeg:0, acomp:5},
-  {data:'2026-07-11', leads:0, contatos:0, visitas:0, vendas:0, retNeg:0, acomp:0},
   {data:'2026-07-13', leads:17, contatos:32, visitas:1, vendas:1, retNeg:2, acomp:3},
   {data:'2026-07-14', leads:12, contatos:20, visitas:0, vendas:0, retNeg:3, acomp:4},
   {data:'2026-07-15', leads:13, contatos:22, visitas:2, vendas:1, retNeg:0, acomp:3},
@@ -2862,12 +2864,13 @@ const VENDAS_FUNIL_DIARIO = [
   {data:'2026-07-21', leads:8, contatos:19, visitas:2, vendas:1, retNeg:0, acomp:2},
   {data:'2026-07-22', leads:17, contatos:22, visitas:1, vendas:0, retNeg:0, acomp:2},
   {data:'2026-07-23', leads:5, contatos:63, visitas:0, vendas:0, retNeg:0, acomp:3},
+  {data:'2026-07-24', leads:9, contatos:27, visitas:2, vendas:3, retNeg:1, acomp:3},
 ];
 
 const VENDAS_MOTIVOS_PERDA = [
-  {nome:'Valor Alto', dias:3, perdidos:4, cor:'#3d7bff'},
-  {nome:'Infra No Condomínio/Somente Atividade', dias:1, perdidos:3, cor:'#00e5a0'},
-  {nome:'Sem Interesse', dias:1, perdidos:1, cor:'#a855f7'},
+  {nome:'Valor Alto', dias:3, perdidos:3, cor:'#e8192c'},
+  {nome:'Sem Interesse', dias:2, perdidos:2, cor:'#b0b0d0'},
+  {nome:'Infra no Condomínio/somente Atividade', dias:1, perdidos:1, cor:'#5a5c78'},
 ];
 
 // Fluxo de Caixa tem cobertura própria (Jan a Jul/26) — os fechamentos mensais por categoria
@@ -3129,7 +3132,7 @@ function aplicarFiltroMes(){
   const uFlx = ultimoMesCobertura(COBERTURA_FLUXO);
   const mesKeyFlx = mesesFlx.length ? mesesFlx[mesesFlx.length-1].key : (uFlx ? uFlx.key : null);
   renderFluxoCaixaPeriodo(mesKeyFlx, de, ate);
-  renderRetencaoPeriodo(mesKeyRet);
+  renderRetencaoPeriodo(mesKeyRet, mesesRet);
   renderRH(mesKey);
   renderLocacoesPeriodo(mesKey, de, ate);
   renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen);
@@ -3559,12 +3562,89 @@ const DADOS_MES = {
   }
 };
 
-function renderRetencaoPeriodo(mesKeyRet){
-  const r = mesKeyRet ? (RETENCAO_EXTRA_MESES[mesKeyRet] || (DADOS_MES[mesKeyRet] && DADOS_MES[mesKeyRet].retencao)) : null;
+// Totaliza a Retenção somando os meses do período. Campos somáveis são somados;
+// "foto" (quadro social, residual) usam o último mês; ticket/dependentes ponderam por desligamentos.
+function agregarRetencao(mesesRet){
+  const itens = mesesRet.map(mk=> getRetencaoMes(mk.key)).filter(Boolean);
+  if(itens.length <= 1) return null; // 0 ou 1 mês: usa o render normal
+  const kpiVal = (r, label) => {
+    const k = r.kpis.find(x=>x.label===label);
+    return k ? (parseInt(String(k.valor).replace(/\D/g,''),10) || 0) : 0;
+  };
+  const somaKpi = label => itens.reduce((s,r)=> s + kpiVal(r,label), 0);
+  const ult = itens[itens.length-1];
+  const parseBRLnr = v => { if(v==null) return null; const n=parseFloat(String(v).replace(/[^\d,-]/g,'').replace(/\./g,'').replace(',','.')); return isNaN(n)?null:n; };
+
+  const solic = somaKpi('Solicitações Totais');
+  const novas = somaKpi('Deste Mês');
+  const deslig = itens.reduce((s,r)=> s + (r.totalDesligamentos||0), 0);
+  const retidos = somaKpi('Retidos');
+
+  // categorias e motivos: consolida por nome, somando qtd
+  const cmap = {}, mmap = {};
+  itens.forEach(r=>{
+    (r.categorias||[]).forEach(c=>{ if(!cmap[c.nome]) cmap[c.nome]={nome:c.nome,qtd:0,cor:c.cor}; cmap[c.nome].qtd+=c.qtd; });
+    (r.motivos||[]).forEach(m=>{ if(!mmap[m.motivo]) mmap[m.motivo]={motivo:m.motivo,qtd:0,cor:m.cor}; mmap[m.motivo].qtd+=m.qtd; });
+  });
+  const categorias = Object.values(cmap).sort((a,b)=>b.qtd-a.qtd);
+  const totMot = Object.values(mmap).reduce((s,m)=>s+m.qtd,0);
+  const motivos = Object.values(mmap).sort((a,b)=>b.qtd-a.qtd).map(m=>({...m, pct: totMot? m.qtd/totMot*100 : 0}));
+
+  // ticket médio ponderado por desligamentos
+  let somaTicket=0, pesoTicket=0, somaDep=0, pesoDep=0, taxaTotal=0;
+  itens.forEach(r=>{
+    const tk = parseBRLnr(r.ticketMedio); const dp = parseFloat(String(r.dependentes).replace(',','.'));
+    const w = r.totalDesligamentos||0;
+    if(tk!=null){ somaTicket += tk*w; pesoTicket += w; }
+    if(!isNaN(dp)){ somaDep += dp*w; pesoDep += w; }
+    const dt = parseBRLnr(r.desligadosComTaxa); if(dt!=null) taxaTotal += dt;
+  });
+  const ticketMed = pesoTicket ? 'R$ '+ (somaTicket/pesoTicket).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const depMed = pesoDep ? (somaDep/pesoDep).toFixed(1).replace('.',',') : '—';
+
+  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho'}[k.slice(0,3)]||k);
+  const tag = `${nomeMes(mesesRet[0].key)} a ${nomeMes(mesesRet[mesesRet.length-1].key)}/2026 · ${itens.length} meses`;
+
+  return {
+    periodoTag: tag,
+    kpis: [
+      {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:String(solic), sub:`somadas em ${itens.length} meses`},
+      {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:String(novas), sub:'novas solicitações no período'},
+      {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:String(deslig), sub:'total de desligamentos', valorCor:'#e8192c'},
+      {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:String(retidos), sub:'associados retidos', valorCor:'#00e5a0'},
+      {icone:'👥', cor:'#a855f7', bg:'rgba(168,85,247,.15)', label:'Quadro Social', valor:String(ult.quadroSocial||'—'), sub:`ativos ao final (${nomeMes(mesesRet[mesesRet.length-1].key)})`, valorCor:'#a855f7'},
+    ],
+    categorias, motivos,
+    totalDesligamentos: deslig,
+    ticketMedio: ticketMed, dependentes: depMed,
+    residual: String(ult.residual), residualLabel: 'Residual Acumulado (último mês)',
+    desligadosComTaxa: taxaTotal ? 'R$ '+taxaTotal.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : null,
+    quadroSocial: ult.quadroSocial,
+    taxaRetencaoPeriodo: (deslig+retidos)>0 ? (retidos/(deslig+retidos)*100) : 0,
+    _agregado: itens.length,
+    analise: `<b>Totais consolidados de ${itens.length} meses (${tag}).</b> No período houve <b>${solic} solicitações</b> de desligamento e <b>${deslig} desligamentos efetivados</b>, com <b>${retidos} associados retidos</b> — taxa de retenção de <b>${((deslig+retidos)>0?(retidos/(deslig+retidos)*100):0).toFixed(1).replace('.',',')}%</b> no acumulado. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; o Quadro Social e o Residual referem-se ao <b>último mês do intervalo</b> (são fotos, não acumulados). Ticket médio e dependentes são <b>médias ponderadas</b> pelo número de desligamentos de cada mês.`,
+  };
+}
+
+function renderRetencaoPeriodo(mesKeyRet, mesesRet){
+  // Período com 2+ meses: mostra os TOTAIS somados do intervalo
+  const agregado = (mesesRet && mesesRet.length > 1) ? agregarRetencao(mesesRet) : null;
+  const r = agregado || (mesKeyRet ? (RETENCAO_EXTRA_MESES[mesKeyRet] || (DADOS_MES[mesKeyRet] && DADOS_MES[mesKeyRet].retencao)) : null);
   if(!r){
     document.getElementById('retencaoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos fechamentos completos de Janeiro, Fevereiro, Março, Maio, Junho e Julho/2026 (parcial) — Abril ainda não foi preenchido pela Gerência de RH. Selecione um intervalo dentro de um desses meses.</div></div>`;
     return;
   }
+  // Aviso quando o filtro não corresponde exatamente ao mês exibido
+  let aviso = '';
+  if(mesesRet){
+    const n = mesesRet.length;
+    if(n === 0){
+      aviso = `Não há dados de Retenção no intervalo selecionado — exibindo o <b>último fechamento disponível (${r.periodoTag})</b>. Abril/2026 não foi preenchido pela Gerência de RH.`;
+    } else if(agregado){
+      aviso = `Exibindo os <b>totais somados de ${agregado._agregado} meses</b> do intervalo. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; Quadro Social e Residual são a foto do <b>último mês</b>; ticket e dependentes são <b>médias ponderadas</b>. O detalhe mês a mês está na tabela de <b>Histórico</b> ao final.`;
+    }
+  }
+  const avisoHtml = aviso ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>${aviso}</div></div>` : '';
   document.getElementById('retencaoPeriodoTag').textContent = r.periodoTag;
   const kpisHtml = r.kpis.map(k=>`
     <div class="kpi-icon-card">
@@ -3572,7 +3652,7 @@ function renderRetencaoPeriodo(mesKeyRet){
       <div class="kpi-icon-info"><div class="value"${k.valorCor?` style="color:${k.valorCor}"`:''}>${k.valor}</div><div class="delta muted">${k.sub}</div></div>
     </div>`).join('');
   const el = document.getElementById('retencaoConteudo');
-  el.innerHTML = `
+  el.innerHTML = avisoHtml + `
     <div class="kpi-row-icons cols-${r.kpis.length}">${kpisHtml}</div>
     <div class="section-title">Relatório de Desempenho — Central de Relacionamento (${r.periodoTag})<div class="line"></div></div>
     <div class="grid-2 reverse">
@@ -5213,7 +5293,7 @@ function renderFunilVendas(de, ate){
     : VENDAS_FUNIL_DIARIO;
 
   if(!dias.length){
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> Temos registros diários de 03 a 23/07/2026.</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> Temos registros diários de 03 a 24/07/2026.</div></div>`;
     return;
   }
 
