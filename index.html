@@ -1425,7 +1425,7 @@ const FOLHA_DADOS = {
 };
 
 const DP_INDICADORES = {
-  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,111,78,73,null], meta:null, formato:'int', invertido:true, jornada:true,
+  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,111,78,73,null], meta:null, formato:'int', invertido:true,
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária.'},
   horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26], meta:null, formato:'num', jornada:true},
   horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77], meta:null, formato:'num', invertido:true, jornada:true,
@@ -4763,14 +4763,14 @@ function abrirDetalheIndicador(grupo, chave){
 
   let titulo = ind.label;
   if(ehFolha)   titulo = 'Custo de Folha — Bruto × Líquido × Projeto Olímpico × Desencaixe';
-  if(ehJornada) titulo = 'Jornada e Ponto — Horas Trabalhadas × Horas Falta × Infrações';
+  if(ehJornada) titulo = 'Jornada — Horas Trabalhadas × Horas Falta';
 
   const leitura = ehFolha
     ? gerarLeituraFolha()
     : (ehJornada ? gerarLeituraJornada() : gerarLeituraExecutiva(ind));
 
   const notas = (ehJornada
-      ? ['infracoesPonto','horasTrabalhadas','horasFalta'].map(k=>DP_INDICADORES[k]).filter(x=>x.nota).map(x=>`<b>${x.label}:</b> ${x.nota}`)
+      ? ['horasTrabalhadas','horasFalta'].map(k=>DP_INDICADORES[k]).filter(x=>x.nota).map(x=>`<b>${x.label}:</b> ${x.nota}`)
       : (ind.nota ? [ind.nota] : []));
   const notasHtml = notas.length
     ? `<div class="alert-box" style="margin-top:10px; border-color:var(--border);"><span>🗒️</span><div>${notas.join('<br>')}</div></div>` : '';
@@ -4796,7 +4796,6 @@ function abrirDetalheIndicador(grupo, chave){
       <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:14px; font-size:12.5px; color:var(--muted);">
         <span><span style="color:#3d7bff;">■</span> <b style="color:var(--text);">Horas Trabalhadas</b> — escala à esquerda</span>
         <span><span style="color:#fb923c;">■</span> <b style="color:var(--text);">Horas Falta</b> — escala à direita</span>
-        <span><span style="color:#e8192c;">▬</span> <b style="color:var(--text);">Infrações de Ponto</b> — ocorrências no mês</span>
       </div>` : ''}
       <div id="chartDetalhe-${grupo}-${chave}" class="scrollx" style="margin-top:16px;"></div>
       ${ehFolha ? `<div id="tabelaComparativoFolha" style="margin-top:16px;"></div>` : ''}
@@ -4824,24 +4823,20 @@ function gerarLeituraFolha(){
   return `Em ${MESES_RH[n]}, a folha <b>bruta</b> foi de <b>${fmtIndicador(b[n],'moeda')}</b> e a <b>líquida</b> de <b>${fmtIndicador(l[n],'moeda')}</b>, com <b>desencaixe efetivo da SOGIPA</b> de <b style="color:var(--gold);">${fmtIndicador(d[n],'moeda')}</b>. Desde ${MESES_RH[0]}, o bruto está <b style="color:var(--gold);">${varB>=0?'em alta':'em queda'}</b> (${fmtIndicador(Math.abs(varB),'moeda')}) e o desencaixe <b style="color:var(--gold);">${varD>=0?'em alta':'em queda'}</b> (${fmtIndicador(Math.abs(varD),'moeda')}). A cobertura pelo Projeto Olímpico passou de ${pctIni}% para ${pctFim}% do bruto.`;
 }
 
-// Leitura executiva combinada — jornada e ponto
+// Leitura executiva combinada — jornada (horas trabalhadas × falta)
 function gerarLeituraJornada(){
   const t = DP_INDICADORES.horasTrabalhadas.valores, f = DP_INDICADORES.horasFalta.valores;
-  const inf = DP_INDICADORES.infracoesPonto.valores;
   const n = MESES_RH.length - 1;
   const pct = i => t[i] ? (f[i]/t[i]*100) : null;
   const pIni = pct(0), pFim = pct(n);
   const melhor = pFim < pIni;
-  const infVal = inf.map((v,i)=>({v,i})).filter(o=>o.v!=null);
-  const ultInf = infVal[infVal.length-1];
-  return `Em ${MESES_RH[n]} foram <b>${fmtIndicador(t[n],'num')}h trabalhadas</b> contra <b>${fmtIndicador(f[n],'num')}h de falta</b> — ou seja, <b style="color:${melhor?'var(--green)':'var(--red)'};">${pFim.toFixed(2).replace('.',',')}%</b> da jornada, ante ${pIni.toFixed(2).replace('.',',')}% em ${MESES_RH[0]}. As horas trabalhadas cresceram ${fmtIndicador(t[n]-t[0],'num')}h no período, acompanhando o aumento do quadro. <b>Infrações de ponto</b> em ${MESES_RH[ultInf.i]}: ${ultInf.v} ocorrências.`;
+  return `Em ${MESES_RH[n]} foram <b>${fmtIndicador(t[n],'num')}h trabalhadas</b> contra <b>${fmtIndicador(f[n],'num')}h de falta</b> — ou seja, <b style="color:${melhor?'var(--green)':'var(--red)'};">${pFim.toFixed(2).replace('.',',')}%</b> da jornada, ante ${pIni.toFixed(2).replace('.',',')}% em ${MESES_RH[0]}. As horas trabalhadas cresceram ${fmtIndicador(t[n]-t[0],'num')}h no período, acompanhando o aumento do quadro.`;
 }
 
 // Gráfico combinado — jornada e ponto (eixo duplo)
 function drawJornadaChart(elId){
   const el = document.getElementById(elId);
   const t = DP_INDICADORES.horasTrabalhadas.valores, f = DP_INDICADORES.horasFalta.valores;
-  const inf = DP_INDICADORES.infracoesPonto.valores;
   const n = MESES_RH.length;
   const W = Math.max(700, n*150), H = 330, padL=78, padR=68, padT=30, padB=48;
   const maxT = Math.max(...t.filter(v=>v!=null)) * 1.18;
@@ -4857,7 +4852,7 @@ function drawJornadaChart(elId){
     grid += `<text x="${padL-8}" y="${(yy+4).toFixed(1)}" text-anchor="end" fill="#3d7bff" font-size="11">${(v/1000).toFixed(0)}k h</text>`;
     grid += `<text x="${W-padR+8}" y="${(yy+4).toFixed(1)}" text-anchor="start" fill="#fb923c" font-size="11">${(maxF*s/3).toFixed(0)}h</text>`;
   }
-  let bars = '', labels = '', linha = '', pontos = '';
+  let bars = '', labels = '';
   const barW = grupoW*0.30;
   for(let i=0;i<n;i++){
     const gx = padL + i*grupoW + grupoW*0.5;
@@ -4871,31 +4866,24 @@ function drawJornadaChart(elId){
       bars += `<rect x="${(gx+3).toFixed(1)}" y="${yy.toFixed(1)}" width="${barW.toFixed(1)}" height="${(y0-yy).toFixed(1)}" fill="#fb923c" rx="3"><title>Horas Falta — ${MESES_RH[i]}: ${fmtIndicador(f[i],'num')}h</title></rect>`;
       bars += `<text x="${(gx+barW/2+3).toFixed(1)}" y="${(yy-7).toFixed(1)}" text-anchor="middle" fill="#fb923c" font-size="11" font-weight="800">${Math.round(f[i])}</text>`;
     }
-    if(inf[i]!=null){
-      const yy = yF(inf[i]/Math.max(...inf.filter(v=>v!=null))*maxF*0.62);
-      pontos += `<circle cx="${gx.toFixed(1)}" cy="${yy.toFixed(1)}" r="4.5" fill="#e8192c"><title>Infrações de Ponto — ${MESES_RH[i]}: ${inf[i]}</title></circle>`;
-      pontos += `<text x="${gx.toFixed(1)}" y="${(yy-10).toFixed(1)}" text-anchor="middle" fill="#e8192c" font-size="11" font-weight="800">${inf[i]}</text>`;
-      linha += `${gx.toFixed(1)},${yy.toFixed(1)} `;
-    }
     labels += `<text x="${gx.toFixed(1)}" y="${H-padB+22}" text-anchor="middle" fill="#b0b0d0" font-size="12">${MESES_RH[i]}</text>`;
   }
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; height:auto;">
     ${grid}
     <line x1="${padL}" y1="${y0.toFixed(1)}" x2="${W-padR}" y2="${y0.toFixed(1)}" stroke="#5c6370" stroke-width="1.4"/>
-    ${bars}<polyline points="${linha.trim()}" fill="none" stroke="#e8192c" stroke-width="2" stroke-dasharray="5 3"/>${pontos}${labels}
+    ${bars}${labels}
   </svg>`;
 }
 
 function renderTabelaJornada(elId){
   const el = document.getElementById(elId);
   const t = DP_INDICADORES.horasTrabalhadas.valores, f = DP_INDICADORES.horasFalta.valores;
-  const inf = DP_INDICADORES.infracoesPonto.valores;
   el.innerHTML = `<table>
-    <thead><tr><th>Competência</th><th class="num">Horas Trabalhadas</th><th class="num">Horas Falta</th><th class="num">% Falta s/ Jornada</th><th class="num">Infrações de Ponto</th></tr></thead>
+    <thead><tr><th>Competência</th><th class="num">Horas Trabalhadas</th><th class="num">Horas Falta</th><th class="num">% Falta s/ Jornada</th></tr></thead>
     <tbody>
       ${MESES_RH.map((mes,i)=>{
         const pct = (t[i] && f[i]!=null) ? (f[i]/t[i]*100).toFixed(2).replace('.',',')+'%' : '—';
-        return `<tr><td>${mes}</td><td class="num" style="color:#3d7bff;">${fmtIndicador(t[i],'num')}</td><td class="num" style="color:#fb923c;">${fmtIndicador(f[i],'num')}</td><td class="num">${pct}</td><td class="num" style="color:${inf[i]==null?'var(--muted)':'#e8192c'};">${inf[i]==null?'—':inf[i]}</td></tr>`;
+        return `<tr><td>${mes}</td><td class="num" style="color:#3d7bff;">${fmtIndicador(t[i],'num')}</td><td class="num" style="color:#fb923c;">${fmtIndicador(f[i],'num')}</td><td class="num">${pct}</td></tr>`;
       }).join('')}
     </tbody>
   </table>`;
