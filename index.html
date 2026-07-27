@@ -436,7 +436,7 @@
     <div class="nav-item" data-page="negociacao"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span> <span class="nav-text">Negociação</span></div>
     <div class="nav-item" data-page="reingresso"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span> <span class="nav-text">Reingresso</span></div>
     <div class="nav-item" data-page="vendas"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v30"/></svg></span> <span class="nav-text">Vendas</span></div>
-    <div class="nav-item" data-page="retencao"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> <span class="nav-text">Retenção</span></div>
+    <div class="nav-item" data-page="retencao"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> <span class="nav-text">CRA</span></div>
     <div class="nav-item" data-page="rh"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span> <span class="nav-text">RH</span></div>
     <div class="nav-item" data-page="locacoes" style="display:none;"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span> <span class="nav-text">Locações</span></div>
     <div class="nav-item" data-page="obras"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M2 20h20"/><path d="M4 20V10l4-3 4 3v10"/><path d="M12 20V6l4-3 4 3v14"/><path d="M8 20v-4h2v4"/></svg></span> <span class="nav-text">Obras</span></div>
@@ -870,8 +870,17 @@
 
     <!-- ══════════════════ RETENÇÃO ══════════════════ -->
     <div class="page-section" id="page-retencao">
-      <div class="section-title">Retenção &amp; Desligamentos <span class="tag" id="retencaoPeriodoTag" style="background:rgba(136,136,170,.15); color:var(--muted);">01 a 06/07/2026</span><div class="line"></div></div>
-      <div id="retencaoConteudo"></div>
+      <div style="display:flex; justify-content:flex-end; align-items:center; margin:20px 0 4px;"><span class="tag" id="retencaoPeriodoTag" style="background:rgba(136,136,170,.15); color:var(--muted);">01 a 06/07/2026</span></div>
+      <div class="rh-subtabs">
+        <button class="rh-subtab-btn active" id="subtabBtnRet" onclick="mudarSubAbaRet('ret')">🔄 Retenção</button>
+        <button class="rh-subtab-btn" id="subtabBtnSat" onclick="mudarSubAbaRet('sat')">💬 Satisfação</button>
+      </div>
+      <div id="retSubRet">
+        <div id="retencaoConteudo"></div>
+      </div>
+      <div id="retSubSat" style="display:none;">
+        <div id="satisfacaoConteudo"></div>
+      </div>
     </div>
 
     <div class="page-section" id="page-rh">
@@ -1243,6 +1252,77 @@ const REINGRESSO_CAMPANHAS = [
 // DADOS — RETENÇÃO (meses extras: Jan, Fev, Mar, Mai/26)
 // Fonte: Plano de Trabalho de Retenção 2026 V3 — Abril não foi preenchido na planilha
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// SATISFAÇÃO — CRA (Central de Relacionamento com o Associado)
+// Manifestações dos associados (Reclamação, Sugestão, Elogio) · prazo SLA = 5 dias úteis
+// Cobertura Jan-Jun/2026. Nomes protegidos por LGPD (iniciais).
+// ═══════════════════════════════════════════════════════════
+const SATISFACAO_MESES = {
+  jan2026: {
+    label:'Janeiro/2026', total:12,
+    reclamacoes:9, sugestoes:3, elogios:0,
+    fechadosNoPrazo:0, foraDoPrazo:12, abertos:0, sla:0,
+    tipos:[{nome:'Reclamação', qtd:9, cor:'#e8192c'},{nome:'Sugestão', qtd:3, cor:'#a855f7'}],
+    gerencias:[{nome:'Ger. Operações', qtd:8},{nome:'Ger. Administrativa - Financeira', qtd:2},{nome:'Ger. Esportiva', qtd:2}],
+    assuntos:[{nome:'Procedimentos Internos', qtd:3},{nome:'Comportamento de Associado', qtd:3},{nome:'Atendimento', qtd:2},{nome:'Higienização e Limpeza', qtd:2},{nome:'Investimento em Melhorias', qtd:2}],
+    lista:[{ini:'A.R.A.B.', tipo:'Sugestão', ger:'Esportiva', local:'Academia', assunto:'Investimento em Melhorias', abertura:'2026-01-07', sit:'fora'},{ini:'R.C.S.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Higienização e Limpeza', abertura:'2026-01-14', sit:'fora'},{ini:'A.P.P.S.', tipo:'Sugestão', ger:'Esportiva', local:'Academia', assunto:'Investimento em Melhorias', abertura:'2026-01-15', sit:'fora'},{ini:'A.R.D.S.M.', tipo:'Reclamação', ger:'Operações', local:'Churrasqueiras', assunto:'Procedimentos Internos', abertura:'2026-01-20', sit:'fora'},{ini:'A.F.L.D.A.', tipo:'Sugestão', ger:'Operações', local:'Piscinas', assunto:'Procedimentos Internos', abertura:'2026-01-20', sit:'fora'},{ini:'P.C.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Atendimento', abertura:'2026-01-26', sit:'fora'},{ini:'A.M.Z.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Atendimento', abertura:'2026-01-27', sit:'fora'},{ini:'C.M.M.B.S.C.', tipo:'Reclamação', ger:'Operações', local:'Ginásio 2', assunto:'Comportamento de Associado', abertura:'2026-01-27', sit:'fora'},{ini:'C.C.', tipo:'Reclamação', ger:'Operações', local:'Pista de Atletismo', assunto:'Comportamento de Associado', abertura:'2026-01-27', sit:'fora'},{ini:'A.M.Z.', tipo:'Reclamação', ger:'Operações', local:'Churrasqueiras', assunto:'Procedimentos Internos', abertura:'2026-01-27', sit:'fora'},{ini:'P.D.B.C.', tipo:'Reclamação', ger:'Operações', local:'Churrasqueiras', assunto:'Comportamento de Associado', abertura:'2026-01-29', sit:'fora'},{ini:'K.M.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Higienização e Limpeza', abertura:'2026-01-29', sit:'fora'}],
+  },
+  fev2026: {
+    label:'Fevereiro/2026', total:5,
+    reclamacoes:4, sugestoes:0, elogios:1,
+    fechadosNoPrazo:1, foraDoPrazo:4, abertos:0, sla:20,
+    tipos:[{nome:'Reclamação', qtd:4, cor:'#e8192c'},{nome:'Elogio', qtd:1, cor:'#00e5a0'}],
+    gerencias:[{nome:'Ger. Administrativa - Financeira', qtd:2},{nome:'Ger. Operações', qtd:2},{nome:'Ger. Esportiva', qtd:1}],
+    assuntos:[{nome:'Eventos', qtd:2},{nome:'Higienização e Limpeza', qtd:2},{nome:'Atendimento', qtd:1}],
+    lista:[{ini:'E.D.A.F.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Higienização e Limpeza', abertura:'2026-02-07', sit:'fora'},{ini:'N.B.', tipo:'Elogio', ger:'Esportiva', local:'Recreação', assunto:'Atendimento', abertura:'2026-02-07', sit:'dentro'},{ini:'P.S.D.G.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Salões', assunto:'Eventos', abertura:'2026-02-26', sit:'fora'},{ini:'F.G.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Salões', assunto:'Eventos', abertura:'2026-02-27', sit:'fora'},{ini:'A.P.P.', tipo:'Reclamação', ger:'Operações', local:'G.R.D.', assunto:'Higienização e Limpeza', abertura:'2026-02-27', sit:'fora'}],
+  },
+  mar2026: {
+    label:'Março/2026', total:18,
+    reclamacoes:16, sugestoes:1, elogios:1,
+    fechadosNoPrazo:0, foraDoPrazo:18, abertos:0, sla:0,
+    tipos:[{nome:'Reclamação', qtd:16, cor:'#e8192c'},{nome:'Sugestão', qtd:1, cor:'#a855f7'},{nome:'Elogio', qtd:1, cor:'#00e5a0'}],
+    gerencias:[{nome:'Ger. Operações', qtd:9},{nome:'Ger. Esportiva', qtd:5},{nome:'Ger. Administrativa - Financeira', qtd:4}],
+    assuntos:[{nome:'Atendimento', qtd:4},{nome:'Organização de Aula', qtd:4},{nome:'Eventos', qtd:3},{nome:'Higienização e Limpeza', qtd:2},{nome:'Estacionamento', qtd:2},{nome:'Segurança', qtd:2}],
+    lista:[{ini:'P.S.R.', tipo:'Reclamação', ger:'Esportiva', local:'Fitness', assunto:'Organização de Aula', abertura:'2026-03-03', sit:'fora'},{ini:'V.M.D.', tipo:'Reclamação', ger:'Esportiva', local:'Judo', assunto:'Organização de Aula', abertura:'2026-03-03', sit:'fora'},{ini:'R.S.O.B.', tipo:'Reclamação', ger:'Operações', local:'Centro de Esportes', assunto:'Higienização e Limpeza', abertura:'2026-03-03', sit:'fora'},{ini:'F.G.C.F.', tipo:'Reclamação', ger:'Esportiva', local:'Secretaria Esportiva', assunto:'Organização de Aula', abertura:'2026-03-04', sit:'fora'},{ini:'J.C.B.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Eventos', assunto:'Eventos', abertura:'2026-03-10', sit:'fora'},{ini:'S.L.D.S.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Eventos', abertura:'2026-03-10', sit:'fora'},{ini:'G.A.H.', tipo:'Reclamação', ger:'Operações', local:'Vestiário das piscinas', assunto:'Higienização e Limpeza', abertura:'2026-03-10', sit:'fora'},{ini:'R.W.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-03-10', sit:'fora'},{ini:'C.S.P.', tipo:'Elogio', ger:'Operações', local:'Churrasqueiras', assunto:'Atendimento', abertura:'2026-03-10', sit:'fora'},{ini:'E.N.M.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Eventos', assunto:'Eventos', abertura:'2026-03-13', sit:'fora'},{ini:'C.L.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Segurança', abertura:'2026-03-13', sit:'fora'},{ini:'J.R.M.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Atendimento', abertura:'2026-03-18', sit:'fora'},{ini:'Z.O.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Investimento em Melhorias', abertura:'2026-03-18', sit:'fora'},{ini:'O.N.J.J.', tipo:'Sugestão', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-03-18', sit:'fora'},{ini:'M.D.S.G.', tipo:'Reclamação', ger:'Esportiva', local:'GINÁSTICA ARTISTICA', assunto:'Organização de Aula', abertura:'2026-03-19', sit:'fora'},{ini:'E.Z.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Segurança', abertura:'2026-03-25', sit:'fora'},{ini:'E.B.', tipo:'Reclamação', ger:'Esportiva', local:'Academia', assunto:'Atendimento', abertura:'2026-03-27', sit:'fora'},{ini:'S.N.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Secretaria Administrativa', assunto:'Atendimento', abertura:'2026-03-31', sit:'fora'}],
+  },
+  abr2026: {
+    label:'Abril/2026', total:15,
+    reclamacoes:13, sugestoes:2, elogios:0,
+    fechadosNoPrazo:2, foraDoPrazo:12, abertos:1, sla:14,
+    tipos:[{nome:'Reclamação', qtd:13, cor:'#e8192c'},{nome:'Sugestão', qtd:2, cor:'#a855f7'}],
+    gerencias:[{nome:'Ger. Esportiva', qtd:6},{nome:'Ger. Operações', qtd:5},{nome:'Ger. Administrativa - Financeira', qtd:3},{nome:'Ger. Geral', qtd:1}],
+    assuntos:[{nome:'Reserva', qtd:3},{nome:'Eventos', qtd:2},{nome:'Comportamento de Associado', qtd:2},{nome:'Segurança', qtd:2},{nome:'Higienização e Limpeza', qtd:2},{nome:'Atendimento', qtd:1}],
+    lista:[{ini:'F.B.C.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Eventos', abertura:'2026-04-01', sit:'fora'},{ini:'A.M.B.', tipo:'Sugestão', ger:'Esportiva', local:'Natação', assunto:'Organização de Aula', abertura:'2026-04-08', sit:'fora'},{ini:'P.V.D.O.B.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Eventos', abertura:'2026-04-17', sit:'aberto_vencido'},{ini:'R.D.A.G.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Comportamento de Associado', abertura:'2026-04-17', sit:'fora'},{ini:'D.H.M.D.S.', tipo:'Reclamação', ger:'Esportiva', local:'Tênis', assunto:'Reserva', abertura:'2026-04-20', sit:'fora'},{ini:'L.M.M.', tipo:'Reclamação', ger:'Esportiva', local:'GINÁSTICA ARTISTICA', assunto:'Segurança', abertura:'2026-04-20', sit:'fora'},{ini:'B.S.G.', tipo:'Reclamação', ger:'Esportiva', local:'Tênis', assunto:'Reserva', abertura:'2026-04-20', sit:'fora'},{ini:'L.M.S.', tipo:'Reclamação', ger:'Operações', local:'Recepção', assunto:'Higienização e Limpeza', abertura:'2026-04-20', sit:'fora'},{ini:'P.V.D.O.B.', tipo:'Reclamação', ger:'Operações', local:'Pista de Atletismo', assunto:'Comportamento de Associado', abertura:'2026-04-20', sit:'fora'},{ini:'F.S.M.', tipo:'Reclamação', ger:'Operações', local:'Área Ajardinada', assunto:'Segurança', abertura:'2026-04-20', sit:'fora'},{ini:'J.G.R.', tipo:'Reclamação', ger:'Operações', local:'GINÁSTICA ARTISTICA', assunto:'Higienização e Limpeza', abertura:'2026-04-23', sit:'dentro'},{ini:'J.C.D.B.', tipo:'Reclamação', ger:'Esportiva', local:'Tênis', assunto:'Reserva', abertura:'2026-04-24', sit:'fora'},{ini:'L.O.H.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Economatos', assunto:'Atendimento', abertura:'2026-04-30', sit:'fora'},{ini:'B.B.T.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-04-30', sit:'dentro'},{ini:'S.M.S.K.', tipo:'Sugestão', ger:'Geral', local:'Secretaria Administrativa', assunto:'Procedimentos Internos', abertura:'2026-04-30', sit:'fora'}],
+  },
+  mai2026: {
+    label:'Maio/2026', total:26,
+    reclamacoes:22, sugestoes:3, elogios:1,
+    fechadosNoPrazo:11, foraDoPrazo:15, abertos:0, sla:42,
+    tipos:[{nome:'Reclamação', qtd:22, cor:'#e8192c'},{nome:'Sugestão', qtd:3, cor:'#a855f7'},{nome:'Elogio', qtd:1, cor:'#00e5a0'}],
+    gerencias:[{nome:'Ger. Esportiva', qtd:17},{nome:'Ger. Operações', qtd:5},{nome:'Ger. Manutenção', qtd:4}],
+    assuntos:[{nome:'Investimento em Melhorias', qtd:6},{nome:'Procedimentos Internos', qtd:3},{nome:'Estacionamento', qtd:3},{nome:'Organização de Aula', qtd:3},{nome:'Manutenção', qtd:3},{nome:'Comunicação', qtd:2}],
+    lista:[{ini:'S.R.D.R.', tipo:'Sugestão', ger:'Operações', local:'Churrasqueiras', assunto:'Procedimentos Internos', abertura:'2026-05-04', sit:'dentro'},{ini:'A.N.D.S.', tipo:'Elogio', ger:'Operações', local:'Gerência Operações', assunto:'Atendimento', abertura:'2026-05-05', sit:'fora'},{ini:'E.J.G.D.', tipo:'Reclamação', ger:'Manutenção', local:'Vestiário das piscinas', assunto:'Manutenção', abertura:'2026-05-11', sit:'fora'},{ini:'B.B.V.', tipo:'Sugestão', ger:'Esportiva', local:'GINÁSTICA ARTISTICA', assunto:'Organização de Aula', abertura:'2026-05-11', sit:'fora'},{ini:'F.M.B.', tipo:'Sugestão', ger:'Esportiva', local:'Sauna', assunto:'Segurança', abertura:'2026-05-15', sit:'fora'},{ini:'N.P.J.', tipo:'Reclamação', ger:'Manutenção', local:'Biblioteca', assunto:'Investimento em Melhorias', abertura:'2026-05-16', sit:'fora'},{ini:'L.E.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Investimento em Melhorias', abertura:'2026-05-19', sit:'fora'},{ini:'H.M.S.A.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Investimento em Melhorias', abertura:'2026-05-19', sit:'fora'},{ini:'R.M.C.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Procedimentos Internos', abertura:'2026-05-19', sit:'fora'},{ini:'A.B.B.B.', tipo:'Reclamação', ger:'Esportiva', local:'Basquete', assunto:'Horários', abertura:'2026-05-19', sit:'fora'},{ini:'R.M.C.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Piscinas', abertura:'2026-05-19', sit:'fora'},{ini:'M.T.K.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Investimento em Melhorias', abertura:'2026-05-20', sit:'fora'},{ini:'T.S.D.', tipo:'Reclamação', ger:'Esportiva', local:'LEVANTAMENTO DE PESOS', assunto:'Comunicação', abertura:'2026-05-22', sit:'dentro'},{ini:'R.B.D.A.P.', tipo:'Reclamação', ger:'Esportiva', local:'GINÁSTICA ARTISTICA', assunto:'Comunicação', abertura:'2026-05-25', sit:'fora'},{ini:'A.T.M.', tipo:'Reclamação', ger:'Esportiva', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-05-26', sit:'fora'},{ini:'A.T.M.', tipo:'Reclamação', ger:'Esportiva', local:'Gerência Esportiva', assunto:'Atendimento', abertura:'2026-05-26', sit:'dentro'},{ini:'A.T.M.', tipo:'Reclamação', ger:'Esportiva', local:'Gerência Esportiva', assunto:'Organização de Aula', abertura:'2026-05-26', sit:'dentro'},{ini:'A.T.M.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-05-26', sit:'dentro'},{ini:'A.C.G.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-05-26', sit:'dentro'},{ini:'R.C.K.', tipo:'Reclamação', ger:'Esportiva', local:'GINÁSTICA ARTISTICA', assunto:'Investimento em Melhorias', abertura:'2026-05-27', sit:'dentro'},{ini:'F.C.M.', tipo:'Reclamação', ger:'Esportiva', local:'Tênis', assunto:'Organização de Aula', abertura:'2026-05-27', sit:'dentro'},{ini:'R.C.K.', tipo:'Reclamação', ger:'Manutenção', local:'GINÁSTICA ARTISTICA', assunto:'Manutenção', abertura:'2026-05-27', sit:'dentro'},{ini:'C.C.V.', tipo:'Reclamação', ger:'Esportiva', local:'Ginástica Olímpica', assunto:'Melhorias realizadas', abertura:'2026-05-29', sit:'dentro'},{ini:'C.C.V.', tipo:'Reclamação', ger:'Esportiva', local:'Ginástica Olímpica', assunto:'Investimento em Melhorias', abertura:'2026-05-29', sit:'dentro'},{ini:'G.L.P.R.', tipo:'Reclamação', ger:'Esportiva', local:'Piscinas', assunto:'Procedimentos Internos', abertura:'2026-05-29', sit:'fora'},{ini:'V.F.H.', tipo:'Reclamação', ger:'Manutenção', local:'Vestiário das piscinas', assunto:'Manutenção', abertura:'2026-05-30', sit:'fora'}],
+  },
+  jun2026: {
+    label:'Junho/2026', total:29,
+    reclamacoes:22, sugestoes:7, elogios:0,
+    fechadosNoPrazo:21, foraDoPrazo:4, abertos:4, sla:84,
+    tipos:[{nome:'Reclamação', qtd:22, cor:'#e8192c'},{nome:'Sugestão', qtd:7, cor:'#a855f7'}],
+    gerencias:[{nome:'Ger. Esportiva', qtd:13},{nome:'Ger. Operações', qtd:9},{nome:'Ger. Manutenção', qtd:4},{nome:'Ger. Administrativa - Financeira', qtd:3}],
+    assuntos:[{nome:'Atendimento', qtd:9},{nome:'Investimento em Melhorias', qtd:6},{nome:'Manutenção', qtd:4},{nome:'Estacionamento', qtd:3},{nome:'Procedimentos Internos', qtd:2},{nome:'Outros', qtd:2}],
+    lista:[{ini:'M.R.P.C.', tipo:'Reclamação', ger:'Manutenção', local:'Jardinagem', assunto:'Manutenção', abertura:'2026-06-03', sit:'fora'},{ini:'R.E.S.S.', tipo:'Sugestão', ger:'Operações', local:'Estacionamento', assunto:'Investimento em Melhorias', abertura:'2026-06-03', sit:'dentro'},{ini:'R.E.S.S.', tipo:'Sugestão', ger:'Operações', local:'Estacionamento', assunto:'Investimento em Melhorias', abertura:'2026-06-03', sit:'dentro'},{ini:'R.E.S.S.', tipo:'Sugestão', ger:'Operações', local:'Estacionamento', assunto:'Investimento em Melhorias', abertura:'2026-06-03', sit:'dentro'},{ini:'M.M.F.', tipo:'Reclamação', ger:'Esportiva', local:'Tênis', assunto:'Investimento em Melhorias', abertura:'2026-06-05', sit:'fora'},{ini:'A.M.D.S.C.', tipo:'Reclamação', ger:'Manutenção', local:'Estacionamento', assunto:'Manutenção', abertura:'2026-06-05', sit:'fora'},{ini:'C.D.S.S.G.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-06-06', sit:'fora'},{ini:'M.B.B.', tipo:'Sugestão', ger:'Esportiva', local:'Basquete', assunto:'Manutenção', abertura:'2026-06-06', sit:'dentro'},{ini:'S.O.C.', tipo:'Sugestão', ger:'Esportiva', local:'Academia', assunto:'Investimento em Melhorias', abertura:'2026-06-09', sit:'dentro'},{ini:'M.D.S.E.S.', tipo:'Reclamação', ger:'Operações', local:'Piscinas', assunto:'Higienização e Limpeza', abertura:'2026-06-11', sit:'dentro'},{ini:'P.S.R.', tipo:'Sugestão', ger:'Administrativa - Financeira', local:'Biblioteca', assunto:'Outros', abertura:'2026-06-12', sit:'dentro'},{ini:'L.R.D.S.', tipo:'Reclamação', ger:'Manutenção', local:'Piscinas', assunto:'Manutenção', abertura:'2026-06-13', sit:'dentro'},{ini:'E.Z.', tipo:'Sugestão', ger:'Manutenção', local:'Piscinas', assunto:'Investimento em Melhorias', abertura:'2026-06-13', sit:'dentro'},{ini:'N.P.J.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Academia', assunto:'Procedimentos Internos', abertura:'2026-06-19', sit:'dentro'},{ini:'A.D.R.', tipo:'Reclamação', ger:'Administrativa - Financeira', local:'Gerência Administrativa', assunto:'Outros', abertura:'2026-06-24', sit:'aberto_vencido'},{ini:'R.A.S.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Comunicação', abertura:'2026-06-24', sit:'dentro'},{ini:'R.D.C.P.M.', tipo:'Reclamação', ger:'Esportiva', local:'Academia', assunto:'Procedimentos Internos', abertura:'2026-06-27', sit:'dentro'},{ini:'V.M.L.S.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'C.D.S.N.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'R.N.V.M.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'D.M.R.G.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'L.R.R.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'L.N.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'A.O.C.Z.D.C.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'C.V.H.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'L.S.H.', tipo:'Reclamação', ger:'Esportiva', local:'Pista de Atletismo', assunto:'Atendimento', abertura:'2026-06-29', sit:'dentro'},{ini:'C.L.D.A.M.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-06-29', sit:'aberto_vencido'},{ini:'B.K.V.', tipo:'Reclamação', ger:'Operações', local:'Vestiário das piscinas', assunto:'Higienização e Limpeza', abertura:'2026-06-29', sit:'aberto_vencido'},{ini:'G.J.M.', tipo:'Reclamação', ger:'Operações', local:'Estacionamento', assunto:'Estacionamento', abertura:'2026-06-29', sit:'aberto_vencido'}],
+  },
+};
+
+const COBERTURA_SATISFACAO = {
+  jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
+  fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
+  mar2026: {ini:'2026-03-01', fim:'2026-03-31'},
+  abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
+  mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
+  jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
+};
+
 const RETENCAO_EXTRA_MESES = {
   jan2026: {
     periodoTag:'Janeiro/2026',
@@ -2382,7 +2462,7 @@ const PAGE_TITLES = {
   negociacao:  {t:'Negociação', s:'Recuperação de inadimplência · Mar-Jun/2026'},
   reingresso:  {t:'Reingresso', s:'Associados reingressantes · Jan-Jul/2026'},
   vendas:      {t:'Vendas', s:'Associações novas e metas · Jan-Jul/2026'},
-  retencao:    {t:'Retenção', s:'Desligamentos, retenção e permanência · Jan-Jul/2026'},
+  retencao:    {t:'CRA — Central de Relacionamento com o Associado', s:'Retenção e satisfação · Jan-Jul/2026'},
   rh:          {t:'RH', s:'Indicadores de RH e DP · Jan-Jun/2026'},
   locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
   obras:       {t:'Obras', s:'Fundo Índices Construtivos · Posição em 20/07/2026'},
@@ -3285,6 +3365,9 @@ function aplicarFiltroMes(){
   const mesKeyFlx = mesesFlx.length ? mesesFlx[mesesFlx.length-1].key : (uFlx ? uFlx.key : null);
   renderFluxoCaixaPeriodo(mesKeyFlx, de, ate, mesesFlx);
   renderRetencaoPeriodo(mesKeyRet, mesesRet);
+  // Satisfação (CRA): cobertura própria Jan-Jun, mesma sistemática de filtro
+  const mesesSat = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_SATISFACAO);
+  renderSatisfacaoPeriodo(mesesSat);
   const mesesRH = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_RH);
   setRHPeriodo(mesesRH);
   renderRH(mesKey);
@@ -3722,6 +3805,147 @@ const DADOS_MES = {
 
 // Totaliza a Retenção somando os meses do período. Campos somáveis são somados;
 // "foto" (quadro social, residual) usam o último mês; ticket/dependentes ponderam por desligamentos.
+// ═══════════════════════════════════════════════════════════
+// SATISFAÇÃO (CRA) — segue a mesma sistemática da Retenção: filtro mensal + agregação de período
+// ═══════════════════════════════════════════════════════════
+function mudarSubAbaRet(qual){
+  const ehRet = qual==='ret';
+  document.getElementById('retSubRet').style.display = ehRet ? 'block' : 'none';
+  document.getElementById('retSubSat').style.display = ehRet ? 'none' : 'block';
+  document.getElementById('subtabBtnRet').classList.toggle('active', ehRet);
+  document.getElementById('subtabBtnSat').classList.toggle('active', !ehRet);
+  window._subAbaRet = qual;
+}
+
+function getSatisfacaoMes(key){
+  return (typeof SATISFACAO_MESES !== 'undefined' && SATISFACAO_MESES[key]) ? SATISFACAO_MESES[key] : null;
+}
+
+// Agrega satisfação: somáveis somam; SLA é média ponderada pelos fechados
+function agregarSatisfacao(meses){
+  const itens = meses.map(mk=>getSatisfacaoMes(mk.key)).filter(Boolean);
+  if(!itens.length) return null;
+  if(itens.length===1) return itens[0];
+  const soma = c => itens.reduce((s,d)=>s+(d[c]||0),0);
+  const cmap = {}, gmap = {}, amap = {};
+  itens.forEach(d=>{
+    (d.tipos||[]).forEach(t=>{ if(!cmap[t.nome]) cmap[t.nome]={nome:t.nome,qtd:0,cor:t.cor}; cmap[t.nome].qtd+=t.qtd; });
+    (d.gerencias||[]).forEach(g=>{ if(!gmap[g.nome]) gmap[g.nome]={nome:g.nome,qtd:0}; gmap[g.nome].qtd+=g.qtd; });
+    (d.assuntos||[]).forEach(a=>{ if(!amap[a.nome]) amap[a.nome]={nome:a.nome,qtd:0}; amap[a.nome].qtd+=a.qtd; });
+  });
+  const fechados = soma('fechadosNoPrazo') + soma('foraDoPrazo');
+  const sla = fechados ? Math.round(soma('fechadosNoPrazo')/fechados*100) : 0;
+  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho'}[k.slice(0,3)]||k);
+  return {
+    label: `${nomeMes(meses[0].key)} a ${nomeMes(meses[meses.length-1].key)}/2026`,
+    total: soma('total'), reclamacoes: soma('reclamacoes'), sugestoes: soma('sugestoes'), elogios: soma('elogios'),
+    fechadosNoPrazo: soma('fechadosNoPrazo'), foraDoPrazo: soma('foraDoPrazo'), abertos: soma('abertos'), sla,
+    tipos: Object.values(cmap).sort((a,b)=>b.qtd-a.qtd),
+    gerencias: Object.values(gmap).sort((a,b)=>b.qtd-a.qtd),
+    assuntos: Object.values(amap).sort((a,b)=>b.qtd-a.qtd).slice(0,6),
+    lista: itens.flatMap(d=>d.lista||[]),
+    _agregado: itens.length,
+  };
+}
+
+function renderSatisfacaoPeriodo(mesesSat){
+  const el = document.getElementById('satisfacaoConteudo');
+  if(!el) return;
+  let lista = mesesSat, fallback = null;
+  if(!lista || !lista.length){
+    const u = ultimoMesCobertura(COBERTURA_SATISFACAO);
+    if(!u){ el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Sem dados de satisfação para o período.</b></div></div>`; return; }
+    lista = [u]; fallback = getSatisfacaoMes(u.key).label;
+  }
+  const s = agregarSatisfacao(lista);
+  if(!s){ el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Sem dados de satisfação no período selecionado.</b> A CRA tem registros de Janeiro a Junho/2026.</div></div>`; return; }
+
+  let aviso = '';
+  if(fallback){
+    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Sem manifestações no intervalo selecionado — exibindo o último mês disponível (<b>${fallback}</b>). A CRA tem registros de <b>Janeiro a Junho/2026</b>.</div></div>`;
+  } else if(s._agregado){
+    aviso = `<div class="alert-box" style="border-color:var(--blue);"><span>🧮</span><div>Somando <b>${s._agregado} meses</b> do período. Manifestações, tipos, gerências e assuntos estão <b>somados</b>; o <b>SLA</b> (prazo de resposta) é a taxa média do período.</div></div>`;
+  }
+
+  const totFechados = s.fechadosNoPrazo + s.foraDoPrazo;
+  const slaColor = s.sla>=80 ? '#00e5a0' : s.sla>=50 ? '#ffd32a' : '#e8192c';
+  const kpis = [
+    {icone:'💬', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Manifestações', valor:String(s.total), sub:'no período'},
+    {icone:'⚠️', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Reclamações', valor:String(s.reclamacoes), sub:'do total', valorCor:'#e8192c'},
+    {icone:'💡', cor:'#a855f7', bg:'rgba(168,85,247,.15)', label:'Sugestões', valor:String(s.sugestoes), sub:'de melhoria', valorCor:'#a855f7'},
+    {icone:'⭐', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Elogios', valor:String(s.elogios), sub:'reconhecimentos', valorCor:'#00e5a0'},
+    {icone:'⏱️', cor:slaColor, bg:'rgba(0,0,0,.15)', label:'SLA de Resposta', valor:s.sla+'%', sub:`${s.fechadosNoPrazo} de ${totFechados} no prazo (5 dias úteis)`, valorCor:slaColor},
+  ];
+  const kpisHtml = kpis.map(k=>`
+    <div class="kpi-icon-card">
+      <div class="kpi-icon" style="background:${k.bg}; color:${k.cor};">${k.icone}</div>
+      <div class="kpi-icon-info"><div class="value" style="${k.valorCor?`color:${k.valorCor};`:''}">${k.valor}</div>
+      <div class="label">${k.label}</div><div class="delta muted">${k.sub}</div></div>
+    </div>`).join('');
+
+  const somaTipos = s.tipos.reduce((a,t)=>a+t.qtd,0);
+  const somaGer = s.gerencias.reduce((a,g)=>a+g.qtd,0);
+  const somaAss = s.assuntos.reduce((a,x)=>a+x.qtd,0);
+
+  el.innerHTML = aviso + `
+    <div class="kpi-row-icons cols-5">${kpisHtml}</div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card"><div class="card-label">Distribuição por Tipo</div><div id="satDonutTipo" class="donut-wrap"></div></div>
+      <div class="card">
+        <div class="card-label">Prazo de Resposta (SLA)</div>
+        <div id="satSlaBar" style="display:flex; height:34px; border-radius:8px; overflow:hidden; border:1px solid var(--border); margin:14px 0 10px;"></div>
+        <div id="satSlaLegend"></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-label">Manifestações por Gerência</div>
+        <div class="scrollx" style="margin-top:12px;"><table>
+          <thead><tr><th>Gerência</th><th class="num">Qtd</th><th class="num">%</th></tr></thead>
+          <tbody>${s.gerencias.map((g,i)=>`<tr><td><span class="dot" style="background:${CORES_SERIE[i%CORES_SERIE.length]}; margin-right:8px;"></span>${g.nome}</td><td class="num">${g.qtd}</td><td class="num muted">${(g.qtd/somaGer*100).toFixed(1).replace('.',',')}%</td></tr>`).join('')}</tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Principais Assuntos</div>
+        <div class="scrollx" style="margin-top:12px;"><table>
+          <thead><tr><th>Assunto</th><th class="num">Qtd</th><th class="num">%</th></tr></thead>
+          <tbody>${s.assuntos.map((a,i)=>`<tr><td><span class="dot" style="background:${CORES_SERIE[i%CORES_SERIE.length]}; margin-right:8px;"></span>${a.nome}</td><td class="num">${a.qtd}</td><td class="num muted">${(a.qtd/somaAss*100).toFixed(1).replace('.',',')}%</td></tr>`).join('')}</tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="card full" style="margin-top:16px;">
+      <div class="card-label">🔒 Manifestações do Período <span style="color:var(--muted); font-weight:400; text-transform:none; letter-spacing:0;">— nomes protegidos por LGPD (iniciais)</span></div>
+      <div class="scrollx" style="margin-top:12px; max-height:340px; overflow-y:auto;"><table>
+        <thead><tr><th>Assoc.</th><th>Tipo</th><th>Gerência</th><th>Local</th><th>Assunto</th><th>Abertura</th><th>Prazo</th></tr></thead>
+        <tbody>${s.lista.map(x=>{
+          const cor = x.tipo==='Reclamação'?'#e8192c':x.tipo==='Sugestão'?'#a855f7':'#00e5a0';
+          const prazoTxt = x.sit==='dentro'?'<span style="color:#00e5a0;">✓ no prazo</span>':x.sit==='fora'?'<span style="color:#e8192c;">✗ fora</span>':x.sit==='aberto_vencido'?'<span style="color:#e8192c;">● aberto/venc.</span>':'<span style="color:#ffd32a;">● aberto</span>';
+          return `<tr><td style="font-weight:700;">${x.ini}</td><td><span class="tag" style="background:${cor}22; color:${cor};">${x.tipo}</span></td><td class="muted">${x.ger}</td><td class="muted">${x.local}</td><td>${x.assunto}</td><td class="muted">${x.abertura.split('-').reverse().join('/')}</td><td>${prazoTxt}</td></tr>`;
+        }).join('')}</tbody>
+      </table></div>
+      <div class="card-meta" style="margin-top:10px;">SLA = prazo de 5 dias úteis para primeira resposta da CRA. "Fora" = respondida após o prazo.</div>
+    </div>`;
+
+  drawDonut('satDonutTipo', s.tipos.map(t=>({nome:t.nome, valor:t.qtd, cor:t.cor})), String(somaTipos), 'manifestações');
+
+  // barra de SLA (no prazo × fora × aberto)
+  const bar = document.getElementById('satSlaBar');
+  const pDentro = totFechados ? s.fechadosNoPrazo/s.total*100 : 0;
+  const pFora = s.foraDoPrazo/s.total*100;
+  const pAberto = s.abertos/s.total*100;
+  bar.innerHTML = `
+    <div style="width:${pDentro}%; background:#00e5a0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#0a2a1f;">${s.fechadosNoPrazo?s.fechadosNoPrazo:''}</div>
+    <div style="width:${pFora}%; background:#e8192c; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">${s.foraDoPrazo?s.foraDoPrazo:''}</div>
+    <div style="width:${pAberto}%; background:#ffd32a; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#3a2f00;">${s.abertos?s.abertos:''}</div>`;
+  document.getElementById('satSlaLegend').innerHTML = `
+    <div class="legend-row"><span class="dot" style="background:#00e5a0"></span> Respondidas no prazo — ${s.fechadosNoPrazo}</div>
+    <div class="legend-row"><span class="dot" style="background:#e8192c"></span> Fora do prazo — ${s.foraDoPrazo}</div>
+    <div class="legend-row"><span class="dot" style="background:#ffd32a"></span> Ainda abertas — ${s.abertos}</div>`;
+}
+
 function agregarRetencao(mesesRet){
   const itens = mesesRet.map(mk=> getRetencaoMes(mk.key)).filter(Boolean);
   if(itens.length <= 1) return null; // 0 ou 1 mês: usa o render normal
