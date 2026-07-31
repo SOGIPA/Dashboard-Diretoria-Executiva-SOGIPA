@@ -656,6 +656,7 @@
       <div class="rh-subtabs">
         <button class="rh-subtab-btn active" id="subtabBtnFluxo" onclick="mudarSubAbaFin('fluxo')">💰 Fluxo de Caixa</button>
         <button class="rh-subtab-btn" id="subtabBtnPag" onclick="mudarSubAbaFin('pag')">🧾 Pagamentos</button>
+        <button class="rh-subtab-btn" id="subtabBtnPatroc" onclick="mudarSubAbaFin('patroc')">🤝 Patrocínio</button>
       </div>
       <div id="finSubFluxo">
 <div class="subpage" id="subpage-fluxocaixa">
@@ -840,6 +841,12 @@
         <div class="card-meta" style="margin-top:10px;">💡 Fechamentos mensais completos da Controladoria. 🔒 Nomes de pessoa física ocultados e CPFs suprimidos para adequação à LGPD.</div>
       </div>
     </div>
+      </div>
+      <div id="finSubPatroc" style="display:none;">
+        <div class="subpage" id="subpage-patrocinio">
+          <div id="patrocinioConteudo"></div>
+        </div>
+      </div>
 
     <!-- ══════════════════ NEGOCIAÇÃO ══════════════════ -->
     
@@ -2567,6 +2574,48 @@ for(let i=0;i<navItems.length;i++){
 // Cobertura própria (COBERTURA_PAGAMENTOS): Jan a Jun/2026 — fechamentos mensais completos.
 // LGPD: CPFs removidos e nomes de pessoa física reduzidos a iniciais.
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// PATROCÍNIO — Financeiro. Segue a sistemática: filtro mensal + agregação por período.
+// Patrocinador: Apollo Operations Ltda (marca KTO). Encerrado após maio/2026.
+// COFINS 7,6% sobre o valor. Contrapartida contratual: divulgação da marca KTO pelo clube.
+// ═══════════════════════════════════════════════════════════
+const PATROCINIO_MESES = {
+  jan2026: { label:'Janeiro/2026', patrocinador:'KTO', valor:40000 },
+  fev2026: { label:'Fevereiro/2026', patrocinador:'KTO', valor:40000 },
+  mar2026: { label:'Março/2026', patrocinador:'KTO', valor:40000 },
+  abr2026: { label:'Abril/2026', patrocinador:'KTO', valor:40000 },
+  mai2026: { label:'Maio/2026', patrocinador:'KTO', valor:40000 },
+};
+const COBERTURA_PATROCINIO = {
+  jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
+  fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
+  mar2026: {ini:'2026-03-01', fim:'2026-03-31'},
+  abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
+  mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
+};
+const PATROCINIO_TAXA_COFINS = 0.076;
+// Aplicação do patrocínio em 2025 (histórico do ano anterior — como o dinheiro foi distribuído)
+const PATROCINIO_DESTINOS_2025 = [
+    {nome:'Baile de Aniversário', valor:198000},
+    {nome:'Beach Tênis Eventos', valor:51000},
+    {nome:'Tênis Eventos', valor:25000},
+    {nome:'Futebol Serviços', valor:19000},
+    {nome:'Pré Réveillon', valor:16000},
+    {nome:'Futebol Eventos', valor:15000},
+    {nome:'Corrida Adulto', valor:10000},
+    {nome:'Tênis Manutenção', valor:10000},
+    {nome:'Tênis Serviço', valor:10000},
+    {nome:'Atletismo Serviço', valor:9000},
+    {nome:'Dia da Mulher', valor:5000},
+    {nome:'Tênis Aberto Dupla', valor:5000},
+    {nome:'Vôlei Veteranos', valor:4000},
+    {nome:'Tênis Competição', valor:4000},
+    {nome:'Punhobol Competição', valor:3000},
+    {nome:'Punhobol Eventos', valor:3000},
+    {nome:'Vôlei Serviços', valor:3000}
+];
+const PATROCINIO_2025 = { total:480000, aplicado:390000, diretoria:90000 };
+
 const PAGAMENTOS_MESES = {
   jan2026: {
     label:'Janeiro/2026', qtd:640, total:4292651.46,
@@ -3111,40 +3160,44 @@ const VENDAS_EXTRA_MESES = {
     },
   },
   jul2026: {
-    periodoTag:'Julho/2026 (parcial, até 27/07)',
-    associacoesNovas:'17', valorArrecadado:'R$ 14.455,25', ticketMedio:'R$ 850,31',
+    periodoTag:'Julho/2026 (até 31/07)',
+    associacoesNovas:'30', valorArrecadado:'R$ 19.402,25', ticketMedio:'R$ 646,74',
     campanhas:[
-      {nome:'Visita', qtd:3, cor:'#3d7bff'},
-      {nome:'Dependente', qtd:2, cor:'#00e5a0'},
-      {nome:'Visita/Aula Expep. Tênis', qtd:2, cor:'#a855f7'},
-      {nome:'WhatsApp + Tour Guiado', qtd:2, cor:'#f2b705'},
-      {nome:'WhatsApp', qtd:1, cor:'#06b6d4'},
-      {nome:'Visita/Sinpefrs', qtd:1, cor:'#fb923c'},
-      {nome:'WhatsApp/Sauna', qtd:1, cor:'#e8192c'},
+      {nome:'Promo o Melhor das Férias', qtd:8, cor:'#3d7bff'},
+      {nome:'Visita', qtd:3, cor:'#00e5a0'},
+      {nome:'WhatsApp + Tour Guiado', qtd:3, cor:'#a855f7'},
+      {nome:'Dependente', qtd:2, cor:'#f2b705'},
+      {nome:'Promo Amigo Indica', qtd:2, cor:'#06b6d4'},
+      {nome:'Visita/Aula Expep. Tênis', qtd:2, cor:'#fb923c'},
+      {nome:'WhatsApp', qtd:2, cor:'#e8192c'},
       {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
-      {nome:'WhatsApp/Visita', qtd:1, cor:'#5a5c78'},
-      {nome:'WhatsApp/Dohms', qtd:1, cor:'#22d3ee'},
-      {nome:'Promo o Melhor das Férias', qtd:1, cor:'#f472b6'},
-      {nome:'Promo Amigo Indica', qtd:1, cor:'#facc15'},
+      {nome:'Indicação Guzzo', qtd:1, cor:'#5a5c78'},
+      {nome:'Visita/Sinpefrs', qtd:1, cor:'#22d3ee'},
+      {nome:'WhatsApp Indicação Promo', qtd:1, cor:'#f472b6'},
+      {nome:'WhatsApp/Dohms', qtd:1, cor:'#facc15'},
+      {nome:'WhatsApp/Sauna', qtd:1, cor:'#3d7bff'},
+      {nome:'WhatsApp/Tênis', qtd:1, cor:'#00e5a0'},
+      {nome:'WhatsApp/Visita', qtd:1, cor:'#a855f7'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:15, valor:13688.25},
-      {nome:'Claudia', qtd:2, valor:767.00},
+      {nome:'Sabrina', qtd:27, valor:18134.25},
+      {nome:'Claudia', qtd:3, valor:1268.00},
     ],
     categorias:[
-      {nome:'Contribuinte', qtd:9},
-      {nome:'Contribuinte Individual', qtd:3},
+      {nome:'Contribuinte', qtd:13},
+      {nome:'Contribuinte Individual', qtd:9},
+      {nome:'Contribuinte Convênio', qtd:2},
       {nome:'Contribuinte Senior', qtd:2},
+      {nome:'Contribuinte Universitário', qtd:2},
       {nome:'Contribuinte Individual Convênio', qtd:1},
       {nome:'Contribuinte Teen', qtd:1},
-      {nome:'Contribuinte Universitário', qtd:1},
     ],
-    alerta: 'Julho em andamento — 17 associações novas registradas até 27/07, com canal de venda, consultor e categoria identificados em todas.',
+    alerta: 'Julho fechado com 30 associações novas (R$ 19.402,25) — meta de 23 superada em 30%. A campanha "Promo o Melhor das Férias" respondeu por 8 das 30 vendas, e o ticket médio caiu para R$ 646,74 porque boa parte das entradas veio de planos promocionais e de convênio.',
     metas:{
-      vendas:{orcado:23, real:17}, reingressos:{orcado:32, real:null},
-      totalVR:{orcado:55, real:17}, desafioVenda:26, desafioReingresso:40,
-      total:{orcado:66, real:17, gap:-49},
-      taxaAdesao:14455.25, taxaReingresso:0, taxaTotal:14455.25,
+      vendas:{orcado:23, real:30}, reingressos:{orcado:32, real:null},
+      totalVR:{orcado:55, real:30}, desafioVenda:26, desafioReingresso:40,
+      total:{orcado:66, real:30, gap:-36},
+      taxaAdesao:19402.25, taxaReingresso:0, taxaTotal:19402.25,
     },
   },
 };
@@ -3156,6 +3209,7 @@ const VENDAS_FUNIL_DIARIO = [
   {data:'2026-07-08', leads:9, contatos:16, visitas:2, vendas:4, retNeg:1, acomp:8},
   {data:'2026-07-09', leads:17, contatos:14, visitas:0, vendas:2, retNeg:0, acomp:4},
   {data:'2026-07-10', leads:5, contatos:25, visitas:0, vendas:0, retNeg:0, acomp:5},
+  {data:'2026-07-11', leads:0, contatos:0, visitas:0, vendas:0, retNeg:0, acomp:0},
   {data:'2026-07-13', leads:17, contatos:32, visitas:1, vendas:1, retNeg:2, acomp:3},
   {data:'2026-07-14', leads:12, contatos:20, visitas:0, vendas:0, retNeg:3, acomp:4},
   {data:'2026-07-15', leads:13, contatos:22, visitas:2, vendas:1, retNeg:0, acomp:3},
@@ -3167,12 +3221,16 @@ const VENDAS_FUNIL_DIARIO = [
   {data:'2026-07-22', leads:17, contatos:22, visitas:1, vendas:0, retNeg:0, acomp:2},
   {data:'2026-07-23', leads:5, contatos:63, visitas:0, vendas:0, retNeg:0, acomp:3},
   {data:'2026-07-24', leads:9, contatos:27, visitas:2, vendas:3, retNeg:1, acomp:3},
+  {data:'2026-07-27', leads:13, contatos:74, visitas:0, vendas:1, retNeg:0, acomp:5},
+  {data:'2026-07-28', leads:8, contatos:40, visitas:1, vendas:0, retNeg:0, acomp:8},
+  {data:'2026-07-29', leads:9, contatos:36, visitas:2, vendas:4, retNeg:0, acomp:5},
+  // 30/07 e 31/07 têm vendas lançadas, mas o CONTROLE DIÁRIO ainda não foi preenchido na planilha.
 ];
 
 const VENDAS_MOTIVOS_PERDA = [
-  {nome:'Valor Alto', dias:3, perdidos:3, cor:'#e8192c'},
-  {nome:'Sem Interesse', dias:2, perdidos:2, cor:'#b0b0d0'},
-  {nome:'Infra no Condomínio/somente Atividade', dias:1, perdidos:1, cor:'#5a5c78'},
+  {nome:'Valor Alto', dias:3, perdidos:4, cor:'#e8192c'},
+  {nome:'Infra no Condomínio/Somente Atividade', dias:1, perdidos:3, cor:'#b0b0d0'},
+  {nome:'Sem Interesse', dias:2, perdidos:2, cor:'#5a5c78'},
 ];
 
 // Fluxo de Caixa tem cobertura própria (Jan a Jul/26) — os fechamentos mensais por categoria
@@ -3455,6 +3513,8 @@ function aplicarFiltroMes(){
   renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen);
 
   renderPagamentosMeses(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_PAGAMENTOS));
+  // Patrocínio: cobertura própria (Jan-Mai/26), mesma sistemática de agregação
+  renderPatrocinioPeriodo(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_PATROCINIO));
 
   // Negociação: cobertura própria (Mar-Jun/26)
   renderNegociacaoResumo(faixaContidaEm(de, ate, COBERTURA_NEGOCIACAO.ini, COBERTURA_NEGOCIACAO.fim) ? mesKey : 'sem-dado', de, ate);
@@ -3889,12 +3949,138 @@ const DADOS_MES = {
 // SATISFAÇÃO (CRA) — segue a mesma sistemática da Retenção: filtro mensal + agregação de período
 // ═══════════════════════════════════════════════════════════
 // Sub-abas Financeiro (Fluxo de Caixa / Pagamentos) e Sec. Adm. (Negociação / Reingresso)
+// ═══════════════════════════════════════════════════════════
+// PATROCÍNIO — render segue a sistemática (agregação por período filtrado)
+// ═══════════════════════════════════════════════════════════
+function renderPatrocinioPeriodo(mesesPatroc){
+  const el = document.getElementById('patrocinioConteudo');
+  if(!el) return;
+  let lista = mesesPatroc, fallback = null;
+  if(!lista || !lista.length){
+    const u = ultimoMesCobertura(COBERTURA_PATROCINIO);
+    if(u){ lista = [u]; fallback = PATROCINIO_MESES[u.key].label; }
+    else lista = [];
+  }
+  const itens = lista.map(mk=>PATROCINIO_MESES[mk.key]).filter(Boolean);
+  const valorPeriodo = itens.reduce((s,m)=>s+m.valor, 0);
+  const nMeses = itens.length;
+  const totalContrato = 200000; // total recebido no contrato (jan-mai/26)
+  const periodoLabel = nMeses ? (nMeses>1 ? `${itens[0].label.split('/')[0]} a ${itens[itens.length-1].label}` : itens[0].label) : '—';
+
+  let aviso = '';
+  if(fallback){
+    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Sem aporte no intervalo selecionado — exibindo o último mês com recebimento (<b>${fallback}</b>). O patrocínio KTO vigorou de <b>Janeiro a Maio/2026</b>.</div></div>`;
+  } else if(nMeses>1){
+    aviso = `<div class="alert-box" style="border-color:var(--blue);"><span>🧮</span><div>Somando <b>${nMeses} meses</b> do período. O valor do aporte está <b>somado</b>; o aporte mensal é fixo de R$ 40.000.</div></div>`;
+  }
+
+  const kpis = [
+    {icone:'🤝', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Aporte no Período', valor:fmtBRL0(valorPeriodo), sub:`${nMeses} ${nMeses===1?'mês':'meses'} · KTO`},
+    {icone:'📅', cor:'#f2b705', bg:'rgba(242,183,5,.15)', label:'Aporte Mensal', valor:fmtBRL0(40000), sub:'valor fixo contratual'},
+    {icone:'🏆', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Total do Contrato', valor:fmtBRL0(totalContrato), sub:'Jan–Mai/2026 (encerrado)', valorCor:'#00e5a0'},
+  ];
+  const kpisHtml = kpis.map(k=>`
+    <div class="kpi-icon-card">
+      <div class="kpi-icon" style="background:${k.bg}; color:${k.cor};">${k.icone}</div>
+      <div class="kpi-icon-info"><div class="value" style="${k.valorCor?`color:${k.valorCor};`:''}">${k.valor}</div>
+      <div class="label">${k.label}</div><div class="delta muted">${k.sub}</div></div>
+    </div>`).join('');
+
+  // gráfico: uma barra por mês do período filtrado + coluna totalizadora ao final
+  const H_MAX = 150;
+  const escala = valorPeriodo || 1;   // a barra mais alta é sempre o total
+  const chavesContrato = Object.keys(PATROCINIO_MESES);
+  const ultimaChave = chavesContrato[chavesContrato.length-1];   // último mês com aporte (Mai/2026)
+  const ultimoLabel = PATROCINIO_MESES[ultimaChave] ? PATROCINIO_MESES[ultimaChave].label : '';
+  const colunasMes = itens.map((m, i) => {
+    const alt = Math.max(14, m.valor/escala * H_MAX);
+    const mesCurto = m.label.split('/')[0].slice(0,3);
+    const ehUltimo = lista[i] && lista[i].key === ultimaChave;
+    const selo = ehUltimo
+      ? `<div style="font-size:9px; font-weight:800; letter-spacing:.5px; color:#f2b705; border:1px solid rgba(242,183,5,.45); background:rgba(242,183,5,.12); border-radius:999px; padding:2px 6px; margin:0 auto 5px; display:table; white-space:nowrap;">FIM</div>`
+      : '';
+    return `<div style="flex:1; min-width:0; text-align:center;">
+      ${selo}
+      <div style="font-size:11px; font-weight:700; color:var(--text); margin-bottom:5px; white-space:nowrap;">${fmtBRL0(m.valor)}</div>
+      <div style="height:${alt}px; background:linear-gradient(180deg,#4ad4f5,#2bb6dd); border-radius:5px 5px 0 0;${ehUltimo?' box-shadow:inset 0 -3px 0 #f2b705;':''}"></div>
+      <div style="font-size:11.5px; font-weight:${ehUltimo?800:600}; color:${ehUltimo?'#f2b705':'var(--muted)'}; margin-top:7px;">${mesCurto}</div>
+    </div>`;
+  }).join('');
+  const colunaTotal = `
+    <div style="width:1px; align-self:stretch; background:var(--border); margin:0 6px;"></div>
+    <div style="flex:1.15; min-width:0; text-align:center;">
+      <div style="font-size:12px; font-weight:800; color:#00e5a0; margin-bottom:5px; white-space:nowrap;">${fmtBRL0(valorPeriodo)}</div>
+      <div style="height:${H_MAX}px; border:2px dashed #00e5a0; border-bottom:none; border-radius:6px 6px 0 0; background:rgba(0,229,160,.12); box-sizing:border-box;"></div>
+      <div style="font-size:11.5px; font-weight:800; color:#00e5a0; margin-top:7px; letter-spacing:.5px;">TOTAL</div>
+    </div>`;
+  const graficoCorpo = nMeses
+    ? `<div style="display:flex; align-items:flex-end; gap:10px; height:${H_MAX+66}px; margin-top:18px; padding:0 4px;">${colunasMes}${colunaTotal}</div>
+       <div class="card-meta" style="margin-top:12px;">Barras azuis = aporte de cada mês do período filtrado (R$ 40.000/mês). A coluna tracejada é a <b>soma do período</b>.</div>
+       <div class="card-meta" style="margin-top:6px; color:#f2b705;"><b>FIM:</b> ${ultimoLabel} foi o último aporte — o contrato com a KTO encerrou nessa data e <b>não houve nenhum repasse depois disso</b>.</div>`
+    : `<div style="text-align:center; padding:48px 0; color:var(--muted); font-size:13px;">Nenhum mês com aporte no período selecionado.</div>`;
+
+  const destinos25 = PATROCINIO_DESTINOS_2025;
+  const somaDest = destinos25.reduce((s,d)=>s+d.valor,0);
+  const destinosHtml = destinos25.map((dd,i)=>`
+    <tr><td><span class="dot" style="background:${CORES_SERIE[i%CORES_SERIE.length]}; margin-right:8px;"></span>${dd.nome}</td>
+    <td class="num">${fmtBRL0(dd.valor)}</td>
+    <td class="num muted">${(dd.valor/somaDest*100).toFixed(1).replace('.',',')}%</td></tr>`).join('');
+
+  el.innerHTML = aviso + `
+    <div class="card full" style="border-left:4px solid #3d7bff; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div style="font-size:34px;">🤝</div>
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:17px; font-weight:800; color:var(--text);">Patrocínio KTO <span style="font-size:12px; color:var(--muted); font-weight:600;">· Apollo Operations Ltda</span></div>
+          <div style="font-size:13px; color:var(--muted); margin-top:3px;">Vigência: <b style="color:var(--text);">Janeiro a Maio/2026</b> · <span style="color:var(--red);">encerrado</span> · aporte fixo de R$ 40.000/mês</div>
+        </div>
+        <div class="tag" style="background:rgba(232,25,44,.15); color:var(--red); font-weight:700;">Contrato encerrado</div>
+      </div>
+    </div>
+
+    <div class="kpi-row-icons cols-3">${kpisHtml}</div>
+
+    <div class="alert-box" style="border-color:var(--gold); margin-top:16px;"><span>📢</span><div><b>Contrapartida contratual:</b> a KTO exige, em contrato, que o clube <b>divulgue a marca</b> em suas ações e espaços. Esse é o compromisso assumido em troca do patrocínio.</div></div>
+
+    <div class="alert-box" style="border-color:var(--blue);"><span>💰</span><div><b>Destinação:</b> em 2026, o valor recebido ficou alocado na <b>Diretoria Executiva</b>, sem vínculo a um centro de custo específico. O montante entra no <b>caixa do clube e circula normalmente</b> junto com as demais receitas — <b>não é uma reserva à parte</b>.</div></div>
+
+    <div style="margin-top:20px;">
+      <div class="card full" id="cardAportePatrocinio">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div>
+            <div class="card-label">Aportes do Patrocínio KTO — 2026</div>
+            <div style="font-size:12.5px; color:var(--muted); margin-top:6px;">${periodoLabel}${nMeses?` · ${nMeses} ${nMeses===1?'mês':'meses'} no filtro`:''}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:32px; font-weight:900; color:#00e5a0; line-height:1.1;">${fmtBRL0(valorPeriodo)}</div>
+            <div style="font-size:11.5px; color:var(--muted); margin-top:3px; letter-spacing:.4px;">ACUMULADO NO PERÍODO</div>
+          </div>
+        </div>
+        ${graficoCorpo}
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:26px;">Como o Patrocínio foi Aplicado em 2025<div class="line"></div></div>
+    <div class="alert-box"><span>📆</span><div>Histórico do ano anterior: em <b>2025</b>, o patrocínio KTO (R$ 480 mil no ano) foi distribuído entre eventos e departamentos do clube. Serve de referência de como o recurso costumava ser destinado.</div></div>
+    <div class="card full">
+      <div class="scrollx"><table>
+        <thead><tr><th>Destino (evento / departamento)</th><th class="num">Valor 2025</th><th class="num">% do aplicado</th></tr></thead>
+        <tbody>${destinosHtml}
+          <tr style="border-top:2px solid var(--border); font-weight:800;"><td>Total aplicado em eventos</td><td class="num">${fmtBRL0(somaDest)}</td><td class="num">100%</td></tr>
+          <tr style="color:var(--muted);"><td>Diretoria a distribuir (2025)</td><td class="num">${fmtBRL0(PATROCINIO_2025.diretoria)}</td><td class="num">—</td></tr>
+          <tr style="font-weight:800; color:#3d7bff;"><td>Total Patrocínio KTO 2025</td><td class="num">${fmtBRL0(PATROCINIO_2025.total)}</td><td class="num">—</td></tr>
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
 function mudarSubAbaFin(qual){
-  const ehFluxo = qual==='fluxo';
-  document.getElementById('finSubFluxo').style.display = ehFluxo ? 'block' : 'none';
-  document.getElementById('finSubPag').style.display = ehFluxo ? 'none' : 'block';
-  document.getElementById('subtabBtnFluxo').classList.toggle('active', ehFluxo);
-  document.getElementById('subtabBtnPag').classList.toggle('active', !ehFluxo);
+  document.getElementById('finSubFluxo').style.display = qual==='fluxo' ? 'block' : 'none';
+  document.getElementById('finSubPag').style.display = qual==='pag' ? 'block' : 'none';
+  document.getElementById('finSubPatroc').style.display = qual==='patroc' ? 'block' : 'none';
+  document.getElementById('subtabBtnFluxo').classList.toggle('active', qual==='fluxo');
+  document.getElementById('subtabBtnPag').classList.toggle('active', qual==='pag');
+  document.getElementById('subtabBtnPatroc').classList.toggle('active', qual==='patroc');
 }
 function mudarSubAbaSec(qual){
   const ehNeg = qual==='neg';
