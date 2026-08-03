@@ -133,6 +133,13 @@
 
   .content{ max-width:1400px; margin:0 auto; padding:32px 48px 70px; overflow-x:hidden; }
   @media (max-width:900px){ .content{ padding:24px 20px 60px; } }
+  /* REDE DE SEGURANÇA DE ALINHAMENTO — não remover.
+     O respiro lateral das abas vem do .content. Se alguma .page-section for inserida
+     fora dele (direto no .main), ela perderia os 48px e ficaria desalinhada das demais.
+     Esta regra devolve o mesmo padding nesse caso, então a aba alinha independente
+     de onde esteja aninhada. Ver também checarLayout() no final do script. */
+  .main > .page-section{ padding:32px 48px 70px; }
+  @media (max-width:900px){ .main > .page-section{ padding:24px 20px 60px; } }
   .page-section{ display:none; }
   .page-section.active{ display:block; animation:fadeIn .3s ease; }
   /* Institucional: iframe ocupa toda a área, sem o padding/altura do .content */
@@ -404,6 +411,7 @@
     .btn-apply{ padding:12px 18px; font-size:14px; width:100%; text-align:center; box-sizing:border-box; }
 
     .content{ padding:20px 16px 50px; }
+    .main > .page-section{ padding:20px 16px 50px; }
     .section-title{ font-size:17px; margin:24px 0 12px; }
 
     .kpi-row-icons, .kpi-row-icons.cols-4, .kpi-row-icons.cols-3, .kpi-row-icons.cols-6, .kpi-row-icons.cols-5, .kpi-grid, .kpi-grid.cols-5{ grid-template-columns:repeat(2,1fr); gap:10px; }
@@ -3305,8 +3313,13 @@ const VENDAS_FUNIL_DIARIO = [
   {data:'2026-07-24', leads:9, contatos:27, visitas:2, vendas:3, retNeg:1, acomp:3},
   {data:'2026-07-27', leads:13, contatos:74, visitas:0, vendas:1, retNeg:0, acomp:5},
   {data:'2026-07-28', leads:8, contatos:40, visitas:1, vendas:0, retNeg:0, acomp:8},
-  {data:'2026-07-29', leads:9, contatos:36, visitas:2, vendas:4, retNeg:0, acomp:5},
-  // 30/07 e 31/07 têm vendas lançadas, mas o CONTROLE DIÁRIO ainda não foi preenchido na planilha.
+  {data:'2026-07-29', leads:9, contatos:36, visitas:2, vendas:5, retNeg:0, acomp:5},
+  // 30 e 31/07: o CONTROLE DIÁRIO não foi preenchido, mas as vendas estão lançadas na
+  // planilha de ENTRADAS. Entram com a quantidade de vendas e semControle:true — assim
+  // somam no total de vendas sem distorcer leads, contatos, visitas e taxa de conversão,
+  // que passam a ser calculados só sobre os dias com controle preenchido.
+  {data:'2026-07-30', leads:0, contatos:0, visitas:0, vendas:6, retNeg:0, acomp:0, semControle:true},
+  {data:'2026-07-31', leads:0, contatos:0, visitas:0, vendas:4, retNeg:0, acomp:0, semControle:true},
 ];
 
 const VENDAS_MOTIVOS_PERDA = [
@@ -6173,17 +6186,33 @@ function renderFunilVendas(de, ate){
     : VENDAS_FUNIL_DIARIO;
 
   if(!dias.length){
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> Temos registros diários de 03 a 24/07/2026.</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> Temos registros diários de 03 a 31/07/2026.</div></div>`;
     return;
   }
 
   const soma = (k) => dias.reduce((s,d)=>s+(d[k]||0),0);
-  const leads=soma('leads'), contatos=soma('contatos'), visitas=soma('visitas'),
-        vendas=soma('vendas'), retNeg=soma('retNeg'), acomp=soma('acomp');
-  const convLead = leads>0 ? (vendas/leads*100) : 0;
+  // Vendas somam TODOS os dias (fonte: planilha de ENTRADAS, que é o registro oficial).
+  // Leads, contatos, visitas e afins só existem nos dias com CONTROLE DIÁRIO preenchido —
+  // somá-los com os dias sem controle inflaria a taxa de conversão.
+  const comCtrl = dias.filter(d=>!d.semControle);
+  const semCtrl = dias.filter(d=>d.semControle);
+  const somaCtrl = (k) => comCtrl.reduce((s,d)=>s+(d[k]||0),0);
+  const vendas=soma('vendas');
+  const leads=somaCtrl('leads'), contatos=somaCtrl('contatos'), visitas=somaCtrl('visitas'),
+        retNeg=somaCtrl('retNeg'), acomp=somaCtrl('acomp');
+  const vendasCtrl = somaCtrl('vendas');
+  const convLead = leads>0 ? (vendasCtrl/leads*100) : 0;
   const taxaContato = leads>0 ? (contatos/leads*100) : 0;
   const diasComReg = dias.filter(d=>d.leads||d.contatos||d.vendas).length;
   const mediaVendasDia = diasComReg ? vendas/diasComReg : 0;
+  const diasSemCtrl = semCtrl.filter(d=>d.vendas).map(d=>d.data.slice(8,10)+'/'+d.data.slice(5,7));
+  const vendasSemCtrl = semCtrl.reduce((s,d)=>s+(d.vendas||0),0);
+  const avisoCtrl = diasSemCtrl.length ? `
+    <div class="alert-box" style="border-color:var(--gold); margin-bottom:14px;"><span>ℹ️</span><div>
+      <b>${vendasSemCtrl} vendas de ${diasSemCtrl.join(' e ')}</b> estão contabilizadas em <b>Vendas Realizadas</b>, mas
+      o <b>controle diário desses dias não foi preenchido</b>. Por isso leads, contatos, visitas e a taxa de
+      conversão consideram apenas os <b>${comCtrl.length} dias com controle</b> — misturar os dois recortes
+      inflaria a conversão.</div></div>` : '';
 
   const motivosHtml = (typeof VENDAS_MOTIVOS_PERDA !== 'undefined' && VENDAS_MOTIVOS_PERDA.length) ? `
     <div class="card full" style="margin-top:16px; border-left:4px solid var(--red);">
@@ -6204,11 +6233,11 @@ function renderFunilVendas(de, ate){
       <div class="card-meta" style="margin-top:10px;">💡 Registro da Central de Vendas. Motivos acumulados do período com registro diário.</div>
     </div>` : '';
 
-  el.innerHTML = `
+  el.innerHTML = avisoCtrl + `
     <div class="kpi-row-icons cols-4">
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(61,123,255,.15); color:var(--blue);">📥</div><div class="label">Leads Recebidos</div></div>
-        <div class="kpi-icon-info"><div class="value">${leads}</div><div class="delta muted">no período</div></div>
+        <div class="kpi-icon-info"><div class="value">${leads}</div><div class="delta muted">${diasSemCtrl.length?`em ${comCtrl.length} dias com controle`:'no período'}</div></div>
       </div>
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(6,182,212,.15); color:var(--cyan);">📞</div><div class="label">Contatos Realizados</div></div>
@@ -6220,7 +6249,7 @@ function renderFunilVendas(de, ate){
       </div>
       <div class="kpi-icon-card" style="border-color:var(--green); background:rgba(0,229,160,.06);">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(0,229,160,.15); color:var(--green);">✅</div><div class="label">Vendas Realizadas</div></div>
-        <div class="kpi-icon-info"><div class="value" style="color:var(--green);">${vendas}</div><div class="delta muted">associações novas</div></div>
+        <div class="kpi-icon-info"><div class="value" style="color:var(--green);">${vendas}</div><div class="delta muted">associações novas no período</div></div>
       </div>
     </div>
     <div class="kpi-row-icons cols-4" style="margin-top:16px;">
@@ -6234,7 +6263,7 @@ function renderFunilVendas(de, ate){
       </div>
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(0,229,160,.15); color:var(--green);">🎯</div><div class="label">Taxa de Conversão</div></div>
-        <div class="kpi-icon-info"><div class="value" style="color:var(--green);">${convLead.toFixed(1).replace('.',',')}%</div><div class="delta muted">vendas ÷ leads</div></div>
+        <div class="kpi-icon-info"><div class="value" style="color:var(--green);">${convLead.toFixed(1).replace('.',',')}%</div><div class="delta muted">${vendasCtrl} vendas ÷ ${leads} leads${diasSemCtrl.length?' (dias com controle)':''}</div></div>
       </div>
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(61,123,255,.15); color:var(--blue);">📈</div><div class="label">Média Vendas/Dia</div></div>
@@ -6656,6 +6685,67 @@ renderObras();
 renderIndicadoresGrid('rhIndicadoresConteudo', RH_INDICADORES, RH_PENDENTES, 'rh');
 renderIndicadoresGrid('dpIndicadoresConteudo', DP_INDICADORES, DP_PENDENTES, 'dp');
 popularFiltroMesInicial();
+
+// ═══════════════════════════════════════════════════════════
+// AUTOVERIFICAÇÃO DE LAYOUT — roda na carga e avisa no console
+// ═══════════════════════════════════════════════════════════
+// Em 08/2026 seis abas (Sec. Adm., Vendas, CRA, RH, Locações, Obras) apareceram
+// desalinhadas porque o </div> do .content fechava antes delas: ficaram penduradas
+// direto no .main e perderam os 48px de respiro lateral. O CSS acima já impede que
+// isso volte a desalinhar visualmente; esta função avisa se a estrutura sair do
+// padrão, para o problema ser visto na hora e não num print depois.
+// Uso manual no console do navegador: checarLayout()
+function checarLayout(){
+  const secoes = [...document.querySelectorAll('.page-section')];
+  const erros = [], avisos = [];
+
+  // 1) ESTRUTURA — todas as abas deveriam morar no mesmo contêiner.
+  //    Se divergir, o CSS ainda salva o alinhamento, mas é sinal de que um </div>
+  //    saiu do lugar: vale arrumar antes que vire outro problema.
+  const pais = new Map();
+  secoes.forEach(s=>{
+    const pai = s.parentElement;
+    if(!pais.has(pai)) pais.set(pai, []);
+    pais.get(pai).push(s.id);
+  });
+  if(pais.size > 1){
+    avisos.push('Abas em contêineres diferentes (alinhamento salvo pelo CSS, mas revise o aninhamento):\n   ' +
+      [...pais.entries()].map(([pai, ids]) => `${pai.className||pai.tagName} → ${ids.join(', ')}`).join('\n   '));
+  }
+
+  // 2) ALINHAMENTO — mede onde o conteúdo COMEÇA (caixa + padding próprio),
+  //    não a borda da caixa: uma aba fora do .content tem caixa em 264px mas
+  //    padding próprio de 48px, logo o conteúdo cai nos mesmos 312px. É a borda
+  //    do conteúdo que o olho enxerga.
+  const margens = new Map();
+  secoes.forEach(s=>{
+    if(s.id === 'page-institucional') return;   // position:fixed, não segue o fluxo
+    const eraAtiva = s.classList.contains('active');
+    if(!eraAtiva){ s.style.display = 'block'; s.style.visibility = 'hidden'; }
+    const cs = getComputedStyle(s);
+    const borda = Math.round(s.getBoundingClientRect().left + parseFloat(cs.paddingLeft));
+    if(!eraAtiva){ s.style.display = ''; s.style.visibility = ''; }
+    if(!margens.has(borda)) margens.set(borda, []);
+    margens.get(borda).push(s.id);
+  });
+  if(margens.size > 1){
+    erros.push('Abas desalinhadas — o conteúdo começa em pontos diferentes:\n   ' +
+      [...margens.entries()].map(([px, ids]) => `${px}px → ${ids.join(', ')}`).join('\n   '));
+  }
+
+  // 3) TRANSBORDO — nenhuma aba pode empurrar a página para os lados
+  if(document.documentElement.scrollWidth > document.documentElement.clientWidth){
+    erros.push(`Página com scroll horizontal: ${document.documentElement.scrollWidth}px de conteúdo para ${document.documentElement.clientWidth}px de tela.`);
+  }
+
+  if(erros.length)  console.error('⚠️ LAYOUT FORA DO PADRÃO:\n\n' + erros.join('\n\n'));
+  if(avisos.length) console.warn('⚠️ ESTRUTURA FORA DO PADRÃO:\n\n' + avisos.join('\n\n'));
+  if(!erros.length && !avisos.length){
+    console.log(`✅ Layout OK — ${secoes.length} abas alinhadas em ${[...margens.keys()][0]}px, sem transbordo.`);
+  }
+  return {ok: !erros.length, erros, avisos, abas: secoes.length, margens: [...margens.keys()]};
+}
+checarLayout();
 </script>
 </body>
 </html>
