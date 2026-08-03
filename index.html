@@ -1145,52 +1145,58 @@ const PROJECAO = [
   {d:'23/jul', mov:-24100, banco:57971, indices:2379379},
   {d:'24/jul', mov:-79000, banco:-21029, indices:2379379},
   {d:'27/jul', mov:20300, banco:-729, indices:2379379},
-  {d:'28/jul', mov:20000, banco:19271, indices:2379379},
-  {d:'29/jul', mov:10000, banco:29271, indices:2379379},
-  {d:'30/jul', mov:9500, banco:38771, indices:2379379},
-  {d:'31/jul', mov:-53000, banco:-14229, indices:2379379},
-  {d:'03/ago', mov:31400, banco:17171, indices:2379379},
-  {d:'04/ago', mov:70000, banco:87171, indices:2379379},
-  {d:'05/ago', mov:50000, banco:137171, indices:2379379},
-  {d:'06/ago', mov:-424500, banco:-287329, indices:3209379},
-  {d:'07/ago', mov:-159200, banco:-446529, indices:3209379},
-  {d:'10/ago', mov:48500, banco:-398029, indices:3160379},
-  {d:'11/ago', mov:1395000, banco:996971, indices:3160379},
-  {d:'12/ago', mov:162000, banco:1158971, indices:3160379},
-  {d:'13/ago', mov:-187450, banco:971521, indices:3160379},
-  {d:'14/ago', mov:10645, banco:982167, indices:3153313},
-  {d:'17/ago', mov:-71000, banco:911167, indices:3153313},
-  {d:'18/ago', mov:10000, banco:921167, indices:3153313},
-  {d:'19/ago', mov:10000, banco:931167, indices:3153313},
-  {d:'20/ago', mov:-997600, banco:-66433, indices:2971313},
-  {d:'21/ago', mov:-68000, banco:-134433, indices:2971313},
-  {d:'24/ago', mov:-34000, banco:-168433, indices:2971313},
-  {d:'25/ago', mov:10000, banco:-158433, indices:2971313},
-  {d:'26/ago', mov:-15000, banco:-173433, indices:2971313},
-  {d:'27/ago', mov:-24200, banco:-197633, indices:2971313},
-  {d:'28/ago', mov:-25000, banco:-222633, indices:2971313},
-  {d:'31/ago', mov:14000, banco:-208633, indices:2971313},
-  {d:'01/set', mov:36900, banco:-171733, indices:2971313},
-  {d:'02/set', mov:-2500, banco:-174233, indices:2971313},
-  {d:'03/set', mov:-25700, banco:-199933, indices:2971313},
-  {d:'04/set', mov:-365500, banco:-565433, indices:2971313},
-  {d:'08/set', mov:110000, banco:-455433, indices:2971313},
-  {d:'09/set', mov:70700, banco:-384733, indices:2971313},
-  {d:'10/set', mov:36500, banco:-348233, indices:2922313},
-  {d:'11/set', mov:1089800, banco:741567, indices:2922313},
-  {d:'14/set', mov:218750, banco:960317, indices:2922313},
-  {d:'15/set', mov:30645, banco:990962, indices:2922313},
-  {d:'16/set', mov:-10000, banco:980962, indices:2922313},
-  {d:'17/set', mov:10000, banco:990962, indices:2922313},
-  {d:'18/set', mov:-1012600, banco:-21638, indices:2922313},
-  {d:'21/set', mov:20000, banco:-1638, indices:2922313},
-  {d:'22/set', mov:-10000, banco:-11638, indices:2922313},
-  {d:'23/set', mov:-55100, banco:-66738, indices:2922313},
-  {d:'24/set', mov:-24000, banco:-90738, indices:2922313},
-  {d:'25/set', mov:-75300, banco:-166038, indices:2922313},
-  {d:'28/set', mov:15000, banco:-151038, indices:2922313},
-  {d:'29/set', mov:0, banco:-151038, indices:2922313},
-  {d:'30/set', mov:14000, banco:-137038, indices:2922313},
+  // ── EMENDA ── Daqui em diante: Resumo de Necessidades da Controladoria, atualização 03/08/2026.
+  // Os pontos acima (até 27/jul) são da versão anterior do relatório e NÃO foram revisados por ela:
+  // o novo arquivo começa em 28/jul. Por isso 27→28/jul não fecha aritmeticamente
+  // (-729 + 38.635 ≠ -116.161) e o saldo do fundo cai de 2.379.379 para 2.322.149 sem
+  // pagamento de obra correspondente. Substituir os dias 01–27/jul quando a Controladoria
+  // enviar a série completa revisada.
+  {d:'28/jul', mov:38635, banco:-116161, indices:2322149},
+  {d:'29/jul', mov:9043, banco:-107118, indices:2322149},
+  {d:'30/jul', mov:15644, banco:-91474, indices:2322149},
+  {d:'31/jul', mov:-87900, banco:-179374, indices:2322149},
+  {d:'03/ago', mov:31400, banco:-147974, indices:2322149},
+  {d:'04/ago', mov:70000, banco:-77974, indices:2322149},
+  {d:'05/ago', mov:50000, banco:-27974, indices:2322149},
+  {d:'06/ago', mov:-424500, banco:-452474, indices:3152149},
+  {d:'07/ago', mov:-159200, banco:-611674, indices:3152149},
+  {d:'10/ago', mov:48500, banco:-563174, indices:3103149},
+  {d:'11/ago', mov:1395000, banco:831826, indices:3103149},
+  {d:'12/ago', mov:162000, banco:993826, indices:3103149},
+  {d:'13/ago', mov:-187450, banco:806376, indices:3103149},
+  {d:'14/ago', mov:10645, banco:817021, indices:3096083},
+  {d:'17/ago', mov:-71000, banco:746021, indices:3096083},
+  {d:'18/ago', mov:10000, banco:756021, indices:3096083},
+  {d:'19/ago', mov:10000, banco:766021, indices:3096083},
+  {d:'20/ago', mov:-997600, banco:-231579, indices:2914083},
+  {d:'21/ago', mov:-68000, banco:-299579, indices:2914083},
+  {d:'24/ago', mov:-34000, banco:-333579, indices:2914083},
+  {d:'25/ago', mov:10000, banco:-323579, indices:2914083},
+  {d:'26/ago', mov:-15000, banco:-338579, indices:2914083},
+  {d:'27/ago', mov:-24200, banco:-362779, indices:2914083},
+  {d:'28/ago', mov:-25000, banco:-387779, indices:2914083},
+  {d:'31/ago', mov:14000, banco:-373779, indices:2914083},
+  {d:'01/set', mov:36900, banco:-336879, indices:2914083},
+  {d:'02/set', mov:-2500, banco:-339379, indices:2914083},
+  {d:'03/set', mov:-25700, banco:-365079, indices:2914083},
+  {d:'04/set', mov:-365500, banco:-730579, indices:2914083},
+  {d:'08/set', mov:110000, banco:-620579, indices:2914083},
+  {d:'09/set', mov:70700, banco:-549879, indices:2914083},
+  {d:'10/set', mov:36500, banco:-513379, indices:2865083},
+  {d:'11/set', mov:1089800, banco:576421, indices:2865083},
+  {d:'14/set', mov:218750, banco:795171, indices:2865083},
+  {d:'15/set', mov:30645, banco:825816, indices:2865083},
+  {d:'16/set', mov:-10000, banco:815816, indices:2865083},
+  {d:'17/set', mov:10000, banco:825816, indices:2865083},
+  {d:'18/set', mov:-1012600, banco:-186784, indices:2865083},
+  {d:'21/set', mov:20000, banco:-166784, indices:2865083},
+  {d:'22/set', mov:-10000, banco:-176784, indices:2865083},
+  {d:'23/set', mov:-55100, banco:-231884, indices:2865083},
+  {d:'24/set', mov:-24000, banco:-255884, indices:2865083},
+  {d:'25/set', mov:-75300, banco:-331184, indices:2865083},
+  {d:'28/set', mov:15000, banco:-316184, indices:2865083},
+  {d:'29/set', mov:0, banco:-316184, indices:2865083},
+  {d:'30/set', mov:14000, banco:-302184, indices:2865083},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -1380,6 +1386,31 @@ const COBERTURA_SATISFACAO = {
 };
 
 const RETENCAO_EXTRA_MESES = {
+  ago2026: {
+    periodoTag:'Agosto/2026 (parcial)',
+    kpis:[
+      {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'20', sub:'no período'},
+      {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'solicitadas em julho', valorCor:'#ffd32a'},
+      {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'1', sub:'novas solicitações'},
+      {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'16', sub:'com data de desligamento', valorCor:'#e8192c'},
+      {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 licenças + 2 em tratativa', valorCor:'#00e5a0'},
+      {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'1', sub:'desligamento em 10/08', valorCor:'#fb923c'},
+    ],
+    categorias:[
+      {nome:'Contribuinte', qtd:6, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},
+      {nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},
+    ],
+    motivos:[
+      {motivo:'Financeiro', qtd:5, pct:31.25, cor:'#00e5a0'},{motivo:'Não utilização', qtd:4, pct:25.00, cor:'#3d7bff'},
+      {motivo:'Mudança', qtd:3, pct:18.75, cor:'#f2b705'},{motivo:'Pessoal', qtd:2, pct:12.50, cor:'#b0b0d0'},
+      {motivo:'Saúde', qtd:1, pct:6.25, cor:'#a855f7'},{motivo:'Não informou motivo', qtd:1, pct:6.25, cor:'#5a5c78'},
+    ],
+    totalDesligamentos:16,
+    ticketMedio:'R$ 562,47', dependentes:'1,7', residual:'19', residualLabel:'Residual Acumulado', desligadosComTaxa:'R$ 1.002,00',
+    taxaQtd:1, modalidadeTaxa:{sim:2, nao:14}, quadroSocial:19,
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: Plano de Trabalho de Retenção 2026 (V3), contagem conferida registro a registro. <b style="color:var(--gold);">Mês em andamento</b> — dados posicionados em 03/08. Das 20 solicitações em aberto, <b>19 vieram de julho</b> e apenas 1 foi aberta em agosto: é a fila residual sendo processada, não demanda nova. Dos 16 desligamentos, 14 têm data de 01/08, 1 de 02/08 e 1 está programado para 10/08. Patrimonial empata com Contribuinte no topo (6 cada) — proporção bem acima da de julho, quando Patrimonial era 7 de 44. Financeiro segue como principal motivo (31,3%). Ticket médio de R$ 562,47, abaixo dos R$ 631,57 de julho. Isenção de modalidade foi ofertada a apenas 2 dos 16 desligados. <b>Números vão subir até o fim do mês.</b>',
+  },
   jan2026: {
     periodoTag:'Janeiro/2026',
     kpis:[
@@ -2356,7 +2387,7 @@ drawDonut('pagDonutFaixa', [
 // PALCO INTERATIVO — Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 let CURRENT_MES_KEY = 'jul2026';
-const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" observado no período completo (06/fev) — fonte: Resumo de Necessidades da Controladoria, Jan-Set/26, atualização 22/07/26
+const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" do período completo (06/fev). O Resumo de Necessidades de 03/08/26 cobre 28/jul a 30/set e tem mínimo de R$ 8.542.774,36 (31/jul) — acima deste piso, que segue vindo de fevereiro.
 
 const VIEWS = {
   operacional: {
@@ -2616,6 +2647,42 @@ const PATROCINIO_DESTINOS_2025 = [
 ];
 const PATROCINIO_2025 = { total:480000, aplicado:390000, diretoria:90000 };
 
+// ── 2025: patrocinadores e distribuição mês a mês ──────────────────────────
+// Fonte: PLANILHA DISTRIBUIÇÃO (01/08/2026). Ambos os contratos já encerrados.
+// Fórmula: Líquido = Patrocínio − COFINS − Comissão − Rateio.
+// O "rateio" é o repasse a eventos e departamentos; o "líquido" é o que sobrou para o clube.
+const PATROCINIO_2025_PATROCINADORES = [
+  {
+    nome:'KTO', razao:'Apollo Operations Ltda', cor:'#3d7bff',
+    vigencia:'Janeiro a Outubro/2025', meses:10, valorMes:40000,
+    bruto:400000, cofins:30400, comissao:40000, rateio:324000, liquido:5600,
+    linhas:[
+      {mes:'Janeiro',   bruto:40000, cofins:3040, comissao:4000, rateio:14000, liquido:18960},
+      {mes:'Fevereiro', bruto:40000, cofins:3040, comissao:4000, rateio:26000, liquido:6960},
+      {mes:'Março',     bruto:40000, cofins:3040, comissao:4000, rateio:16000, liquido:16960},
+      {mes:'Abril',     bruto:40000, cofins:3040, comissao:4000, rateio:76000, liquido:-43040},
+      {mes:'Maio',      bruto:40000, cofins:3040, comissao:4000, rateio:22000, liquido:10960},
+      {mes:'Junho',     bruto:40000, cofins:3040, comissao:4000, rateio:33000, liquido:-40},
+      {mes:'Julho',     bruto:40000, cofins:3040, comissao:4000, rateio:43000, liquido:-10040},
+      {mes:'Agosto',    bruto:40000, cofins:3040, comissao:4000, rateio:28000, liquido:4960},
+      {mes:'Setembro',  bruto:40000, cofins:3040, comissao:4000, rateio:33000, liquido:-40},
+      {mes:'Outubro',   bruto:40000, cofins:3040, comissao:4000, rateio:33000, liquido:-40},
+    ],
+  },
+  {
+    nome:'DR SUL', razao:null, cor:'#a855f7',
+    vigencia:'Abril a Julho/2025', meses:4, valorMes:6670,
+    bruto:26680, cofins:2027.68, comissao:0, rateio:24000, liquido:652.32,
+    obs:'Sem comissão em contrato. A parcela de abril foi baixada em agosto.',
+    linhas:[
+      {mes:'Abril', bruto:6670, cofins:506.92, comissao:0, rateio:6000, liquido:163.08},
+      {mes:'Maio',  bruto:6670, cofins:506.92, comissao:0, rateio:6000, liquido:163.08},
+      {mes:'Junho', bruto:6670, cofins:506.92, comissao:0, rateio:6000, liquido:163.08},
+      {mes:'Julho', bruto:6670, cofins:506.92, comissao:0, rateio:6000, liquido:163.08},
+    ],
+  },
+];
+
 const PAGAMENTOS_MESES = {
   jan2026: {
     label:'Janeiro/2026', qtd:640, total:4292651.46,
@@ -2816,33 +2883,39 @@ const PAGAMENTOS_MESES = {
     ],
   },
   jul2026: {
-    label:'Julho/2026 (parcial · 20 a 24/07)', qtd:171, total:1293146.14,
-    maiorQtd:88, maiorTotal:1267817.71, menorQtd:83, menorTotal:25328.43,
-    fornecedoresDistintos:106, parcial:true,
+    // Consolidado dos 4 cortes completos de julho recebidos da controladoria:
+    // 06-10/07 + 13-17/07 + 20-24/07 + 27-31/07. Não inclui 01 a 05/07 (esses dias só
+    // existem dentro do corte 28/06 a 05/07, que atravessa o mês e se sobrepõe ao corte
+    // 29-30/06 — somá-lo traria dinheiro de junho para dentro de julho).
+    label:'Julho/2026 (parcial · 06 a 31/07)', qtd:757, total:3951368.06,
+    maiorQtd:175, maiorTotal:3283122.41, menorQtd:582, menorTotal:668245.65,
+    fornecedoresDistintos:null, parcial:true,
     top:[
-      {nome:'Secretaria Da Receita Federal', qtd:3, valor:538616.66, pct:41.65},
-      {nome:'Folha Pagamento', qtd:17, valor:166599.52, pct:12.88},
-      {nome:'Caixa Economica Federal', qtd:2, valor:125772.33, pct:9.73},
-      {nome:'Vt Solucoes Administracao E Servicos Ltda', qtd:2, valor:51232.52, pct:3.96},
-      {nome:'Companhia Estadual De Distribuição De Energi', qtd:1, valor:49316.26, pct:3.81},
-      {nome:'R.C.F.', qtd:1, valor:31206.61, pct:2.41},
-      {nome:'Percorrer Atividades Fisicas Ltda-me', qtd:1, valor:23417.05, pct:1.81},
-      {nome:'Earte Promocoes E Prod Artisticas Cult E Ens', qtd:2, valor:18083.96, pct:1.40},
-      {nome:'A.D.G.', qtd:1, valor:17465.49, pct:1.35},
-      {nome:'Allianz Solucoes De Engenharia Ltda.', qtd:1, valor:17005.00, pct:1.32},
-      {nome:'Paghiper Instituicao De Pagamento Ltda.paghi', qtd:1, valor:15942.32, pct:1.23},
-      {nome:'Mercadopago.com Representacoes Ltda.', qtd:17, valor:12168.60, pct:0.94},
-      {nome:'Clube Patine Aulas De Patinação Eireli', qtd:1, valor:10597.48, pct:0.82},
-      {nome:'Uniquadras 8 Ltda.', qtd:1, valor:10186.00, pct:0.79},
-      {nome:'5 Continentes Viagens E Assessoria Ltda', qtd:1, valor:9540.00, pct:0.74},
+      {nome:'Folha Pagamento', qtd:52, valor:822770.08, pct:20.82},
+      {nome:'Secretaria Da Receita Federal', qtd:3, valor:538616.66, pct:13.63},
+      {nome:'Cl Solucoes Em Engenharia Ltda', qtd:2, valor:223200.00, pct:5.65},
+      {nome:'Caixa Economica Federal', qtd:2, valor:125772.33, pct:3.18},
+      {nome:'Vitale Restaurantes Empresariais Ltda', qtd:5, valor:109877.00, pct:2.78},
+      {nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M', qtd:6, valor:93797.38, pct:2.37},
+      {nome:'Cia De Gas Do Estado Do Rs Sulgas', qtd:1, valor:90741.42, pct:2.30},
+      {nome:'Departamento Municipal De Agua E Esgotos', qtd:6, valor:90650.04, pct:2.29},
+      {nome:'Beckenkamp Vestuario Ltda', qtd:3, valor:71641.75, pct:1.81},
+      {nome:'Mercadopago.Com Representacoes Ltda.', qtd:63, valor:69217.39, pct:1.75},
+      {nome:'3S Solucoes Em Servicos E Seguranca Ltda', qtd:4, valor:65742.08, pct:1.66},
+      {nome:'Vt Solucoes Administracao E Servicos Ltda', qtd:2, valor:51232.52, pct:1.30},
+      {nome:'Companhia Estadual De Distribuição De Energi', qtd:1, valor:49316.26, pct:1.25},
+      {nome:'Center Broilo Com De Sistemas De Aquecim Ltd', qtd:1, valor:49000.00, pct:1.24},
+      {nome:'3C Arquitetura E Urbanismo Sociedade Simples', qtd:1, valor:38144.48, pct:0.97},
     ],
     bancos:[
-      {nome:'BANRISUL', qtd:153, total:1201204.52},
-      {nome:'PROJETO OLIM', qtd:4, total:33363.82},
+      {nome:'BANRISUL', qtd:649, total:3095390.19},
+      {nome:'ÍNDICES CONS', qtd:11, total:368942.43},
+      {nome:'PROJETO OLIM', qtd:58, total:324603.87},
+      {nome:'CBC EDIT 11 R', qtd:1, total:50355.00},
+      {nome:'PROJ SOGIPA', qtd:5, total:44294.76},
+      {nome:'PATROCÍNIO A', qtd:8, total:32774.85},
       {nome:'ALTO RENDIME', qtd:5, total:24543.20},
-      {nome:'ÍNDICES CONS', qtd:2, total:20346.05},
-      {nome:'Caixa Sogipa', qtd:5, total:7113.51},
-      {nome:'PATROCÍNIO A', qtd:2, total:6575.04},
+      {nome:'Caixa Sogipa', qtd:15, total:10650.18},
     ],
   },
 };
@@ -2880,6 +2953,12 @@ const PAGAMENTOS_POR_PERIODO = {
   '13-17jul': {label:'13 a 17/07/2026', qtd:247, total:850683.10, maiorQtd:46, maiorTotal:554186.50, menorQtd:201, menorTotal:296496.60,
     top:[{nome:'Departamento Municipal De Agua E Esgotos',qtd:6,valor:90650.04,pct:10.66},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:2,valor:52240.70,pct:6.14},{nome:'Mercadopago.Com Representacoes Ltda.',qtd:29,valor:35558.80,pct:4.18},{nome:'Ponto Do Turismo Ag De Viagens Ltda',qtd:2,valor:33492.95,pct:3.94},{nome:'Folha Pagamento',qtd:7,valor:32262.55,pct:3.79},{nome:'Sara Francisca Floriano Ribas',qtd:1,valor:26000.00,pct:3.06},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:2,valor:21539.36,pct:2.53},{nome:'Ambientallize Locadora De Materiais Para Even',qtd:1,valor:20691.44,pct:2.43},{nome:'Daniel Borges Cargnin',qtd:2,valor:19000.00,pct:2.23},{nome:'Hotel Dall Onder Ltda',qtd:1,valor:16435.50,pct:1.93},{nome:'Drogaria Benjamin',qtd:1,valor:16413.95,pct:1.93},{nome:'Postura Fitness Ltda',qtd:1,valor:15300.00,pct:1.80},{nome:'Soji Centro De Capacitação De Idiomas Ltda',qtd:1,valor:14918.24,pct:1.75},{nome:'Minuzzi Faccin E Simon Sociedade De Advogados',qtd:2,valor:14331.75,pct:1.68},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:13688.34,pct:1.61}],
     bancos:[{nome:'Banrisul',qtd:182,total:618385.35},{nome:'Projeto Olim',qtd:52,total:165022.24},{nome:'Proj Sogipa',qtd:1,total:29304.76},{nome:'Patrocínio A',qtd:5,total:24688.19},{nome:'Índices Cons',qtd:2,total:13844.98},{nome:'Caixa Sogipa',qtd:2,total:580.00}]},
+  '20-24jul': {label:'20 a 24/07/2026', qtd:171, total:1293146.14, maiorQtd:88, maiorTotal:1267817.71, menorQtd:83, menorTotal:25328.43,
+    top:[{nome:'Secretaria Da Receita Federal',qtd:3,valor:538616.66,pct:41.65},{nome:'Folha Pagamento',qtd:17,valor:166599.52,pct:12.88},{nome:'Caixa Economica Federal',qtd:2,valor:125772.33,pct:9.73},{nome:'Vt Solucoes Administracao E Servicos Ltda',qtd:2,valor:51232.52,pct:3.96},{nome:'Companhia Estadual De Distribuição De Energi',qtd:1,valor:49316.26,pct:3.81},{nome:'R.C.F.',qtd:1,valor:31206.61,pct:2.41},{nome:'Percorrer Atividades Fisicas Ltda-me',qtd:1,valor:23417.05,pct:1.81},{nome:'Earte Promocoes E Prod Artisticas Cult E Ens',qtd:2,valor:18083.96,pct:1.40},{nome:'A.D.G.',qtd:1,valor:17465.49,pct:1.35},{nome:'Allianz Solucoes De Engenharia Ltda.',qtd:1,valor:17005.00,pct:1.32},{nome:'Paghiper Instituicao De Pagamento Ltda.paghi',qtd:1,valor:15942.32,pct:1.23},{nome:'Mercadopago.com Representacoes Ltda.',qtd:17,valor:12168.60,pct:0.94},{nome:'Clube Patine Aulas De Patinação Eireli',qtd:1,valor:10597.48,pct:0.82},{nome:'Uniquadras 8 Ltda.',qtd:1,valor:10186.00,pct:0.79},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:1,valor:9540.00,pct:0.74}],
+    bancos:[{nome:'Banrisul',qtd:153,total:1201204.52},{nome:'Projeto Olim',qtd:4,total:33363.82},{nome:'Alto Rendime',qtd:5,total:24543.20},{nome:'Índices Cons',qtd:2,total:20346.05},{nome:'Caixa Sogipa',qtd:5,total:7113.51},{nome:'Patrocínio A',qtd:2,total:6575.04}]},
+  '27-31jul': {label:'27 a 31/07/2026', qtd:134, total:455336.34, maiorQtd:12, maiorTotal:314804.54, menorQtd:122, menorTotal:140531.80,
+    top:[{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:90741.42,pct:19.93},{nome:'Beckenkamp Vestuario Ltda',qtd:3,valor:71641.75,pct:15.73},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:3,valor:57636.30,pct:12.66},{nome:'3C Arquitetura E Urbanismo Sociedade Simples',qtd:1,valor:38144.48,pct:8.38},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:2,valor:31767.51,pct:6.98},{nome:'Folha Pagamento',qtd:5,valor:17987.38,pct:3.95},{nome:'Escritorio Central De Distribuição E Arrecada',qtd:5,valor:9363.17,pct:2.06},{nome:'Vital Assessoria E Consultoria Em Medicina Do',qtd:1,valor:7938.20,pct:1.74},{nome:'Editora Espaço Aereo Ltda',qtd:1,valor:6851.66,pct:1.50},{nome:'Positiva Qualidade Ambiental Ltda - Epp',qtd:3,valor:6772.94,pct:1.49},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:2,valor:6254.00,pct:1.37},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:5500.00,pct:1.21},{nome:'V.M.',qtd:1,valor:5400.00,pct:1.19},{nome:'N.F.',qtd:1,valor:4950.00,pct:1.09},{nome:'Rema Arte Esporte Ltda',qtd:2,valor:4708.68,pct:1.03}],
+    bancos:[{nome:'Banrisul',qtd:126,total:334193.26},{nome:'Projeto Olim',qtd:1,total:67557.00},{nome:'Índices Cons',qtd:1,total:38144.48},{nome:'Proj Sogipa',qtd:4,total:14990.00},{nome:'Caixa Sogipa',qtd:2,total:451.60}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -2888,7 +2967,9 @@ const PERIODOS = [
   {key:'29-30jun',     temDados:{pagamentos:true}, ini:'2026-06-29', fim:'2026-06-30'},
   {key:'28jun-05jul',  temDados:{pagamentos:true}, ini:'2026-06-28', fim:'2026-07-05'},
   {key:'06-10jul',     temDados:{pagamentos:true}, ini:'2026-07-06', fim:'2026-07-10'},
-  {key:'13-17jul',     temDados:{pagamentos:true}, ini:'2026-07-13', fim:'2026-07-17', atual:true},
+  {key:'13-17jul',     temDados:{pagamentos:true}, ini:'2026-07-13', fim:'2026-07-17'},
+  {key:'20-24jul',     temDados:{pagamentos:true}, ini:'2026-07-20', fim:'2026-07-24'},
+  {key:'27-31jul',     temDados:{pagamentos:true}, ini:'2026-07-27', fim:'2026-07-31', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -2907,6 +2988,7 @@ const COBERTURA_RETENCAO = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 function mesKeyParaRetencao(de, ate){
   for(const mesKey in COBERTURA_RETENCAO){
@@ -3160,10 +3242,10 @@ const VENDAS_EXTRA_MESES = {
     },
   },
   jul2026: {
-    periodoTag:'Julho/2026 (até 31/07)',
-    associacoesNovas:'30', valorArrecadado:'R$ 19.402,25', ticketMedio:'R$ 646,74',
+    periodoTag:'Julho/2026 (fechado · 31/07)',
+    associacoesNovas:'32', valorArrecadado:'R$ 20.262,25', ticketMedio:'R$ 633,20',
     campanhas:[
-      {nome:'Promo o Melhor das Férias', qtd:8, cor:'#3d7bff'},
+      {nome:'Promo o Melhor das Férias', qtd:10, cor:'#3d7bff'},
       {nome:'Visita', qtd:3, cor:'#00e5a0'},
       {nome:'WhatsApp + Tour Guiado', qtd:3, cor:'#a855f7'},
       {nome:'Dependente', qtd:2, cor:'#f2b705'},
@@ -3171,7 +3253,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Visita/Aula Expep. Tênis', qtd:2, cor:'#fb923c'},
       {nome:'WhatsApp', qtd:2, cor:'#e8192c'},
       {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
-      {nome:'Indicação Guzzo', qtd:1, cor:'#5a5c78'},
+      {nome:'Indicação Guzzo', qtd:1, cor:'#8b8fa8'},
       {nome:'Visita/Sinpefrs', qtd:1, cor:'#22d3ee'},
       {nome:'WhatsApp Indicação Promo', qtd:1, cor:'#f472b6'},
       {nome:'WhatsApp/Dohms', qtd:1, cor:'#facc15'},
@@ -3180,7 +3262,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp/Visita', qtd:1, cor:'#a855f7'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:27, valor:18134.25},
+      {nome:'Sabrina', qtd:29, valor:18994.25},
       {nome:'Claudia', qtd:3, valor:1268.00},
     ],
     categorias:[
@@ -3189,15 +3271,16 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Contribuinte Convênio', qtd:2},
       {nome:'Contribuinte Senior', qtd:2},
       {nome:'Contribuinte Universitário', qtd:2},
+      {nome:'Familiar', qtd:2},
       {nome:'Contribuinte Individual Convênio', qtd:1},
       {nome:'Contribuinte Teen', qtd:1},
     ],
-    alerta: 'Julho fechado com 30 associações novas (R$ 19.402,25) — meta de 23 superada em 30%. A campanha "Promo o Melhor das Férias" respondeu por 8 das 30 vendas, e o ticket médio caiu para R$ 646,74 porque boa parte das entradas veio de planos promocionais e de convênio.',
+    alerta: 'Julho fechado com 32 associações novas (R$ 20.262,25) — meta de 23 superada em 39%. A campanha "Promo o Melhor das Férias" respondeu por 10 das 32 vendas, e o ticket médio ficou em R$ 633,20 porque boa parte das entradas veio de planos promocionais e de convênio. Sabrina fechou 29 das 32 associações do mês.',
     metas:{
-      vendas:{orcado:23, real:30}, reingressos:{orcado:32, real:null},
-      totalVR:{orcado:55, real:30}, desafioVenda:26, desafioReingresso:40,
-      total:{orcado:66, real:30, gap:-36},
-      taxaAdesao:19402.25, taxaReingresso:0, taxaTotal:19402.25,
+      vendas:{orcado:23, real:32}, reingressos:{orcado:32, real:null},
+      totalVR:{orcado:55, real:32}, desafioVenda:26, desafioReingresso:40,
+      total:{orcado:66, real:32, gap:-34},
+      taxaAdesao:20262.25, taxaReingresso:0, taxaTotal:20262.25,
     },
   },
 };
@@ -3843,29 +3926,30 @@ const DADOS_MES = {
   jul2026: {
     label: 'Julho/2026',
     despesas: [
-      {nome:'Pessoal de Apoio', prev:1469.0, tend:1484.3, real:703.3},
-      {nome:'Despesas de Funcionamento', prev:1342.5, tend:1265.7, real:812.2},
-      {nome:'Despesas Fixas', prev:284.3, tend:267.9, real:202.1},
-      {nome:'Esporte', prev:182.4, tend:218.1, real:173.1},
-      {nome:'Eventos', prev:163.9, tend:182.9, real:114.9},
+      {nome:'Pessoal de Apoio', prev:1469.0, tend:1509.0, real:1509.0},
+      {nome:'Despesas de Funcionamento', prev:1342.5, tend:1242.6, real:1112.6},
+      {nome:'Despesas Fixas', prev:284.3, tend:355.7, real:355.7},
+      {nome:'Esporte', prev:182.4, tend:219.9, real:219.9},
+      {nome:'Eventos', prev:163.9, tend:159.9, real:159.9},
+      {nome:'Taxas e Impostos', prev:118.0, tend:118.7, real:118.7},
       {nome:'Imobilizado', prev:79.0, tend:78.7, real:78.7},
-      {nome:'Contingências (Indenizações)', prev:26.9, tend:27.2, real:22.3},
-      {nome:'Tarifas e Desp. Bancárias', prev:9.1, tend:10.4, real:9.0},
-      {nome:'Taxas e Impostos', prev:118.0, tend:109.1, real:1.1},
+      {nome:'Contingências (Indenizações)', prev:26.9, tend:25.7, real:25.7},
+      {nome:'Tarifas e Desp. Bancárias', prev:9.1, tend:12.4, real:11.5},
     ],
     receitas: [
-      {nome:'Boletos', prev:1480.0, tend:1451.5, real:1331.5},
+      {nome:'Boletos', prev:1480.0, tend:1418.1, real:1403.1},
       {nome:'Débito em Conta', prev:690.0, tend:687.5, real:687.5},
-      {nome:'Receitas Diversas', prev:550.0, tend:600.5, real:383.5},
-      {nome:'Cartões Crédito', prev:490.0, tend:506.3, real:396.3},
-      {nome:'Cartões Débito', prev:170.0, tend:147.8, real:98.8},
-      {nome:'Rendimento Aplicação', prev:0, tend:0.1, real:0.1},
-      {nome:'Patrocínios', prev:0, tend:50.0, real:50.0},
+      {nome:'Receitas Diversas', prev:550.0, tend:536.1, real:519.1},
+      {nome:'Cartões Crédito', prev:490.0, tend:574.4, real:568.4},
+      {nome:'Cartões Débito', prev:170.0, tend:138.2, real:133.2},
+      {nome:'Cheque pré-datados', prev:0, tend:2.1, real:2.1},
+      {nome:'Rendimento Aplicação', prev:0, tend:0.5, real:0.5},
+      {nome:'Patrocínios', prev:0, tend:0, real:0},
     ],
     totaisReceitaDespesa: {
       previsto:  {receita:3380.0, despesa:3675.0},
-      tendencia: {receita:3443.7, despesa:3644.3},
-      realizado: {receita:2947.7, despesa:2116.7},
+      tendencia: {receita:3356.8, despesa:3722.5},
+      realizado: {receita:3313.8, despesa:3591.6},
     },
     obras: [
       {data:'09/07/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:78000.00},
@@ -3877,37 +3961,39 @@ const DADOS_MES = {
       {data:'30/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:421000.00},
     ],
     obrasTotal: 931266.00,
-    caixaLivre: 1017.37, fundoObras: 2379.38, resultadoOper: 831.0, saldoTotal: 3396.8,
-    caixaLivrePct: 30.0, fundoObrasPct: 70.0, negativo: false,
-    receitaReal: 2947.7, despesaReal: 2116.7,
-    dataReferencia: '17/07/2026',
-    ptoAtencao: '<b>Caixa positivo agora — mas isso é o ciclo do mês, não uma melhora permanente:</b> o caixa operacional está em <b>+R$ 1.017,37 mil (17/jul)</b> porque é neste período que as mensalidades entram (recebimento concentrado por volta do dia 10, com liquidação D+3). O resultado operacional acumulado também está positivo em <b>+R$ 831,0 mil</b>. O saldo total em banco é de R$ 3.396,8 mil, sendo R$ 1.017,37 mil de caixa livre (30,0%) e R$ 2.379,4 mil do fundo Índices Construtivos (70,0%), restrito a obras. <b style="color:var(--gold);">Isso deve reverter em breve:</b> o caixa livre tende a ficar negativo entre 24/jul e o fim do mês, quando se concentram os pagamentos de fornecedores e, principalmente, o adiantamento de folha + impostos do dia 20. Esse vaivém se repete todo mês.',
+    caixaLivre: -179.4, fundoObras: 2322.1, resultadoOper: -277.8, saldoTotal: 2142.8,
+    caixaLivrePct: -8.4, fundoObrasPct: 108.4, negativo: true,
+    receitaReal: 3313.8, despesaReal: 3591.6,
+    resultadoLiquido: 75.7,
+    dataReferencia: '31/07/2026',
+    fechado: true,
+    ptoAtencao: '<b>O caixa livre virou negativo no fim de julho, exatamente como a projeção antecipava:</b> o mês fechou com <b>-R$ 179,4 mil</b> de caixa operacional. O saldo em banco de R$ 2.142,8 mil é <b>menor que o fundo Índices Construtivos (R$ 2.322,1 mil)</b> — ou seja, o dia a dia do clube está sendo sustentado por recurso que pertence a obras. O resultado operacional de julho ficou em <b>-R$ 277,8 mil</b> (receita R$ 3.313,8 mil contra despesa R$ 3.591,6 mil); o resultado líquido só ficou positivo em R$ 75,7 mil por causa do aporte não operacional de R$ 441,4 mil da conta de Índices Construtivos. <b style="color:var(--gold);">Esse é o ponto a acompanhar:</b> o fechamento positivo veio de fora da operação, não da operação.',
     retencao: {
-      periodoTag:'Julho/2026 — atualizado (Plano de Trabalho V3)',
+      periodoTag:'Julho/2026',
       kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'48', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'18', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'16', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'34', sub:'do total de solicitações', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'10', sub:'associados retidos', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'4', sub:'ainda a processar', valorCor:'#fb923c'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'63', sub:'no período'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'27', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'36', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'44', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'19', sub:'11 retenções + 8 licenças', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
       ],
       categorias:[
-        {nome:'Contribuinte', qtd:19, cor:'#3d7bff'},{nome:'Patrimonial', qtd:9, cor:'#00e5a0'},
-        {nome:'Contribuinte Individual', qtd:6, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#06b6d4'},
-        {nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Patrimonial Individual', qtd:1, cor:'#fb923c'},
+        {nome:'Contribuinte', qtd:24, cor:'#3d7bff'},{nome:'Patrimonial', qtd:7, cor:'#00e5a0'},
+        {nome:'Contribuinte Individual', qtd:7, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},
+        {nome:'Contribuinte Derivado', qtd:2, cor:'#06b6d4'},{nome:'Patrimonial Individual', qtd:1, cor:'#fb923c'},
       ],
       motivos:[
-        {motivo:'Financeiro', qtd:15, pct:38.46, cor:'#00e5a0'},{motivo:'Não utilização', qtd:11, pct:28.21, cor:'#3d7bff'},
-        {motivo:'Mudança', qtd:6, pct:15.38, cor:'#f2b705'},{motivo:'Desemprego', qtd:3, pct:7.69, cor:'#e8192c'},
-        {motivo:'Saúde', qtd:2, pct:5.13, cor:'#a855f7'},{motivo:'Viagem', qtd:1, pct:2.56, cor:'#fb923c'},
-        {motivo:'Insatisfação', qtd:1, pct:2.56, cor:'#06b6d4'},
+        {motivo:'Financeiro', qtd:15, pct:34.09, cor:'#00e5a0'},{motivo:'Não utilização', qtd:14, pct:31.82, cor:'#3d7bff'},
+        {motivo:'Mudança', qtd:8, pct:18.18, cor:'#f2b705'},{motivo:'Desemprego', qtd:3, pct:6.82, cor:'#e8192c'},
+        {motivo:'Saúde', qtd:2, pct:4.55, cor:'#a855f7'},{motivo:'Viagem', qtd:1, pct:2.27, cor:'#fb923c'},
+        {motivo:'Insatisfação', qtd:1, pct:2.27, cor:'#06b6d4'},
       ],
-      totalDesligamentos:34,
-      ticketMedio:'R$ 623,97', dependentes:'2,3', residual:'18', residualLabel:'Residual Acumulado', desligadosComTaxa:'R$ 1.002,00',
-      modalidadeTaxa:{sim:14, nao:26}, quadroSocial:46,
+      totalDesligamentos:44,
+      ticketMedio:'R$ 631,57', dependentes:'2,5', residual:'27', residualLabel:'Residual Acumulado', desligadosComTaxa:'R$ 1.002,00',
+      taxaQtd:1, modalidadeTaxa:{sim:15, nao:29}, quadroSocial:53,
       negociacoesDesligados:'R$ 1.210,08',
-      analise:'Fonte: Plano de Trabalho de Retenção 2026 (V3). Das <b style="color:var(--text)">48 solicitações totais</b> de julho, 18 são residuais e 16 novas do mês; 34 resultaram em desligamento, 10 foram retidos e 4 ainda estão em processamento. Contribuinte concentra a maioria dos desligamentos (19 de 34), seguido por Patrimonial (9) e Contribuinte Individual (6). Financeiro (38,5%) supera Não utilização (28,2%) como principal motivo neste mês. Dos desligados, 14 pagaram taxa de desligamento (R$1.002,00 em média) e 26 não pagaram. Ticket médio de R$623,97, média de 2,3 dependentes. Quadro social atual: 46.',
+      analise:'Fonte: Plano de Trabalho de Retenção 2026 (V3), contagem conferida registro a registro. Das <b style="color:var(--text)">63 solicitações</b> de julho, <b>44 resultaram em desligamento</b> e 19 foram retidas (11 retenções efetivas + 8 licenças temporárias). Contribuinte concentra mais da metade dos desligamentos (24 de 44), seguido por Patrimonial e Contribuinte Individual (7 cada). <b>Financeiro (34,1%) passou Não utilização (31,8%)</b> como principal motivo — em junho a ordem era inversa, com Não utilização em 50%. Ticket médio de R$ 631,57 contra R$ 567,92 em junho: os desligamentos de julho vieram de associados de maior valor. Isenção de modalidade foi ofertada a 15 dos 44 desligados e apenas 1 pagou taxa de desligamento (R$ 1.002,00). <b style="color:var(--gold);">Atenção:</b> o quadro resumo da própria planilha ainda registra 34 desligados e 57 solicitações — números defasados, que não fecham nem com as 44 linhas com data de desligamento nem com o ticket médio da planilha, calculado sobre essas mesmas 44.',
     },
     vendas: {
       periodoTag:'Julho/2026 (parcial, até 15/07)',
@@ -3977,7 +4063,9 @@ function renderPatrocinioPeriodo(mesesPatroc){
   const kpis = [
     {icone:'🤝', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Aporte no Período', valor:fmtBRL0(valorPeriodo), sub:`${nMeses} ${nMeses===1?'mês':'meses'} · KTO`},
     {icone:'📅', cor:'#f2b705', bg:'rgba(242,183,5,.15)', label:'Aporte Mensal', valor:fmtBRL0(40000), sub:'valor fixo contratual'},
-    {icone:'🏆', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Total do Contrato', valor:fmtBRL0(totalContrato), sub:'Jan–Mai/2026 (encerrado)', valorCor:'#00e5a0'},
+    // Card genérico de disponibilidade: hoje reflete o contrato KTO encerrado, mas o rótulo
+    // já está preparado para receber o total disponível para uso, independente de patrocinador.
+    {icone:'🏆', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Valor Disponível', valor:fmtMilReais(totalContrato), sub:'último contrato KTO · sem outra fonte ativa', valorCor:'#00e5a0'},
   ];
   const kpisHtml = kpis.map(k=>`
     <div class="kpi-icon-card">
@@ -4026,6 +4114,46 @@ function renderPatrocinioPeriodo(mesesPatroc){
     <td class="num">${fmtBRL0(dd.valor)}</td>
     <td class="num muted">${(dd.valor/somaDest*100).toFixed(1).replace('.',',')}%</td></tr>`).join('');
 
+  // ── 2025: consolidação dos dois patrocinadores ──
+  const pats25 = PATROCINIO_2025_PATROCINADORES;
+  const soma25 = c => pats25.reduce((s,p)=>s+p[c], 0);
+  const tot25 = {bruto:soma25('bruto'), cofins:soma25('cofins'), comissao:soma25('comissao'),
+                 rateio:soma25('rateio'), liquido:soma25('liquido')};
+  const todasLinhas = pats25.flatMap(p=>p.linhas);
+  const totLinhas = todasLinhas.length;
+  const mesesNeg = todasLinhas.filter(l=>l.liquido<0).length;
+  // negativo sai como "-R$ 43.040" em vez de "R$ -43.040"
+  const fmtSin = v => (v<0 ? '-' : '') + fmtBRL0(Math.abs(v));
+
+  const cards25 = pats25.map(p=>`
+    <div class="card" style="border-left:4px solid ${p.cor};">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div>
+          <div style="font-size:16px; font-weight:800; color:var(--text);">${p.nome}${p.razao?` <span style="font-size:11.5px; color:var(--muted); font-weight:600;">· ${p.razao}</span>`:''}</div>
+          <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">${p.vigencia} · ${p.meses} meses · ${fmtBRL0(p.valorMes)}/mês</div>
+        </div>
+        <div class="tag" style="background:rgba(232,25,44,.15); color:var(--red); font-weight:700;">Encerrado</div>
+      </div>
+      <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:14px;">
+        <div><div style="font-size:11px; color:var(--muted); letter-spacing:.4px;">APORTE BRUTO</div>
+             <div style="font-size:20px; font-weight:800; color:${p.cor};">${fmtBRL0(p.bruto)}</div></div>
+        <div><div style="font-size:11px; color:var(--muted); letter-spacing:.4px;">RATEIO</div>
+             <div style="font-size:20px; font-weight:800; color:var(--text);">${fmtBRL0(p.rateio)}</div></div>
+        <div><div style="font-size:11px; color:var(--muted); letter-spacing:.4px;">LÍQUIDO</div>
+             <div style="font-size:20px; font-weight:800; color:${p.liquido<0?'var(--red)':'var(--green)'};">${fmtSin(p.liquido)}</div></div>
+      </div>
+      <div class="card-meta" style="margin-top:10px;">COFINS ${fmtBRL0(p.cofins)}${p.comissao?` · comissão ${fmtBRL0(p.comissao)}`:''}${p.obs?` · ${p.obs}`:''}</div>
+    </div>`).join('');
+
+  const linhas25 = pats25.map(p=>p.linhas.map((l,i)=>`
+    <tr><td>${i===0?`<span class="dot" style="background:${p.cor}; margin-right:8px;"></span><b>${p.nome}</b>`:''}</td>
+        <td>${l.mes}</td>
+        <td class="num">${fmtBRL0(l.bruto)}</td>
+        <td class="num muted">${fmtBRL0(l.cofins)}</td>
+        <td class="num muted">${l.comissao?fmtBRL0(l.comissao):'—'}</td>
+        <td class="num">${fmtBRL0(l.rateio)}</td>
+        <td class="num" style="color:${l.liquido<0?'var(--red)':'var(--text)'}; font-weight:${l.liquido<0?700:400};">${fmtSin(l.liquido)}</td></tr>`).join('')).join('');
+
   el.innerHTML = aviso + `
     <div class="card full" style="border-left:4px solid #3d7bff; margin-bottom:16px;">
       <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
@@ -4040,7 +4168,9 @@ function renderPatrocinioPeriodo(mesesPatroc){
 
     <div class="kpi-row-icons cols-3">${kpisHtml}</div>
 
-    <div class="alert-box" style="border-color:var(--gold); margin-top:16px;"><span>📢</span><div><b>Contrapartida contratual:</b> a KTO exige, em contrato, que o clube <b>divulgue a marca</b> em suas ações e espaços. Esse é o compromisso assumido em troca do patrocínio.</div></div>
+    <div class="alert-box" style="border-color:var(--red); margin-top:16px;"><span>🚩</span><div><b>Nenhum patrocinador ativo hoje.</b> A KTO encerrou em maio/2026 e os R$ 200 mil desse último contrato são a única entrada de patrocínio do ano. Os demais patrocinadores — <b>DR SUL</b>, vigente de abril a julho/2025 — também já saíram. Não há receita de patrocínio prevista a partir de junho/2026.</div></div>
+
+    <div class="alert-box" style="border-color:var(--gold);"><span>📢</span><div><b>Contrapartida contratual:</b> a KTO exige, em contrato, que o clube <b>divulgue a marca</b> em suas ações e espaços. Esse é o compromisso assumido em troca do patrocínio.</div></div>
 
     <div class="alert-box" style="border-color:var(--blue);"><span>💰</span><div><b>Destinação:</b> em 2026, o valor recebido ficou alocado na <b>Diretoria Executiva</b>, sem vínculo a um centro de custo específico. O montante entra no <b>caixa do clube e circula normalmente</b> junto com as demais receitas — <b>não é uma reserva à parte</b>.</div></div>
 
@@ -4060,17 +4190,35 @@ function renderPatrocinioPeriodo(mesesPatroc){
       </div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Como o Patrocínio foi Aplicado em 2025<div class="line"></div></div>
-    <div class="alert-box"><span>📆</span><div>Histórico do ano anterior: em <b>2025</b>, o patrocínio KTO (R$ 480 mil no ano) foi distribuído entre eventos e departamentos do clube. Serve de referência de como o recurso costumava ser destinado.</div></div>
+    <div class="section-title" style="margin-top:26px;">Patrocinadores em 2025 — o que entrou e para onde foi<div class="line"></div></div>
+    <div class="alert-box" style="border-color:var(--gold);"><span>📆</span><div>Em 2025 o clube teve <b>dois patrocinadores</b>, ambos já encerrados: <b>KTO</b> (janeiro a outubro) e <b>DR SUL</b> (abril a julho). Juntos aportaram <b>${fmtBRL0(tot25.bruto)}</b> no ano. Depois de COFINS, comissão e do rateio para eventos e departamentos, sobraram <b style="color:${tot25.liquido<0?'var(--red)':'var(--green)'};">${fmtBRL0(tot25.liquido)}</b> — ou seja, <b>${(100-tot25.liquido/tot25.bruto*100).toFixed(1).replace('.',',')}% do patrocínio foi consumido</b> antes de virar caixa livre.</div></div>
+
+    <div class="grid-2">${cards25}</div>
+
+    <div class="card full" style="margin-top:16px;">
+      <div class="card-label">Distribuição mês a mês (2025)</div>
+      <div class="scrollx"><table>
+        <thead><tr><th>Patrocinador</th><th>Mês</th><th class="num">Patrocínio</th><th class="num">COFINS</th><th class="num">Comissão</th><th class="num">Rateio</th><th class="num">Líquido</th></tr></thead>
+        <tbody>${linhas25}
+          <tr style="border-top:2px solid var(--border); font-weight:800;">
+            <td colspan="2">Total 2025 — os dois patrocinadores</td>
+            <td class="num">${fmtBRL0(tot25.bruto)}</td><td class="num">${fmtBRL0(tot25.cofins)}</td>
+            <td class="num">${fmtBRL0(tot25.comissao)}</td><td class="num">${fmtBRL0(tot25.rateio)}</td>
+            <td class="num" style="color:${tot25.liquido<0?'var(--red)':'var(--green)'};">${fmtSin(tot25.liquido)}</td></tr>
+        </tbody>
+      </table></div>
+      <div class="card-meta" style="margin-top:10px;">Líquido = Patrocínio − COFINS − Comissão − Rateio. <b style="color:var(--gold);">${mesesNeg} dos ${totLinhas} meses fecharam negativos</b> — o rateio comprometido superou o que restava do aporte. Fonte: Planilha de Distribuição (01/08/2026).</div>
+    </div>
+
+    <div class="section-title" style="margin-top:26px;">Aplicação por Evento e Departamento — 2025<div class="line"></div></div>
     <div class="card full">
       <div class="scrollx"><table>
         <thead><tr><th>Destino (evento / departamento)</th><th class="num">Valor 2025</th><th class="num">% do aplicado</th></tr></thead>
         <tbody>${destinosHtml}
           <tr style="border-top:2px solid var(--border); font-weight:800;"><td>Total aplicado em eventos</td><td class="num">${fmtBRL0(somaDest)}</td><td class="num">100%</td></tr>
-          <tr style="color:var(--muted);"><td>Diretoria a distribuir (2025)</td><td class="num">${fmtBRL0(PATROCINIO_2025.diretoria)}</td><td class="num">—</td></tr>
-          <tr style="font-weight:800; color:#3d7bff;"><td>Total Patrocínio KTO 2025</td><td class="num">${fmtBRL0(PATROCINIO_2025.total)}</td><td class="num">—</td></tr>
         </tbody>
       </table></div>
+      <div class="card-meta" style="margin-top:10px;">⚠️ Esta lista vem de um levantamento por destino e soma <b>${fmtBRL0(somaDest)}</b>, enquanto a coluna de rateio da Planilha de Distribuição soma <b>${fmtBRL0(tot25.rateio)}</b> — diferença de <b>${fmtBRL0(Math.abs(somaDest-tot25.rateio))}</b>. São dois recortes distintos da mesma aplicação; vale conferir com a Controladoria qual deles fecha o ano.</div>
     </div>`;
 }
 
@@ -4117,7 +4265,7 @@ function agregarSatisfacao(meses){
   });
   const fechados = soma('fechadosNoPrazo') + soma('foraDoPrazo');
   const sla = fechados ? Math.round(soma('fechadosNoPrazo')/fechados*100) : 0;
-  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho'}[k.slice(0,3)]||k);
+  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho',ago:'Agosto',set:'Setembro',out:'Outubro',nov:'Novembro',dez:'Dezembro'}[k.slice(0,3)]||k);
   return {
     label: `${nomeMes(meses[0].key)} a ${nomeMes(meses[meses.length-1].key)}/2026`,
     total: soma('total'), reclamacoes: soma('reclamacoes'), sugestoes: soma('sugestoes'), elogios: soma('elogios'),
@@ -4266,7 +4414,7 @@ function agregarRetencao(mesesRet){
   const ticketMed = pesoTicket ? 'R$ '+ (somaTicket/pesoTicket).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
   const depMed = pesoDep ? (somaDep/pesoDep).toFixed(1).replace('.',',') : '—';
 
-  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho'}[k.slice(0,3)]||k);
+  const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho',ago:'Agosto',set:'Setembro',out:'Outubro',nov:'Novembro',dez:'Dezembro'}[k.slice(0,3)]||k);
   const tag = `${nomeMes(mesesRet[0].key)} a ${nomeMes(mesesRet[mesesRet.length-1].key)}/2026 · ${itens.length} meses`;
 
   return {
@@ -4295,7 +4443,7 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   const agregado = (mesesRet && mesesRet.length > 1) ? agregarRetencao(mesesRet) : null;
   const r = agregado || (mesKeyRet ? (RETENCAO_EXTRA_MESES[mesKeyRet] || (DADOS_MES[mesKeyRet] && DADOS_MES[mesKeyRet].retencao)) : null);
   if(!r){
-    document.getElementById('retencaoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos fechamentos completos de Janeiro, Fevereiro, Março, Maio, Junho e Julho/2026 (parcial) — Abril ainda não foi preenchido pela Gerência de RH. Selecione um intervalo dentro de um desses meses.</div></div>`;
+    document.getElementById('retencaoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos fechamentos de Janeiro, Fevereiro, Março, Maio, Junho, Julho e Agosto/2026 (parcial) — Abril ainda não foi preenchido pela Gerência de RH. Selecione um intervalo dentro de um desses meses.</div></div>`;
     return;
   }
   // Aviso quando o filtro não corresponde exatamente ao mês exibido
@@ -4331,8 +4479,9 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
       <div class="card"><div class="card-label">🎫 Ticket Médio</div><div class="card-value">${r.ticketMedio}</div><div class="card-meta">das solicitações de desligamento</div></div>
       <div class="card"><div class="card-label">👨‍👩‍👧 Média de Dependentes</div><div class="card-value">${r.dependentes}</div><div class="card-meta">por solicitação</div></div>
       <div class="card"><div class="card-label">🔁 ${r.residualLabel}</div><div class="card-value">${r.residual}</div><div class="card-meta">pendentes de períodos anteriores</div></div>
-      ${r.desligadosComTaxa ? `<div class="card"><div class="card-label">💲 Desligados com Taxa</div><div class="card-value">${r.desligadosComTaxa}</div><div class="card-meta">valor médio de taxa cobrada${r.modalidadeTaxa ? ` · ${r.modalidadeTaxa.sim} pagaram, ${r.modalidadeTaxa.nao} não` : ''}</div></div>` : ''}
-      ${r.quadroSocial ? `<div class="card"><div class="card-label">👥 Quadro Social</div><div class="card-value">${r.quadroSocial}</div><div class="card-meta">associados ativos ao final do período</div></div>` : ''}
+      ${r.desligadosComTaxa ? `<div class="card"><div class="card-label">💲 Taxa de Desligamento</div><div class="card-value">${r.desligadosComTaxa}</div><div class="card-meta">${r.taxaQtd!=null ? `cobrada de ${r.taxaQtd} desligado${r.taxaQtd===1?'':'s'} no período` : 'valor de taxa cobrada'}</div></div>` : ''}
+      ${r.modalidadeTaxa ? `<div class="card"><div class="card-label">🎁 Modalidade Ofertada</div><div class="card-value">${r.modalidadeTaxa.sim}</div><div class="card-meta">isenção oferecida na tentativa de retenção · ${r.modalidadeTaxa.nao} sem oferta</div></div>` : ''}
+      ${r.quadroSocial ? `<div class="card"><div class="card-label">👥 Desligamentos do Quadro Social</div><div class="card-value">${r.quadroSocial}</div><div class="card-meta">total no período, incluindo dependentes e categorias isentas</div></div>` : ''}
     </div>
     <div class="card full"><div class="card-label">Análise</div><div class="card-meta" style="font-size:13px; line-height:1.7;">${r.analise}</div></div>
 
@@ -4352,9 +4501,9 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     <tr><td><span class="dot" style="background:${mo.cor}; margin-right:6px;"></span>${mo.motivo}</td><td class="num">${mo.qtd}</td><td class="num">${mo.pct.toFixed(2).replace('.',',')}%</td></tr>`).join('');
   drawDonut('vgRetencaoDonut', r.categorias.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(somaCategorias), 'desligamentos');
 
-  const keys = Object.keys(DADOS_MES).filter(k=>DADOS_MES[k].retencao);
+  const keys = Object.keys(COBERTURA_RETENCAO).filter(k=>getRetencaoMes(k));
   document.getElementById('tabelaHistoricoRetencao').innerHTML = keys.map(k=>{
-    const rr = DADOS_MES[k].retencao;
+    const rr = getRetencaoMes(k);
     const retido = rr.kpis.find(x=>x.label==='Retenção' || x.label==='Retidos');
     return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : '—'}</td><td class="num">${rr.residual}</td><td class="num">${rr.ticketMedio}</td><td class="num">${rr.dependentes}</td></tr>`;
   }).join('');
@@ -6300,7 +6449,7 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   document.getElementById('alertaPontoAtencaoVG').innerHTML = m.ptoAtencao + ' Detalhes na aba <b>Fluxo de Caixa</b>.';
   document.getElementById('alertaPontoAtencaoFC').innerHTML = m.ptoAtencao;
   document.getElementById('alertaFechamentoFC').innerHTML = m.fechado
-    ? `<b>Mês fechado:</b> ${m.label} encerrado em <b>${m.dataReferencia}</b>, com saldo em banco de <b>R$ ${m.saldoTotal.toFixed(1).replace('.',',')} mil</b> e resultado líquido de <b>R$ ${(m.resultadoLiquido!=null?m.resultadoLiquido:0).toFixed(1).replace('.',',')} mil</b>. Valores conforme o relatório "Fluxo Caixa SOGIPA" da Controladoria.`
+    ? `<b>Mês fechado:</b> ${m.label} encerrado em <b>${m.dataReferencia}</b>, com saldo em banco de <b>${fmtMil(m.saldoTotal)}</b> e resultado líquido de <b>${fmtMil(m.resultadoLiquido!=null?m.resultadoLiquido:0)}</b>. Valores conforme o relatório "Fluxo Caixa SOGIPA" da Controladoria.`
     : `<b>Fechamento em andamento:</b> dados de <b>${m.label}</b> atualizados pela Controladoria até <b>${m.dataReferencia}</b>. Os valores de "Tendência" e "Realizado" seguem sendo ajustados conforme novos lançamentos chegam.`;
 
   // KPIs (aba Fluxo de Caixa)
@@ -6360,7 +6509,7 @@ function renderVisaoGeralObrasComp(){
   legend.innerHTML = `
     <div class="legend-row"><span class="dot" style="background:var(--blue)"></span> Já Investido em Obras — ${fmtMilReais(o.totalInvestido)}</div>
     <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Saldo Disponível (restrito a obras) — ${fmtMilReais(o.saldoDisponivel)}</div>
-    <div class="card-meta" style="margin-top:8px;">Sobre o total já recebido no fundo (${fmtMilReais(o.totalRecebido)}, acumulado desde fev/2026). Ver detalhes na aba <b>Obras</b>.</div>`;
+    <div class="card-meta" style="margin-top:8px;">Sobre o total já recebido no fundo (${fmtMilReais(o.totalRecebido)}, acumulado desde fev/2026). <b>Posição em ${o.dataReferencia}</b> — fonte: Relatório de Acompanhamento dos Índices Construtivos, que tem data-base própria e pode divergir do saldo do fundo mostrado no Fluxo de Caixa. Ver detalhes na aba <b>Obras</b>.</div>`;
 }
 
 // Agrega pagamentos de vários meses (soma valores e consolida fornecedores/bancos)
