@@ -456,6 +456,7 @@
     <div class="nav-item" data-page="retencao"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> <span class="nav-text">CRA</span></div>
     <div class="nav-item" data-page="rh"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 22c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span> <span class="nav-text">RH</span></div>
     <div class="nav-item" data-page="locacoes" style="display:none;"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg></span> <span class="nav-text">Locações</span></div>
+    <div class="nav-item" data-page="esportes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0 0 20"/><path d="M2 12h20"/></svg></span> <span class="nav-text">Esportes</span></div>
     <div class="nav-item" data-page="obras"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M2 20h20"/><path d="M4 20V10l4-3 4 3v10"/><path d="M12 20V6l4-3 4 3v14"/><path d="M8 20v-4h2v4"/></svg></span> <span class="nav-text">Obras</span></div>
   </div>
   <div class="sidebar-foot">
@@ -973,6 +974,11 @@
     </div>
 
     <!-- ══════════════════ OBRAS ══════════════════ -->
+    <div class="page-section" id="page-esportes">
+      <div class="section-title">Esportes — Resultado Operacional por Modalidade<div class="line"></div></div>
+      <div id="esportesConteudo"></div>
+    </div>
+
     <div class="page-section" id="page-obras">
       <div class="section-title">Obras — Fundo Índices Construtivos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Atualizado até 20/07/2026</span><div class="line"></div></div>
       <div id="obrasConteudo"></div>
@@ -1391,6 +1397,65 @@ const COBERTURA_SATISFACAO = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
 };
+
+// ═══════════════════════════════════════════════════════════
+// ESPORTES — resultado operacional por modalidade
+// ═══════════════════════════════════════════════════════════
+// Fonte: Informação de Rendimentos por Modalidade, acumulado JAN–JUN/2026.
+// O "tot" é a coluna TOTAL azul do relatório = soma de Competição + Eventos +
+// Serviços + Formação + Rendimento + Alto Rendimento. A coluna TOTAL vermelha
+// (outro recorte, à esquerda no relatório) NÃO é usada aqui de propósito.
+const COBERTURA_ESPORTES = {
+  jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
+  fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
+  mar2026: {ini:'2026-03-01', fim:'2026-03-31'},
+  abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
+  mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
+  jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
+};
+
+const ESPORTES_COLUNAS = [
+  {key:'comp', nome:'Competição',      cor:'#e8192c'},
+  {key:'ev',   nome:'Eventos',         cor:'#fb923c'},
+  {key:'serv', nome:'Serviços',        cor:'#00e5a0'},
+  {key:'form', nome:'Formação',        cor:'#3d7bff'},
+  {key:'rend', nome:'Rendimento',      cor:'#a855f7'},
+  {key:'alto', nome:'Alto Rendimento', cor:'#06b6d4'},
+];
+
+const ESPORTES_MODALIDADES = [
+  {nome:'MUSCULAÇÃO', comp:null, ev:null, serv:670050, form:null, rend:null, alto:null, tot:670050},
+  {nome:'NATAÇÃO', comp:null, ev:null, serv:75131, form:null, rend:null, alto:null, tot:75131},
+  {nome:'PERSONAL POSTURA', comp:null, ev:null, serv:56771, form:null, rend:null, alto:null, tot:56771},
+  {nome:'PERCORRER', comp:null, ev:null, serv:52133, form:null, rend:null, alto:null, tot:52133},
+  {nome:'BOXE', comp:null, ev:null, serv:48155, form:null, rend:null, alto:null, tot:48155},
+  {nome:'GINÁSTICA RÍTMICA', comp:-29, ev:-1520, serv:null, form:93043, rend:6193, alto:-54682, tot:43004},
+  {nome:'HIDROGINÁSTICA', comp:null, ev:null, serv:40437, form:null, rend:null, alto:null, tot:40437},
+  {nome:'LEVANTAMENTO DE PESO', comp:0, ev:null, serv:null, form:26723, rend:-659, alto:null, tot:26064},
+  {nome:'PERSONAL TÊNIS RODRIGO', comp:null, ev:null, serv:null, form:null, rend:null, alto:14795, tot:14795},
+  {nome:'GINÁSTICA VETERANAS', comp:null, ev:null, serv:11811, form:null, rend:null, alto:null, tot:11811},
+  {nome:'VÔLEI KIKA', comp:null, ev:null, serv:10323, form:null, rend:null, alto:null, tot:10323},
+  {nome:'PATINAÇÃO', comp:null, ev:null, serv:9841, form:null, rend:null, alto:null, tot:9841},
+  {nome:'PERSONAL VAQUEIRO', comp:null, ev:null, serv:5110, form:null, rend:null, alto:null, tot:5110},
+  {nome:'BALLET GUTIERRES', comp:null, ev:null, serv:3390, form:null, rend:null, alto:null, tot:3390},
+  {nome:'YOGA', comp:null, ev:null, serv:2025, form:null, rend:null, alto:null, tot:2025},
+  {nome:'KUNG FU', comp:null, ev:null, serv:2013, form:null, rend:null, alto:null, tot:2013},
+  {nome:'RITMOS', comp:null, ev:null, serv:1867, form:null, rend:null, alto:null, tot:1867},
+  {nome:'TÊNIS DE MESA', comp:-15611, ev:0, serv:null, form:11058, rend:10725, alto:-4576, tot:1596},
+  {nome:'VÔLEI VETERANAS', comp:null, ev:-1617, serv:2801, form:null, rend:null, alto:null, tot:1183},
+  {nome:'ESGRIMA', comp:null, ev:null, serv:null, form:null, rend:null, alto:121, tot:121},
+  {nome:'FUTEBOL', comp:null, ev:1475, serv:-6342, form:-13331, rend:11637, alto:null, tot:-6560},
+  {nome:'FITNESS', comp:null, ev:null, serv:-9539, form:null, rend:null, alto:null, tot:-9539},
+  {nome:'BEACH TENNIS', comp:-59, ev:-4672, serv:-10456, form:null, rend:null, alto:null, tot:-15187},
+  {nome:'TÊNIS', comp:-22282, ev:-7911, serv:31924, form:61921, rend:-82215, alto:null, tot:-18564},
+  {nome:'GINÁSTICA ARTÍSTICA', comp:-66821, ev:-16678, serv:null, form:254283, rend:-140697, alto:-51576, tot:-21489},
+  {nome:'PUNHOBOL', comp:-16407, ev:-15147, serv:null, form:7148, rend:-10828, alto:null, tot:-35233},
+  {nome:'BASQUETE', comp:-60996, ev:null, serv:8223, form:11891, rend:-2633, alto:null, tot:-43515},
+  {nome:'ATHLETIC TRAINNING', comp:null, ev:null, serv:-54050, form:null, rend:null, alto:null, tot:-54050},
+  {nome:'VÔLEI', comp:-157337, ev:-844, serv:10690, form:119518, rend:-26978, alto:null, tot:-54951},
+  {nome:'ATLETISMO', comp:-22494, ev:-5981, serv:null, form:877, rend:-63513, alto:-94304, tot:-185415},
+  {nome:'JUDÔ', comp:-99748, ev:9865, serv:null, form:85692, rend:-102979, alto:-122737, tot:-229908},
+];
 
 const RETENCAO_EXTRA_MESES = {
   ago2026: {
@@ -2562,6 +2627,7 @@ const PAGE_TITLES = {
   retencao:    {t:'CRA — Central de Relacionamento com o Associado', s:'Retenção e satisfação · Jan-Jul/2026'},
   rh:          {t:'RH', s:'Indicadores de RH e DP · Jan-Jun/2026'},
   locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
+  esportes:    {t:'Esportes', s:'Resultado por modalidade · Jan-Jun/2026'},
   obras:       {t:'Obras', s:'Fundo Índices Construtivos · Posição em 20/07/2026'},
 };
 
@@ -3601,6 +3667,8 @@ function aplicarFiltroMes(){
   // Satisfação (CRA): cobertura própria Jan-Jun, mesma sistemática de filtro
   const mesesSat = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_SATISFACAO);
   renderSatisfacaoPeriodo(mesesSat);
+  const mesesEsp = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_ESPORTES);
+  renderEsportes(mesesEsp);
   const mesesRH = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_RH);
   setRHPeriodo(mesesRH);
   renderRH(mesKey);
@@ -5134,6 +5202,115 @@ function gerarMensagemChave(resultadoStatus, caixaStatus, inadStatus, retStatus,
   msg += `Recomenda-se priorizar ${criticos.length?juntarLista(criticos.map(k=>nomes[k])):'a manutenção dos indicadores atuais'} nas próximas reuniões de diretoria.`;
   return msg;
 }
+
+// ═══════════════════════════════════════════════════════════
+// ESPORTES — render
+// ═══════════════════════════════════════════════════════════
+function renderEsportes(mesesEsp){
+  const el = document.getElementById('esportesConteudo');
+  if(!el) return;
+
+  const M = ESPORTES_MODALIDADES;
+  const cobertos = mesesEsp ? mesesEsp.length : 0;
+  const totalMeses = Object.keys(COBERTURA_ESPORTES).length;
+
+  if(!cobertos){
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Esportes para o período selecionado.</b> O relatório de rendimentos por modalidade cobre <b>Janeiro a Junho/2026</b> (acumulado). Selecione um intervalo dentro desse período.</div></div>`;
+    return;
+  }
+
+  const soma = k => M.reduce((s,m)=>s+(m[k]||0), 0);
+  const totGeral = soma('tot');
+  const pos = M.filter(m=>(m.tot||0) > 0);
+  const neg = M.filter(m=>(m.tot||0) < 0);
+  const somaPos = pos.reduce((s,m)=>s+m.tot, 0);
+  const somaNeg = neg.reduce((s,m)=>s+m.tot, 0);
+  const maior = M[0], menor = M[M.length-1];
+
+  const aviso = cobertos < totalMeses
+    ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div><b>O relatório de modalidades é acumulado de Janeiro a Junho/2026 e não tem abertura mês a mês.</b> Os números abaixo são sempre o acumulado do semestre, independente do recorte do filtro — o intervalo selecionado cobre ${cobertos} dos ${totalMeses} meses. Assim que a Controladoria enviar o desdobramento mensal, a aba passa a responder ao filtro.</div></div>`
+    : `<div class="alert-box" style="border-color:var(--blue);"><span>📊</span><div>Acumulado de <b>Janeiro a Junho/2026</b>. O resultado de cada modalidade é a soma de Competição, Eventos, Serviços, Formação, Rendimento e Alto Rendimento.<br><b style="color:var(--gold);">⚠️ Filtre sempre de Janeiro a Junho/2026</b> — esta aba ainda não tem dados de julho em diante.</div></div>`;
+
+  const kpis = [
+    {icone:'⚽', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Resultado Total', valor:fmtSinEsp(totGeral),
+     sub:`${M.length} modalidades`, valorCor: totGeral>=0 ? '#00e5a0' : '#ff6b6b'},
+    {icone:'📈', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Modalidades Positivas', valor:String(pos.length),
+     sub:`somam ${fmtSinEsp(somaPos)}`, valorCor:'#00e5a0'},
+    {icone:'📉', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Modalidades Negativas', valor:String(neg.length),
+     sub:`somam ${fmtSinEsp(somaNeg)}`, valorCor:'#ff6b6b'},
+    {icone:'🏆', cor:'#f2b705', bg:'rgba(242,183,5,.15)', label:'Maior Resultado', valor:maior.nome,
+     sub:fmtSinEsp(maior.tot), valorCor:'#f2b705', pequeno:true},
+  ];
+  const kpisHtml = kpis.map(k=>`
+    <div class="kpi-icon-card">
+      <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:${k.bg}; color:${k.cor};">${k.icone}</div><div class="label">${k.label}</div></div>
+      <div class="kpi-icon-info"><div class="value" style="${k.valorCor?`color:${k.valorCor};`:''}${k.pequeno?'font-size:19px; line-height:1.25;':''}">${k.valor}</div><div class="delta muted">${k.sub}</div></div>
+    </div>`).join('');
+
+  // ── barras divergentes: positivo à direita, negativo à esquerda ──
+  const maxAbs = Math.max(...M.map(m=>Math.abs(m.tot||0))) || 1;
+  const barras = M.map(m=>{
+    const v = m.tot || 0, p = Math.abs(v)/maxAbs*50;
+    const positivo = v >= 0;
+    return `<div style="display:flex; align-items:center; gap:10px; padding:5px 0;">
+      <div style="width:168px; flex-shrink:0; font-size:12px; color:var(--text); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.nome}</div>
+      <div style="flex:1; min-width:0; position:relative; height:20px;">
+        <div style="position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--border);"></div>
+        <div style="position:absolute; top:2px; bottom:2px; ${positivo?`left:50%; width:${p}%; background:linear-gradient(90deg,#00b87a,#00e5a0); border-radius:0 4px 4px 0;`:`right:50%; width:${p}%; background:linear-gradient(90deg,#ff6b6b,#c4102a); border-radius:4px 0 0 4px;`}"></div>
+      </div>
+      <div style="width:104px; flex-shrink:0; font-size:12px; font-weight:700; text-align:right; color:${positivo?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(v)}</div>
+    </div>`;
+  }).join('');
+
+  // ── totais por natureza de despesa/receita ──
+  const colsHtml = ESPORTES_COLUNAS.map(c=>{
+    const v = soma(c.key);
+    const qtd = M.filter(m=>m[c.key]!=null).length;
+    return `<div class="card">
+      <div class="card-label" style="color:${c.cor};">${c.nome}</div>
+      <div class="card-value" style="color:${v>=0?'#00e5a0':'#ff6b6b'}; font-size:22px;">${fmtSinEsp(v)}</div>
+      <div class="card-meta">${qtd} modalidade${qtd===1?'':'s'} com lançamento</div>
+    </div>`;
+  }).join('');
+
+  const linhas = M.map(m=>`
+    <tr>
+      <td style="white-space:nowrap;"><span class="dot" style="background:${(m.tot||0)>=0?'#00e5a0':'#ff6b6b'}; margin-right:8px;"></span>${m.nome}</td>
+      ${ESPORTES_COLUNAS.map(c=>`<td class="num ${m[c.key]==null?'muted':''}" style="${(m[c.key]||0)<0?'color:#ff6b6b; font-weight:700;':''}">${m[c.key]==null?'—':fmtSinEsp(m[c.key])}</td>`).join('')}
+      <td class="num" style="font-weight:800; color:${(m.tot||0)>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(m.tot||0)}</td>
+    </tr>`).join('');
+
+  el.innerHTML = `
+    ${aviso}
+    <div class="kpi-row-icons cols-4">${kpisHtml}</div>
+
+    <div class="section-title" style="margin-top:26px;">O que dá resultado e o que consome<div class="line"></div></div>
+    <div class="card full">
+      <div class="card-label">Resultado por modalidade — Jan a Jun/2026</div>
+      <div style="margin-top:14px;">${barras}</div>
+      <div class="card-meta" style="margin-top:12px;">Barras à direita da linha central = resultado positivo; à esquerda = negativo. Ordenado do maior superávit ao maior déficit.</div>
+    </div>
+
+    <div class="section-title" style="margin-top:26px;">Por Natureza<div class="line"></div></div>
+    <div class="kpi-row cols-3">${colsHtml}</div>
+
+    <div class="section-title" style="margin-top:26px;">Detalhamento por Modalidade<div class="line"></div></div>
+    <div class="card full">
+      <div class="scrollx"><table>
+        <thead><tr><th>Modalidade</th>${ESPORTES_COLUNAS.map(c=>`<th class="num">${c.nome}</th>`).join('')}<th class="num">Resultado</th></tr></thead>
+        <tbody>${linhas}
+          <tr style="border-top:2px solid var(--border); font-weight:800;">
+            <td>Total Geral</td>
+            ${ESPORTES_COLUNAS.map(c=>`<td class="num" style="${soma(c.key)<0?'color:#ff6b6b;':''}">${fmtSinEsp(soma(c.key))}</td>`).join('')}
+            <td class="num" style="color:${totGeral>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(totGeral)}</td>
+          </tr>
+        </tbody>
+      </table></div>
+      <div class="card-meta" style="margin-top:10px;">Fonte: Informação de Rendimentos por Modalidade (acumulado Jan–Jun/2026). Valores em reais. Células vazias indicam natureza sem lançamento na modalidade.</div>
+    </div>`;
+}
+// negativo sai como "-R$ 43.040" em vez de "R$ -43.040"
+function fmtSinEsp(v){ if(v==null||isNaN(v)) return '—'; return (v<0?'-':'') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR',{maximumFractionDigits:0}); }
 
 function renderObras(){
   const el = document.getElementById('obrasConteudo');
