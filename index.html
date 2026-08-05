@@ -886,7 +886,7 @@
         <div id="negChartFull" class="scrollx"></div>
         <div id="negLegendaNeg" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;"></div>
         <div id="negSerieDetalhe" style="margin-top:10px;"></div>
-        <div class="alert-box">
+        <div class="alert-box" id="negAlertaRodapeBox">
           <span>📊</span>
           <div id="negAlertaRodape"></div>
         </div>
@@ -1319,6 +1319,13 @@ let OBRAS = [
   {data:'20/08/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
   {data:'30/09/2026', fornecedor:'—', projeto:'Telhado Dn. Leopoldina', valor:421000.00},
 ];
+// Campanhas de reingresso — Julho/2026 (01 a 31/07)
+const REINGRESSO_CAMPANHAS_JUL = [
+  {nome:'Taxa reduzida',     qtd:14, cor:'#00e5a0'},
+  {nome:'Lista de excluídos',qtd:13, cor:'#3d7bff'},
+  {nome:'Promo aniversário', qtd:4,  cor:'#f2b705'},
+  {nome:'Sem campanha',      qtd:6,  cor:'#5a5c78'},
+];
 const REINGRESSO_CAMPANHAS = [
   {nome:'Plano Senior', qtd:6, cor:'#00e5a0'},
   {nome:'Promo 24h',    qtd:4, cor:'#06b6d4'},
@@ -1590,8 +1597,8 @@ const REINGRESSO_HISTORICO = [
   {mesKey:'mai2026', periodoTag:'Maio/2026',      total:46, valor:33172.24, campanhas:null, alerta:null},
   {mesKey:'jun2026', periodoTag:'Junho/2026',     total:28, valor:15167.35,
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
-  {mesKey:'jul2026', periodoTag:'Julho/2026 (parcial, até 24/07)', total:25, valor:16617.06,
-    campanhas: null, alerta: 'Período parcial de julho (até 24/07) — ainda sem quebra por campanha específica. Assim que tivermos mais detalhamento, a distribuição por campanha volta a aparecer.'},
+  {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
+    campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -1600,11 +1607,13 @@ const VENDAS_CAMPANHAS = [
   {nome:'Ex Sócio Dependente',      qtd:2, cor:'#a855f7'},
 ];
 // Funil de conversão da Central de Vendas (leads/contatos/visitas/vendas) — dado diário real
+// Valores recebidos por competência — apuração de 01 a 31/07/2026 (Resumo das Negociações).
+// Total R$ 460.277,00 · 1.498 contatos (lista de inadimplência + negociações por ligação).
 const NEGOCIACOES = [
-  {mes:'Mar/26', valor:8944,   contatos:37},
-  {mes:'Abr/26', valor:44827,  contatos:335},
-  {mes:'Mai/26', valor:80505,  contatos:512},
-  {mes:'Jun/26', valor:259750, contatos:614},
+  {mes:'Mar/26', valor:23632,  contatos:37},
+  {mes:'Abr/26', valor:47067,  contatos:335},
+  {mes:'Mai/26', valor:84982,  contatos:512},
+  {mes:'Jun/26', valor:304596, contatos:614},
 ];
 const INADIMPLENCIA = [
   {mes:'Mar/26', real:12.5, meta:12.5},
@@ -2248,6 +2257,9 @@ function renderNegociacaoResumo(mesKey, de, ate){
     document.getElementById('negAlertaTopo').innerHTML = 'Selecione um intervalo entre Março e Junho/2026 para ver a análise de inadimplência.';
     document.getElementById('negResumoCards').innerHTML = '';
     document.getElementById('negAlertaRodape').innerHTML = '';
+    // esconde a caixa inteira — sem texto ela virava um card vazio só com o ícone
+    const boxRod = document.getElementById('negAlertaRodapeBox');
+    if(boxRod) boxRod.style.display = 'none';
     const vgRecEl = document.getElementById('vgRecuperadoNeg');
     if(vgRecEl){
       vgRecEl.textContent = '—';
@@ -2296,6 +2308,8 @@ function renderNegociacaoResumo(mesKey, de, ate){
 
   const isMonotonic = NEGOCIACOES.every((n,i)=> i===0 || n.valor >= NEGOCIACOES[i-1].valor);
   const tendenciaTexto = isMonotonic ? 'crescendo mês a mês' : 'com oscilação mês a mês, mas fechando o período em alta';
+  const boxRodOk = document.getElementById('negAlertaRodapeBox');
+  if(boxRodOk) boxRodOk.style.display = '';
   document.getElementById('negAlertaRodape').innerHTML = `<b>Estamos atuando nas negociações.</b> No período, ${fmtBRL(totalValor)} foram recuperados via cobrança — passando de ${fmtBRL(primeiroValor.valor)} (${primeiroValor.mes.split('/')[0].toLowerCase()}) para ${fmtBRL(ultimoValor.valor)} (${ultimoValor.mes.split('/')[0].toLowerCase()}), ${tendenciaTexto}. Ainda assim, isso é parte de uma inadimplência maior: a recuperação está aumentando, mas é preciso acompanhar a taxa de inadimplência do mês mais recente para comparar a velocidade.`;
 }
 
