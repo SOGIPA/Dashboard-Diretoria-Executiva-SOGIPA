@@ -3408,6 +3408,15 @@ const PAGAMENTOS_MESES = {
       {nome:'Caixa Sogipa', qtd:15, total:10650.18},
     ],
   },
+  ago2026: {
+    // Agosto em andamento: por enquanto só o corte de 03 a 07/08.
+    // Dias 01 e 02 caíram em sábado e domingo — não há execução de pagamento.
+    label:'Agosto/2026 (parcial · 03 a 07/08)', qtd:170, total:1204168.67,
+    maiorQtd:25, maiorTotal:1046489.32, menorQtd:145, menorTotal:157679.35,
+    fornecedoresDistintos:null, parcial:true,
+    top:[{nome:'Folha Pagamento',qtd:16,valor:607625.00,pct:50.46},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:12.78},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:3.32},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:2.71},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:2.70},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:28366.59,pct:2.36},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:27780.00,pct:2.31},{nome:'Comite Brasileiro De Clubes',qtd:1,valor:17842.50,pct:1.48},{nome:'Hotel Dall Onder Ltda',qtd:1,valor:16435.50,pct:1.36},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15773.69,pct:1.31},{nome:'W3K Tecnologia Ltda',qtd:2,valor:15111.94,pct:1.25},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:14514.82,pct:1.21},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:10000.00,pct:0.83},{nome:'Contabilizi Consultoria Ltda',qtd:1,valor:9592.00,pct:0.80},{nome:'Beckenkamp Vestuario Ltda',qtd:2,valor:9156.75,pct:0.76}],
+    bancos:[{nome:'Banrisul',qtd:165,total:1087364.30},{nome:'Projeto Olim',qtd:1,total:52586.39},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Alto Rendime',qtd:1,total:7500.00},{nome:'Patrocínio A',qtd:1,total:7440.00},{nome:'Caixa Sogipa',qtd:1,total:1673.50}],
+  },
 };
 const COBERTURA_PAGAMENTOS = {
   jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
@@ -3417,6 +3426,7 @@ const COBERTURA_PAGAMENTOS = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 
 // ── Filtro de período — baseado nos períodos REAIS enviados pela controladoria ──
@@ -3452,6 +3462,9 @@ const PAGAMENTOS_POR_PERIODO = {
   '27-31jul': {label:'27 a 31/07/2026', qtd:134, total:455336.34, maiorQtd:12, maiorTotal:314804.54, menorQtd:122, menorTotal:140531.80,
     top:[{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:90741.42,pct:19.93},{nome:'Beckenkamp Vestuario Ltda',qtd:3,valor:71641.75,pct:15.73},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:3,valor:57636.30,pct:12.66},{nome:'3C Arquitetura E Urbanismo Sociedade Simples',qtd:1,valor:38144.48,pct:8.38},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:2,valor:31767.51,pct:6.98},{nome:'Folha Pagamento',qtd:5,valor:17987.38,pct:3.95},{nome:'Escritorio Central De Distribuição E Arrecada',qtd:5,valor:9363.17,pct:2.06},{nome:'Vital Assessoria E Consultoria Em Medicina Do',qtd:1,valor:7938.20,pct:1.74},{nome:'Editora Espaço Aereo Ltda',qtd:1,valor:6851.66,pct:1.50},{nome:'Positiva Qualidade Ambiental Ltda - Epp',qtd:3,valor:6772.94,pct:1.49},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:2,valor:6254.00,pct:1.37},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:5500.00,pct:1.21},{nome:'V.M.',qtd:1,valor:5400.00,pct:1.19},{nome:'N.F.',qtd:1,valor:4950.00,pct:1.09},{nome:'Rema Arte Esporte Ltda',qtd:2,valor:4708.68,pct:1.03}],
     bancos:[{nome:'Banrisul',qtd:126,total:334193.26},{nome:'Projeto Olim',qtd:1,total:67557.00},{nome:'Índices Cons',qtd:1,total:38144.48},{nome:'Proj Sogipa',qtd:4,total:14990.00},{nome:'Caixa Sogipa',qtd:2,total:451.60}]},
+  '03-07ago': {label:'03 a 07/08/2026', qtd:170, total:1204168.67, maiorQtd:25, maiorTotal:1046489.32, menorQtd:145, menorTotal:157679.35,
+    top:[{nome:'Folha Pagamento',qtd:16,valor:607625.00,pct:50.46},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:12.78},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:3.32},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:2.71},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:2.70},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:28366.59,pct:2.36},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:27780.00,pct:2.31},{nome:'Comite Brasileiro De Clubes',qtd:1,valor:17842.50,pct:1.48},{nome:'Hotel Dall Onder Ltda',qtd:1,valor:16435.50,pct:1.36},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15773.69,pct:1.31},{nome:'W3K Tecnologia Ltda',qtd:2,valor:15111.94,pct:1.25},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:14514.82,pct:1.21},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:10000.00,pct:0.83},{nome:'Contabilizi Consultoria Ltda',qtd:1,valor:9592.00,pct:0.80},{nome:'Beckenkamp Vestuario Ltda',qtd:2,valor:9156.75,pct:0.76}],
+    bancos:[{nome:'Banrisul',qtd:165,total:1087364.30},{nome:'Projeto Olim',qtd:1,total:52586.39},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Alto Rendime',qtd:1,total:7500.00},{nome:'Patrocínio A',qtd:1,total:7440.00},{nome:'Caixa Sogipa',qtd:1,total:1673.50}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -3463,7 +3476,8 @@ const PERIODOS = [
   {key:'06-10jul',     temDados:{pagamentos:true}, ini:'2026-07-06', fim:'2026-07-10'},
   {key:'13-17jul',     temDados:{pagamentos:true}, ini:'2026-07-13', fim:'2026-07-17'},
   {key:'20-24jul',     temDados:{pagamentos:true}, ini:'2026-07-20', fim:'2026-07-24'},
-  {key:'27-31jul',     temDados:{pagamentos:true}, ini:'2026-07-27', fim:'2026-07-31', atual:true},
+  {key:'27-31jul',     temDados:{pagamentos:true}, ini:'2026-07-27', fim:'2026-07-31'},
+  {key:'03-07ago',     temDados:{pagamentos:true}, ini:'2026-08-03', fim:'2026-08-07', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -9099,9 +9113,9 @@ const FONTES_DADOS = [
    obs:'Acumulado do semestre, sem abertura mês a mês.'},
   {area:'Patrocínio',          cob:()=>COBERTURA_PATROCINIO, fonte:'Contrato KTO + Planilha de Distribuição',
    obs:'Jan a Mai: contrato KTO. De junho em diante, sem patrocínio — informação confirmada, não é dado faltando.'},
-  {area:'Calendário Operacional', cob:()=>({ago2026:1,set2026:1,out2026:1,nov2026:1,dez2026:1}),
+  {area:'Calendário Operacional', cob:()=>({jan2026:1,fev2026:1,mar2026:1,abr2026:1,mai2026:1,jun2026:1,jul2026:1,ago2026:1,set2026:1,out2026:1,nov2026:1,dez2026:1}),
    fonte:'Calendário Operacional 2026 — feriados e dias úteis',
-   obs:'Cobre Ago a Dez. 24 e 31/12 valem meio dia útil (expediente até meio-dia). Prazos de Jan a Jul descontam só fim de semana até os feriados desses meses serem incluídos.'},
+   obs:'Ano completo (Jan a Dez). 24 e 31/12 valem meio dia útil. Pontos facultativos, como o Carnaval, contam como dia normal.'},
   {area:'Obras',               cob:()=>({jan2026:1,fev2026:1,mar2026:1,abr2026:1,mai2026:1,jun2026:1,jul2026:1}),
    fonte:'Relatório de Acompanhamento dos Índices Construtivos', obs:'Posição de 20/07/2026 — data-base própria.'},
 ];
@@ -9153,10 +9167,69 @@ function rotuloPrazo(chaveMes, prazoDia){
 // Fonte: planilha Calendário Operacional (Ago a Dez/2026).
 // Usado no cálculo de prazos em dias úteis (D+1), que passam a descontar
 // também os feriados, não só sábados e domingos.
-// ATENÇÃO: a lista cobre apenas AGO–DEZ/2026. Enquanto os feriados de
-// janeiro a julho não forem carregados, os prazos desses meses descontam
-// só o fim de semana. Basta acrescentar as datas aqui para corrigir.
+// Cobre JAN–DEZ/2026 (calendários Jan-Jul e Ago-Dez). Pontos facultativos ficam
+// identificados à parte e NÃO são descontados: para o clube são dias de trabalho.
 const CALENDARIO_FERIADOS = [
+ {
+  "data": "2026-01-01",
+  "tipo": "feriado",
+  "nome": "Confraternização Universal",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-02-16",
+  "tipo": "facultativo",
+  "nome": "Carnaval - ponto facultativo federal",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-02-17",
+  "tipo": "facultativo",
+  "nome": "Carnaval - ponto facultativo federal",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-02-18",
+  "tipo": "facultativo",
+  "nome": "Quarta-feira de Cinzas - ponto facultativo federal até as 14h",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-04-03",
+  "tipo": "feriado",
+  "nome": "Paixão de Cristo",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-04-20",
+  "tipo": "facultativo",
+  "nome": "Ponto facultativo federal",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-04-21",
+  "tipo": "feriado",
+  "nome": "Tiradentes",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-05-01",
+  "tipo": "feriado",
+  "nome": "Dia Mundial do Trabalho",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-06-04",
+  "tipo": "facultativo",
+  "nome": "Corpus Christi - ponto facultativo federal",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-06-05",
+  "tipo": "facultativo",
+  "nome": "Ponto facultativo federal",
+  "escopo": "Federal"
+ },
  {
   "data": "2026-09-07",
   "tipo": "feriado",
@@ -9174,6 +9247,12 @@ const CALENDARIO_FERIADOS = [
   "tipo": "feriado",
   "nome": "Nossa Senhora Aparecida",
   "escopo": "Nacional"
+ },
+ {
+  "data": "2026-10-28",
+  "tipo": "facultativo",
+  "nome": "Dia do Servidor Público - ponto facultativo federal",
+  "escopo": "Federal"
  },
  {
   "data": "2026-11-02",
@@ -9194,22 +9273,16 @@ const CALENDARIO_FERIADOS = [
   "escopo": "Nacional"
  },
  {
-  "data": "2026-12-25",
-  "tipo": "feriado",
-  "nome": "Natal",
-  "escopo": "Nacional"
- },
- {
-  "data": "2026-10-28",
-  "tipo": "facultativo",
-  "nome": "Dia do Servidor Público - ponto facultativo federal",
-  "escopo": "Federal"
- },
- {
   "data": "2026-12-24",
   "tipo": "meio-expediente",
   "nome": "Véspera de Natal — expediente até o meio-dia",
   "escopo": "SOGIPA"
+ },
+ {
+  "data": "2026-12-25",
+  "tipo": "feriado",
+  "nome": "Natal",
+  "escopo": "Nacional"
  },
  {
   "data": "2026-12-31",
@@ -9221,7 +9294,7 @@ const CALENDARIO_FERIADOS = [
 const FERIADOS_SET = new Set(CALENDARIO_FERIADOS.filter(f=>f.tipo==='feriado').map(f=>f.data));
 // 24 e 31/12 têm expediente só até o meio-dia — contam meio dia útil.
 const MEIO_EXPEDIENTE_SET = new Set(CALENDARIO_FERIADOS.filter(f=>f.tipo==='meio-expediente').map(f=>f.data));
-const CALENDARIO_COBERTURA = {ini:'2026-08-01', fim:'2026-12-31'};
+const CALENDARIO_COBERTURA = {ini:'2026-01-01', fim:'2026-12-31'};
 
 // Dias úteis a partir do dia seguinte à abertura (D+1), sem fim de semana nem feriado.
 // Dias de meio expediente (24 e 31/12) contam 0,5 — o resultado pode ter meia unidade.
