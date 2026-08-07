@@ -182,13 +182,45 @@
   .mini-stat-row{ display:flex; gap:10px; margin-top:14px; border-top:1px solid var(--border); padding-top:14px; }
 
   /* ── RH / DP sub-abas ── */
-  .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; }
+
+  /* Visão Geral — bloco Negociação / Vendas / Retenção:
+     coluna larga à esquerda para o gráfico caber inteiro, e à direita
+     Vendas em cima e Retenção embaixo. Abaixo de 900px tudo empilha. */
+  .grid-neg{ display:grid; grid-template-columns:2.1fr 1fr; gap:16px; align-items:stretch; }
+  /* as duas colunas terminam na mesma linha: a da direita divide a altura
+     entre Vendas e Retenção, em vez de sobrar espaço embaixo de uma delas */
+  /* Vendas mantém a altura natural; Retenção ocupa o resto — assim a coluna
+     não estica além do necessário e as duas terminam juntas. */
+  .grid-neg-lado{ display:grid; grid-template-rows:auto 1fr; gap:16px; }
+  .grid-neg > .card, .grid-neg-lado > .card{ display:flex; flex-direction:column; }
+  .grid-neg-lado > .card > .donut-wrap{ flex:1; display:flex; align-items:center; justify-content:center; }
+  /* No card do gráfico, a sobra fica entre o gráfico e a legenda (que encosta
+     no rodapé), em vez de virar um vazio embaixo. */
+  .grid-neg > .card > #vgChartNegociacoes{ flex:1; display:flex; align-items:center; }
+  .grid-neg > .card > #vgChartNegociacoes > svg{ width:100%; }
+  @media (max-width:900px){
+    .grid-neg{ grid-template-columns:1fr; }
+    .grid-neg-lado{ grid-template-rows:auto auto; }
+  }
+  .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; flex-wrap:wrap; }
   .rh-subtab-btn{
     background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:700;
     padding:10px 22px; border-radius:9px; cursor:pointer; transition:all .15s ease;
+    white-space:nowrap;
   }
   .rh-subtab-btn.active{ background:rgba(61,123,255,.15); border-color:var(--blue); color:var(--text); }
   .rh-subtab-btn:hover{ border-color:var(--blue); }
+  /* ── Sub-abas no celular ──
+     Com 4 sub-abas (CRA), os botões lado a lado estouravam a largura e o último
+     ficava cortado. Em tela estreita viram uma grade de 2 colunas: todos visíveis,
+     área de toque maior e sem rolagem lateral escondendo opção. */
+  @media (max-width:680px){
+    .rh-subtabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 18px; }
+    .rh-subtab-btn{
+      padding:12px 8px; font-size:13px; width:100%; white-space:normal; line-height:1.25;
+      min-height:48px; display:flex; align-items:center; justify-content:center; text-align:center;
+    }
+  }
 
   .kpi-spark-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:14px; margin-bottom:20px; }
   .kpi-spark-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
@@ -584,24 +616,24 @@
       </div>
 
       <div class="section-title">Negociação / Vendas / Reingresso &amp; Retenção<div class="line"></div></div>
-      <div class="grid-3">
+      <!-- Gráfico de negociações na coluna larga (cabe inteiro, com meses e barra
+           totalizadora); Vendas e Retenção empilhados na coluna ao lado. -->
+      <div class="grid-neg">
         <div class="card">
           <div class="card-label">Negociações — Valor Recuperado</div>
-          <div id="vgChartNegociacoes" class="scrollx"></div>
+          <div id="vgChartNegociacoes"></div>
           <div id="vgLegendaNeg" style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;"></div>
           <div id="vgSerieDetalhe" style="margin-top:8px;"></div>
         </div>
-        <div class="card">
-          <div class="card-label">Distribuição — Vendas (Associações Novas)</div>
-          <div id="vgDistribuicaoVendas" class="donut-wrap"></div>
-        </div>
-        <div class="card">
-          <div class="card-label">Retenção — Desligamentos por Categoria</div>
-          <div id="vgRetencaoDonut" class="donut-wrap"></div>
-          <div class="mini-stat-row">
-            <div class="mini-stat"><div class="mini-stat-label">Desligados</div><div class="mini-stat-value" style="color:var(--red);">23</div></div>
-            <div class="mini-stat"><div class="mini-stat-label">Residual Jun</div><div class="mini-stat-value" style="color:var(--yellow);">19</div></div>
-            <div class="mini-stat"><div class="mini-stat-label">Retidos</div><div class="mini-stat-value" style="color:var(--green);">2</div></div>
+        <div class="grid-neg-lado">
+          <div class="card">
+            <div class="card-label">Vendas — Associações Novas</div>
+            <div id="vgVendasResumo" style="margin-top:14px; display:flex; flex-direction:column; gap:14px;"></div>
+          </div>
+          <div class="card">
+            <div class="card-label">Retenção — Desligamentos por Categoria</div>
+            <div id="vgRetencaoDonut" class="donut-wrap"></div>
+            <div class="mini-stat-row" id="vgRetencaoMini"></div>
           </div>
         </div>
       </div>
@@ -645,7 +677,15 @@
 
     <!-- ══════════════════ DIAGNÓSTICO GERENCIAL ══════════════════ -->
     <div class="page-section" id="page-diagnostico">
-      <div class="section-title">Diagnóstico Mensal <span class="tag" id="diagPeriodoTag" style="background:rgba(136,136,170,.15); color:var(--muted);">Julho/2026</span><div class="line"></div></div>
+      <div class="section-title" style="display:flex; align-items:center; gap:12px;">
+        <span>Diagnóstico Mensal</span>
+        <span class="tag" id="diagPeriodoTag" style="background:rgba(136,136,170,.15); color:var(--muted);">Julho/2026</span>
+        <button onclick="extrairDiagnostico()" title="Baixa o resumo completo do período filtrado como imagem"
+          style="background:rgba(61,123,255,.15); border:1px solid var(--blue); color:var(--text); font-size:13px;
+                 font-weight:700; padding:8px 16px; border-radius:9px; cursor:pointer; white-space:nowrap;
+                 display:flex; align-items:center; gap:7px;">📸 Extrair Resumo</button>
+        <div class="line"></div>
+      </div>
       <div id="diagConteudo"></div>
 
       <div class="section-title" style="margin-top:26px;">Cobertura e Origem dos Dados<div class="line"></div></div>
@@ -850,7 +890,14 @@
             <tbody id="tabelaHistoricoPagamentos"></tbody>
           </table>
         </div>
-        <div class="card-meta" style="margin-top:10px;">💡 Fechamentos mensais completos da Controladoria. 🔒 Nomes de pessoa física ocultados e CPFs suprimidos para adequação à LGPD.</div>
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:10px 22px;">
+          <div style="display:flex; gap:8px; align-items:flex-start;"><span style="flex-shrink:0;">💡</span>
+            <span class="card-meta">Fechamentos mensais da Controladoria, consolidados a partir dos cortes semanais de pagamento.</span></div>
+          <div style="display:flex; gap:8px; align-items:flex-start;"><span style="flex-shrink:0;">📅</span>
+            <span class="card-meta">Dias sem execução de pagamento (sábados, domingos e feriados) não entram na contagem.</span></div>
+          <div style="display:flex; gap:8px; align-items:flex-start;"><span style="flex-shrink:0;">🔒</span>
+            <span class="card-meta">Nomes de pessoa física ocultados e CPFs suprimidos, conforme a LGPD.</span></div>
+        </div>
       </div>
     </div>
       </div>
@@ -1540,13 +1587,11 @@ const RETENCAO_EXTRA_MESES = {
     ],
     categorias:[
       {nome:'Contribuinte', qtd:6, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},
-      {nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},
-    ],
+      {nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},],
     motivos:[
       {motivo:'Financeiro', qtd:5, pct:31.25, cor:'#00e5a0'},{motivo:'Não utilização', qtd:4, pct:25.00, cor:'#3d7bff'},
       {motivo:'Mudança', qtd:3, pct:18.75, cor:'#f2b705'},{motivo:'Pessoal', qtd:2, pct:12.50, cor:'#b0b0d0'},
-      {motivo:'Saúde', qtd:1, pct:6.25, cor:'#a855f7'},{motivo:'Não informou motivo', qtd:1, pct:6.25, cor:'#5a5c78'},
-    ],
+      {motivo:'Saúde', qtd:1, pct:6.25, cor:'#a855f7'},{motivo:'Não informou motivo', qtd:1, pct:6.25, cor:'#5a5c78'},],
     totalDesligamentos:16,
     ticketMedio:'R$ 562,47', dependentes:'1,7', residual:'19', residualLabel:'Residual Acumulado', desligadosComTaxa:'R$ 1.002,00',
     taxaQtd:1, modalidadeTaxa:{sim:2, nao:14}, quadroSocial:19,
@@ -1757,6 +1802,7 @@ const HE_HISTORICO_MENSAL = [
   {mes:'Abr/26', horas:1116.17, valor:40724.35, colaboradores:126, totalColab:233, qtdCC:43},
   {mes:'Mai/26', horas:1488.88, valor:56288.44, colaboradores:123, totalColab:245, qtdCC:36},
   {mes:'Jun/26', horas:1087.76, valor:42038.99, colaboradores:110, totalColab:241, qtdCC:38},
+  {mes:'Jul/26', horas:1062.58, valor:44513.20, colaboradores:136, totalColab:248, qtdCC:37},
 ];
 
 // ═══════════════════════════════════════════════════════════
@@ -1801,7 +1847,7 @@ const DP_INDICADORES = {
   horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
   atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62], meta:null, formato:'num', invertido:true},
-  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,null], meta:null, formato:'moeda', invertido:true, he:true},   // jul: não vem nesta planilha
+  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20], meta:null, formato:'moeda', invertido:true, he:true},
   custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19], meta:null, formato:'moeda', invertido:true},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
@@ -1867,7 +1913,63 @@ const HE_POR_MES = {
       {nome:'Outros (33 setores)', valor:20887.35, cor:'#b0b0d0'},
     ],
   },
-  jul2026: null, // ainda não recebemos a planilha de HE de julho
+  jul2026: {
+    resumo: {
+      totalValor: 44513.20,
+      totalHoras: 1062.58,
+      colaboradoresComHE: 136,
+      totalColaboradores: 248,
+      ccComHE: 37,
+      dataReferencia: 'Julho/2026',
+    },
+    ccRanking: [
+      {nome:'Manutenção', valor:8440.38, qtd:13, horas:229.71},
+      {nome:'Projeto Criança Escol.', valor:4895.61, qtd:20, horas:79.91},
+      {nome:'Basquete Rendimento', valor:4318.98, qtd:2, horas:98.00},
+      {nome:'Controladoria', valor:3315.77, qtd:7, horas:94.60},
+      {nome:'Musculação Serviços', valor:2114.35, qtd:5, horas:55.10},
+      {nome:'Atletismo Rendimento', valor:2043.04, qtd:2, horas:38.51},
+      {nome:'G.R.D. Rendimento', valor:2025.57, qtd:1, horas:42.77},
+      {nome:'Volei Rendimento', valor:1969.16, qtd:5, horas:41.07},
+      {nome:'Judo Rendimento', valor:1816.94, qtd:1, horas:31.67},
+      {nome:'Recursos Humanos', valor:1568.02, qtd:5, horas:31.61},
+      {nome:'Judo Formação', valor:1391.21, qtd:3, horas:41.65},
+      {nome:'G.R.D. Formação', valor:1319.77, qtd:2, horas:35.40},
+      {nome:'Secretaria Adm.', valor:1193.68, qtd:5, horas:33.68},
+      {nome:'Gin Artística Rendimento', valor:983.98, qtd:3, horas:14.17},
+      {nome:'Gin Artística Alto Rendimento', valor:883.10, qtd:1, horas:9.30},
+      {nome:'Central de Eventos', valor:844.95, qtd:3, horas:33.19},
+      {nome:'Sede Social Conserv', valor:734.03, qtd:6, horas:31.41},
+      {nome:'Recepção', valor:687.18, qtd:11, horas:18.13},
+      {nome:'Projetos Esportivos', valor:637.09, qtd:3, horas:16.28},
+      {nome:'Limpeza e Conservação', valor:518.67, qtd:14, horas:18.72},
+      {nome:'Marketing', valor:501.72, qtd:2, horas:9.77},
+      {nome:'C.R.A', valor:500.89, qtd:2, horas:14.75},
+      {nome:'Atletismo Alto Rendimento', valor:298.25, qtd:1, horas:3.87},
+      {nome:'Sec. Esportiva', valor:286.44, qtd:2, horas:8.40},
+      {nome:'Gerência Administrativa', valor:257.83, qtd:1, horas:1.68},
+      {nome:'Piscinas Manutenção', valor:174.32, qtd:3, horas:6.50},
+      {nome:'Gerência de Informática', valor:129.25, qtd:1, horas:1.00},
+      {nome:'Suprimentos', valor:120.67, qtd:1, horas:5.08},
+      {nome:'Yoga Serviços', valor:119.01, qtd:1, horas:2.13},
+      {nome:'G.R.D Alto Rendimento', valor:99.22, qtd:1, horas:1.62},
+      {nome:'Gin Artística Formação', valor:86.15, qtd:1, horas:2.52},
+      {nome:'Biblioteca', valor:84.96, qtd:1, horas:4.68},
+      {nome:'Athletic Trainning Serviços', valor:71.33, qtd:2, horas:2.05},
+      {nome:'Tênis Manutenção', valor:47.39, qtd:2, horas:2.67},
+      {nome:'Punhobol Rendimento', valor:26.14, qtd:1, horas:0.63},
+      {nome:'Informática', valor:5.50, qtd:1, horas:0.27},
+      {nome:'Massoterapia', valor:2.65, qtd:1, horas:0.08},
+    ],
+    donutSegments: [
+      {nome:'Manutenção', valor:8440.38, cor:'#e8192c'},
+      {nome:'Projeto Criança Escol.', valor:4895.61, cor:'#3d7bff'},
+      {nome:'Basquete Rendimento', valor:4318.98, cor:'#a855f7'},
+      {nome:'Controladoria', valor:3315.77, cor:'#f2b705'},
+      {nome:'Musculação Serviços', valor:2114.35, cor:'#06b6d4'},
+      {nome:'Outros (32 setores)', valor:21428.11, cor:'#b0b0d0'},
+    ],
+  },
 };
 let HE_RESUMO = HE_POR_MES.jun2026.resumo;
 let HE_CC_RANKING = HE_POR_MES.jun2026.ccRanking;
@@ -2230,12 +2332,17 @@ function drawBarChartDaily(elId, serieKey, opts){
 function drawReceitaDespesaChart(elId, compact, totais){
   const el = document.getElementById(elId);
   const t = totais || DADOS_MES[CURRENT_MES_KEY].totaisReceitaDespesa;
-  const dados = [
-    {grupo:'Previsto',   receita:t.previsto.receita,  despesa:t.previsto.despesa},
-    {grupo:'Tendência',  receita:t.tendencia.receita,  despesa:t.tendencia.despesa},
-    {grupo:'Realizado',  receita:t.realizado.receita,  despesa:t.realizado.despesa},
-  ];
-  const W = compact ? 400 : 660, H = compact ? 250 : 300, padL=compact?58:66, padR=16, padT=20, padB=52;
+  // Na Visão Geral (compact) mostramos só o REALIZADO — é uma prévia, e três grupos
+  // idênticos obrigavam a rolar o gráfico para os lados. A comparação com o previsto
+  // vira texto abaixo, e o detalhe completo fica na aba Financeiro.
+  const dados = compact
+    ? [{grupo:'Realizado', receita:t.realizado.receita, despesa:t.realizado.despesa}]
+    : [
+        {grupo:'Previsto',   receita:t.previsto.receita,  despesa:t.previsto.despesa},
+        {grupo:'Tendência',  receita:t.tendencia.receita,  despesa:t.tendencia.despesa},
+        {grupo:'Realizado',  receita:t.realizado.receita,  despesa:t.realizado.despesa},
+      ];
+  const W = compact ? 300 : 660, H = compact ? 250 : 300, padL=compact?40:66, padR=compact?24:16, padT=20, padB=52;
   const max = Math.max.apply(null, dados.map(d=>Math.max(d.receita,d.despesa))) * 1.15;
   const gw = (W-padL-padR)/dados.length;
   const y = v => padT + (1-v/max)*(H-padT-padB);
@@ -2255,12 +2362,25 @@ function drawReceitaDespesaChart(elId, compact, totais){
     const resCor = resultado >= 0 ? '#00e5a0' : '#e8192c';
     labels += `<text x="${(gx+gw/2).toFixed(1)}" y="${H-10}" text-anchor="middle" fill="${resCor}" font-size="12" font-weight="800">Result: ${resultado>=0?'+':''}${resultado.toFixed(0)}</text>`;
   });
-  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; height:auto;">
+  // comparação com o previsto, em texto (só na versão compacta)
+  let rodape = '';
+  if(compact){
+    const dR = t.realizado.receita - t.previsto.receita;
+    const dD = t.realizado.despesa - t.previsto.despesa;
+    const seta = v => v>=0 ? '▲' : '▼';
+    rodape = `<div class="card-meta" style="margin-top:10px; line-height:1.7;">
+      <b>vs. previsto:</b>
+      receita <span style="color:${dR>=0?'#00e5a0':'#ff6b6b'};">${seta(dR)} ${fmtMil(Math.abs(dR))}</span> ·
+      despesa <span style="color:${dD<=0?'#00e5a0':'#ff6b6b'};">${seta(dD)} ${fmtMil(Math.abs(dD))}</span><br>
+      <span class="muted">Previsto e tendência mês a mês na aba <b>Financeiro</b>.</span>
+    </div>`;
+  }
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:100%; max-width:${W}px; height:auto; margin:0 auto;">
     <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#40415a"/>
     ${bars}${labels}
     <text x="${padL}" y="14" fill="#00e5a0" font-size="13" font-weight="700">■ Receita</text>
     <text x="${padL+70}" y="14" fill="#e8192c" font-size="13" font-weight="700">■ Despesa</text>
-  </svg>`;
+  </svg>` + rodape;
 }
 
 // ── Gráfico único e interativo: Negociações (barras + contatos) + Inadimplência (real/meta) ──
@@ -2347,7 +2467,7 @@ function drawNegInadInteractive(chartElId, legendElId, detailElId, idxVisiveis){
   totalCol += `<text x="${cxT}" y="${(yT-8).toFixed(1)}" text-anchor="middle" fill="#f2b705" font-size="15" font-weight="900">${fmtBRL0(totalPeriodo)}</text>`;
   totalCol += `<text x="${cxT}" y="${H-12}" text-anchor="middle" fill="#f2b705" font-size="12.5" font-weight="800" letter-spacing="0.5">TOTAL</text>`;
 
-  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; height:auto;">
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${chartElId==='vgChartNegociacoes'?'100%':W+'px'}; max-width:${W}px; height:auto;">
     <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#40415a"/>
     <g id="${chartElId}-serie-valor" style="transition:opacity .25s ease;">${bars}</g>
     <g id="${chartElId}-serie-acumulado" style="transition:opacity .25s ease;">${totalCol}</g>
@@ -2627,7 +2747,7 @@ function renderCampanhasCombo(elId){
 // (a composição do saldo agora é uma barra dinâmica, pintada por pintarComposicaoSaldo)
 // (o donut de pagamentos na Visão Geral é atualizado dentro de renderPagamentosMeses, junto com o filtro)
 drawNegInadInteractive('vgChartNegociacoes', 'vgLegendaNeg', 'vgSerieDetalhe');
-drawDonut('vgDistribuicaoVendas', VENDAS_CAMPANHAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '19', 'com campanha', {semLegenda:true});
+renderVGVendasResumo(null);
 drawDonut('vgRetencaoDonut', RETENCAO_CATEGORIAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '23', 'desligamentos', {semLegenda:true});
 
 function renderVisaoGeralHE(){
@@ -2958,12 +3078,22 @@ for(let i=0;i<navItems.length;i++){
 // Patrocinador: Apollo Operations Ltda (marca KTO). Encerrado após maio/2026.
 // COFINS 7,6% sobre o valor. Contrapartida contratual: divulgação da marca KTO pelo clube.
 // ═══════════════════════════════════════════════════════════
+// Jan-Mai: contrato KTO. De junho em diante o clube ficou SEM PATROCÍNIO — os meses
+// entram com valor zero e semPatrocinio:true, para o painel dizer "sem patrocínio no
+// momento" em vez de "sem dado". Quando houver novo contrato, é só preencher o mês.
 const PATROCINIO_MESES = {
   jan2026: { label:'Janeiro/2026', patrocinador:'KTO', valor:40000 },
   fev2026: { label:'Fevereiro/2026', patrocinador:'KTO', valor:40000 },
   mar2026: { label:'Março/2026', patrocinador:'KTO', valor:40000 },
   abr2026: { label:'Abril/2026', patrocinador:'KTO', valor:40000 },
   mai2026: { label:'Maio/2026', patrocinador:'KTO', valor:40000 },
+  jun2026: { label:'Junho/2026',    patrocinador:null, valor:0, semPatrocinio:true },
+  jul2026: { label:'Julho/2026',    patrocinador:null, valor:0, semPatrocinio:true },
+  ago2026: { label:'Agosto/2026',   patrocinador:null, valor:0, semPatrocinio:true },
+  set2026: { label:'Setembro/2026', patrocinador:null, valor:0, semPatrocinio:true },
+  out2026: { label:'Outubro/2026',  patrocinador:null, valor:0, semPatrocinio:true },
+  nov2026: { label:'Novembro/2026', patrocinador:null, valor:0, semPatrocinio:true },
+  dez2026: { label:'Dezembro/2026', patrocinador:null, valor:0, semPatrocinio:true },
 };
 const COBERTURA_PATROCINIO = {
   jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
@@ -2971,6 +3101,13 @@ const COBERTURA_PATROCINIO = {
   mar2026: {ini:'2026-03-01', fim:'2026-03-31'},
   abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
+  jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
+  jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
+  nov2026: {ini:'2026-11-01', fim:'2026-11-30'},
+  dez2026: {ini:'2026-12-01', fim:'2026-12-31'},
 };
 const PATROCINIO_TAXA_COFINS = 0.076;
 // Aplicação do patrocínio em 2025 (histórico do ano anterior — como o dinheiro foi distribuído)
@@ -3231,36 +3368,34 @@ const PAGAMENTOS_MESES = {
     ],
   },
   jul2026: {
-    // Consolidado dos 4 cortes completos de julho recebidos da controladoria:
-    // 06-10/07 + 13-17/07 + 20-24/07 + 27-31/07. Não inclui 01 a 05/07 (esses dias só
-    // existem dentro do corte 28/06 a 05/07, que atravessa o mês e se sobrepõe ao corte
-    // 29-30/06 — somá-lo traria dinheiro de junho para dentro de julho).
-    label:'Julho/2026 (parcial · 06 a 31/07)', qtd:757, total:3951368.06,
-    maiorQtd:175, maiorTotal:3283122.41, menorQtd:582, menorTotal:668245.65,
-    fornecedoresDistintos:null, parcial:true,
+    // Julho completo: cortes 01-03, 06-10, 13-17, 20-24 e 27-31/07.
+    // Dias 04 e 05 caíram em sábado e domingo — não há execução de pagamento.
+    label:'Julho/2026', qtd:854, total:4491710.69,
+    maiorQtd:193, maiorTotal:3726733.77, menorQtd:661, menorTotal:764976.92,
+    fornecedoresDistintos:null, parcial:false,
     top:[
-      {nome:'Folha Pagamento', qtd:52, valor:822770.08, pct:20.82},
-      {nome:'Secretaria Da Receita Federal', qtd:3, valor:538616.66, pct:13.63},
-      {nome:'Cl Solucoes Em Engenharia Ltda', qtd:2, valor:223200.00, pct:5.65},
-      {nome:'Caixa Economica Federal', qtd:2, valor:125772.33, pct:3.18},
-      {nome:'Vitale Restaurantes Empresariais Ltda', qtd:5, valor:109877.00, pct:2.78},
-      {nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M', qtd:6, valor:93797.38, pct:2.37},
-      {nome:'Cia De Gas Do Estado Do Rs Sulgas', qtd:1, valor:90741.42, pct:2.30},
-      {nome:'Departamento Municipal De Agua E Esgotos', qtd:6, valor:90650.04, pct:2.29},
-      {nome:'Beckenkamp Vestuario Ltda', qtd:3, valor:71641.75, pct:1.81},
-      {nome:'Mercadopago.Com Representacoes Ltda.', qtd:63, valor:69217.39, pct:1.75},
-      {nome:'3S Solucoes Em Servicos E Seguranca Ltda', qtd:4, valor:65742.08, pct:1.66},
-      {nome:'Vt Solucoes Administracao E Servicos Ltda', qtd:2, valor:51232.52, pct:1.30},
-      {nome:'Companhia Estadual De Distribuição De Energi', qtd:1, valor:49316.26, pct:1.25},
-      {nome:'Center Broilo Com De Sistemas De Aquecim Ltd', qtd:1, valor:49000.00, pct:1.24},
-      {nome:'3C Arquitetura E Urbanismo Sociedade Simples', qtd:1, valor:38144.48, pct:0.97},
+      {nome:'Folha Pagamento', qtd:55, valor:838317.82, pct:18.66},
+      {nome:'Secretaria Da Receita Federal', qtd:3, valor:538616.66, pct:11.99},
+      {nome:'Cl Solucoes Em Engenharia Ltda', qtd:2, valor:223200.00, pct:4.97},
+      {nome:'Gba Brasil Administracao De Pessoas Ltda', qtd:1, valor:157129.89, pct:3.50},
+      {nome:'Cia De Gas Do Estado Do Rs Sulgas', qtd:2, valor:133381.27, pct:2.97},
+      {nome:'Caixa Economica Federal', qtd:2, valor:125772.33, pct:2.80},
+      {nome:'Vitale Restaurantes Empresariais Ltda', qtd:5, valor:109877.00, pct:2.45},
+      {nome:'Mercadopago.Com Representacoes Ltda.', qtd:77, valor:101525.26, pct:2.26},
+      {nome:'3S Solucoes Em Servicos E Seguranca Ltda', qtd:5, valor:93818.56, pct:2.09},
+      {nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M', qtd:6, valor:93797.38, pct:2.09},
+      {nome:'Departamento Municipal De Agua E Esgotos', qtd:6, valor:90650.04, pct:2.02},
+      {nome:'Beckenkamp Vestuario Ltda', qtd:3, valor:71641.75, pct:1.59},
+      {nome:'Vt Solucoes Administracao E Servicos Ltda', qtd:2, valor:51232.52, pct:1.14},
+      {nome:'Companhia Estadual De Distribuição De Energi', qtd:1, valor:49316.26, pct:1.10},
+      {nome:'Center Broilo Com De Sistemas De Aquecim Ltd', qtd:1, valor:49000.00, pct:1.09},
     ],
     bancos:[
-      {nome:'BANRISUL', qtd:649, total:3095390.19},
-      {nome:'ÍNDICES CONS', qtd:11, total:368942.43},
+      {nome:'BANRISUL', qtd:742, total:3607232.90},
+      {nome:'ÍNDICES CONS', qtd:14, total:394162.35},
       {nome:'PROJETO OLIM', qtd:58, total:324603.87},
       {nome:'CBC EDIT 11 R', qtd:1, total:50355.00},
-      {nome:'PROJ SOGIPA', qtd:5, total:44294.76},
+      {nome:'PROJ SOGIPA', qtd:6, total:47574.76},
       {nome:'PATROCÍNIO A', qtd:8, total:32774.85},
       {nome:'ALTO RENDIME', qtd:5, total:24543.20},
       {nome:'Caixa Sogipa', qtd:15, total:10650.18},
@@ -3295,6 +3430,9 @@ const PAGAMENTOS_POR_PERIODO = {
   '28jun-05jul': {label:'28/06 a 05/07/2026', qtd:153, total:687722.71, maiorQtd:25, maiorTotal:525289.83, menorQtd:128, menorTotal:162432.88,
     top:[{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:157129.89,pct:22.85},{nome:'Buffet Bettino',qtd:1,valor:44700.0,pct:6.5},{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:42639.85,pct:6.2},{nome:'Santori Comercio De Moveis Eireli',qtd:2,valor:42549.6,pct:6.19},{nome:'Mercadopago.Com Representacoes Ltda.',qtd:15,valor:32802.26,pct:4.77},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:28076.48,pct:4.08},{nome:'Folha Pagamento',qtd:7,valor:27992.39,pct:4.07},{nome:'Avates Eventos Ltda',qtd:1,valor:24725.0,pct:3.6},{nome:'Earte Promocoes E Prod Artisticas Cult E Ensi',qtd:2,valor:23029.53,pct:3.35},{nome:'Eduardo Almeida Ltda',qtd:1,valor:18770.0,pct:2.73},{nome:'Banco Do Brasil',qtd:2,valor:15915.55,pct:2.31},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15718.6,pct:2.29},{nome:'41.326.303 Valdoir Rodrigues Dias',qtd:2,valor:11200.0,pct:1.63},{nome:'Higiemaster Sul Industria E Comercio De Sanea',qtd:1,valor:10730.06,pct:1.56},{nome:'Hub Instituicao De Pagamento S.A.',qtd:7,valor:10420.87,pct:1.52}],
     bancos:[{nome:'Banrisul',qtd:140,total:638936.73},{nome:'Caixa Sogipa',qtd:4,total:2260.29},{nome:'Proj Sogipa',qtd:4,total:14990.0},{nome:'Índices Cons',qtd:3,total:25219.92},{nome:'Banco Do Br',qtd:1,total:2101.72},{nome:'Projeto Olim',qtd:1,total:4214.05}]},
+  '01-03jul': {label:'01 a 03/07/2026', qtd:97, total:540342.63, maiorQtd:18, maiorTotal:443611.36, menorQtd:79, menorTotal:96731.27,
+    top:[{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:157129.89,pct:29.08},{nome:'Buffet Bettino',qtd:1,valor:44700.00,pct:8.27},{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:42639.85,pct:7.89},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:37040.00,pct:6.85},{nome:'Mercadopago.Com Representacoes Ltda.',qtd:14,valor:32307.87,pct:5.98},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:28076.48,pct:5.20},{nome:'Eduardo Almeida Ltda',qtd:1,valor:18770.00,pct:3.47},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15718.60,pct:2.91},{nome:'Folha Pagamento',qtd:3,valor:15547.74,pct:2.88},{nome:'Banco Do Brasil',qtd:1,valor:13813.83,pct:2.56},{nome:'V.R.D.',qtd:2,valor:11200.00,pct:2.07},{nome:'Hub Instituicao De Pagamento S.A.',qtd:7,valor:10420.87,pct:1.93},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:10000.00,pct:1.85},{nome:'Contabilizi Consultoria Ltda',qtd:1,valor:9592.00,pct:1.78},{nome:'Fabricio Serviços De Divulgação De Eventos Ei',qtd:1,valor:8103.60,pct:1.50}],
+    bancos:[{nome:'Banrisul',qtd:93,total:511842.71},{nome:'Índices Cons',qtd:3,total:25219.92},{nome:'Proj Sogipa',qtd:1,total:3280.00}]},
   '06-10jul': {label:'06 a 10/07/2026', qtd:205, total:1352202.48, maiorQtd:29, maiorTotal:1146313.66, menorQtd:176, menorTotal:205888.82,
     top:[{nome:'Folha Pagamento',qtd:23,valor:605920.63,pct:44.9},{nome:'Cl Solucoes Em Engenharia Ltda',qtd:2,valor:223200.0,pct:16.54},{nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M',qtd:6,valor:93797.38,pct:6.95},{nome:'Center Broilo Com De Sistemas De Aquecim Ltd',qtd:1,valor:49000.0,pct:3.63},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.68,pct:2.41},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:30807.16,pct:2.28},{nome:'Mercadopago.Com Representacoes Ltda.',qtd:17,valor:21489.99,pct:1.59},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:20286.23,pct:1.5},{nome:'Comite Brasileiro De Clubes',qtd:2,valor:19528.57,pct:1.45},{nome:'Cesar V Da Luz & Melero Cia Ltda',qtd:1,valor:14573.82,pct:1.08},{nome:'Jb Esporte E Marketing Ltda',qtd:1,valor:13471.79,pct:1.0},{nome:'Alexandro Yuler Flores',qtd:1,valor:11662.8,pct:0.86},{nome:'Galbo Engenharia Ltda - Epp',qtd:1,valor:9611.4,pct:0.71},{nome:'Hub Instituicao De Pagamento S.A.',qtd:1,valor:9449.42,pct:0.7},{nome:'Federação Gaucha De Basketball',qtd:1,valor:9000.0,pct:0.67},{nome:'Thomson Reuters Brasil Conteudo E Tecnol Ltda',qtd:2,valor:2743.89,pct:0.20}],
     bancos:[{nome:'Banrisul',qtd:188,total:941607.06},{nome:'Índices Cons',qtd:6,total:296606.92},{nome:'Projeto Olim',qtd:1,total:58660.81},{nome:'Cbc Edit 11 R',qtd:1,total:50355.0},{nome:'Caixa Sogipa',qtd:6,total:2505.07},{nome:'Patrocínio A',qtd:1,total:1511.62}]},
@@ -3314,6 +3452,7 @@ const PERIODOS = [
   {key:'15-26jun',     temDados:{pagamentos:true}, ini:'2026-06-15', fim:'2026-06-26'},
   {key:'29-30jun',     temDados:{pagamentos:true}, ini:'2026-06-29', fim:'2026-06-30'},
   {key:'28jun-05jul',  temDados:{pagamentos:true}, ini:'2026-06-28', fim:'2026-07-05'},
+  {key:'01-03jul',     temDados:{pagamentos:true}, ini:'2026-07-01', fim:'2026-07-03'},
   {key:'06-10jul',     temDados:{pagamentos:true}, ini:'2026-07-06', fim:'2026-07-10'},
   {key:'13-17jul',     temDados:{pagamentos:true}, ini:'2026-07-13', fim:'2026-07-17'},
   {key:'20-24jul',     temDados:{pagamentos:true}, ini:'2026-07-20', fim:'2026-07-24'},
@@ -3952,8 +4091,10 @@ function aplicarFiltroMes(){
   setRHPeriodo(mesesRH);
   renderRH(mesKey);
   renderLocacoesPeriodo(mesKey, de, ate);
+  // precisa vir ANTES do diagnóstico: ele usa esses meses para as áreas do CRA e Esportes
+  window._mesesFiltro = mesesDoFiltro(mIni, aIni, mFim, aFim);
   renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen);
-  renderCoberturaDados(mesesDoFiltro(mIni, aIni, mFim, aFim));
+  renderCoberturaDados(window._mesesFiltro);
 
   renderPagamentosMeses(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_PAGAMENTOS));
   // Patrocínio: cobertura própria (Jan-Mai/26), mesma sistemática de agregação
@@ -4413,16 +4554,32 @@ function renderPatrocinioPeriodo(mesesPatroc){
   const totalContrato = 200000; // total recebido no contrato (jan-mai/26)
   const periodoLabel = nMeses ? (nMeses>1 ? `${itens[0].label.split('/')[0]} a ${itens[itens.length-1].label}` : itens[0].label) : '—';
 
+  // meses já registrados como "sem patrocínio" (junho em diante)
+  const semPatroc = itens.filter(m=>m.semPatrocinio);
+  const comAporte = itens.filter(m=>!m.semPatrocinio);
+  const soSemPatroc = nMeses>0 && comAporte.length===0;
+
   let aviso = '';
-  if(fallback){
+  if(soSemPatroc){
+    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>🚩</span><div>
+      <b>Sem patrocínio no momento.</b> O período selecionado (${periodoLabel}) não teve nenhum aporte:
+      o contrato com a KTO encerrou em <b>maio/2026</b> e o clube segue sem patrocinador.
+      Os meses estão registrados com valor zero — <b>não é dado faltando</b>. Assim que houver novo
+      contrato, os valores passam a aparecer aqui.</div></div>`;
+  } else if(semPatroc.length){
+    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>🚩</span><div>
+      Do período selecionado, <b>${comAporte.length} ${comAporte.length===1?'mês teve':'meses tiveram'} aporte</b>
+      (contrato KTO) e <b>${semPatroc.length} ${semPatroc.length===1?'mês está':'meses estão'} sem patrocínio</b>
+      — ${semPatroc.map(m=>m.label.split('/')[0]).join(', ')}. O contrato encerrou em maio/2026.</div></div>`;
+  } else if(fallback){
     aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Sem aporte no intervalo selecionado — exibindo o último mês com recebimento (<b>${fallback}</b>). O patrocínio KTO vigorou de <b>Janeiro a Maio/2026</b>.</div></div>`;
   } else if(nMeses>1){
     aviso = `<div class="alert-box" style="border-color:var(--blue);"><span>🧮</span><div>Somando <b>${nMeses} meses</b> do período. O valor do aporte está <b>somado</b>; o aporte mensal é fixo de R$ 40.000.</div></div>`;
   }
 
   const kpis = [
-    {icone:'🤝', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Aporte no Período', valor:fmtBRL0(valorPeriodo), sub:`${nMeses} ${nMeses===1?'mês':'meses'} · KTO`},
-    {icone:'📅', cor:'#f2b705', bg:'rgba(242,183,5,.15)', label:'Aporte Mensal', valor:fmtBRL0(40000), sub:'valor fixo contratual'},
+    {icone:'🤝', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Aporte no Período', valor:fmtBRL0(valorPeriodo), sub: soSemPatroc ? `${nMeses} ${nMeses===1?'mês':'meses'} sem patrocínio` : `${comAporte.length} ${comAporte.length===1?'mês':'meses'} com aporte · KTO`},
+    {icone:'📅', cor:'#f2b705', bg:'rgba(242,183,5,.15)', label:'Aporte Mensal', valor: soSemPatroc ? 'R$ 0' : fmtBRL0(40000), sub: soSemPatroc ? 'nenhum contrato vigente' : 'valor fixo contratual'},
     // Card genérico de disponibilidade: hoje reflete o contrato KTO encerrado, mas o rótulo
     // já está preparado para receber o total disponível para uso, independente de patrocinador.
     {icone:'🏆', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Valor Disponível', valor:fmtMilReais(totalContrato), sub:'último contrato KTO · sem outra fonte ativa', valorCor:'#00e5a0'},
@@ -5171,6 +5328,26 @@ const COBERTURA_RETENCAO_CRA = {
 };
 const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','#e8192c','#b0b0d0','#5a5c78','#22d3ee','#f472b6','#facc15','#8b8fa8'];
 
+// ── Visão Geral: resumo de vendas em três blocos empilhados (substitui o donut) ──
+function renderVGVendasResumo(v){
+  const el = document.getElementById('vgVendasResumo');
+  if(!el) return;
+  const itens = [
+    {icone:'➕', cor:'#3d7bff', label:'Associações Novas', valor:v ? v.associacoesNovas : '—', sub:'no período'},
+    {icone:'💰', cor:'#f2b705', label:'Valor Arrecadado', valor:v ? v.valorArrecadado : '—', sub:'total do período'},
+    {icone:'🎯', cor:'#00e5a0', label:'Ticket Médio',     valor:v ? v.ticketMedio : '—',     sub:'por associação nova'},
+  ];
+  el.innerHTML = itens.map(it=>{
+    const txt = String(it.valor);
+    const fonte = txt.length<=6 ? 30 : txt.length<=11 ? 25 : 21;
+    return `<div style="border-left:3px solid ${it.cor}; padding-left:12px;">
+      <div style="font-size:11.5px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase;">${it.icone} ${it.label}</div>
+      <div style="font-size:${fonte}px; font-weight:900; color:${it.cor}; line-height:1.2; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${txt}</div>
+      <div style="font-size:12px; color:var(--muted);">${it.sub}</div>
+    </div>`;
+  }).join('');
+}
+
 function renderRetencaoCRA(mesesSel){
   const el = document.getElementById('retencaoConteudo');
   if(!el) return;
@@ -5361,7 +5538,18 @@ function renderRetencaoCRA(mesesSel){
     <div class="card full">
       <div class="card-label">${LICENCAS_CRA.length} licenças registradas em 2026</div>
       <div class="card-meta" style="margin-top:8px;">Suspensão temporária do vínculo — alternativa ao desligamento, tratada pelo mesmo processo do CRA. ${LICENCAS_CRA.filter(l=>!l.mes).length} sem data de início na planilha. Se a gestora preferir, dá para mover as licenças para uma sub-aba própria.</div>
-    </div>`;
+    </div>
+    <div class="section-title" style="margin-top:26px;">Histórico de Retenção<div class="line"></div></div>
+    <div class="card full">
+      <div class="card-label">Comparativo por Período</div>
+      <table>
+        <thead><tr><th>Período</th><th class="num">Desligamentos</th><th class="num">Retenção</th><th class="num">Residual</th><th class="num">Ticket Médio</th><th class="num">Dependentes</th></tr></thead>
+        <tbody id="tabelaHistoricoRetencao"></tbody>
+      </table>
+      <div class="card-meta" style="margin-top:10px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior.</div>
+    </div>
+    `;
+  preencherHistoricoRetencao();
 }
 
 const OCORRENCIAS = [
@@ -5374,7 +5562,8 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "18/06/2026",
   "fechamento": "14/07/2026",
-  "prazo": 26,
+  "prazo": 18,
+  "prazoCorridos": 26,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5387,7 +5576,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "21/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 7,
+  "prazo": 5,
+  "prazoCorridos": 7,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5400,7 +5590,8 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "19/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 19,
+  "prazo": 14,
+  "prazoCorridos": 19,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5413,7 +5604,8 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "28/01/2026",
   "fechamento": "29/01/2026",
-  "prazo": null,
+  "prazo": 1,
+  "prazoCorridos": 1,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5426,7 +5618,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "07/02/2026",
   "fechamento": "28/04/2026",
-  "prazo": 80,
+  "prazo": 56,
+  "prazoCorridos": 80,
   "ressarc": true,
   "valor": 1950.0
  },
@@ -5439,7 +5632,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "22/02/2026",
   "fechamento": "15/06/2026",
-  "prazo": 113,
+  "prazo": 80,
+  "prazoCorridos": 113,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5452,7 +5646,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": true,
   "valor": 4131.32
  },
@@ -5465,7 +5660,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5478,7 +5674,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5491,7 +5688,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 61,
+  "prazo": 43,
+  "prazoCorridos": 61,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5504,7 +5702,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5517,7 +5716,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5530,7 +5730,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5543,7 +5744,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5556,7 +5758,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5569,7 +5772,8 @@ const OCORRENCIAS = [
   "mes": "mar2026",
   "abertura": "05/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 56,
+  "prazo": 40,
+  "prazoCorridos": 56,
   "ressarc": true,
   "valor": 1000.0
  },
@@ -5582,7 +5786,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5595,7 +5800,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5608,7 +5814,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5621,7 +5828,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5634,7 +5842,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5647,7 +5856,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5660,7 +5870,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5673,7 +5884,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5686,7 +5898,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "20/04/2026",
-  "prazo": null,
+  "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5699,7 +5912,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "16/06/2026",
-  "prazo": null,
+  "prazo": 34,
+  "prazoCorridos": 48,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5712,7 +5926,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 36,
+  "prazoCorridos": 50,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5725,7 +5940,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 36,
+  "prazoCorridos": 50,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5738,7 +5954,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 36,
+  "prazoCorridos": 50,
   "ressarc": true,
   "valor": 1090.0
  },
@@ -5752,6 +5969,7 @@ const OCORRENCIAS = [
   "abertura": "14/05/2026",
   "fechamento": "14/05/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5764,7 +5982,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33,
+  "prazoCorridos": 47,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5777,7 +5996,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 13,
+  "prazo": 9,
+  "prazoCorridos": 13,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5790,7 +6010,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33,
+  "prazoCorridos": 47,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5803,7 +6024,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33,
+  "prazoCorridos": 47,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5816,7 +6038,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0,
+  "prazoCorridos": 1,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5829,7 +6052,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0,
+  "prazoCorridos": 1,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5842,7 +6066,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0,
+  "prazoCorridos": 1,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5855,7 +6080,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "29/05/2026",
-  "prazo": 14,
+  "prazo": 10,
+  "prazoCorridos": 14,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5868,7 +6094,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 60,
+  "prazo": 42,
+  "prazoCorridos": 60,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5881,7 +6108,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33,
+  "prazoCorridos": 47,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5894,7 +6122,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0,
+  "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5907,7 +6136,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "16/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 16,
+  "prazo": 10,
+  "prazoCorridos": 16,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5920,7 +6150,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "18/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 57,
+  "prazo": 41,
+  "prazoCorridos": 57,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5933,7 +6164,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "25/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 37,
+  "prazo": 27,
+  "prazoCorridos": 37,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5946,7 +6178,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 6,
+  "prazo": 4,
+  "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
  },
@@ -5960,6 +6193,7 @@ const OCORRENCIAS = [
   "abertura": "26/05/2026",
   "fechamento": "26/05/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5973,6 +6207,7 @@ const OCORRENCIAS = [
   "abertura": "29/05/2026",
   "fechamento": "29/05/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5986,6 +6221,7 @@ const OCORRENCIAS = [
   "abertura": "13/06/2026",
   "fechamento": "13/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -5998,7 +6234,8 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "18/06/2026",
   "fechamento": "30/06/2026",
-  "prazo": 12,
+  "prazo": 8,
+  "prazoCorridos": 12,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6011,7 +6248,8 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "19/06/2026",
   "fechamento": "25/06/2026",
-  "prazo": null,
+  "prazo": 4,
+  "prazoCorridos": 6,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6025,6 +6263,7 @@ const OCORRENCIAS = [
   "abertura": "19/06/2026",
   "fechamento": "19/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6037,7 +6276,8 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "26/06/2026",
   "fechamento": "23/07/2026",
-  "prazo": null,
+  "prazo": 19,
+  "prazoCorridos": 27,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6051,6 +6291,7 @@ const OCORRENCIAS = [
   "abertura": "29/06/2026",
   "fechamento": "01/07/2026",
   "prazo": 2,
+  "prazoCorridos": 2,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6064,6 +6305,7 @@ const OCORRENCIAS = [
   "abertura": "29/06/2026",
   "fechamento": "29/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6077,6 +6319,7 @@ const OCORRENCIAS = [
   "abertura": "29/06/2026",
   "fechamento": "29/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6089,7 +6332,8 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "30/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 8,
+  "prazo": 5,
+  "prazoCorridos": 8,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6102,7 +6346,8 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "30/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 8,
+  "prazo": 5,
+  "prazoCorridos": 8,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6115,7 +6360,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 49,
+  "prazo": 35,
+  "prazoCorridos": 49,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6128,7 +6374,8 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13,
+  "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6141,7 +6388,8 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "07/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 31,
+  "prazo": 22,
+  "prazoCorridos": 31,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6154,7 +6402,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6167,7 +6416,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6180,7 +6430,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6193,7 +6444,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 61,
+  "prazo": 43,
+  "prazoCorridos": 61,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6206,7 +6458,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6219,7 +6472,8 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 3,
+  "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6232,7 +6486,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0,
+  "prazoCorridos": 1,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6245,7 +6500,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 17,
+  "prazo": 11,
+  "prazoCorridos": 17,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6258,7 +6514,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 17,
+  "prazo": 11,
+  "prazoCorridos": 17,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6271,7 +6528,8 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "18/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 57,
+  "prazo": 41,
+  "prazoCorridos": 57,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6285,6 +6543,7 @@ const OCORRENCIAS = [
   "abertura": "03/06/2026",
   "fechamento": "03/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  },
@@ -6297,7 +6556,8 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "11/06/2026",
   "fechamento": "16/07/2026",
-  "prazo": null,
+  "prazo": 25,
+  "prazoCorridos": 35,
   "ressarc": false,
   "valor": 0.0
  },
@@ -6311,6 +6571,7 @@ const OCORRENCIAS = [
   "abertura": "16/06/2026",
   "fechamento": "16/06/2026",
   "prazo": 0,
+  "prazoCorridos": 0,
   "ressarc": null,
   "valor": 0.0
  }
@@ -6387,7 +6648,7 @@ function renderOcorrencias(mesesSel){
 
   // faixas de tempo até o fechamento
   const faixas = [
-    {nome:'Até 7 dias',    qtd:comPrazo.filter(o=>o.prazo<=7).length,               cor:'#00e5a0'},
+    {nome:'Até 7 dias úteis',  qtd:comPrazo.filter(o=>o.prazo<=7).length,           cor:'#00e5a0'},
     {nome:'8 a 30 dias',   qtd:comPrazo.filter(o=>o.prazo>7 && o.prazo<=30).length, cor:'#f2b705'},
     {nome:'31 a 60 dias',  qtd:comPrazo.filter(o=>o.prazo>30 && o.prazo<=60).length,cor:'#fb923c'},
     {nome:'Mais de 60 dias',qtd:comPrazo.filter(o=>o.prazo>60).length,              cor:'#e8192c'},
@@ -6410,7 +6671,7 @@ function renderOcorrencias(mesesSel){
       <td style="white-space:nowrap;">${o.tipo}</td>
       <td>${o.assunto}</td>
       <td style="white-space:nowrap;">${o.local}</td>
-      <td class="num" style="${o.prazo!=null && o.prazo>30 ? 'color:#ff6b6b; font-weight:700;' : ''}">${o.prazo!=null?o.prazo+'d':'—'}</td>
+      <td class="num" style="${o.prazo!=null && o.prazo>30 ? 'color:#ff6b6b; font-weight:700;' : ''}">${o.prazo!=null?String(o.prazo).replace('.',',')+'d':'—'}</td>
       <td class="num">${o.valor?fmtBRL0(o.valor):(o.ressarc===false?'não':'—')}</td>
     </tr>`).join('');
 
@@ -6419,8 +6680,8 @@ function renderOcorrencias(mesesSel){
 
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('📋 Ocorrências', String(ocs.length), keys.length && !recorteVazio ? 'abertas no período' : 'registradas em 2026')}
-      ${cardKpi('⏱️ Tempo Médio', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias' : '—', `da abertura ao fechamento · ${comPrazo.length} com prazo`)}
-      ${cardKpi('⚡ Resolvidas em até 7 dias', String(rapidas), comPrazo.length?`${(rapidas/comPrazo.length*100).toFixed(0)}% das que têm prazo`:'—')}
+      ${cardKpi('⏱️ Tempo Médio', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `contados em D+1, sem fim de semana · ${comPrazo.length} fechadas`)}
+      ${cardKpi('⚡ Resolvidas em até 7 dias', String(rapidas), comPrazo.length?`${(rapidas/comPrazo.length*100).toFixed(0)}% das fechadas · dias úteis`:'—')}
       ${cardKpi('💰 Ressarcimentos', fmtBRL0(valorRess), `${ressarc.length} ocorrência${ressarc.length===1?'':'s'} com cobrança`)}
     </div>
 
@@ -6453,25 +6714,17 @@ function renderOcorrencias(mesesSel){
     </div>
 
     <div class="card full" style="margin-top:16px;">
-      <div class="card-label">Tempo até o Fechamento</div>
+      <div class="card-label">Tempo até o Fechamento (dias úteis, D+1)</div>
       <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:16px;">${faixasHtml}</div>
       <div class="card-meta" style="margin-top:12px;">${ocs.length-comPrazo.length} ocorrência${ocs.length-comPrazo.length===1?'':'s'} sem prazo preenchido na planilha ${ocs.length-comPrazo.length===1?'não entra':'não entram'} neste cálculo.</div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Ocorrências do Período<div class="line"></div></div>
-    <div class="card full">
-      <div class="scrollx"><table>
-        <thead><tr><th>Abertura</th><th>Envolvido</th><th>Tipo</th><th>Assunto</th><th>Local</th><th class="num">Prazo</th><th class="num">Ressarcimento</th></tr></thead>
-        <tbody>${linhas}</tbody>
-      </table></div>
-      <div class="card-meta" style="margin-top:10px;">Ordenada do maior para o menor prazo. 🔒 Nomes reduzidos a iniciais (LGPD). Fonte: planilha Ocorrências 2026 — CRA.</div>
     </div>`;
 }
 
 const MANIFESTACOES = [
  {
   "tipo": "Reclamação",
-  "prot": "8385",
   "nome": "P.C.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6479,11 +6732,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "26/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 12
+  "prazo": 9,
+  "prazoCorridos": 12,
+  "prot": "8385"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8389",
   "nome": "A.M.Z.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6491,11 +6745,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "27/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 11
+  "prazo": 8,
+  "prazoCorridos": 11,
+  "prot": "8389"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8399",
   "nome": "P.S.G.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Salões",
@@ -6503,11 +6758,12 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "26/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 63
+  "prazo": 45,
+  "prazoCorridos": 63,
+  "prot": "8399"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8400",
   "nome": "F.G.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Salões",
@@ -6515,11 +6771,12 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "27/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 62
+  "prazo": 44,
+  "prazoCorridos": 62,
+  "prot": "8400"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8423",
   "nome": "J.C.B.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Eventos",
@@ -6527,11 +6784,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 51
+  "prazo": 37,
+  "prazoCorridos": 51,
+  "prot": "8423"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8427",
   "nome": "E.N.M.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Eventos",
@@ -6539,11 +6797,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "13/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 48
+  "prazo": 34,
+  "prazoCorridos": 48,
+  "prot": "8427"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8429",
   "nome": "J.R.M.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6551,11 +6810,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "18/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 43
+  "prazo": 31,
+  "prazoCorridos": 43,
+  "prot": "8429"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8435",
   "nome": "S.N.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Secretaria Administrativa",
@@ -6563,11 +6823,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "31/03/2026",
   "fechamento": "25/06/2026",
-  "prazo": 86
+  "prazo": 62,
+  "prazoCorridos": 86,
+  "prot": "8435"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8436",
   "nome": "F.B.C.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6575,11 +6836,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "01/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 29
+  "prazo": 21,
+  "prazoCorridos": 29,
+  "prot": "8436"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8449",
   "nome": "P.V.O.B.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6587,11 +6849,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "17/04/2026",
   "fechamento": null,
-  "prazo": null
+  "prazo": null,
+  "prazoCorridos": null,
+  "prot": "8449"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8467",
   "nome": "L.O.H.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Economatos",
@@ -6599,11 +6862,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "30/04/2026",
   "fechamento": "25/06/2026",
-  "prazo": 56
+  "prazo": 40,
+  "prazoCorridos": 56,
+  "prot": "8467"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8553",
   "nome": "N.P.J.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Academia",
@@ -6611,11 +6875,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "19/06/2026",
   "fechamento": "25/06/2026",
-  "prazo": 6
+  "prazo": 4,
+  "prazoCorridos": 6,
+  "prot": "8553"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8558",
   "nome": "A.D.R.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Gerência Administrativa",
@@ -6623,11 +6888,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "24/06/2026",
   "fechamento": null,
-  "prazo": null
+  "prazo": null,
+  "prazoCorridos": null,
+  "prot": "8558"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8417",
   "nome": "P.S.R.",
   "ger": "Gerência Esportiva",
   "local": "Fitness",
@@ -6635,11 +6901,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "03/03/2026",
   "fechamento": "26/03/2026",
-  "prazo": 23
+  "prazo": 17,
+  "prazoCorridos": 23,
+  "prot": "8417"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8419",
   "nome": "V.M.D.",
   "ger": "Gerência Esportiva",
   "local": "Judô",
@@ -6647,11 +6914,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "03/03/2026",
   "fechamento": "26/05/2026",
-  "prazo": 84
+  "prazo": 60,
+  "prazoCorridos": 84,
+  "prot": "8419"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8420",
   "nome": "F.G.C.F.",
   "ger": "Gerência Esportiva",
   "local": "Secretaria Esportiva",
@@ -6659,11 +6927,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "04/03/2026",
   "fechamento": "26/03/2026",
-  "prazo": 22
+  "prazo": 16,
+  "prazoCorridos": 22,
+  "prot": "8420"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8432",
   "nome": "M.S.G.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Artística",
@@ -6671,11 +6940,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "19/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 42
+  "prazo": 30,
+  "prazoCorridos": 42,
+  "prot": "8432"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8434",
   "nome": "E.B.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -6683,11 +6953,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "27/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 34
+  "prazo": 24,
+  "prazoCorridos": 34,
+  "prot": "8434"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8448",
   "nome": "R.A.G.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6695,11 +6966,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "17/04/2026",
   "fechamento": "28/05/2026",
-  "prazo": 41
+  "prazo": 29,
+  "prazoCorridos": 41,
+  "prot": "8448"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8450",
   "nome": "D.H.M.S.",
   "ger": "Gerência Esportiva",
   "local": "Tênis",
@@ -6707,11 +6979,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "28/05/2026",
-  "prazo": 38
+  "prazo": 28,
+  "prazoCorridos": 38,
+  "prot": "8450"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8456",
   "nome": "L.M.M.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Artística",
@@ -6719,11 +6992,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "28/05/2026",
-  "prazo": 38
+  "prazo": 28,
+  "prazoCorridos": 38,
+  "prot": "8456"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8457",
   "nome": "B.S.G.",
   "ger": "Gerência Esportiva",
   "local": "Tênis",
@@ -6731,11 +7005,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "28/05/2026",
-  "prazo": 38
+  "prazo": 28,
+  "prazoCorridos": 38,
+  "prot": "8457"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8459",
   "nome": "J.C.D.B.",
   "ger": "Gerência Esportiva",
   "local": "Tênis",
@@ -6743,11 +7018,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "24/04/2026",
   "fechamento": "28/05/2026",
-  "prazo": 34
+  "prazo": 24,
+  "prazoCorridos": 34,
+  "prot": "8459"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8495",
   "nome": "L.E.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6755,11 +7031,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8495"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8497",
   "nome": "H.M.S.A.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6767,11 +7044,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8497"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8499",
   "nome": "R.M.C.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6779,11 +7057,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8499"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8500",
   "nome": "A.B.B.B.",
   "ger": "Gerência Esportiva",
   "local": "Basquete",
@@ -6791,11 +7070,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8500"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8501",
   "nome": "M.T.K.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6803,11 +7083,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "20/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 8
+  "prazo": 6,
+  "prazoCorridos": 8,
+  "prot": "8501"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8504",
   "nome": "T.S.D.",
   "ger": "Gerência Esportiva",
   "local": "Levantamento De Pesos",
@@ -6815,11 +7096,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "22/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 6
+  "prazo": 4,
+  "prazoCorridos": 6,
+  "prot": "8504"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8508",
   "nome": "R.B.A.P.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Artística",
@@ -6827,11 +7109,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "25/05/2026",
   "fechamento": "17/06/2026",
-  "prazo": 23
+  "prazo": 17,
+  "prazoCorridos": 23,
+  "prot": "8508"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8510",
   "nome": "A.T.M.",
   "ger": "Gerência Esportiva",
   "local": "Estacionamento",
@@ -6839,11 +7122,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "17/06/2026",
-  "prazo": 22
+  "prazo": 16,
+  "prazoCorridos": 22,
+  "prot": "8510"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8511",
   "nome": "A.T.M.",
   "ger": "Gerência Esportiva",
   "local": "Gerência Esportiva",
@@ -6851,11 +7135,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 2
+  "prazo": 2,
+  "prazoCorridos": 2,
+  "prot": "8511"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8512",
   "nome": "A.T.M.",
   "ger": "Gerência Esportiva",
   "local": "Gerência Esportiva",
@@ -6863,11 +7148,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 2
+  "prazo": 2,
+  "prazoCorridos": 2,
+  "prot": "8512"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8518",
   "nome": "R.C.K.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Artística",
@@ -6875,11 +7161,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "27/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 1
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "prot": "8518"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8520",
   "nome": "F.C.M.",
   "ger": "Gerência Esportiva",
   "local": "Tênis",
@@ -6887,11 +7174,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "27/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 1
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "prot": "8520"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8524",
   "nome": "C.C.V.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Olímpica",
@@ -6899,11 +7187,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "29/05/2026",
   "fechamento": "29/05/2026",
-  "prazo": 0
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "prot": "8524"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8525",
   "nome": "C.C.V.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Olímpica",
@@ -6911,11 +7200,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "29/05/2026",
   "fechamento": "29/05/2026",
-  "prazo": 0
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "prot": "8525"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8526",
   "nome": "G.L.P.R.",
   "ger": "Gerência Esportiva",
   "local": "Piscinas",
@@ -6923,11 +7213,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "29/05/2026",
   "fechamento": "11/06/2026",
-  "prazo": 13
+  "prazo": 9,
+  "prazoCorridos": 13,
+  "prot": "8526"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8534",
   "nome": "M.M.F.",
   "ger": "Gerência Esportiva",
   "local": "Tênis",
@@ -6935,11 +7226,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "05/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 8
+  "prazo": 5,
+  "prazoCorridos": 8,
+  "prot": "8534"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8560",
   "nome": "R.C.P.M.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -6947,11 +7239,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "27/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 6
+  "prazo": 4,
+  "prazoCorridos": 6,
+  "prot": "8560"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8561",
   "nome": "V.M.L.S.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -6959,11 +7252,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8561"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8562",
   "nome": "C.S.N.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -6971,11 +7265,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8562"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8563",
   "nome": "R.N.V.M.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -6983,11 +7278,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8563"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8564",
   "nome": "D.M.R.G.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -6995,11 +7291,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8564"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8565",
   "nome": "L.R.R.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -7007,11 +7304,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8565"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8566",
   "nome": "L.N.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -7019,11 +7317,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8566"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8567",
   "nome": "A.O.C.Z.C.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -7031,11 +7330,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8567"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8568",
   "nome": "C.V.H.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -7043,11 +7343,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "03/07/2026",
-  "prazo": 4
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "prot": "8568"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8573",
   "nome": "L.S.H.",
   "ger": "Gerência Esportiva",
   "local": "Pista de Atletismo",
@@ -7055,11 +7356,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "06/07/2026",
-  "prazo": 7
+  "prazo": 5,
+  "prazoCorridos": 7,
+  "prot": "8573"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8470",
   "nome": "E.J.G.D.",
   "ger": "Gerência Manutenção",
   "local": "Vestiário das piscinas",
@@ -7067,11 +7369,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "11/05/2026",
   "fechamento": "29/06/2026",
-  "prazo": 49
+  "prazo": 35,
+  "prazoCorridos": 49,
+  "prot": "8470"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8491",
   "nome": "N.P.J.",
   "ger": "Gerência Manutenção",
   "local": "Biblioteca",
@@ -7079,11 +7382,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "16/05/2026",
   "fechamento": "17/06/2026",
-  "prazo": 32
+  "prazo": 22,
+  "prazoCorridos": 32,
+  "prot": "8491"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8519",
   "nome": "R.C.K.",
   "ger": "Gerência Manutenção",
   "local": "Ginástica Artística",
@@ -7091,11 +7395,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "27/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 1
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "prot": "8519"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8527",
   "nome": "V.F.H.",
   "ger": "Gerência Manutenção",
   "local": "Vestiário das piscinas",
@@ -7103,11 +7408,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "30/05/2026",
   "fechamento": "17/06/2026",
-  "prazo": 18
+  "prazo": 12,
+  "prazoCorridos": 18,
+  "prot": "8527"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8529",
   "nome": "M.R.P.C.",
   "ger": "Gerência Manutenção",
   "local": "Jardinagem",
@@ -7115,11 +7421,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "03/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 14
+  "prazo": 10,
+  "prazoCorridos": 14,
+  "prot": "8529"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8535",
   "nome": "A.M.S.C.",
   "ger": "Gerência Manutenção",
   "local": "Estacionamento",
@@ -7127,11 +7434,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "05/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 12
+  "prazo": 8,
+  "prazoCorridos": 12,
+  "prot": "8535"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8545",
   "nome": "L.R.S.",
   "ger": "Gerência Manutenção",
   "local": "Piscinas",
@@ -7139,11 +7447,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "13/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 4
+  "prazo": 2,
+  "prazoCorridos": 4,
+  "prot": "8545"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8380",
   "nome": "R.C.S.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7151,11 +7460,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "14/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 24
+  "prazo": 17,
+  "prazoCorridos": 24,
+  "prot": "8380"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8384",
   "nome": "A.R.S.M.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -7163,11 +7473,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "20/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 18
+  "prazo": 13,
+  "prazoCorridos": 18,
+  "prot": "8384"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8386",
   "nome": "C.M.M.B.S.C.",
   "ger": "Gerência Operações",
   "local": "Ginásio 2",
@@ -7175,11 +7486,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "27/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 11
+  "prazo": 8,
+  "prazoCorridos": 11,
+  "prot": "8386"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8387",
   "nome": "C.C.",
   "ger": "Gerência Operações",
   "local": "Pista de Atletismo",
@@ -7187,11 +7499,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "27/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 11
+  "prazo": 8,
+  "prazoCorridos": 11,
+  "prot": "8387"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8388",
   "nome": "A.M.Z.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -7199,11 +7512,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "27/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 11
+  "prazo": 8,
+  "prazoCorridos": 11,
+  "prot": "8388"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8391",
   "nome": "P.D.B.C.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -7211,11 +7525,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "29/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 9
+  "prazo": 6,
+  "prazoCorridos": 9,
+  "prot": "8391"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8392",
   "nome": "K.M.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7223,11 +7538,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "29/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 9
+  "prazo": 6,
+  "prazoCorridos": 9,
+  "prot": "8392"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8395",
   "nome": "E.A.F.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7235,11 +7551,12 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "07/02/2026",
   "fechamento": "26/03/2026",
-  "prazo": 47
+  "prazo": 33,
+  "prazoCorridos": 47,
+  "prot": "8395"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8401",
   "nome": "A.P.P.",
   "ger": "Gerência Operações",
   "local": "G.R.D.",
@@ -7247,11 +7564,12 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "27/02/2026",
   "fechamento": "26/03/2026",
-  "prazo": 27
+  "prazo": 19,
+  "prazoCorridos": 27,
+  "prot": "8401"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8418",
   "nome": "R.S.O.B.",
   "ger": "Gerência Operações",
   "local": "Centro de Esportes",
@@ -7259,11 +7577,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "03/03/2026",
   "fechamento": "26/03/2026",
-  "prazo": 23
+  "prazo": 17,
+  "prazoCorridos": 23,
+  "prot": "8418"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8422",
   "nome": "S.L.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7271,11 +7590,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "26/03/2026",
-  "prazo": 16
+  "prazo": 12,
+  "prazoCorridos": 16,
+  "prot": "8422"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8424",
   "nome": "G.A.H.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -7283,11 +7603,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "27/03/2026",
-  "prazo": 17
+  "prazo": 13,
+  "prazoCorridos": 17,
+  "prot": "8424"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8425",
   "nome": "R.W.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7295,11 +7616,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "27/03/2026",
-  "prazo": 17
+  "prazo": 13,
+  "prazoCorridos": 17,
+  "prot": "8425"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8428",
   "nome": "C.L.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7307,11 +7629,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "13/03/2026",
   "fechamento": "28/05/2026",
-  "prazo": 76
+  "prazo": 54,
+  "prazoCorridos": 76,
+  "prot": "8428"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8430",
   "nome": "Z.O.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7319,11 +7642,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "18/03/2026",
   "fechamento": "27/03/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8430"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8433",
   "nome": "E.Z.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7331,11 +7655,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "25/03/2026",
   "fechamento": "28/05/2026",
-  "prazo": 64
+  "prazo": 46,
+  "prazoCorridos": 64,
+  "prot": "8433"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8451",
   "nome": "L.M.S.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -7343,11 +7668,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 10
+  "prazo": 8,
+  "prazoCorridos": 10,
+  "prot": "8451"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8452",
   "nome": "P.V.O.B.",
   "ger": "Gerência Operações",
   "local": "Pista de Atletismo",
@@ -7355,11 +7681,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 10
+  "prazo": 8,
+  "prazoCorridos": 10,
+  "prot": "8452"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8453",
   "nome": "F.S.M.",
   "ger": "Gerência Operações",
   "local": "Área Ajardinada",
@@ -7367,11 +7694,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 10
+  "prazo": 8,
+  "prazoCorridos": 10,
+  "prot": "8453"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8458",
   "nome": "J.G.R.",
   "ger": "Gerência Operações",
   "local": "Ginástica Artística",
@@ -7379,11 +7707,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "23/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 7
+  "prazo": 5,
+  "prazoCorridos": 7,
+  "prot": "8458"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8465",
   "nome": "B.B.T.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7391,11 +7720,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "30/04/2026",
   "fechamento": "05/05/2026",
-  "prazo": 5
+  "prazo": 3,
+  "prazoCorridos": 5,
+  "prot": "8465"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8498",
   "nome": "R.M.C.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7403,11 +7733,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8498"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8509",
   "nome": "A.T.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7415,11 +7746,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 2
+  "prazo": 2,
+  "prazoCorridos": 2,
+  "prot": "8509"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8517",
   "nome": "A.C.G.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7427,11 +7759,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "27/05/2026",
-  "prazo": 1
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "prot": "8517"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8536",
   "nome": "C.S.S.G.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7439,11 +7772,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "06/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 7
+  "prazo": 4,
+  "prazoCorridos": 7,
+  "prot": "8536"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8539",
   "nome": "M.S.E.S.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7451,11 +7785,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "11/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 2
+  "prazo": 1,
+  "prazoCorridos": 2,
+  "prot": "8539"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8557",
   "nome": "R.A.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7463,11 +7798,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "24/06/2026",
   "fechamento": "26/06/2026",
-  "prazo": 2
+  "prazo": 2,
+  "prazoCorridos": 2,
+  "prot": "8557"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8569",
   "nome": "C.L.A.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7475,11 +7811,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": null,
-  "prazo": null
+  "prazo": null,
+  "prazoCorridos": null,
+  "prot": "8569"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8571",
   "nome": "B.K.V.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -7487,11 +7824,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": null,
-  "prazo": null
+  "prazo": null,
+  "prazoCorridos": null,
+  "prot": "8571"
  },
  {
   "tipo": "Reclamação",
-  "prot": "8574",
   "nome": "G.J.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7499,11 +7837,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": null,
-  "prazo": null
+  "prazo": null,
+  "prazoCorridos": null,
+  "prot": "8574"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8542",
   "nome": "P.S.R.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Biblioteca",
@@ -7511,11 +7850,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "12/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 5
+  "prazo": 3,
+  "prazoCorridos": 5,
+  "prot": "8542"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8376",
   "nome": "A.R.A.B.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -7523,11 +7863,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "07/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 31
+  "prazo": 22,
+  "prazoCorridos": 31,
+  "prot": "8376"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8381",
   "nome": "A.P.P.S.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -7535,11 +7876,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "15/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 23
+  "prazo": 16,
+  "prazoCorridos": 23,
+  "prot": "8381"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8437",
   "nome": "A.M.B.",
   "ger": "Gerência Esportiva",
   "local": "Natação",
@@ -7547,11 +7889,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "08/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 71
+  "prazo": 51,
+  "prazoCorridos": 71,
+  "prot": "8437"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8471",
   "nome": "B.B.V.",
   "ger": "Gerência Esportiva",
   "local": "Ginástica Artística",
@@ -7559,11 +7902,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "11/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 17
+  "prazo": 13,
+  "prazoCorridos": 17,
+  "prot": "8471"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8473",
   "nome": "F.M.B.",
   "ger": "Gerência Esportiva",
   "local": "Sauna",
@@ -7571,11 +7915,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "18/06/2026",
-  "prazo": 34
+  "prazo": 24,
+  "prazoCorridos": 34,
+  "prot": "8473"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8537",
   "nome": "M.B.B.",
   "ger": "Gerência Esportiva",
   "local": "Basquete",
@@ -7583,11 +7928,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "06/06/2026",
   "fechamento": "11/06/2026",
-  "prazo": 5
+  "prazo": 3,
+  "prazoCorridos": 5,
+  "prot": "8537"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8538",
   "nome": "S.O.C.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -7595,11 +7941,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "09/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 4
+  "prazo": 3,
+  "prazoCorridos": 4,
+  "prot": "8538"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8466",
   "nome": "S.M.S.K.",
   "ger": "Gerência Geral",
   "local": "Secretaria Administrativa",
@@ -7607,11 +7954,12 @@ const MANIFESTACOES = [
   "mes": "abr2026",
   "abertura": "30/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 49
+  "prazo": 35,
+  "prazoCorridos": 49,
+  "prot": "8466"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8546",
   "nome": "E.Z.",
   "ger": "Gerência Manutenção",
   "local": "Piscinas",
@@ -7619,11 +7967,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "13/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 4
+  "prazo": 2,
+  "prazoCorridos": 4,
+  "prot": "8546"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8383",
   "nome": "A.F.L.A.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -7631,11 +7980,12 @@ const MANIFESTACOES = [
   "mes": "jan2026",
   "abertura": "20/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 18
+  "prazo": 13,
+  "prazoCorridos": 18,
+  "prot": "8383"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8431",
   "nome": "O.N.J.J.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7643,11 +7993,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "18/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 43
+  "prazo": 31,
+  "prazoCorridos": 43,
+  "prot": "8431"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8468",
   "nome": "S.R.R.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -7655,11 +8006,12 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "04/05/2026",
   "fechamento": "05/05/2026",
-  "prazo": 1
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "prot": "8468"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8530",
   "nome": "R.E.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7667,11 +8019,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "03/06/2026",
   "fechamento": "03/06/2026",
-  "prazo": 0
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "prot": "8530"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8531",
   "nome": "R.E.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7679,11 +8032,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "03/06/2026",
   "fechamento": "03/06/2026",
-  "prazo": 0
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "prot": "8531"
  },
  {
   "tipo": "Sugestão",
-  "prot": "8532",
   "nome": "R.E.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -7691,11 +8045,12 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "03/06/2026",
   "fechamento": "06/06/2026",
-  "prazo": 3
+  "prazo": 2,
+  "prazoCorridos": 3,
+  "prot": "8532"
  },
  {
   "tipo": "Elogio",
-  "prot": "8397",
   "nome": "N.B.",
   "ger": "Gerência Esportiva",
   "local": "Recreação",
@@ -7703,11 +8058,12 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "07/02/2026",
   "fechamento": "07/02/2026",
-  "prazo": 0
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "prot": "8397"
  },
  {
   "tipo": "Elogio",
-  "prot": "8426",
   "nome": "C.S.P.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -7715,11 +8071,12 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "27/03/2026",
-  "prazo": 17
+  "prazo": 13,
+  "prazoCorridos": 17,
+  "prot": "8426"
  },
  {
   "tipo": "Elogio",
-  "prot": "8469",
   "nome": "A.N.S.",
   "ger": "Gerência Operações",
   "local": "Gerência Operações",
@@ -7727,7 +8084,9 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "05/05/2026",
   "fechamento": "14/05/2026",
-  "prazo": 9
+  "prazo": 7,
+  "prazoCorridos": 9,
+  "prot": "8469"
  }
 ];
 
@@ -7805,7 +8164,7 @@ function renderManifestacoes(mesesSel){
     </div>`;}).join('');
 
   const faixas = [
-    {nome:`Dentro do prazo (até ${SLA_MANIF}d)`, qtd:noSla.length, cor:'#00e5a0'},
+    {nome:`Dentro do prazo (até ${SLA_MANIF} úteis)`, qtd:noSla.length, cor:'#00e5a0'},
     {nome:'6 a 30 dias',   qtd:comPrazo.filter(m=>m.prazo>5 && m.prazo<=30).length, cor:'#f2b705'},
     {nome:'31 a 60 dias',  qtd:comPrazo.filter(m=>m.prazo>30 && m.prazo<=60).length, cor:'#fb923c'},
     {nome:'Mais de 60 dias',qtd:comPrazo.filter(m=>m.prazo>60).length,              cor:'#e8192c'},
@@ -7829,7 +8188,7 @@ function renderManifestacoes(mesesSel){
       <td>${m.assunto}</td>
       <td style="white-space:nowrap;">${m.local}</td>
       <td style="white-space:nowrap;">${m.ger}</td>
-      <td class="num" style="${m.prazo==null?'' : m.prazo>SLA_MANIF ? 'color:#ff6b6b; font-weight:700;' : 'color:#00e5a0;'}">${m.prazo!=null?m.prazo+'d':'em aberto'}</td>
+      <td class="num" style="${m.prazo==null?'' : m.prazo>SLA_MANIF ? 'color:#ff6b6b; font-weight:700;' : 'color:#00e5a0;'}">${m.prazo!=null?String(m.prazo).replace('.',',')+'d':'em aberto'}</td>
     </tr>`).join('');
 
   el.innerHTML = `
@@ -7838,7 +8197,7 @@ function renderManifestacoes(mesesSel){
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('💬 Manifestações', String(ms.length), keys.length && !recorteVazio ? 'abertas no período' : 'registradas em 2026')}
       ${cardKpi('🚩 Reclamações', String(recl), ms.length?`${(recl/ms.length*100).toFixed(0)}% do total`:'—')}
-      ${cardKpi('⏱️ Tempo Médio de Resposta', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias' : '—', `SLA acordado: ${SLA_MANIF} dias`)}
+      ${cardKpi('⏱️ Tempo Médio de Resposta', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `SLA acordado: ${SLA_MANIF} dias úteis`)}
       ${cardKpi('✅ Dentro do Prazo', comPrazo.length?`${(noSla.length/comPrazo.length*100).toFixed(0)}%` : '—', `${noSla.length} de ${comPrazo.length} respondidas`)}
     </div>
 
@@ -7874,18 +8233,11 @@ function renderManifestacoes(mesesSel){
     </div>
 
     <div class="card full" style="margin-top:16px;">
-      <div class="card-label">Tempo de Resposta</div>
+      <div class="card-label">Tempo de Resposta (dias úteis, D+1)</div>
       <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:16px;">${faixasHtml}</div>
       <div class="card-meta" style="margin-top:12px;">${abertas.length} sem data de fechamento ${abertas.length===1?'não entra':'não entram'} neste cálculo.</div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Protocolos do Período<div class="line"></div></div>
-    <div class="card full">
-      <div class="scrollx"><table>
-        <thead><tr><th>Protocolo</th><th>Abertura</th><th>Tipo</th><th>Assunto</th><th>Local</th><th>Gerência</th><th class="num">Prazo</th></tr></thead>
-        <tbody>${linhas}</tbody>
-      </table></div>
-      <div class="card-meta" style="margin-top:10px;">Ordenada do maior para o menor prazo. Verde = dentro do SLA de ${SLA_MANIF} dias. 🔒 Nomes omitidos (LGPD). Fonte: planilha Manifestações 2026 — CRA.</div>
     </div>`;
 }
 
@@ -8159,24 +8511,32 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     </div>
     <div class="card full"><div class="card-label">Análise</div><div class="card-meta" style="font-size:13px; line-height:1.7;">${r.analise}</div></div>
 
-    <div class="section-title" style="margin-top:26px;">Histórico de Retenção<div class="line"></div></div>
-    <div class="card full">
-      <div class="card-label">Comparativo por Período</div>
-      <table>
-        <thead><tr><th>Período</th><th class="num">Desligamentos</th><th class="num">Retenção</th><th class="num">Residual</th><th class="num">Ticket Médio</th><th class="num">Dependentes</th></tr></thead>
-        <tbody id="tabelaHistoricoRetencao"></tbody>
-      </table>
-      <div class="card-meta" style="margin-top:10px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior.</div>
-    </div>
   `;
   const somaCategorias = r.categorias.reduce((s,c)=>s+c.qtd,0);
   drawDonut('retencaoDonutCategoria', r.categorias.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(somaCategorias), 'desligamentos');
   document.getElementById('tabelaMotivos').innerHTML = r.motivos.map(mo=>`
     <tr><td><span class="dot" style="background:${mo.cor}; margin-right:6px;"></span>${mo.motivo}</td><td class="num">${mo.qtd}</td><td class="num">${mo.pct.toFixed(2).replace('.',',')}%</td></tr>`).join('');
   drawDonut('vgRetencaoDonut', r.categorias.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(somaCategorias), 'desligamentos', {semLegenda:true});
+  // os três números abaixo do donut vinham fixos no HTML e nunca acompanhavam o filtro
+  const miniEl = document.getElementById('vgRetencaoMini');
+  if(miniEl){
+    const kpi = lbl => { const k = (r.kpis||[]).find(x=>x.label===lbl); return k ? k.valor : '—'; };
+    miniEl.innerHTML = `
+      <div class="mini-stat"><div class="mini-stat-label">Desligados</div><div class="mini-stat-value" style="color:var(--red);">${r.totalDesligamentos!=null?r.totalDesligamentos:kpi('Desligados')}</div></div>
+      <div class="mini-stat"><div class="mini-stat-label">Residual</div><div class="mini-stat-value" style="color:var(--yellow);">${r.residual!=null?r.residual:kpi('Residuais')}</div></div>
+      <div class="mini-stat"><div class="mini-stat-label">Retidos</div><div class="mini-stat-value" style="color:var(--green);">${kpi('Retidos')}</div></div>`;
+  }
 
+}
+
+// O histórico ficava no render do Desligamento, mas a tabela mora na aba Retenção —
+// que é desenhada depois e apagava o preenchimento. Virou função própria, chamada
+// no fim do render da Retenção.
+function preencherHistoricoRetencao(){
+  const alvo = document.getElementById('tabelaHistoricoRetencao');
+  if(!alvo) return;
   const keys = Object.keys(COBERTURA_RETENCAO).filter(k=>getRetencaoMes(k));
-  document.getElementById('tabelaHistoricoRetencao').innerHTML = keys.map(k=>{
+  alvo.innerHTML = keys.map(k=>{
     const rr = getRetencaoMes(k);
     const retido = rr.kpis.find(x=>x.label==='Retenção' || x.label==='Retidos');
     return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : '—'}</td><td class="num">${rr.residual}</td><td class="num">${rr.ticketMedio}</td><td class="num">${rr.dependentes}</td></tr>`;
@@ -8562,7 +8922,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'não desligados', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'},{nome:'Patrimonial', qtd:33, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'},{nome:'Contribuinte Universitario', qtd:4, cor:'#8b8fa8'},{nome:'Patrimonial Individual', qtd:3, cor:'#fb923c'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Veterano', qtd:2, cor:'#5a5c78'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#8b8fa8'},{nome:'Laureado Contribuinte', qtd:1, cor:'#8b8fa8'}],
+    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'},{nome:'Patrimonial', qtd:33, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'},{nome:'Contribuinte Universitario', qtd:4, cor:'#8b8fa8'},{nome:'Patrimonial Individual', qtd:3, cor:'#fb923c'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Veterano', qtd:2, cor:'#5a5c78'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#8b8fa8'},{nome:'Laureado Contribuinte', qtd:1, cor:'#8b8fa8'},{nome:'Não informada', qtd:3, cor:'#5a5c78'}],
     motivos:[{motivo:'Não utilização', qtd:42, pct:30.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:27, pct:19.29, cor:'#00e5a0'},{motivo:'Sem Motivo', qtd:25, pct:17.86, cor:'#5a5c78'},{motivo:'Mudança', qtd:22, pct:15.71, cor:'#f2b705'},{motivo:'Pessoal', qtd:8, pct:5.71, cor:'#8b8fa8'},{motivo:'Saúde', qtd:6, pct:4.29, cor:'#a855f7'},{motivo:'Desemprego', qtd:4, pct:2.86, cor:'#e8192c'},{motivo:'Retenção', qtd:3, pct:2.14, cor:'#8b8fa8'},{motivo:'Insatisfação', qtd:2, pct:1.43, cor:'#06b6d4'},{motivo:'Viagem', qtd:1, pct:0.71, cor:'#fb923c'}],
     totalDesligamentos:140,
     ticketMedio:'R$ 546,78', dependentes:'2,24', residual:'127', residualLabel:'Residual Acumulado',
@@ -8581,7 +8941,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
     categorias:[{nome:'Contribuinte', qtd:42, cor:'#3d7bff'},{nome:'Patrimonial', qtd:22, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:11, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#06b6d4'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Universitario', qtd:2, cor:'#8b8fa8'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#8b8fa8'},{nome:'Patrimonial Individual', qtd:1, cor:'#fb923c'}],
-    motivos:[{motivo:'Não utilização', qtd:30, pct:36.14, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:28.92, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:18.07, cor:'#f2b705'},{motivo:'Sem Motivo', qtd:9, pct:10.84, cor:'#5a5c78'},{motivo:'Saúde', qtd:1, pct:1.20, cor:'#a855f7'},{motivo:'Divorcio', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Desemprego', qtd:1, pct:1.20, cor:'#e8192c'},{motivo:'Licença', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Transferência', qtd:1, pct:1.20, cor:'#8b8fa8'}],
+    motivos:[{motivo:'Não utilização', qtd:30, pct:36.14, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:28.92, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:18.07, cor:'#f2b705'},{motivo:'Sem Motivo', qtd:9, pct:10.84, cor:'#5a5c78'},{motivo:'Saúde', qtd:1, pct:1.20, cor:'#a855f7'},{motivo:'Divorcio', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Desemprego', qtd:1, pct:1.20, cor:'#e8192c'},{motivo:'Licença', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Transferência', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Não informado', qtd:1, pct:1.19, cor:'#5a5c78'}],
     totalDesligamentos:84,
     ticketMedio:'R$ 551,55', dependentes:'1,95', residual:'56', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:16, nao:67},
@@ -8649,6 +9009,19 @@ function getRetencaoMes(key){
   return DESLIGAMENTOS_MESES[key] || null;
 }
 
+// Soma previsto/tendência/realizado dos meses do período, para a Visão Geral
+// mostrar o mesmo recorte que o Diagnóstico.
+function somarTotaisReceitaDespesa(meses){
+  const itens = meses.map(mk=>DADOS_MES[mk.key]).filter(d=>d && d.totaisReceitaDespesa);
+  if(!itens.length) return null;
+  const soma = (bloco, campo) => itens.reduce((s,d)=> s + (d.totaisReceitaDespesa[bloco][campo]||0), 0);
+  return {
+    previsto:  {receita:soma('previsto','receita'),  despesa:soma('previsto','despesa')},
+    tendencia: {receita:soma('tendencia','receita'), despesa:soma('tendencia','despesa')},
+    realizado: {receita:soma('realizado','receita'), despesa:soma('realizado','despesa')},
+  };
+}
+
 function consolidarDiagnostico(meses){
   const itens = meses.map(mk=>({key:mk.key, d:DADOS_MES[mk.key]})).filter(x=>x.d);
   if(!itens.length) return null;
@@ -8707,16 +9080,21 @@ const FONTES_DADOS = [
   {area:'Reingresso',          cob:()=>COBERTURA_REINGRESSO, fonte:'Relatório de Entradas de Reingresso'},
   {area:'Negociação / Inadimplência', cob:()=>({mar2026:1,abr2026:1,mai2026:1,jun2026:1,jul2026:1}),
    fonte:'Cobrança + Painel Institucional', obs:'Série começa em março/2026.'},
-  {area:'Retenção',            cob:()=>COBERTURA_RETENCAO,   fonte:'Plano de Trabalho de Retenção 2026 (V3)',
-   obs:'Abril nunca foi preenchido pela Gerência de RH. Agosto é parcial.'},
+  {area:'Desligamento',        cob:()=>COBERTURA_RETENCAO,   fonte:'Planilha Desligamento 2026 — CRA (uma aba por mês)',
+   obs:'Agosto é parcial. Março tem só 3 desligamentos na planilha — vale conferir com a gestora.'},
   {area:'RH',                  cob:()=>COBERTURA_RH,         fonte:'Gerência de RH'},
-  {area:'CRA — Satisfação',    cob:()=>COBERTURA_MANIFESTACOES, fonte:'Central de Relacionamento com o Associado (manifestações)'},
-  {area:'CRA — Ocorrências',   cob:()=>COBERTURA_OCORRENCIAS,   fonte:'Central de Relacionamento com o Associado'},
+  {area:'CRA — Satisfação',    cob:()=>COBERTURA_MANIFESTACOES, fonte:'Central de Relacionamento com o Associado (manifestações)',
+   prazoDia:10, obs:'O mês fecha até o dia 10 do mês seguinte.'},
+  {area:'CRA — Ocorrências',   cob:()=>COBERTURA_OCORRENCIAS,   fonte:'Central de Relacionamento com o Associado',
+   prazoDia:10, obs:'O mês fecha até o dia 10 do mês seguinte.'},
   {area:'CRA — Retenção',      cob:()=>COBERTURA_RETENCAO_CRA,  fonte:'Planilha Retenção 2026 — CRA'},
   {area:'Esportes',            cob:()=>COBERTURA_ESPORTES,   fonte:'Informação de Rendimentos por Modalidade',
    obs:'Acumulado do semestre, sem abertura mês a mês.'},
   {area:'Patrocínio',          cob:()=>COBERTURA_PATROCINIO, fonte:'Contrato KTO + Planilha de Distribuição',
-   obs:'Contrato encerrado em maio/2026; não há patrocinador ativo.'},
+   obs:'Jan a Mai: contrato KTO. De junho em diante, sem patrocínio — informação confirmada, não é dado faltando.'},
+  {area:'Calendário Operacional', cob:()=>({ago2026:1,set2026:1,out2026:1,nov2026:1,dez2026:1}),
+   fonte:'Calendário Operacional 2026 — feriados e dias úteis',
+   obs:'Cobre Ago a Dez. 24 e 31/12 valem meio dia útil (expediente até meio-dia). Prazos de Jan a Jul descontam só fim de semana até os feriados desses meses serem incluídos.'},
   {area:'Obras',               cob:()=>({jan2026:1,fev2026:1,mar2026:1,abr2026:1,mai2026:1,jun2026:1,jul2026:1}),
    fonte:'Relatório de Acompanhamento dos Índices Construtivos', obs:'Posição de 20/07/2026 — data-base própria.'},
 ];
@@ -8739,6 +9117,427 @@ function mesesDoFiltro(mIni, aIni, mFim, aFim){
   return out;
 }
 
+// Um mês que falta nem sempre é dado atrasado: algumas áreas têm prazo de
+// fechamento (ex.: CRA fecha o mês até o dia 10 do mês seguinte) e outras
+// simplesmente ainda não terminaram. Classifica em: futuro / em apuração / atrasado.
+function situacaoMesFaltante(chaveMes, prazoDia){
+  const ab = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const mes = ab.indexOf(chaveMes.slice(0,3));
+  const ano = parseInt(chaveMes.slice(3), 10);
+  if(mes < 0 || !ano) return 'atrasado';
+  const hoje = new Date();
+  const fimDoMes = new Date(ano, mes + 1, 0);
+  if(hoje <= fimDoMes) return 'futuro';                 // mês ainda não terminou
+  if(!prazoDia) return 'atrasado';
+  const prazo = new Date(ano, mes + 1, prazoDia, 23, 59, 59);
+  return hoje <= prazo ? 'apuracao' : 'atrasado';
+}
+function rotuloPrazo(chaveMes, prazoDia){
+  const ab = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const mes = ab.indexOf(chaveMes.slice(0,3));
+  const ano = parseInt(chaveMes.slice(3), 10);
+  const prazo = new Date(ano, mes + 1, prazoDia);
+  return String(prazoDia).padStart(2,'0') + '/' + String(prazo.getMonth()+1).padStart(2,'0');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALENDÁRIO OPERACIONAL — feriados e dias úteis
+// ═══════════════════════════════════════════════════════════
+// Fonte: planilha Calendário Operacional (Ago a Dez/2026).
+// Usado no cálculo de prazos em dias úteis (D+1), que passam a descontar
+// também os feriados, não só sábados e domingos.
+// ATENÇÃO: a lista cobre apenas AGO–DEZ/2026. Enquanto os feriados de
+// janeiro a julho não forem carregados, os prazos desses meses descontam
+// só o fim de semana. Basta acrescentar as datas aqui para corrigir.
+const CALENDARIO_FERIADOS = [
+ {
+  "data": "2026-09-07",
+  "tipo": "feriado",
+  "nome": "Independência do Brasil",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-09-20",
+  "tipo": "feriado",
+  "nome": "Revolução Farroupilha / Data Magna do RS",
+  "escopo": "Estadual - RS"
+ },
+ {
+  "data": "2026-10-12",
+  "tipo": "feriado",
+  "nome": "Nossa Senhora Aparecida",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-11-02",
+  "tipo": "feriado",
+  "nome": "Finados",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-11-15",
+  "tipo": "feriado",
+  "nome": "Proclamação da República",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-11-20",
+  "tipo": "feriado",
+  "nome": "Dia Nacional de Zumbi e da Consciência Negra",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-12-25",
+  "tipo": "feriado",
+  "nome": "Natal",
+  "escopo": "Nacional"
+ },
+ {
+  "data": "2026-10-28",
+  "tipo": "facultativo",
+  "nome": "Dia do Servidor Público - ponto facultativo federal",
+  "escopo": "Federal"
+ },
+ {
+  "data": "2026-12-24",
+  "tipo": "meio-expediente",
+  "nome": "Véspera de Natal — expediente até o meio-dia",
+  "escopo": "SOGIPA"
+ },
+ {
+  "data": "2026-12-31",
+  "tipo": "meio-expediente",
+  "nome": "Véspera de Ano Novo — expediente até o meio-dia",
+  "escopo": "SOGIPA"
+ }
+];
+const FERIADOS_SET = new Set(CALENDARIO_FERIADOS.filter(f=>f.tipo==='feriado').map(f=>f.data));
+// 24 e 31/12 têm expediente só até o meio-dia — contam meio dia útil.
+const MEIO_EXPEDIENTE_SET = new Set(CALENDARIO_FERIADOS.filter(f=>f.tipo==='meio-expediente').map(f=>f.data));
+const CALENDARIO_COBERTURA = {ini:'2026-08-01', fim:'2026-12-31'};
+
+// Dias úteis a partir do dia seguinte à abertura (D+1), sem fim de semana nem feriado.
+// Dias de meio expediente (24 e 31/12) contam 0,5 — o resultado pode ter meia unidade.
+function diasUteisD1(iniISO, fimISO){
+  if(!iniISO || !fimISO) return null;
+  const a = new Date(iniISO + 'T00:00:00'), b = new Date(fimISO + 'T00:00:00');
+  if(isNaN(a) || isNaN(b) || b < a) return null;
+  let n = 0;
+  const d = new Date(a);
+  d.setDate(d.getDate() + 1);              // começa no dia seguinte à abertura
+  while(d <= b){
+    const dow = d.getDay();
+    const iso = d.toISOString().slice(0,10);
+    if(dow !== 0 && dow !== 6 && !FERIADOS_SET.has(iso)){
+      n += MEIO_EXPEDIENTE_SET.has(iso) ? 0.5 : 1;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  return Math.round(n * 2) / 2;   // preserva a meia unidade dos dias de meio expediente
+}
+function paraISO(br){                       // 'dd/mm/aaaa' -> 'aaaa-mm-dd'
+  if(!br) return null;
+  const p = String(br).split('/');
+  return p.length===3 ? `${p[2]}-${p[1]}-${p[0]}` : null;
+}
+// Recalcula os prazos com o calendário disponível. Rodar depois de carregar os dados:
+// assim, quando novos feriados forem incluídos, os números se ajustam sozinhos.
+function recalcularPrazos(){
+  [typeof OCORRENCIAS!=='undefined'?OCORRENCIAS:[], typeof MANIFESTACOES!=='undefined'?MANIFESTACOES:[]]
+    .forEach(lista => lista.forEach(r => {
+      const n = diasUteisD1(paraISO(r.abertura), paraISO(r.fechamento));
+      if(n !== null) r.prazo = n;
+    }));
+}
+recalcularPrazos();
+
+// ═══════════════════════════════════════════════════════════
+// EXTRAIR DIAGNÓSTICO — gera um folder com o resumo do período filtrado
+// ═══════════════════════════════════════════════════════════
+// Monta um documento independente a partir do que está na tela do Diagnóstico,
+// abre numa aba nova e dispara a impressão (o navegador salva em PDF).
+// Respeita o filtro: um mês traz o mês; vários meses trazem o período consolidado.
+const SLIDE_CSS = `
+/* ── formato SLIDE 16:9: mesmo conteúdo, disposto em duas colunas ── */
+.folder.slide{ width:1600px; height:900px; padding:26px 34px 18px; display:flex; flex-direction:column; overflow:hidden; }
+.folder.slide header{ padding-bottom:10px; }
+.folder.slide header img{ width:46px; height:46px; }
+.folder.slide .tit{ font-size:25px; }
+.folder.slide .sub{ font-size:12px; }
+.folder.slide .per .p2{ font-size:16px; }
+.folder.slide h2{ font-size:11px; margin:11px 0 7px; }
+.folder.slide .kpis{ grid-template-columns:repeat(5,1fr); gap:8px; }
+.folder.slide .kpi{ padding:8px 10px; }
+.folder.slide .kl{ font-size:8.8px; }
+.folder.slide .kv{ font-size:19px; }
+.folder.slide .ks{ font-size:8.8px; }
+.folder.slide .miolo{ display:grid; grid-template-columns:1fr 1.22fr; gap:10px; flex:1; min-height:0; }
+.folder.slide .colA, .folder.slide .colB{ display:flex; flex-direction:column; gap:8px; min-height:0; }
+.folder.slide .box{ padding:9px 12px; }
+.folder.slide .bt{ font-size:9.8px; margin-bottom:5px; }
+.folder.slide li{ font-size:10.2px; line-height:1.3; padding:3px 0 3px 12px; }
+.folder.slide li b{ font-size:10.6px; }
+.folder.slide th{ font-size:8.6px; padding-bottom:4px; }
+.folder.slide td{ font-size:10.2px; padding:4px 6px 4px 0; }
+.folder.slide .pill{ font-size:9.2px; padding:1px 6px; }
+.folder.slide .caixa{ font-size:10.2px; padding:8px 11px; line-height:1.4; }
+.folder.slide .obg{ grid-template-columns:repeat(4,1fr); gap:8px; }
+.folder.slide .ob{ padding:8px 10px; }
+.folder.slide .obv{ font-size:16px; }
+.folder.slide .nota{ font-size:8.8px; padding:7px 11px; margin-top:8px; line-height:1.4; }
+.folder.slide footer{ margin-top:7px; padding-top:6px; font-size:8.8px; }
+.folder.slide .rk{ grid-template-columns:150px 1fr 84px; gap:8px; padding:2.5px 0; }
+.folder.slide .rkn, .folder.slide .rkv{ font-size:9.6px; }
+.folder.slide .rkb{ height:7px; }
+`;
+const FOLDER_CSS = `
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0d0e14;font-family:Inter,system-ui,sans-serif;display:flex;justify-content:center;padding:20px;}
+.folder{width:1600px;background:linear-gradient(170deg,#13151d,#181a24);color:#e9ecf5;
+  padding:38px 46px 26px;position:relative;font-family:Inter,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+.folder::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,#e8192c 0%,#e8192c 42%,#3d7bff 42%,#3d7bff 72%,#00e5a0 72%);}
+header{display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:1px solid #2a2c3d;}
+header img{width:66px;height:66px;object-fit:contain;}
+.tit{font-size:34px;font-weight:900;letter-spacing:-.6px;line-height:1.1;}
+.sub{font-size:14.5px;color:#8b8fa8;margin-top:4px;}
+.per{margin-left:auto;text-align:right;}
+.per .p1{font-size:11.5px;color:#8b8fa8;letter-spacing:1.1px;}
+.per .p2{font-size:21px;font-weight:800;color:#3d7bff;}
+h2{font-size:14px;font-weight:800;letter-spacing:1.2px;color:#8b8fa8;margin:26px 0 12px;
+  display:flex;align-items:center;gap:12px;}
+h2::after{content:'';flex:1;height:1px;background:#2a2c3d;}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+.kpi{background:#1c1f2b;border:1px solid #2a2c3d;border-radius:12px;padding:15px 17px;}
+.kl{font-size:10.6px;letter-spacing:.7px;color:#8b8fa8;font-weight:700;}
+.kv{font-size:29px;font-weight:900;line-height:1.15;margin-top:5px;}
+.ks{font-size:11.4px;color:#8b8fa8;margin-top:3px;line-height:1.4;}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.box{background:#1c1f2b;border:1px solid #2a2c3d;border-radius:12px;padding:15px 18px;}
+.bt{font-size:12.5px;font-weight:800;letter-spacing:.8px;margin-bottom:10px;}
+ul{list-style:none;}
+li{font-size:12.8px;line-height:1.45;padding:6px 0 6px 16px;position:relative;}
+li::before{content:'▪';position:absolute;left:0;color:#40415a;}
+li b{display:block;font-size:13.2px;} li span{color:#a8adc4;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10.4px;letter-spacing:.7px;color:#8b8fa8;text-align:left;padding:0 9px 8px 0;font-weight:700;border-bottom:1px solid #2a2c3d;}
+td{padding:8px 9px 8px 0;font-size:12.8px;border-bottom:1px solid #23263a;}
+td.ind{font-weight:700;} td.num{text-align:right;font-weight:800;white-space:nowrap;}
+td.ref{color:#8b8fa8;font-size:11.8px;font-weight:400;}
+.pill{border:1px solid;border-radius:20px;padding:2px 10px;font-size:11.3px;font-weight:700;white-space:nowrap;}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:9px;}
+.obg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;}
+.ob{background:#1c1f2b;border:1px solid #2a2c3d;border-left:3px solid #a855f7;border-radius:12px;padding:14px 16px;}
+.obv{font-size:23px;font-weight:900;line-height:1.15;margin-top:3px;}
+.rk{display:grid;grid-template-columns:250px 1fr 118px;align-items:center;gap:14px;padding:6.5px 0;}
+.rkn{font-size:12.6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rkb{height:11px;background:#2a2c3d;border-radius:6px;overflow:hidden;}
+.rkb div{height:100%;border-radius:6px;}
+.rkv{font-size:12.6px;font-weight:800;text-align:right;}
+.caixa{background:#1c1f2b;border:1px solid #2a2c3d;border-left:3px solid #f2b705;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.5;}
+.caixa b{color:#f2b705;}
+.nota{background:#191c27;border:1px solid #2a2c3d;border-left:3px solid #3d7bff;border-radius:11px;
+  padding:12px 16px;font-size:11.6px;color:#a8adc4;line-height:1.55;margin-top:14px;}
+.nota b{color:#c7cbdd;}
+footer{display:flex;gap:12px;margin-top:20px;padding-top:14px;border-top:1px solid #2a2c3d;font-size:11.2px;color:#6f7490;}
+footer .dir{margin-left:auto;text-align:right;}
+`;
+
+function _fdEscape(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function extrairDiagnostico(formato){
+  // Um botão só: gera sempre o resumo completo (folder), com o detalhamento de obras.
+  // O parâmetro segue existindo para, se um dia for útil, gerar a versão 16:9.
+  formato = formato || 'folder';
+  const ehSlide = (formato === 'slide');
+  const el = document.getElementById('diagConteudo');
+  if(!el || !el.innerText.trim()){ alert('Abra a aba Diagnóstico antes de extrair.'); return; }
+
+  const periodo = (document.getElementById('diagPeriodoTag')||{}).textContent || '';
+  const logoEl = document.querySelector('.sidebar-logo img');
+  const logo = logoEl ? logoEl.src : '';
+
+  // 1) cards de status (Resultado, Caixa, Inadimplência, Retenção, Vendas...)
+  const kpis = [...el.querySelectorAll('.status-card')].map(c=>{
+    const g = sel => { const x=c.querySelector(sel); return x? x.innerHTML.trim() : ''; };
+    const val = c.querySelector('.status-value');
+    const cor = val ? getComputedStyle(val).color : '#e9ecf5';
+    return {lab:g('.status-label'), val:g('.status-value'), meta:g('.status-meta'), cor};
+  });
+  const kpiHtml = kpis.map(k=>`<div class="kpi"><div class="kl">${k.lab}</div>
+    <div class="kv" style="color:${k.cor};">${k.val}</div><div class="ks">${k.meta}</div></div>`).join('');
+
+  // 2) listas "o que está bem" / "o que precisa de atenção"
+  const cards = [...el.querySelectorAll('.diag-card')];
+  const listaDe = (card) => card ? [...card.querySelectorAll('.diag-item')].map(it=>{
+      const t = it.querySelector('.diag-text strong'), d = it.querySelector('.diag-text span');
+      return {t: t?t.innerHTML.trim():it.innerText.trim(), d: d?d.innerHTML.trim():''};
+    }) : [];
+  const bem = listaDe(cards[0]), aten = listaDe(cards[1]);
+  const bloco = (arr, cor) => arr.map(x=>`<li><b style="color:${cor};">${x.t}</b><span>${x.d}</span></li>`).join('')
+      || '<li><span>Nenhum item no período.</span></li>';
+
+  // 3) semáforo
+  const tab = el.querySelector('.comp-table');
+  const semHtml = tab ? tab.outerHTML : '';
+
+  // 4) previsão de caixa
+  // Previsão de caixa: o título é uma section-title; o conteúdo vem logo depois dele
+  const caixaTxt = (()=>{
+    const tit = [...el.querySelectorAll('.section-title')].find(x=>/Previs[aã]o de Caixa/i.test(x.textContent));
+    if(!tit) return '';
+    let n = tit.nextElementSibling, txt = '';
+    while(n && !n.classList.contains('section-title') && txt.length < 700){
+      txt += (n.innerText||'').trim() + ' ';
+      n = n.nextElementSibling;
+    }
+    return txt.trim().replace(/\s+/g,' ');
+  })();
+
+  // 5) obras (fonte fixa, com data-base própria)
+  const F = (typeof OBRAS_FUNDO!=='undefined') ? OBRAS_FUNDO : null;
+  let obrasHtml = '';
+  if(F){
+    const cards4 = [
+      ['RECEBIDO NO FUNDO', fmtBRL0(F.totalRecebido), 'acumulado desde fev/2026', '#3d7bff'],
+      ['JÁ INVESTIDO EM OBRAS', fmtBRL0(F.totalInvestido), `${(F.totalInvestido/F.totalRecebido*100).toFixed(1).replace('.',',')}% do fundo · ${F.projetos.length} obras`, '#f2b705'],
+      ['SALDO DISPONÍVEL', fmtBRL0(F.saldoDisponivel), `${(F.saldoDisponivel/F.totalRecebido*100).toFixed(1).replace('.',',')}% · restrito a obras`, '#00e5a0'],
+      ['ÁREA COMERCIALIZADA', F.areaVendida.toLocaleString('pt-BR',{minimumFractionDigits:2})+' m²', `${(F.areaVendida/F.areaTotal*100).toFixed(1).replace('.',',')}% do terreno`, '#fb923c'],
+    ].map(([k,v,sb,c])=>`<div class="ob"><div class="kl">${k}</div><div class="obv" style="color:${c};">${v}</div><div class="ks">${sb}</div></div>`).join('');
+
+    const totA = F.empreendimentos.reduce((s,e)=>s+e.area,0);
+    const totV = F.empreendimentos.reduce((s,e)=>s+e.valor,0);
+    const emp = [...F.empreendimentos].sort((a,b)=>b.valor-a.valor).map(e=>
+      `<tr><td><span class="dot" style="background:${e.cor};"></span>${e.nome}</td>
+       <td class="num">${e.area.toLocaleString('pt-BR',{minimumFractionDigits:2})} m²</td>
+       <td class="num">${fmtBRL0(e.valor)}</td><td class="num ref">${(e.area/totA*100).toFixed(1).replace('.',',')}%</td></tr>`).join('');
+
+    const maxP = Math.max.apply(null, F.projetos.map(p=>p.valor));
+    const rank = F.projetos.map((p,i)=>`<div class="rk"><div class="rkn">${i+1}. ${p.nome}</div>
+      <div class="rkb"><div style="width:${(p.valor/maxP*100).toFixed(1)}%; background:${p.cor};"></div></div>
+      <div class="rkv">${fmtBRL0(p.valor)}</div></div>`).join('');
+
+    obrasHtml = `
+      <h2>🏗️ OBRAS — FUNDO ÍNDICES CONSTRUTIVOS <span style="font-weight:600; color:#6f7490; letter-spacing:0;">· posição em ${F.dataReferencia}</span></h2>
+      <div class="obg">${cards4}</div>
+      ${ehSlide?'':`<div class="duas" style="margin-top:14px;">
+        <div class="box">
+          <div class="bt" style="color:#8b8fa8;">EMPREENDIMENTOS COMERCIALIZADOS</div>
+          <table><thead><tr><th>Empreendimento</th><th style="text-align:right;">Área</th><th style="text-align:right;">Valor</th><th style="text-align:right;">% da área</th></tr></thead>
+          <tbody>${emp}
+            <tr style="font-weight:800;"><td>Total comercializado</td>
+              <td class="num">${totA.toLocaleString('pt-BR',{minimumFractionDigits:2})} m²</td>
+              <td class="num" style="color:#00e5a0;">${fmtBRL0(totV)}</td><td class="num">100%</td></tr>
+          </tbody></table>
+          <div class="ks" style="margin-top:10px;">Área total do terreno: ${F.areaTotal.toLocaleString('pt-BR',{minimumFractionDigits:2})} m² · disponível ${F.areaDisponivel.toLocaleString('pt-BR',{minimumFractionDigits:2})} m².<br>Potencial estimado do estoque remanescente: ${fmtMilReais(F.potencialTotal)}. A receber: ${fmtBRL0(F.aReceber)}.</div>
+        </div>
+        <div class="box">
+          <div class="bt" style="color:#8b8fa8;">RANKING DE INVESTIMENTOS EM OBRAS</div>
+          ${rank}
+          <div class="ks" style="margin-top:10px;">Total investido: ${fmtBRL0(F.totalInvestido)} em ${F.projetos.length} obras. Do valor arrecadado com a comercialização, <b style="color:#c7cbdd;">${F.pctEndividamento.toFixed(1).replace('.',',')}% foram para quitação de dívida</b> (${fmtMilReais(F.pagamentoEndividamento)}) e ${F.pctInvestimentos.toFixed(1).replace('.',',')}% para investimentos.</div>
+        </div>
+      </div>`}`;
+  }
+
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const corpoFolder = `<div class="folder${ehSlide?' slide':''}">
+  <header>
+    ${logo?`<img src="${logo}" alt="SOGIPA">`:''}
+    <div><div class="tit">DIAGNÓSTICO GERENCIAL</div>
+      <div class="sub">SOGIPA · Diretoria Executiva · fotografia do andamento do clube</div></div>
+    <div class="per"><div class="p1">PERÍODO ANALISADO</div><div class="p2">${_fdEscape(periodo)}</div></div>
+  </header>
+
+  <h2>INDICADORES PRINCIPAIS</h2>
+  <div class="kpis">${kpiHtml}</div>
+
+  ${ehSlide?'<div class="miolo"><div class="colA">':''}
+  <h2${ehSlide?' style="margin-top:0;"':''}>LEITURA DO PERÍODO</h2>
+  <div class="${ehSlide?'':'duas'}" ${ehSlide?'style="display:flex; flex-direction:column; gap:8px; flex:1; min-height:0;"':''}>
+    <div class="box" style="border-left:3px solid #00e5a0;">
+      <div class="bt" style="color:#00e5a0;">✅ O QUE ESTÁ BEM</div><ul>${bloco(bem,'#00e5a0')}</ul></div>
+    <div class="box" style="border-left:3px solid #ff5c5c;">
+      <div class="bt" style="color:#ff5c5c;">⚠️ O QUE PRECISA DE ATENÇÃO</div><ul>${bloco(aten,'#ff8a3d')}</ul></div>
+  </div>
+
+  ${ehSlide?'</div><div class="colB">':''}
+  <h2${ehSlide?' style="margin-top:0;"':''}>RESUMO EXECUTIVO — SEMÁFORO DOS INDICADORES</h2>
+  <div class="box"${ehSlide?' style="flex:1; min-height:0; overflow:hidden;"':''}>${semHtml}</div>
+  ${caixaTxt?`<div style="margin-top:14px;" class="caixa"><b>Previsão de caixa —</b> ${_fdEscape(caixaTxt)}</div>`:''}
+
+  ${ehSlide?'</div></div>':''}
+  ${obrasHtml}
+
+  <div class="nota"><b>Como ler os números.</b> <b>Fluxos</b> (resultado, receita, despesa, vendas) são somados no período.
+    <b>Saldos</b> (caixa, fundo de obras) são a posição do último mês — somar saldos mensais não teria significado.
+    <b>Taxas de fluxo</b> (retenção) são recalculadas pelos totais do período, não pela média das taxas mensais.
+    <b>Inadimplência</b> é a foto do último mês com dado. Os dados de obras têm data-base própria, definida pelo
+    Relatório de Acompanhamento dos Índices Construtivos.</div>
+
+  <footer><span>Documento confidencial — uso interno da Diretoria Executiva. · Extraído em ${hoje}</span>
+    <span class="dir">Gerado a partir do Painel do Diretor · Controladoria · RH · CRA · Vendas · Obras</span></footer>
+</div>`;
+
+  // ── Gera o folder como IMAGEM (PNG) e baixa direto ──
+  // A impressão em PDF perdia o fundo escuro e acrescentava cabeçalho do navegador.
+  // Aqui o documento é montado num iframe isolado (para a medida usar o mesmo CSS do
+  // folder), desenhado num canvas via SVG/foreignObject e salvo como imagem.
+  const btn = document.querySelector('[onclick="extrairDiagnostico()"]');
+  const txtBtn = btn ? btn.innerHTML : '';
+  if(btn){ btn.innerHTML = '⏳ Gerando imagem…'; btn.disabled = true; }
+
+  const frame = document.createElement('iframe');
+  frame.setAttribute('style','position:fixed; left:-20000px; top:0; width:1700px; height:200px; border:0;');
+  document.body.appendChild(frame);
+  const fdoc = frame.contentDocument;
+  fdoc.open();
+  const cssUsado = FOLDER_CSS + (ehSlide ? SLIDE_CSS : '');
+  fdoc.write('<!DOCTYPE html><html><head><meta charset="utf-8"><style>' + cssUsado
+    + 'body{margin:0;padding:0;background:#13151d;display:block;}</style></head><body>'
+    + corpoFolder + '</body></html>');
+  fdoc.close();
+
+  function limparExtracao(){
+    frame.remove();
+    if(btn){ btn.innerHTML = txtBtn; btn.disabled = false; }
+  }
+
+  const prontoFontes = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  prontoFontes.then(function(){ return new Promise(function(r){ setTimeout(r, 250); }); }).then(function(){
+    const alvo = fdoc.querySelector('.folder');
+    const cx = alvo.getBoundingClientRect();
+    const W = Math.ceil(cx.width), H = Math.ceil(cx.height);
+    const conteudo = new XMLSerializer().serializeToString(alvo);
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'
+      + '<foreignObject x="0" y="0" width="'+W+'" height="'+H+'">'
+      + '<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+W+'px; height:'+H+'px;">'
+      + '<style>' + cssUsado + '</style>' + conteudo + '</div>'
+      + '</foreignObject></svg>';
+    const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+
+    const img = new Image();
+    img.onload = function(){
+      const escala = 2;
+      const cv = document.createElement('canvas');
+      cv.width = W*escala; cv.height = H*escala;
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle = '#13151d'; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      cv.toBlob(function(blob){
+        if(!blob){ alert('Não foi possível gerar a imagem neste navegador.'); limparExtracao(); return; }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Diagnostico_Gerencial_SOGIPA_' + periodo.replace(/[^0-9A-Za-zÀ-ÿ]+/g,'_').replace(/^_|_$/g,'') + '.png';
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+        limparExtracao();
+      }, 'image/png');
+    };
+    img.onerror = function(){ alert('Não foi possível gerar a imagem neste navegador.'); limparExtracao(); };
+    img.src = url;
+  });
+}
+
 function renderCoberturaDados(mesesSelecionados){
   const el = document.getElementById('diagCoberturaConteudo');
   if(!el) return;
@@ -8751,16 +9550,38 @@ function renderCoberturaDados(mesesSelecionados){
     const periodo = nomes.length
       ? (nomes.length===1 ? nomes[0]+'/26' : `${nomes[0]} a ${nomes[nomes.length-1]}/26`)
       : '—';
-    // meses do filtro que esta área NÃO cobre
-    const faltando = selecionados.filter(k=>!chaves.includes(k))
-                                 .map(k=>ABREV_MES_COB[k.slice(0,3)]||k);
-    const cobreTudo = selecionados.length>0 && faltando.length===0;
-    const cobreNada = selecionados.length>0 && faltando.length===selecionados.length;
-    const cor = cobreNada ? '#ff6b6b' : (cobreTudo ? '#00e5a0' : '#f2b705');
-    const situacao = !selecionados.length ? '—'
-      : cobreNada ? 'Sem dado no período filtrado'
-      : cobreTudo ? 'Cobre todo o período filtrado'
-      : `Não tem ${faltando.join(', ')}`;
+    // meses do filtro que esta área NÃO cobre, separados por motivo
+    const faltandoKeys = selecionados.filter(k=>!chaves.includes(k));
+    const nomeMes = k => ABREV_MES_COB[k.slice(0,3)]||k;
+    const grupos = {futuro:[], apuracao:[], atrasado:[]};
+    faltandoKeys.forEach(k=>{ grupos[situacaoMesFaltante(k, f.prazoDia)].push(k); });
+    const faltando = faltandoKeys.map(nomeMes);
+    const cobreTudo = selecionados.length>0 && faltandoKeys.length===0;
+    const cobreNada = selecionados.length>0 && faltandoKeys.length===selecionados.length;
+    const soPendente = faltandoKeys.length>0 && grupos.atrasado.length===0;   // nada realmente atrasado
+
+    let cor, situacao;
+    if(!selecionados.length){ cor='#b0b0d0'; situacao='—'; }
+    else if(cobreTudo){ cor='#00e5a0'; situacao='Cobre todo o período filtrado'; }
+    else if(soPendente){
+      // não é dado faltando: ou o mês ainda não terminou, ou está dentro do prazo de fechamento
+      cor = '#f2b705';
+      const partes = [];
+      if(grupos.apuracao.length){
+        const prazos = grupos.apuracao.map(k=>`${nomeMes(k)} até ${rotuloPrazo(k, f.prazoDia)}`);
+        partes.push(`Em apuração — ${prazos.join(', ')}`);
+      }
+      if(grupos.futuro.length) partes.push(`${grupos.futuro.map(nomeMes).join(', ')} ainda em curso`);
+      situacao = partes.join(' · ');
+    }
+    else if(cobreNada){ cor='#ff6b6b'; situacao='Sem dado no período filtrado'; }
+    else {
+      cor='#f2b705';
+      const partes = [`Não tem ${grupos.atrasado.map(nomeMes).join(', ')}`];
+      if(grupos.apuracao.length) partes.push(`${grupos.apuracao.map(nomeMes).join(', ')} em apuração`);
+      if(grupos.futuro.length) partes.push(`${grupos.futuro.map(nomeMes).join(', ')} em curso`);
+      situacao = partes.join(' · ');
+    }
     // buracos internos da própria série (ex.: retenção sem abril)
     const buracos = [];
     if(chaves.length>1){
@@ -8778,13 +9599,16 @@ function renderCoberturaDados(mesesSelecionados){
     </tr>`;
   }).join('');
 
-  const semDado = [], parcial = [];
+  const semDado = [], parcial = [], emApuracao = [];
   FONTES_DADOS.forEach(f=>{
     let c=[]; try{ c=Object.keys(f.cob()); }catch(e){}
     if(!selecionados.length) return;
     const faltam = selecionados.filter(k=>!c.includes(k));
-    if(faltam.length === selecionados.length) semDado.push(f.area);
-    else if(faltam.length) parcial.push(f.area);
+    if(!faltam.length) return;
+    const atrasados = faltam.filter(k=>situacaoMesFaltante(k, f.prazoDia)==='atrasado');
+    if(!atrasados.length){ emApuracao.push(f.area); return; }   // dentro do prazo ou mês em curso
+    if(atrasados.length === selecionados.length) semDado.push(f.area);
+    else parcial.push(f.area);
   });
 
   let aviso;
@@ -8794,10 +9618,11 @@ function renderCoberturaDados(mesesSelecionados){
         ${parcial.length ? `<br><b>Cobertura parcial:</b> ${parcial.join(', ')}.` : ''}
         Onde falta o mês exato, o painel mostra o registro mais recente disponível e identifica isso na tela —
         vale conferir a data antes de citar o número.</div></div>`;
-  } else if(parcial.length){
+  } else if(parcial.length || emApuracao.length){
     aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
-        <b>Cobertura parcial no período filtrado:</b> ${parcial.join(', ')} — veja na tabela quais meses faltam.
-        As demais áreas cobrem o período inteiro.</div></div>`;
+        ${parcial.length ? `<b>Cobertura parcial no período filtrado:</b> ${parcial.join(', ')} — veja na tabela quais meses faltam.<br>` : ''}
+        ${emApuracao.length ? `<b>Em apuração (não é dado faltando):</b> ${emApuracao.join(', ')} — o mês ainda está em curso ou dentro do prazo de fechamento da área.` : ''}
+      </div></div>`;
   } else {
     aviso = `<div class="alert-box" style="border-color:var(--green);"><span>✅</span><div>
         <b>Todas as áreas cobrem o período filtrado por inteiro.</b></div></div>`;
@@ -8887,9 +9712,21 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
   // 4) Retenção — taxa = retidos / (retidos + desligados)
   const retKey = (mesesRet && mesesRet.length) ? mesesRet[mesesRet.length-1].key : (ultimoMesCobertura(COBERTURA_RETENCAO)||{}).key;
   const r = getRetencaoMes(retKey);
-  const retidoKpi = r.kpis.find(k=>k.label==='Retidos');
-  const retidos = retidoKpi ? parseInt(retidoKpi.valor,10) : 0;
-  const taxaRetencao = (retidos/(retidos+r.totalDesligamentos)*100);
+  const kpiRet = (x,l)=>{ const k=x.kpis.find(y=>y.label===l); return k?(parseInt(String(k.valor).replace(/\D/g,''),10)||0):0; };
+  // TAXA DE FLUXO: recalculada pelos TOTAIS do período (retidos ÷ casos), não pela
+  // média das taxas mensais nem pelo último mês. Média simples daria peso igual a um
+  // mês de 41 casos e a outro de 140 — distorcendo o número levado ao Conselho.
+  const mesesRetPer = (mesesRet && mesesRet.length) ? mesesRet : [{key:retKey}];
+  const itensRet = mesesRetPer.map(mk=>getRetencaoMes(mk.key)).filter(Boolean);
+  const retidosPer = itensRet.reduce((s,x)=>s+kpiRet(x,'Retidos'), 0);
+  const desligPer  = itensRet.reduce((s,x)=>s+(x.totalDesligamentos||0), 0);
+  const casosPer   = retidosPer + desligPer;
+  const retidos = retidosPer;
+  const taxaRetencao = casosPer ? (retidosPer/casosPer*100) : 0;
+  // último mês, para a linha de apoio mostrar a direção
+  const retidosUlt = kpiRet(r,'Retidos');
+  const taxaRetUltimo = (retidosUlt + r.totalDesligamentos) ? retidosUlt/(retidosUlt+r.totalDesligamentos)*100 : 0;
+  const nMesesRet = itensRet.length;
   let taxaRetencaoAnterior = null, labelRetAnterior = '';
   if(mesesRet && mesesRet.length>1){
     const rOutro = getRetencaoMes(mesesRet[mesesRet.length-2].key);
@@ -8922,14 +9759,14 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
         <div class="status-icon">💰</div>
         <div class="status-label">Resultado Operacional</div>
         <div class="status-value">${fmtMil(m.resultadoOper)}</div>
-        <div class="status-meta">Receita ${fmtMil(m.receitaReal)} − Despesa ${fmtMil(m.despesaReal)}</div>
+        <div class="status-meta">Receita ${fmtMil(m.receitaReal)} − Despesa ${fmtMil(m.despesaReal)}${m.nMeses>1?`<br><span style="opacity:.75;">acumulado de ${m.nMeses} meses · média ${fmtMil(m.resultadoOper/m.nMeses)}/mês · último mês ${fmtMil(m.serieResultado[m.serieResultado.length-1].v)}</span>`:''}</div>
         <div class="status-trend ${corTrendClass[resultadoStatus]}">${resultadoTrendTxt}</div>
       </div>
       <div class="status-card ${caixaStatus}">
         <div class="status-icon">💧</div>
         <div class="status-label">Caixa Operacional Livre</div>
         <div class="status-value">${fmtMil(m.caixaLivre)}</div>
-        <div class="status-meta">${m.caixaLivrePct!=null ? m.caixaLivrePct.toFixed(1).replace('.',',')+'% do saldo total' : 'restrito a obras não incluso'}</div>
+        <div class="status-meta">${m.caixaLivrePct!=null ? m.caixaLivrePct.toFixed(1).replace('.',',')+'% do saldo total' : 'restrito a obras não incluso'}${m.nMeses>1?`<br><span style="opacity:.75;">posição em ${m.ultLabel} · variação de ${fmtMil(m.primeiro.caixaLivre)} para ${fmtMil(m.caixaLivre)} no período</span>`:''}</div>
         <div class="status-trend ${corTrendClass[caixaStatus]}">${caixaStatus==='green'?'▲ Positivo':'▼ Negativo'}</div>
       </div>
       <div class="status-card ${inadStatus}">
@@ -8938,19 +9775,20 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
         <div class="status-value">${inad.real.toFixed(1).replace('.',',')}%</div>
         <div class="status-meta">${inad.meta!=null ? `Meta: ${inad.meta.toFixed(1).replace('.',',')}%` : 'sem meta definida'}${inadGap!=null?` · gap ${inadGap>=0?'+':''}${inadGap.toFixed(1).replace('.',',')} p.p.`:''}</div>
         <div class="status-trend ${corTrendClass[inadStatus]}">${inadSubindo?'▲ Em alta desde '+inadPrimeira.mes:'▼ Em queda no período'}</div>
+        <div class="status-meta" style="opacity:.75;">foto de ${inad.mes} · no período variou de ${inadPrimeira.real.toFixed(1).replace('.',',')}% a ${Math.max.apply(null, inadDisponivel.map(x=>x.real)).toFixed(1).replace('.',',')}%</div>
       </div>
       <div class="status-card ${retStatus}">
         <div class="status-icon">🔄</div>
         <div class="status-label">Taxa de Retenção</div>
         <div class="status-value">${taxaRetencao.toFixed(1).replace('.',',')}%</div>
-        <div class="status-meta">${retidos===0 ? `nenhum retido de ${r.totalDesligamentos} solicitações` : `${retidos} retidos de ${retidos+r.totalDesligamentos} solicitações`}</div>
+        <div class="status-meta">${retidosPer} retidos de ${casosPer} casos${nMesesRet>1?` · ${nMesesRet} meses somados`:''}<br><span style="opacity:.75;">último mês: ${taxaRetUltimo.toFixed(1).replace('.',',')}%</span></div>
         <div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+labelRetAnterior:'▼ Pior que '+labelRetAnterior) : 'Sem comparativo'}</div>
       </div>
       <div class="status-card ${vendasStatus}">
         <div class="status-icon">➕</div>
         <div class="status-label">Vendas vs. Meta</div>
         <div class="status-value">${pctVendas!=null ? pctVendas.toFixed(0)+'%' : '—'}</div>
-        <div class="status-meta">${mt ? `${mt.vendas.real} de ${mt.vendas.orcado} vendas novas` : 'sem meta cadastrada'}</div>
+        <div class="status-meta">${mt ? `${mt.vendas.real} de ${mt.vendas.orcado} vendas novas` : 'sem meta cadastrada'}${(mesesVen&&mesesVen.length>1)?`<br><span style="opacity:.75;">acumulado de ${mesesVen.length} meses</span>`:''}</div>
         <div class="status-trend ${corTrendClass[vendasStatus]}">${vendasStatus==='green'?'▲ Meta batida':vendasStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta'}</div>
       </div>
       ${MOSTRAR_LOCACOES ? `<div class="status-card ${locStatus}">
@@ -8984,14 +9822,57 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
     </div>`;
   }
 
+
+  // ── Indicadores das demais áreas, para o diagnóstico refletir tudo que foi importado ──
+  const keysFiltro = (window._mesesFiltro || []).map(x=>x.key);
+  const noFiltro = (arr, campoMes) => keysFiltro.length
+      ? arr.filter(x=>x[campoMes] && keysFiltro.includes(x[campoMes]))
+      : arr;
+
+  // CRA — acordos de retenção
+  const craCasos = (typeof RETENCAO_CRA!=='undefined') ? (noFiltro(RETENCAO_CRA,'mes').length ? noFiltro(RETENCAO_CRA,'mes') : []) : [];
+  const craSalvos = craCasos.filter(x=>x.sucesso).length;
+  const craTaxa = craCasos.length ? craSalvos/craCasos.length*100 : null;
+  const craReceita = craCasos.filter(x=>x.sucesso).reduce((a,x)=>a+x.valor,0);
+  const craStatus = craTaxa==null ? 'yellow' : craTaxa>=80 ? 'green' : craTaxa>=60 ? 'yellow' : 'red';
+
+  // CRA — manifestações e SLA de resposta
+  const manif = (typeof MANIFESTACOES!=='undefined') ? (noFiltro(MANIFESTACOES,'mes').length ? noFiltro(MANIFESTACOES,'mes') : []) : [];
+  const manifPrazo = manif.filter(x=>x.prazo!=null);
+  const manifNoSla = manifPrazo.filter(x=>x.prazo<=(typeof SLA_MANIF!=='undefined'?SLA_MANIF:5)).length;
+  const manifPct = manifPrazo.length ? manifNoSla/manifPrazo.length*100 : null;
+  const manifMedia = manifPrazo.length ? manifPrazo.reduce((a,x)=>a+x.prazo,0)/manifPrazo.length : null;
+  const manifStatus = manifPct==null ? 'yellow' : manifPct>=70 ? 'green' : manifPct>=40 ? 'yellow' : 'red';
+
+  // CRA — ocorrências e tempo de fechamento
+  const ocor = (typeof OCORRENCIAS!=='undefined') ? (noFiltro(OCORRENCIAS,'mes').length ? noFiltro(OCORRENCIAS,'mes') : []) : [];
+  const ocorPrazo = ocor.filter(x=>x.prazo!=null);
+  const ocorMedia = ocorPrazo.length ? ocorPrazo.reduce((a,x)=>a+x.prazo,0)/ocorPrazo.length : null;
+  const ocorStatus = ocorMedia==null ? 'yellow' : ocorMedia<=15 ? 'green' : ocorMedia<=30 ? 'yellow' : 'red';
+
+  // Esportes — resultado por modalidade (acumulado do semestre)
+  const espTotal = (typeof ESPORTES_MODALIDADES!=='undefined')
+      ? ESPORTES_MODALIDADES.reduce((a,x)=>a+(x.tot||0),0) : null;
+  const espNeg = (typeof ESPORTES_MODALIDADES!=='undefined')
+      ? ESPORTES_MODALIDADES.filter(x=>(x.tot||0)<0).length : 0;
+  const espStatus = espTotal==null ? 'yellow' : espTotal>0 ? 'green' : 'red';
+
+  // Patrocínio — sem contrato ativo desde junho
+  const patStatus = 'red';
+
   // ── Monta as listas "O que está bem" / "O que precisa de atenção" dinamicamente ──
   const itens = [
     {status:resultadoStatus, titulo:'Resultado operacional '+(resultadoStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.resultadoOper)} no período. ${resultadoStatus==='green'?'A operação está gerando mais receita do que despesa.':'As despesas superaram as receitas no período — acompanhar de perto até o fechamento.'}`},
     {status:caixaStatus, titulo:'Caixa operacional '+(caixaStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.caixaLivre)} de caixa livre. ${caixaStatus==='green'?'Há folga de caixa além do fundo de obras.':'O caixa de uso livre está negativo — o clube depende do fundo de obras ou do limite de crédito neste momento.'}`},
     {status:tendStatus, titulo:tendCaixa && tendCaixa.proximoNegativo ? 'Caixa deve virar negativo em breve' : 'Tendência de caixa sob controle', texto: tendCaixa ? (tendCaixa.proximoNegativo ? `Reversão prevista para ${tendCaixa.proximoNegativo.d}, com ponto mais baixo em ${tendCaixa.pior.d} (${fmtBRL0(tendCaixa.pior.banco)}) — ciclo normal do mês (mensalidades no início, folha+impostos e fornecedores entre 20-25).` : `Nenhuma reversão para negativo prevista nos ${tendCaixa.totalDias} dias já projetados pela Controladoria.`) : 'Sem dado de projeção diária disponível no momento.'},
     {status:inadStatus, titulo:'Inadimplência '+(inadStatus==='red'?'acima da meta':inadStatus==='yellow'?'no limite da meta':'dentro da meta'), texto:`${inad.real.toFixed(1).replace('.',',')}% ${inadSemDadoDoMes?'(referente a '+inad.mes+', mês mais recente disponível)':''}, ${inadSubindo?'em trajetória de alta desde '+inadPrimeira.mes+' ('+inadPrimeira.real.toFixed(1).replace('.',',')+'%)':'em queda no período'}.`},
-    {status: retidos===0 ? 'red' : retStatus, titulo: retidos===0 ? 'Retenção sem resultado no período' : 'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto: retidos===0 ? `Nenhuma das ${r.totalDesligamentos} solicitações de desligamento foi revertida — indica que o processo de retenção ainda não estava sendo executado nesse período.` : `Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% (${retidos} retidos de ${retidos+r.totalDesligamentos}).${taxaRetencaoAnterior!=null?' Antes era de '+taxaRetencaoAnterior.toFixed(1).replace('.',',')+'%.':''}`},
+    {status: retidos===0 ? 'red' : retStatus, titulo: retidos===0 ? 'Retenção sem resultado no período' : 'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto: retidos===0 ? `Nenhuma das ${r.totalDesligamentos} solicitações de desligamento foi revertida — indica que o processo de retenção ainda não estava sendo executado nesse período.` : `Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% no período (${retidosPer} retidos de ${casosPer} casos${nMesesRet>1?', '+nMesesRet+' meses somados':''}).${nMesesRet>1?' Só em '+r.periodoTag.split('/')[0]+': '+taxaRetUltimo.toFixed(1).replace('.',',')+'%.':''}`},
     {status:vendasStatus, titulo:'Vendas '+(vendasStatus==='green'?'batendo a meta':'abaixo da meta'), texto:`${mt?mt.vendas.real:'—'} de ${mt?mt.vendas.orcado:'—'} vendas novas orçadas (${pctVendas!=null?pctVendas.toFixed(0):'—'}%).`},
+    ...(craTaxa!=null ? [{status:craStatus, titulo:'Retenção do CRA '+(craStatus==='green'?'com alta taxa de sucesso':craStatus==='yellow'?'com sucesso parcial':'com baixa conversão'), texto:`${craSalvos} de ${craCasos.length} acordos retidos (${craTaxa.toFixed(1).replace('.',',')}%), preservando ${fmtBRL0(craReceita)} de contrato.`}] : []),
+    ...(manifPct!=null ? [{status:manifStatus, titulo:'Prazo de resposta ao associado '+(manifStatus==='green'?'dentro do acordado':'acima do acordado'), texto:`${manifPct.toFixed(0)}% das manifestações respondidas em até ${(typeof SLA_MANIF!=='undefined'?SLA_MANIF:5)} dias úteis; média de ${manifMedia.toFixed(1).replace('.',',')} dias úteis em ${manif.length} registros.`}] : []),
+    ...(ocorMedia!=null ? [{status:ocorStatus, titulo:'Ocorrências '+(ocorStatus==='green'?'fechando rápido':'demorando a fechar'), texto:`${ocor.length} ocorrências no período, com ${ocorMedia.toFixed(1).replace('.',',')} dias úteis em média até o fechamento.`}] : []),
+    ...(espTotal!=null ? [{status:espStatus, titulo:'Modalidades esportivas '+(espStatus==='green'?'com resultado positivo':'no vermelho'), texto:`${fmtBRL0(espTotal)} de resultado acumulado (jan–jun), com ${espNeg} das ${ESPORTES_MODALIDADES.length} modalidades negativas.`}] : []),
+    {status:patStatus, titulo:'Sem patrocinador ativo', texto:'A KTO encerrou em maio/2026 e não há nova receita de patrocínio prevista. Os R$ 200 mil do último contrato já entraram no caixa.'},
     ...(MOSTRAR_LOCACOES ? [{status:locStatus, titulo:'Locações '+(pctLocacoes==null?'sem meta no período':(locStatus==='green'?'batendo a meta':'abaixo da meta')), texto:`${fmtMilReais(loc.realizado)} realizado no período.${loc.meta?` ${loc.mesesComMeta===1?'No mês':'Nos '+loc.mesesComMeta+' meses'} com meta: ${fmtMilReais(loc.realizadoComMeta)} de ${fmtMilReais(loc.meta)} (${pctLocacoes.toFixed(1).replace('.',',')}%).`:' Ainda não havia meta definida nesse período.'}`}] : []),
   ];
   const bem = itens.filter(i=>i.status==='green');
@@ -9014,6 +9895,14 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
       </div>
     </div>
 
+    <div class="alert-box" style="border-color:var(--blue);"><span>📐</span><div>
+      <b>Como ler os números.</b> <b>Fluxos</b> (resultado, receita, despesa, vendas) são
+      <b>somados</b> no período. <b>Saldos</b> (caixa, fundo de obras) são a <b>posição do último mês</b> —
+      somar saldos mensais não teria significado. <b>Taxas de fluxo</b> (retenção) são
+      <b>recalculadas pelos totais</b> do período, não pela média das taxas mensais, que daria
+      peso igual a meses de volumes muito diferentes. <b>Taxas de saldo</b> (inadimplência) são a
+      foto do último mês com dado, com a variação do período ao lado.
+    </div></div>
     <div class="section-title">Resumo Executivo — Semáforo dos Indicadores</div>
     <div class="card full">
       <table class="comp-table">
@@ -9022,8 +9911,13 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
           <tr><td><strong>Resultado Operacional</strong></td><td><span class="badge ${resultadoStatus}">${corIcone[resultadoStatus]} ${resultadoStatus==='green'?'Positivo':'Negativo'}</span></td><td class="num">${fmtMil(m.resultadoOper)}</td><td>Equilíbrio (≥0)</td><td>${resultadoTrendTxt}</td></tr>
           <tr><td><strong>Caixa Livre</strong></td><td><span class="badge ${caixaStatus}">${corIcone[caixaStatus]} ${caixaStatus==='green'?'Positivo':'Negativo'}</span></td><td class="num">${fmtMil(m.caixaLivre)}</td><td>Equilíbrio (≥0)</td><td>${caixaStatus==='green'?'Estável':'Ver aba Fluxo de Caixa'}</td></tr>
           <tr><td><strong>Inadimplência</strong></td><td><span class="badge ${inadStatus}">${corIcone[inadStatus]} ${inadStatus==='green'?'Ok':inadStatus==='yellow'?'Atenção':'Crítico'}</span></td><td class="num">${inad.real.toFixed(1).replace('.',',')}%</td><td>${inad.meta!=null?inad.meta.toFixed(1).replace('.',',')+'% (meta)':'—'}</td><td>${inadSubindo?'Alta':'Queda'}</td></tr>
-          <tr><td><strong>Retenção</strong></td><td><span class="badge ${retStatus}">${corIcone[retStatus]} ${retStatus==='green'?'Melhorando':retStatus==='red'?'Piorando':'Estável'}</span></td><td class="num">${taxaRetencao.toFixed(1).replace('.',',')}%</td><td>${taxaRetencaoAnterior!=null?taxaRetencaoAnterior.toFixed(1).replace('.',',')+'%':'—'}</td><td>${taxaRetencaoAnterior!=null?(taxaRetencao>taxaRetencaoAnterior?'▲':'▼'):'—'}</td></tr>
+          <tr><td><strong>Retenção</strong></td><td><span class="badge ${retStatus}">${corIcone[retStatus]} ${retStatus==='green'?'Melhorando':retStatus==='red'?'Piorando':'Estável'}</span></td><td class="num">${taxaRetencao.toFixed(1).replace('.',',')}%</td><td>${retidosPer} de ${casosPer} casos${nMesesRet>1?` (${nMesesRet} meses)`:''}</td><td>${taxaRetencaoAnterior!=null?(taxaRetencao>taxaRetencaoAnterior?'▲':'▼'):'—'}</td></tr>
           <tr><td><strong>Vendas</strong></td><td><span class="badge ${vendasStatus}">${corIcone[vendasStatus]} ${vendasStatus==='green'?'Meta batida':vendasStatus==='yellow'?'Abaixo':'Crítico'}</span></td><td class="num">${mt?mt.vendas.real:'—'}</td><td>${mt?mt.vendas.orcado+' (meta)':'—'}</td><td>${pctVendas!=null?pctVendas.toFixed(0)+'%':'—'}</td></tr>
+          ${craTaxa!=null ? `<tr><td><strong>Retenção — CRA</strong></td><td><span class="badge ${craStatus}">${corIcone[craStatus]} ${craStatus==='green'?'Alta conversão':craStatus==='yellow'?'Parcial':'Baixa'}</span></td><td class="num">${craTaxa.toFixed(1).replace('.',',')}%</td><td>${craSalvos} de ${craCasos.length} acordos</td><td>${fmtBRL0(craReceita)} preservados</td></tr>` : ''}
+          ${manifPct!=null ? `<tr><td><strong>Resposta ao Associado</strong></td><td><span class="badge ${manifStatus}">${corIcone[manifStatus]} ${manifStatus==='green'?'No prazo':manifStatus==='yellow'?'Atenção':'Fora do prazo'}</span></td><td class="num">${manifPct.toFixed(0)}%</td><td>SLA de ${(typeof SLA_MANIF!=='undefined'?SLA_MANIF:5)} dias</td><td>média de ${manifMedia.toFixed(1).replace('.',',')} dias</td></tr>` : ''}
+          ${ocorMedia!=null ? `<tr><td><strong>Ocorrências</strong></td><td><span class="badge ${ocorStatus}">${corIcone[ocorStatus]} ${ocorStatus==='green'?'Ok':ocorStatus==='yellow'?'Atenção':'Lento'}</span></td><td class="num">${ocorMedia.toFixed(1).replace('.',',')} dias</td><td>referência: até 15 dias</td><td>${ocor.length} no período</td></tr>` : ''}
+          ${espTotal!=null ? `<tr><td><strong>Modalidades Esportivas</strong></td><td><span class="badge ${espStatus}">${corIcone[espStatus]} ${espStatus==='green'?'Positivo':'Negativo'}</span></td><td class="num">${fmtBRL0(espTotal)}</td><td>acumulado jan–jun</td><td>${espNeg} modalidades no vermelho</td></tr>` : ''}
+          <tr><td><strong>Patrocínio</strong></td><td><span class="badge red">${corIcone.red} Encerrado</span></td><td class="num">—</td><td>sem contrato ativo</td><td>KTO encerrou em mai/2026</td></tr>
           ${MOSTRAR_LOCACOES ? `<tr><td><strong>Locações</strong></td><td><span class="badge ${locStatus}">${corIcone[locStatus]} ${locStatus==='green'?'Meta batida':locStatus==='yellow'?'Abaixo':'Crítico'}</span></td><td class="num">${fmtMilReais(loc.realizado)}</td><td>${loc.meta?fmtMilReais(loc.meta)+' (meta)':'—'}</td><td>${pctLocacoes!=null?pctLocacoes.toFixed(1).replace('.',',')+'%':'—'}</td></tr>` : ''}
         </tbody>
       </table>
@@ -10173,12 +11067,12 @@ function pintarVendas(v, aviso){
       v.categorias.map((c,i)=>({nome:c.nome, valor:c.qtd, cor:CORES_SERIE[i%CORES_SERIE.length]})),
       String(totCat), 'associações');
   }
+  renderVGVendasResumo(v);
   if(v.campanhas){
     const totalCamp = v.campanhas.reduce((s,c)=>s+c.qtd,0);
     // Um card só: o donut mostra a proporção e a legenda ao lado traz a barra e o número,
     // no lugar da lista de barras que repetia a mesma informação.
     drawDonut('vendasDonut', v.campanhas.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(totalCamp), 'com campanha', {barras:true});
-    drawDonut('vgDistribuicaoVendas', v.campanhas.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(totalCamp), 'com campanha', {semLegenda:true});
   }
   if(v.metas){
     document.getElementById('vendasMetasConteudo').innerHTML = renderMetasSetorHTML(v.metas);
@@ -10509,7 +11403,10 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
     <tr><td>${o.data}</td><td class="muted">${o.fornecedor}</td><td>${o.projeto}</td><td class="num">${fmtBRL(o.valor)}</td></tr>`).join('');
   const totalObrasEl = document.querySelector('.total-highlight td:last-child');
   if(totalObrasEl) totalObrasEl.textContent = fmtBRL(m.obrasTotal);
-  drawReceitaDespesaChart('vgBarDespesas', true, m.totaisReceitaDespesa);
+  // gráfico da Visão Geral também soma o período (o da aba Financeiro segue por mês)
+  const totVG = (typeof somarTotaisReceitaDespesa === 'function' && mesesFlx && mesesFlx.length>1)
+      ? somarTotaisReceitaDespesa(mesesFlx) : m.totaisReceitaDespesa;
+  drawReceitaDespesaChart('vgBarDespesas', true, totVG);
   if(typeof renderHistoricoFechamentos === 'function') renderHistoricoFechamentos();
   const stageActive = document.querySelector('.kpi-card.active');
   if(stageActive) selectView(stageActive.id.replace('kpi-',''));
@@ -10518,8 +11415,18 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   document.getElementById('vgCaixaLivre').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toFixed(1).replace('.',',') + ' mil';
   document.getElementById('vgCaixaLivre').style.color = m.caixaLivre<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('vgCaixaLivreSub').textContent = m.negativo ? 'negativo no período' : (m.caixaLivrePct.toFixed(1).replace('.',',')+'% do saldo total');
-  document.getElementById('vgResultadoOper').textContent = (m.resultadoOper<0?'-':'') + 'R$ ' + Math.abs(m.resultadoOper).toFixed(1).replace('.',',') + ' mil';
-  document.getElementById('vgResultadoOper').style.color = m.resultadoOper<0 ? 'var(--red)' : 'var(--green)';
+  // Resultado operacional é FLUXO: soma os meses do período, igual ao Diagnóstico.
+  // Antes mostrava só o último mês, o que divergia do Diagnóstico em recortes de
+  // mais de um mês. Caixa livre e fundo de obras continuam sendo do último mês,
+  // porque são saldos e somá-los não faria sentido.
+  const cons = (typeof consolidarDiagnostico === 'function' && mesesFlx && mesesFlx.length)
+      ? consolidarDiagnostico(mesesFlx) : null;
+  const resOper = cons ? cons.resultadoOper : m.resultadoOper;
+  const nMesesRes = cons ? cons.nMeses : 1;
+  document.getElementById('vgResultadoOper').textContent = (resOper<0?'-':'') + 'R$ ' + Math.abs(resOper).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('vgResultadoOper').style.color = resOper<0 ? 'var(--red)' : 'var(--green)';
+  const subRes = document.querySelector('#vgResultadoOper')?.parentElement?.querySelector('.delta');
+  if(subRes) subRes.textContent = nMesesRes>1 ? `receita − despesa · ${nMesesRes} meses somados` : 'receita − despesa';
   document.getElementById('vgFundoObras').textContent = fmtMil(m.fundoObras);
   pintarComposicaoSaldo('vgSaldo', m);
   document.getElementById('alertaPontoAtencaoVG').innerHTML = m.ptoAtencao + ' Detalhes na aba <b>Fluxo de Caixa</b>.';
