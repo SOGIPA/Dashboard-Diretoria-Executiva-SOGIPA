@@ -3792,6 +3792,34 @@ const VENDAS_EXTRA_MESES = {
       taxaAdesao:20262.25, taxaReingresso:0, taxaTotal:20262.25,
     },
   },
+  ago2026: {
+    periodoTag:'Agosto/2026 (parcial · até 08/08)',
+    associacoesNovas:'12', valorArrecadado:'R$ 5.841,64', ticketMedio:'R$ 486,80',
+    campanhas:[
+      {nome:'Promo Aniversário', qtd:6, cor:'#f2b705'},
+      {nome:'Visita', qtd:2, cor:'#00e5a0'},
+      {nome:'Promo o Melhor das Férias', qtd:1, cor:'#3d7bff'},
+      {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
+      {nome:'Convênio', qtd:1, cor:'#a855f7'},
+      {nome:'Convênio OAB', qtd:1, cor:'#06b6d4'},
+    ],
+    consultores:[
+      {nome:'Claudia', qtd:5, valor:2694.89},
+      {nome:'Helena', qtd:5, valor:2379.75},
+      {nome:'Sabrina', qtd:2, valor:767.00},
+    ],
+    categorias:[
+      {nome:'Contribuinte', qtd:11},
+      {nome:'Contribuinte Sênior', qtd:1},
+    ],
+    alerta: 'Mês em andamento — <b>12 associações novas até 08/08</b>, somando R$ 5.841,64. A campanha de aniversário do clube já responde por metade das vendas (6 de 12), confirmando o retorno da peça em veiculação. Ticket médio de R$ 486,80, abaixo dos R$ 633,20 de julho, puxado pelas entradas de convênio. <b>Helena entra como terceira consultora</b>, empatada com Claudia em quantidade (5 cada).',
+    metas:{
+      vendas:{orcado:23, real:12}, reingressos:{orcado:32, real:null},
+      totalVR:{orcado:55, real:12}, desafioVenda:26, desafioReingresso:40,
+      total:{orcado:66, real:12, gap:-54},
+      taxaAdesao:5841.64, taxaReingresso:0, taxaTotal:5841.64,
+    },
+  },
 };
 
 const VENDAS_FUNIL_DIARIO = [
@@ -3864,6 +3892,7 @@ const COBERTURA_VENDAS = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
