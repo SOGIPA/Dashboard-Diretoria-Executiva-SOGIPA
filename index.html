@@ -1001,6 +1001,9 @@
         <div class="section-title" style="margin-top:26px;">Metas do Setor<div class="line"></div></div>
         <div id="vendasMetasConteudo"></div>
 
+        <div class="section-title" style="margin-top:26px;">Vendas em Processo de Efetivação<div class="line"></div></div>
+        <div id="vendasProcessoConteudo"></div>
+
         <div class="section-title" style="margin-top:26px;">Central de Vendas — Funil de Conversão<div class="line"></div></div>
         <div id="funilVendasConteudo"></div>
       </div>
@@ -1105,7 +1108,7 @@
     </div>
 
     <div class="page-section" id="page-obras">
-      <div class="section-title">Obras — Fundo Índices Construtivos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Atualizado até 20/07/2026</span><div class="line"></div></div>
+      <div class="section-title">Obras — Fundo Índices Construtivos<div class="line"></div></div>
       <div id="obrasConteudo"></div>
     </div>
     </div><!-- /.content -->
@@ -1347,16 +1350,17 @@ const LIMITE_CREDITO_TOTAL = 6400000;
 // Conecta com "Fundo Índices Construtivos" e "Compromissos Futuros" já mostrados em Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 const OBRAS_FUNDO = {
-  dataReferencia: '20/07/2026',
-  // Acompanhamento dos Índices Construtivos (mar-jul/26). Fonte: Relatório de Acompanhamento.
+  dataReferencia: '31/07/2026',
+  // Acompanhamento dos Índices Construtivos (mar-jul/26). Fonte: Relatório de Acompanhamento
+  // + Dashboard Executivo, base 31/07/2026.
   // Fórmula do fundo: Saldo Final = Saldo Inicial + Entradas − Investimentos do período (saldo rola mês a mês).
-  posicoesLabels: ['31/03','30/04','31/05','30/06','20/07'],
+  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07'],
   acompanhamento: [
     {label:'31/03', investidoAcum:294665.52, saldo:297163.42, obrasAtivas:1},
     {label:'30/04', investidoAcum:362444.42, saldo:228719.00, obrasAtivas:2},
     {label:'31/05', investidoAcum:448151.50, saldo:949373.74, obrasAtivas:4},
     {label:'30/06', investidoAcum:550614.82, saldo:1666587.37, obrasAtivas:7},
-    {label:'20/07', investidoAcum:790553.80, saldo:2259440.37, obrasAtivas:8}
+    {label:'31/07', investidoAcum:850235.78, saldo:2199758.39, obrasAtivas:10}
   ],
   fluxoMensal: [
     {mes:'Fev/26', saldoIni:0.00, entradas:453789.70, investimentos:0.00, saldoFim:453789.70},
@@ -1364,7 +1368,7 @@ const OBRAS_FUNDO = {
     {mes:'Abr/26', saldoIni:297163.42, entradas:0.00, investimentos:68444.42, saldoFim:228719.00},
     {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:85707.08, saldoFim:949373.74},
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:102463.32, saldoFim:1666587.37},
-    {mes:'20/Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:239938.98, saldoFim:2259440.37}
+    {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:299620.96, saldoFim:2199758.39}
   ],
   obrasNoTempo: [
     {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52], entrou:'31/03', total:341665.52},
@@ -1373,13 +1377,15 @@ const OBRAS_FUNDO = {
     {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
     {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08], entrou:'30/06', total:163600.08},
     {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00], entrou:'30/06', total:20204.00},
-    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,3637.50], entrou:'30/06', total:3637.50},
-    {nome:'Telhado', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00], entrou:'20/07', total:78000.00}
+    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,7275.00], entrou:'30/06', total:7275.00},
+    {nome:'Telhado', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00], entrou:'31/07', total:78000.00},
+    {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48], entrou:'31/07', total:38144.48},
+    {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00], entrou:'31/07', total:17900.00}
   ],
   totalRecebido: 3049994.17,
-  totalInvestido: 790553.80,
-  saldoDisponivel: 2259440.37,
-  // ── Posição patrimonial (fonte: Dashboard Executivo Índices Construtivos, 16/07/2026) ──
+  totalInvestido: 850235.78,
+  saldoDisponivel: 2199758.39,
+  // ── Posição patrimonial (fonte: Dashboard Executivo Índices Construtivos, 31/07/2026) ──
   areaTotal: 118156.09,
   areaComissao: 5907.80,
   areaLiquida: 112248.29,
@@ -1387,6 +1393,7 @@ const OBRAS_FUNDO = {
   areaDisponivel: 96815.86,
   potencialTotal: 96360000,
   aReceber: 845000.00,
+  saldoProjetado: 3044758.39,   // saldo atual + a receber, sem considerar novas saídas
   contabilizadoVendas: 13003904,
   pctEndividamento: 76.5,
   pctInvestimentos: 23.5,
@@ -1411,19 +1418,22 @@ const OBRAS_FUNDO = {
     {mes:'Abr/26', saldoIni:297163.42, entradas:0,         investimentos:-68444.42,saldoFim:228719.00},
     {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:-85707.08,saldoFim:949373.74},
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:-102463.32,saldoFim:1666587.37},
-    {mes:'16/Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:-239938.98, saldoFim:2259440.37},
+    {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:-299620.96, saldoFim:2199758.39},
   ],
   projetos: [
     {nome:'Reforma Aquecedor das Piscinas', valor:341665.52, cor:'#e8192c'},
     {nome:'Reforma Salão Panorâmico', valor:163600.08, cor:'#3d7bff'},
-    {nome:'Reforma Sanitários', valor:89999.70, cor:'#00e5a0'},
+    {nome:'Reforma Sanitários - 3º Andar', valor:89999.70, cor:'#00e5a0'},
     {nome:'Reforma Quadras Recreativas', valor:84447.00, cor:'#a855f7'},
     {nome:'Reforma Telhado', valor:78000.00, cor:'#f2b705'},
+    {nome:'Plano Diretor', valor:38144.48, cor:'#f472b6'},
     {nome:'Reforma Academia dos Atletas', valor:20204.00, cor:'#06b6d4'},
+    {nome:'Reforma Vestiários', valor:17900.00, cor:'#8b8fa8'},
     {nome:'Projeto Área de Convivência', valor:9000.00, cor:'#fb923c'},
-    {nome:'Reforma Tubulações das Piscinas', valor:3637.50, cor:'#b0b0d0'},
+    {nome:'Reforma Tubulações das Piscinas', valor:7275.00, cor:'#b0b0d0'},
   ],
 };
+
 let PROJECAO_ATUAL = PROJECAO; // filtrado dinamicamente pelo período selecionado no filtro de data
 function projecaoDataISO(d){
   const meses = {jan:'01',fev:'02',mar:'03',abr:'04',mai:'05',jun:'06',jul:'07',ago:'08',set:'09',out:'10',nov:'11',dez:'12'};
@@ -2160,36 +2170,58 @@ document.getElementById('tabelaObras').innerHTML = OBRAS.map(o=>`
 `).join('');
 
 // ── Gráfico de barras: Pagamentos por Semana ──
+// Com 11 cortes, o desenho antigo (560px fixos, valor cheio sobre cada barra e uma
+// segunda linha com a quantidade) ficava ilegível: os rótulos se sobrepunham.
+// Agora: largura acompanha o número de cortes, valor abreviado (R$ 2,0 mi),
+// data em duas linhas e a quantidade só no tooltip.
 function drawPagamentosSemanal(elId){
   const el = document.getElementById(elId);
   const dados = PERIODOS.filter(p=>p.temDados && p.temDados.pagamentos).map(p=>{
     const d = PAGAMENTOS_POR_PERIODO[p.key];
-    return {semana:d.label.replace(/\/202\d/g,'').replace(' a ','-'), qtd:d.qtd, total:d.total};
+    const lab = d.label.replace(/\/202\d/g,'');           // "01 a 05/06" -> "01 a 05/06"
+    // dois formatos: "01 a 05/06" (mesmo mês) e "28/06 a 05/07" (atravessa o mês)
+    let dias = lab.trim(), mes = '';
+    const m1 = lab.match(/^(\d{2})\s*a\s*(\d{2})\/(\d{2})/);
+    const m2 = lab.match(/^(\d{2})\/(\d{2})\s*a\s*(\d{2})\/(\d{2})/);
+    if(m2){ dias = `${m2[1]}–${m2[3]}`; mes = `${MES_ABREV_NUM[m2[2]]}–${MES_ABREV_NUM[m2[4]]}`; }
+    else if(m1){ dias = `${m1[1]}–${m1[2]}`; mes = MES_ABREV_NUM[m1[3]] || m1[3]; }
+    return {dias, mes, qtd:d.qtd, total:d.total, cheio:lab};
   });
-  const W = 560, H = 260, padL=70, padR=20, padT=24, padB=50;
-  const max = Math.max.apply(null, dados.map(s=>s.total)) * 1.18;
+  // valor curto: 2.020.525 -> "2,0 mi" · 639.405 -> "639 mil"
+  const curto = v => v >= 1e6 ? (v/1e6).toFixed(1).replace('.',',')+' mi'
+                              : Math.round(v/1000).toLocaleString('pt-BR')+' mil';
+
+  const larguraPorBarra = 78;
+  const padL=62, padR=16, padT=30, padB=54;
+  const W = Math.max(560, padL + padR + dados.length*larguraPorBarra), H = 280;
+  const max = Math.max.apply(null, dados.map(s=>s.total)) * 1.16;
   const bw = (W-padL-padR)/dados.length;
   const y = v => padT + (1-v/max)*(H-padT-padB);
+
   let gridLines = '';
-  for(let s=0; s<=3; s++){
-    const v = max*s/3, yy = y(v);
-    gridLines += `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#40415a" stroke-width="1"/>`;
-    gridLines += `<text x="${padL-8}" y="${yy+4}" text-anchor="end" fill="#b0b0d0" font-size="12">${(v/1e6).toFixed(1)}M</text>`;
+  for(let g=0; g<=3; g++){
+    const v = max*g/3, yy = y(v);
+    gridLines += `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="#2a2c3d" stroke-width="1"/>`;
+    gridLines += `<text x="${padL-8}" y="${yy+4}" text-anchor="end" fill="#6f7490" font-size="11">${(v/1e6).toFixed(1)}M</text>`;
   }
   let bars = '', labels = '';
   dados.forEach((s,i)=>{
-    const cx = padL + i*bw + bw/2, barW = bw*0.55;
+    const cx = padL + i*bw + bw/2, barW = Math.min(bw*0.6, 42);
     const barH = (H-padB) - y(s.total);
-    bars += `<rect x="${(cx-barW/2).toFixed(1)}" y="${y(s.total).toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#3d7bff" rx="3"><title>${s.semana}: ${fmtBRL0(s.total)} (${s.qtd} lançamentos)</title></rect>`;
-    bars += `<text x="${cx}" y="${y(s.total)-8}" text-anchor="middle" fill="#3d7bff" font-size="12" font-weight="800">${fmtBRL0(s.total)}</text>`;
-    labels += `<text x="${cx}" y="${H-padB+18}" text-anchor="middle" fill="#b0b0d0" font-size="12">${s.semana}</text>`;
-    labels += `<text x="${cx}" y="${H-padB+34}" text-anchor="middle" fill="#5c6370" font-size="12">${s.qtd} lanç.</text>`;
+    bars += `<rect x="${(cx-barW/2).toFixed(1)}" y="${y(s.total).toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#3d7bff" rx="3">`
+          + `<title>${s.cheio}: ${fmtBRL0(s.total)} · ${s.qtd} lançamentos</title></rect>`;
+    bars += `<text x="${cx}" y="${y(s.total)-8}" text-anchor="middle" fill="#5a92ff" font-size="11.5" font-weight="800">${curto(s.total)}</text>`;
+    labels += `<text x="${cx}" y="${H-padB+17}" text-anchor="middle" fill="#b0b0d0" font-size="11.5" font-weight="600">${s.dias}</text>`;
+    labels += `<text x="${cx}" y="${H-padB+31}" text-anchor="middle" fill="#6f7490" font-size="10.5">${s.mes}</text>`;
   });
-  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; height:auto;">
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; max-width:100%; height:auto;">
     <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#40415a"/>
     ${gridLines}${bars}${labels}
-  </svg>`;
+  </svg>
+  <div class="card-meta" style="margin-top:8px;">Valores em reais. Passe o mouse sobre a barra para ver o valor exato e a quantidade de lançamentos.</div>`;
 }
+const MES_ABREV_NUM = {'01':'jan','02':'fev','03':'mar','04':'abr','05':'mai','06':'jun',
+                       '07':'jul','08':'ago','09':'set','10':'out','11':'nov','12':'dez'};
 
 // ── Donut genérico (conic-gradient) ──
 function drawDonut(elId, segments, centerLabel, centerSub, opts){
@@ -3041,7 +3073,7 @@ const PAGE_TITLES = {
   rh:          {t:'RH', s:'Indicadores de RH e DP · Jan-Jun/2026'},
   locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
   esportes:    {t:'Esportes', s:'Resultado por modalidade · Jan-Jun/2026'},
-  obras:       {t:'Obras', s:'Fundo Índices Construtivos · Posição em 20/07/2026'},
+  obras:       {t:'Obras', s:'Fundo Índices Construtivos'},
 };
 
 // Painel do Presidente embutido (base64) — carregado sob demanda ao abrir a aba
@@ -4131,6 +4163,7 @@ function aplicarFiltroMes(){
   renderVendasMeses(mesesVen);
   renderReingressoMeses(mesesRei);
   atualizarVGMovimento(mesesVen, mesesRei);
+  renderVendasEmProcesso(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_VENDAS_PROCESSO));
   renderFunilVendas(de, ate);
 
   // Demais abas: dirigidas pelo último mês do intervalo; se o intervalo não tem dado, cai pro último disponível
@@ -5435,6 +5468,90 @@ const COBERTURA_RETENCAO_CRA = {
 const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','#e8192c','#b0b0d0','#5a5c78','#22d3ee','#f472b6','#facc15','#8b8fa8'];
 
 // ── Visão Geral: resumo de vendas em três blocos empilhados (substitui o donut) ──
+// ═══════════════════════════════════════════════════════════
+// VENDAS EM PROCESSO DE EFETIVAÇÃO
+// ═══════════════════════════════════════════════════════════
+// Vendas negociadas que ainda não fecharam: falta pagar a adesão ou assinar
+// o contrato. NÃO entram nos totais de associações novas nem no valor
+// arrecadado — só viram venda realizada quando a Gestoria de Vendas confirmar
+// e elas aparecerem na planilha de ENTRADAS.
+// Para acrescentar: uma linha por venda, com mes no formato 'ago2026'.
+const VENDAS_EM_PROCESSO = [
+  {mes:'ago2026', qtd:4, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'Helena',
+   pendencia:'Adesão ou contrato', conferir:true},
+  {mes:'ago2026', qtd:1, categoria:'Convênio OAB', valorUnit:375.75, consultor:'Helena',
+   pendencia:'Adesão ou contrato', conferir:true},
+];
+const COBERTURA_VENDAS_PROCESSO = {
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+};
+
+// ── Vendas em processo de efetivação (pipeline que ainda não virou venda) ──
+function renderVendasEmProcesso(mesesSel){
+  const el = document.getElementById('vendasProcessoConteudo');
+  if(!el) return;
+  // Só mostra o que pertence ao período filtrado. Sem correspondência, mostra vazio
+  // — nunca cai para "todos", senão o mês errado apareceria com dados de outro.
+  const keys = (mesesSel||[]).map(m=>m.key);
+  const itens = VENDAS_EM_PROCESSO.filter(x=>!keys.length || keys.includes(x.mes));
+  if(!itens.length || !keys.length){
+    el.innerHTML = `<div class="alert-box"><span>📋</span><div>Nenhuma venda em processo de efetivação registrada no período.
+      Este bloco recebe as vendas já negociadas que ainda aguardam pagamento da adesão ou assinatura de contrato —
+      elas <b>não entram</b> nos totais de associações novas até serem confirmadas.</div></div>`;
+    return;
+  }
+  const qtd = itens.reduce((s,x)=>s+x.qtd, 0);
+  const valor = itens.reduce((s,x)=>s+x.qtd*x.valorUnit, 0);
+  const aConferir = itens.filter(x=>x.conferir);
+  const porConsultor = {};
+  itens.forEach(x=>{ porConsultor[x.consultor] = (porConsultor[x.consultor]||0) + x.qtd; });
+
+  const linhas = itens.map(x=>`
+    <tr>
+      <td>${x.categoria}</td>
+      <td class="num">${x.qtd}</td>
+      <td class="num">${fmtBRL(x.valorUnit)}</td>
+      <td class="num" style="font-weight:700;">${fmtBRL(x.qtd*x.valorUnit)}</td>
+      <td>${x.consultor}</td>
+      <td class="muted">${x.pendencia}</td>
+      <td>${x.conferir ? '<span style="color:var(--gold);">⚠ a conferir</span>' : '<span style="color:#00e5a0;">ok</span>'}</td>
+    </tr>`).join('');
+
+  el.innerHTML = `
+    <div class="alert-box" style="border-color:var(--blue);"><span>📋</span><div>
+      Vendas já negociadas que <b>ainda não fecharam</b> — falta pagar a adesão ou assinar o contrato.
+      <b>Não entram nos totais de associações novas nem no valor arrecadado</b>: só viram venda quando
+      confirmadas e lançadas na planilha de entradas. Serve para o diretor enxergar o que está por vir.
+    </div></div>
+
+    ${aConferir.length ? `<div class="alert-box" style="border-color:var(--red);"><span>⚠️</span><div>
+      <b>${aConferir.reduce((s,x)=>s+x.qtd,0)} destas vendas precisam ser conferidas antes de contar como pipeline.</b>
+      A planilha de entradas de agosto já traz 5 vendas da Helena com exatamente esta composição
+      (4 de R$ 501,00 e 1 de R$ 375,75, somando R$ 2.379,75), lançadas como <b>realizadas</b> entre 05 e 08/08.
+      Ou elas já foram efetivadas e devem sair daqui, ou foram lançadas na planilha por engano e precisam sair de lá —
+      caso contrário o mesmo negócio aparece duas vezes.
+    </div></div>` : ''}
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
+      ${cardKpi('⏳ Vendas em Processo', String(qtd), 'aguardando adesão ou contrato')}
+      ${cardKpi('💰 Valor Potencial', fmtBRL(valor), 'se todas forem efetivadas')}
+      ${cardKpi('👤 Por Consultor', Object.entries(porConsultor).map(([k,v])=>`${k}: ${v}`).join(' · '), 'origem das negociações')}
+    </div>
+
+    <div class="card full" style="margin-top:16px;">
+      <div class="card-label">Detalhamento</div>
+      <div class="scrollx" style="margin-top:12px;"><table>
+        <thead><tr><th>Categoria</th><th class="num">Qtd</th><th class="num">Valor unit.</th><th class="num">Total</th><th>Consultor</th><th>Pendência</th><th>Status</th></tr></thead>
+        <tbody>${linhas}
+          <tr style="border-top:2px solid var(--border); font-weight:800;">
+            <td>Total em processo</td><td class="num">${qtd}</td><td class="num">—</td>
+            <td class="num" style="color:#f2b705;">${fmtBRL(valor)}</td><td colspan="3"></td></tr>
+        </tbody>
+      </table></div>
+      <div class="card-meta" style="margin-top:10px;">Fonte: Gestoria de Vendas. Atualizar a cada nova negociação pendente; ao efetivar, a venda sai daqui e entra na planilha de entradas.</div>
+    </div>`;
+}
+
 function renderVGVendasResumo(v){
   const el = document.getElementById('vgVendasResumo');
   if(!el) return;
@@ -9128,6 +9245,47 @@ function somarTotaisReceitaDespesa(meses){
   };
 }
 
+// ═══════════════════════════════════════════════════════════
+// DELTA — variação contra o período anterior
+// ═══════════════════════════════════════════════════════════
+// Um número sozinho não diz se está bom. "16,29% de inadimplência" só
+// significa alguma coisa ao lado de "era 18,0% em junho".
+//
+// Dois cuidados embutidos aqui:
+//  1. PERCENTUAL VARIA EM PONTOS, não em percentual. De 18,0% para 16,29%
+//     a queda é de 1,71 ponto percentual — dizer "-9,5%" seria outra conta.
+//  2. A DIREÇÃO BOA MUDA por indicador: vendas subindo é bom; inadimplência
+//     e despesa subindo é ruim. Por isso cada chamada informa 'maiorMelhor'.
+function calcDelta(atual, anterior, opts){
+  opts = opts || {};
+  if(atual == null || anterior == null || isNaN(atual) || isNaN(anterior)) return null;
+  const maiorMelhor = opts.maiorMelhor !== false;   // padrão: subir é bom
+  const ehPonto = !!opts.pontos;                    // indicador já é percentual
+  const dif = atual - anterior;
+  const nulo = Math.abs(dif) < (opts.tolerancia || 0.0001);
+  let texto;
+  if(nulo){
+    texto = '— estável';
+  } else if(ehPonto){
+    texto = (dif > 0 ? '▲ ' : '▼ ') + Math.abs(dif).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:2}) + ' p.p.';
+  } else if(opts.moeda){
+    texto = (dif > 0 ? '▲ ' : '▼ ') + fmtMil(Math.abs(dif));
+  } else if(anterior !== 0){
+    texto = (dif > 0 ? '▲ ' : '▼ ') + Math.abs(dif/anterior*100).toFixed(1).replace('.',',') + '%';
+  } else {
+    texto = (dif > 0 ? '▲ ' : '▼ ') + Math.abs(dif).toLocaleString('pt-BR');
+  }
+  const bom = nulo ? null : (maiorMelhor ? dif > 0 : dif < 0);
+  return {dif, texto, bom, nulo,
+          classe: nulo ? 'attention' : (bom ? 'up-good' : 'up-bad')};
+}
+// Monta a linha pronta do card: "▼ 1,71 p.p. vs Junho/2026"
+function linhaDelta(atual, anterior, rotuloAnterior, opts){
+  const d = calcDelta(atual, anterior, opts);
+  if(!d) return '';
+  return `<div class="status-trend ${d.classe}">${d.texto}${rotuloAnterior ? ' vs ' + rotuloAnterior : ''}</div>`;
+}
+
 function consolidarDiagnostico(meses){
   const itens = meses.map(mk=>({key:mk.key, d:DADOS_MES[mk.key]})).filter(x=>x.d);
   if(!itens.length) return null;
@@ -9181,6 +9339,8 @@ const FONTES_DADOS = [
   {area:'Pagamentos',          cob:()=>COBERTURA_PAGAMENTOS, fonte:'Controladoria — relatório de pagamentos por período',
    obs:'Julho cobre 06 a 31/07: os dias 01 a 05 só existem num corte que atravessa junho.'},
   {area:'Vendas',              cob:()=>COBERTURA_VENDAS,     fonte:'Planilha ENTRADAS REALIZADAS'},
+  {area:'Vendas em Processo', cob:()=>COBERTURA_VENDAS_PROCESSO, fonte:'Gestoria de Vendas — negociações pendentes',
+   obs:'Não entram nos totais de vendas realizadas.'},
   {area:'Funil de Vendas',     cob:()=>({jul2026:1}),        fonte:'Controle diário da Central de Vendas',
    obs:'Só julho tem controle diário, e 30 e 31/07 ficaram sem preenchimento.'},
   {area:'Reingresso',          cob:()=>COBERTURA_REINGRESSO, fonte:'Relatório de Entradas de Reingresso'},
@@ -9202,7 +9362,8 @@ const FONTES_DADOS = [
    fonte:'Calendário Operacional 2026 — feriados e dias úteis',
    obs:'Ano completo (Jan a Dez). 24 e 31/12 valem meio dia útil. Pontos facultativos, como o Carnaval, contam como dia normal.'},
   {area:'Obras',               cob:()=>({jan2026:1,fev2026:1,mar2026:1,abr2026:1,mai2026:1,jun2026:1,jul2026:1}),
-   fonte:'Relatório de Acompanhamento dos Índices Construtivos', obs:'Posição de 20/07/2026 — data-base própria.'},
+   fonte:'Relatório de Acompanhamento dos Índices Construtivos',
+   obs:'Fundo acumulado, com data-base própria — não acompanha o filtro de período.'},
 ];
 
 const ABREV_MES_COB = {jan:'Jan',fev:'Fev',mar:'Mar',abr:'Abr',mai:'Mai',jun:'Jun',
@@ -9915,6 +10076,46 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
   const pctLocacoes = loc.meta ? (loc.realizadoComMeta/loc.meta*100) : null;
   const locStatus = pctLocacoes==null ? 'yellow' : (pctLocacoes>=90 ? 'green' : pctLocacoes>=50 ? 'yellow' : 'red');
 
+
+  // ── DELTA: compara com o período imediatamente anterior, de mesmo tamanho ──
+  // Filtro de 1 mês compara com o mês anterior; de 3 meses, com os 3 anteriores.
+  // Assim a comparação é sempre entre janelas equivalentes.
+  const ORDEM_MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  function periodoAnterior(meses){
+    if(!meses || !meses.length) return [];
+    const idx = k => ORDEM_MES.indexOf(k.slice(0,3)) + (parseInt(k.slice(3),10)-2026)*12;
+    const ini = Math.min.apply(null, meses.map(m=>idx(m.key)));
+    const n = meses.length;
+    const chave = i => ORDEM_MES[((i%12)+12)%12] + (2026 + Math.floor(i/12));
+    const out = [];
+    for(let i = ini-n; i < ini; i++) out.push({key: chave(i)});
+    return out;
+  }
+  const mesesFlxAnt = periodoAnterior(mesesFlx).filter(x=>DADOS_MES[x.key]);
+  const consAnt = mesesFlxAnt.length ? consolidarDiagnostico(mesesFlxAnt) : null;
+  const rotAnt = mesesFlxAnt.length
+    ? (mesesFlxAnt.length===1 ? (DADOS_MES[mesesFlxAnt[0].key]||{}).label || mesesFlxAnt[0].key
+       : `${mesesFlxAnt.length} meses anteriores`)
+    : '';
+
+  // inadimplência: mês anterior ao último com dado (varia em PONTOS percentuais)
+  const inadIdx = INADIMPLENCIA.findIndex(x=>x.mes===inad.mes);
+  const inadAnt = inadIdx > 0 ? INADIMPLENCIA[inadIdx-1] : null;
+
+  // vendas: mesma janela deslocada
+  const mesesVenAnt = periodoAnterior(mesesVen||[]).filter(x=>COBERTURA_VENDAS[x.key]);
+  const vAggAnt = mesesVenAnt.length ? agregarVendas(mesesVenAnt) : null;
+
+  // retenção: taxa ponderada do período anterior
+  const mesesRetAnt = periodoAnterior(mesesRetPer).filter(x=>getRetencaoMes(x.key));
+  let taxaRetAnt = null;
+  if(mesesRetAnt.length){
+    const itens = mesesRetAnt.map(x=>getRetencaoMes(x.key));
+    const rr = itens.reduce((s,x)=>s+kpiRet(x,'Retidos'),0);
+    const dd = itens.reduce((s,x)=>s+(x.totalDesligamentos||0),0);
+    if(rr+dd) taxaRetAnt = rr/(rr+dd)*100;
+  }
+
   const corIcone = {green:'✅', yellow:'⚠️', red:'❌'};
   const corTrendClass = {green:'up-good', yellow:'attention', red:'up-bad'};
 
@@ -9925,21 +10126,24 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
         <div class="status-label">Resultado Operacional</div>
         <div class="status-value">${fmtMil(m.resultadoOper)}</div>
         <div class="status-meta">Receita ${fmtMil(m.receitaReal)} − Despesa ${fmtMil(m.despesaReal)}${m.nMeses>1?`<br><span style="opacity:.75;">acumulado de ${m.nMeses} meses · média ${fmtMil(m.resultadoOper/m.nMeses)}/mês · último mês ${fmtMil(m.serieResultado[m.serieResultado.length-1].v)}</span>`:''}</div>
-        <div class="status-trend ${corTrendClass[resultadoStatus]}">${resultadoTrendTxt}</div>
+        ${consAnt ? linhaDelta(m.resultadoOper, consAnt.resultadoOper, rotAnt, {moeda:true, maiorMelhor:true})
+                   : `<div class="status-trend ${corTrendClass[resultadoStatus]}">${resultadoTrendTxt}</div>`}
       </div>
       <div class="status-card ${caixaStatus}">
         <div class="status-icon">💧</div>
         <div class="status-label">Caixa Operacional Livre</div>
         <div class="status-value">${fmtMil(m.caixaLivre)}</div>
         <div class="status-meta">${m.caixaLivrePct!=null ? m.caixaLivrePct.toFixed(1).replace('.',',')+'% do saldo total' : 'restrito a obras não incluso'}${m.nMeses>1?`<br><span style="opacity:.75;">posição em ${m.ultLabel} · variação de ${fmtMil(m.primeiro.caixaLivre)} para ${fmtMil(m.caixaLivre)} no período</span>`:''}</div>
-        <div class="status-trend ${corTrendClass[caixaStatus]}">${caixaStatus==='green'?'▲ Positivo':'▼ Negativo'}</div>
+        ${consAnt ? linhaDelta(m.caixaLivre, consAnt.caixaLivre, rotAnt, {moeda:true, maiorMelhor:true})
+                   : `<div class="status-trend ${corTrendClass[caixaStatus]}">${caixaStatus==='green'?'▲ Positivo':'▼ Negativo'}</div>`}
       </div>
       <div class="status-card ${inadStatus}">
         <div class="status-icon">📉</div>
         <div class="status-label">Inadimplência ${inadSemDadoDoMes?'('+inad.mes+')':''}</div>
         <div class="status-value">${inad.real.toFixed(1).replace('.',',')}%</div>
         <div class="status-meta">${inad.meta!=null ? `Meta: ${inad.meta.toFixed(1).replace('.',',')}%` : 'sem meta definida'}${inadGap!=null?` · gap ${inadGap>=0?'+':''}${inadGap.toFixed(1).replace('.',',')} p.p.`:''}</div>
-        <div class="status-trend ${corTrendClass[inadStatus]}">${inadSubindo?'▲ Em alta desde '+inadPrimeira.mes:'▼ Em queda no período'}</div>
+        ${inadAnt ? linhaDelta(inad.real, inadAnt.real, inadAnt.mes, {pontos:true, maiorMelhor:false})
+                    : `<div class="status-trend ${corTrendClass[inadStatus]}">${inadSubindo?'▲ Em alta desde '+inadPrimeira.mes:'▼ Em queda no período'}</div>`}
         <div class="status-meta" style="opacity:.75;">foto de ${inad.mes} · no período variou de ${inadPrimeira.real.toFixed(1).replace('.',',')}% a ${Math.max.apply(null, inadDisponivel.map(x=>x.real)).toFixed(1).replace('.',',')}%</div>
       </div>
       <div class="status-card ${retStatus}">
@@ -9947,14 +10151,16 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
         <div class="status-label">Taxa de Retenção</div>
         <div class="status-value">${taxaRetencao.toFixed(1).replace('.',',')}%</div>
         <div class="status-meta">${retidosPer} retidos de ${casosPer} casos${nMesesRet>1?` · ${nMesesRet} meses somados`:''}<br><span style="opacity:.75;">último mês: ${taxaRetUltimo.toFixed(1).replace('.',',')}%</span></div>
-        <div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+labelRetAnterior:'▼ Pior que '+labelRetAnterior) : 'Sem comparativo'}</div>
+        ${taxaRetAnt!=null ? linhaDelta(taxaRetencao, taxaRetAnt, 'período anterior', {pontos:true, maiorMelhor:true})
+                          : `<div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+labelRetAnterior:'▼ Pior que '+labelRetAnterior) : 'Sem comparativo'}</div>`}
       </div>
       <div class="status-card ${vendasStatus}">
         <div class="status-icon">➕</div>
         <div class="status-label">Vendas vs. Meta</div>
         <div class="status-value">${pctVendas!=null ? pctVendas.toFixed(0)+'%' : '—'}</div>
         <div class="status-meta">${mt ? `${mt.vendas.real} de ${mt.vendas.orcado} vendas novas` : 'sem meta cadastrada'}${(mesesVen&&mesesVen.length>1)?`<br><span style="opacity:.75;">acumulado de ${mesesVen.length} meses</span>`:''}</div>
-        <div class="status-trend ${corTrendClass[vendasStatus]}">${vendasStatus==='green'?'▲ Meta batida':vendasStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta'}</div>
+        ${(vAggAnt && vAggAnt.metas && vAggAnt.metas.vendas.orcado) ? linhaDelta(pctVendas, vAggAnt.metas.vendas.real/vAggAnt.metas.vendas.orcado*100, rotAnt, {pontos:true, maiorMelhor:true})
+                          : `<div class="status-trend ${corTrendClass[vendasStatus]}">${vendasStatus==='green'?'▲ Meta batida':vendasStatus==='yellow'?'⚠ Abaixo da meta':'▼ Bem abaixo da meta'}</div>`}
       </div>
       ${MOSTRAR_LOCACOES ? `<div class="status-card ${locStatus}">
         <div class="status-icon">🏛️</div>
