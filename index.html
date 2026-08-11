@@ -1475,7 +1475,7 @@ const REINGRESSO_CAMPANHAS = [
 // ═══════════════════════════════════════════════════════════
 // SATISFAÇÃO — CRA (Central de Relacionamento com o Associado)
 // Manifestações dos associados (Reclamação, Sugestão, Elogio) · prazo SLA = 5 dias úteis
-// Cobertura Jan-Jun/2026. Nomes protegidos por LGPD (iniciais).
+// Nomes protegidos por LGPD (iniciais).
 // ═══════════════════════════════════════════════════════════
 const SATISFACAO_MESES = {
   jan2026: {
@@ -1876,7 +1876,7 @@ const HE_HISTORICO_MENSAL = [
 ];
 
 // ═══════════════════════════════════════════════════════════
-// DADOS — RH x DP (planilha "proposta Cíntia", Jan-Jun/2026)
+// DADOS — RH x DP (planilha "proposta Cíntia")
 // Estrutura definida pela própria Gerente de RH: RH = pessoas/gestão, DP = operacional/custos
 // ═══════════════════════════════════════════════════════════
 const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26'];
@@ -3104,17 +3104,17 @@ const PAGE_TITLES = {
   institucional: {t:'Indicadores Institucionais', s:'Painel do Presidente · visão mensal para o Conselho'},
   diagnostico: {t:'Diagnóstico Gerencial', s:'Relatório gerencial para gestão da diretoria'},
   estrategia:  {t:'Planejamento Estratégico', s:'Mapa Estratégico SOGIPA · 2024–2026 (V11)'},
-  fluxocaixa:  {t:'Fluxo de Caixa', s:'Operacional · Investimento · Financiamento · Jan-Jul/2026'},
-  pagamentos:  {t:'Pagamentos', s:'Controle de pagamentos e fornecedores · Jan-Jun/2026'},
-  negociacao:  {t:'Negociação', s:'Recuperação de inadimplência · Mar-Jun/2026'},
-  financeiro:  {t:'Financeiro', s:'Fluxo de caixa e pagamentos · Jan-Jul/2026'},
+  fluxocaixa:  {t:'Fluxo de Caixa', s:'Operacional · Investimento · Financiamento'},
+  pagamentos:  {t:'Pagamentos', s:'Controle de pagamentos e fornecedores'},
+  negociacao:  {t:'Negociação', s:'Recuperação de inadimplência'},
+  financeiro:  {t:'Financeiro', s:'Fluxo de caixa e pagamentos'},
   secadm:      {t:'Secretaria Administrativa', s:'Negociação e reingresso · 2026'},
-  reingresso:  {t:'Reingresso', s:'Associados reingressantes · Jan-Jul/2026'},
-  vendas:      {t:'Vendas', s:'Associações novas e metas · Jan-Jul/2026'},
-  retencao:    {t:'CRA — Central de Relacionamento com o Associado', s:'Retenção e satisfação · Jan-Jul/2026'},
-  rh:          {t:'RH', s:'Indicadores de RH e DP · Jan-Jun/2026'},
+  reingresso:  {t:'Reingresso', s:'Associados reingressantes'},
+  vendas:      {t:'Vendas', s:'Associações novas e metas'},
+  retencao:    {t:'CRA — Central de Relacionamento com o Associado', s:'Retenção, satisfação, ocorrências e desligamentos'},
+  rh:          {t:'RH', s:'Indicadores de RH e Departamento Pessoal'},
   locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
-  esportes:    {t:'Esportes', s:'Resultado por modalidade · Jan-Jun/2026'},
+  esportes:    {t:'Esportes', s:'Resultado por modalidade'},
   obras:       {t:'Obras', s:'Fundo Índices Construtivos'},
 };
 
@@ -3162,7 +3162,7 @@ for(let i=0;i<navItems.length;i++){
 
 // ═══════════════════════════════════════════════════════════
 // DADOS — PAGAMENTOS POR MÊS (fonte: Relatório de Pagamentos Total, Controladoria)
-// Cobertura própria (COBERTURA_PAGAMENTOS): Jan a Jun/2026 — fechamentos mensais completos.
+// Cobertura própria (COBERTURA_PAGAMENTOS) — fechamentos mensais da Controladoria.
 // LGPD: CPFs removidos e nomes de pessoa física reduzidos a iniciais.
 // ═══════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════
@@ -3958,7 +3958,7 @@ const COBERTURA_FLUXO = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 
-// RH/DP tem cobertura própria (Jan a Jun/26 — planilha da Gerência de RH).
+// RH/DP tem cobertura própria (planilha da Gerência de RH).
 const COBERTURA_RH = {
   jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
   fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
@@ -8932,7 +8932,7 @@ function renderLocacoesPeriodo(mesKey, de, ate){
       <div id="locacoesChartSemanal"></div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Histórico Mensal (Jan-Jul/2026)<div class="line"></div></div>
+    <div class="section-title" style="margin-top:26px;">Histórico Mensal<div class="line"></div></div>
     <div class="card full">
       <div class="card-label">Meta × Realizado por Mês</div>
       <div id="locacoesChartHistorico" class="scrollx"></div>
@@ -10628,7 +10628,7 @@ function renderObras(){
       </div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Acompanhamento do Investimento — Março a Julho/2026<div class="line"></div></div>
+    <div class="section-title" style="margin-top:26px;">Acompanhamento do Investimento — ${o.acompanhamento[0].label} a ${o.acompanhamento[o.acompanhamento.length-1].label}<div class="line"></div></div>
     <div class="alert-box"><span>🏗️</span><div>Como o fundo evolui a cada fechamento: quanto <b>entrou</b> (venda de índices), quanto foi <b>investido</b> nas obras e o <b>saldo disponível</b> que sobra. A regra é <b>Saldo Final = Saldo Inicial + Entradas − Investimentos</b>, e o saldo de um mês vira o ponto de partida do mês seguinte.</div></div>
 
     <div class="grid-2" style="margin-top:16px;">
@@ -10670,7 +10670,7 @@ function renderObras(){
       </div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Evolução do Fundo — Fevereiro a Julho/2026<div class="line"></div></div>
+    <div class="section-title" style="margin-top:26px;">Evolução do Fundo — ${o.fluxoMensal[0].mes} a ${o.fluxoMensal[o.fluxoMensal.length-1].mes}<div class="line"></div></div>
     <div class="card full">
       <div class="card-label">Saldo Final Acumulado, com Entradas e Investimentos do Mês</div>
       <div style="display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 4px;">
@@ -11334,7 +11334,7 @@ function renderRH(mesKey){
       </div>
     </div>
 
-    <div class="section-title" style="margin-top:26px;">Histórico de Horas Extras (Jan-Jun/2026)<div class="line"></div></div>
+    <div class="section-title" style="margin-top:26px;">Histórico de Horas Extras <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">${HE_HISTORICO_MENSAL[0].mes} a ${HE_HISTORICO_MENSAL[HE_HISTORICO_MENSAL.length-1].mes}</span><div class="line"></div></div>
     <div class="card full">
       <div class="card-label">Evolução Mensal — Valor Pago em HE</div>
       <div id="rhChartHistorico" class="scrollx"></div>
