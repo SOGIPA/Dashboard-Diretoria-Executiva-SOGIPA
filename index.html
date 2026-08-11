@@ -1932,16 +1932,16 @@ const REINGRESSO_HISTORICO = [
   // campanha, então entram como texto (campanhasTexto) e não no gráfico: dividir
   // os 9 entre elas seria inventar número. 'categorias' é novo aqui — o
   // histórico de reingresso não tinha essa abertura até agora.
-  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial)', total:9, valor:9023.55,
+  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial)', total:11, valor:10114.55,
     campanhas:null,
     campanhasTexto:['Mês do Aniversário do Clube com taxa reduzida',
                     'Aniversariantes do mês de agosto com taxa zero'],
     categorias:[
-      {nome:'Contribuinte', qtd:5, cor:'#3d7bff'},
+      {nome:'Contribuinte', qtd:6, cor:'#3d7bff'},
       {nome:'Patrimonial', qtd:3, cor:'#00e5a0'},
-      {nome:'Contribuinte Individual', qtd:1, cor:'#f2b705'},
+      {nome:'Contribuinte Individual', qtd:2, cor:'#f2b705'},
     ],
-    alerta: 'Agosto em andamento: <b>9 reingressos e R$ 9.023,55</b> até aqui, ticket médio de R$ 1.002,62 — o segundo maior do ano (só janeiro foi mais alto, R$ 1.188,93) e quase o dobro de junho, puxado pelos 3 Patrimoniais. A meta do mês é 40 (desafio 45), então o mês está em 22,5% da meta. As duas campanhas em curso vieram sem quebra por quantidade, por isso não aparecem no gráfico.'},
+    alerta: 'Agosto em andamento: <b>11 reingressos e R$ 10.114,55</b> até aqui, ticket médio de R$ 919,50 — o segundo maior do ano, atrás só de janeiro (R$ 1.188,93). A meta do mês é 40 (desafio 45), então o mês está em 27,5% da meta. As duas campanhas em curso vieram sem quebra por quantidade, por isso não aparecem no gráfico.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -1952,14 +1952,25 @@ const VENDAS_CAMPANHAS = [
 // Funil de conversão da Central de Vendas (leads/contatos/visitas/vendas) — dado diário real
 // Valores recebidos por competência — apuração de 01 a 31/07/2026 (Resumo das Negociações).
 // Total R$ 460.277,00 · 1.498 contatos (lista de inadimplência + negociações por ligação).
+// VALORES ATUALIZADOS EM 11/08 pela Sec. Adm. Julho entrou (R$ 101.825) e
+// abr/mai/jun foram revisados para baixo, na casa de 8x a 10x:
+//   Abr  47.067 -> 5.575     Mai  84.982 -> 7.957     Jun  304.596 -> 30.971
+// A divergência foi levantada com o usuário em 11/08 e ele CONFIRMOU que os
+// números novos estão corretos, inclusive mantendo março em 23.632. Fica o
+// registro para não reabrirmos a discussão numa próxima rodada:
+//   - março tem só 37 contatos contra 335+ nos meses seguintes, então o
+//     R$/contato dele (R$ 638) destoa do resto (R$ 16 a R$ 50). É o dado real,
+//     não erro de importação — provavelmente o registro de contatos começou
+//     no meio de março.
+//   - o Conselho pode ter visto os números antigos (jun R$ 304 mil) numa
+//     versão anterior do painel; se perguntarem, a régua mudou aqui.
+// Contatos de abr/mai/jun mantidos; julho aguarda o número da área.
 const NEGOCIACOES = [
   {mes:'Mar/26', valor:23632,  contatos:37},
-  {mes:'Abr/26', valor:47067,  contatos:335},
-  {mes:'Mai/26', valor:84982,  contatos:512},
-  {mes:'Jun/26', valor:304596, contatos:614},
-  // Jul/26 entra só para a linha de inadimplência: a recuperação por competência
-  // de julho ainda não foi apurada, por isso valor e contatos ficam nulos (sem barra).
-  {mes:'Jul/26', valor:null,   contatos:null},
+  {mes:'Abr/26', valor:5575,   contatos:335},
+  {mes:'Mai/26', valor:7957,   contatos:512},
+  {mes:'Jun/26', valor:30971,  contatos:614},
+  {mes:'Jul/26', valor:101825, contatos:null},
 ];
 const INADIMPLENCIA = [
   {mes:'Mar/26', real:12.5, meta:12.5},
@@ -4110,10 +4121,10 @@ const VENDAS_EXTRA_MESES = {
       // Sec. Adm. Antes estavam 32/40, repetidos de julho — eram provisórios.
       // TOTAL da tabela = desafioVenda + desafioReingresso (26+45), mesma
       // fórmula dos meses anteriores.
-      vendas:{orcado:23, real:12}, reingressos:{orcado:40, real:9},
-      totalVR:{orcado:63, real:21}, desafioVenda:26, desafioReingresso:45,
-      total:{orcado:71, real:21, gap:-50},
-      taxaAdesao:5841.64, taxaReingresso:9023.55, taxaTotal:14865.19,
+      vendas:{orcado:23, real:12}, reingressos:{orcado:40, real:11},
+      totalVR:{orcado:63, real:23}, desafioVenda:26, desafioReingresso:45,
+      total:{orcado:71, real:23, gap:-48},
+      taxaAdesao:5841.64, taxaReingresso:10114.55, taxaTotal:15956.19,
     },
   },
 };
@@ -9797,145 +9808,160 @@ const DESLIGAMENTOS_MESES = {
     periodoTag:'Janeiro/2026',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'48', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'35', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'36', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'12', sub:'não desligados', valorCor:'#00e5a0'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'23', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'25', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'48', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'nenhuma retenção no mês', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:17, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:4, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:4, cor:'#a855f7'},{nome:'Veterano', qtd:2, cor:'#5a5c78'},{nome:'Patrimonial Individual', qtd:2, cor:'#fb923c'},{nome:'Contribuinte Universitario', qtd:1, cor:'#8b8fa8'}],
-    motivos:[{motivo:'Não utilização', qtd:11, pct:30.56, cor:'#3d7bff'},{motivo:'Viagem', qtd:9, pct:25.00, cor:'#fb923c'},{motivo:'Não Informado', qtd:8, pct:22.22, cor:'#8b8fa8'},{motivo:'Mudança', qtd:5, pct:13.89, cor:'#f2b705'},{motivo:'Financeiro', qtd:2, pct:5.56, cor:'#00e5a0'},{motivo:'Insatisfação', qtd:1, pct:2.78, cor:'#06b6d4'}],
-    totalDesligamentos:36,
-    ticketMedio:'—', dependentes:'—', residual:'35', residualLabel:'Residual Acumulado',
+    categorias:[{nome:'Contribuinte', qtd:20, cor:'#3d7bff'},{nome:'Patrimonial', qtd:9, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:6, cor:'#a855f7'},{nome:'Contribuinte Individual', qtd:5, cor:'#f2b705'},{nome:'Contribuinte Universitário', qtd:3, cor:'#06b6d4'},{nome:'Patrimonial Individual', qtd:2, cor:'#fb923c'},{nome:'Veterano (isento)', qtd:2, cor:'#e8192c'},{nome:'Contribuinte Derivado', qtd:1, cor:'#b0b0d0'}],
+    motivos:[{motivo:'Não informado', qtd:20, pct:41.67, cor:'#3d7bff'},{motivo:'Não utilização', qtd:11, pct:22.92, cor:'#00e5a0'},{motivo:'Viagem', qtd:9, pct:18.75, cor:'#a855f7'},{motivo:'Mudança', qtd:5, pct:10.42, cor:'#f2b705'},{motivo:'Financeiro', qtd:2, pct:4.17, cor:'#06b6d4'},{motivo:'Insatisfação', qtd:1, pct:2.08, cor:'#fb923c'}],
+    totalDesligamentos:48,
+    ticketMedio:'—', dependentes:'—', residual:'23', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:0, nao:0},
     quadroSocial:46,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">48 solicitações</b> de janeiro, <b>36 resultaram em desligamento</b> e 12 não foram desligadas. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>48 solicitações</b> e <b>48 desligamentos</b> — nenhuma retenção no mês. Não informado é o maior grupo de motivos (20 de 48), o que limita a leitura: em quase metade dos casos o clube não soube por que o associado saiu. Entre os motivos declarados, não utilização (11) e viagem (9) lideram. Ticket médio e dependentes não foram apurados neste mês. O quadro social registrou <b>46 desligamentos</b>, 2 a menos que os 48 tratados pelo CRA.',
+
   },
   fev2026: {
     periodoTag:'Fevereiro/2026',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'67', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'56', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'11', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'47', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'20', sub:'não desligados', valorCor:'#00e5a0'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'34', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'33', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'67', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'nenhuma retenção no mês', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:27, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:12, cor:'#a855f7'},{nome:'Patrimonial', qtd:3, cor:'#00e5a0'},{nome:'Laureado', qtd:2, cor:'#8b8fa8'},{nome:'Contribuinte Universitario', qtd:1, cor:'#8b8fa8'},{nome:'Contribuinte Senior', qtd:1, cor:'#8b8fa8'},{nome:'Honorario', qtd:1, cor:'#8b8fa8'}],
-    motivos:[{motivo:'Não utilização', qtd:20, pct:42.55, cor:'#3d7bff'},{motivo:'Não Informado', qtd:18, pct:38.30, cor:'#8b8fa8'},{motivo:'Mudança', qtd:2, pct:4.26, cor:'#f2b705'},{motivo:'Saude', qtd:2, pct:4.26, cor:'#8b8fa8'},{motivo:'Viagem', qtd:2, pct:4.26, cor:'#fb923c'},{motivo:'Transferencia', qtd:2, pct:4.26, cor:'#8b8fa8'},{motivo:'Financeiro', qtd:1, pct:2.13, cor:'#00e5a0'}],
-    totalDesligamentos:47,
-    ticketMedio:'—', dependentes:'—', residual:'56', residualLabel:'Residual Acumulado',
+    categorias:[{nome:'Contribuinte', qtd:37, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:16, cor:'#00e5a0'},{nome:'Patrimonial', qtd:6, cor:'#a855f7'},{nome:'Contribuinte Universitário', qtd:3, cor:'#f2b705'},{nome:'Laureado (isento)', qtd:2, cor:'#06b6d4'},{nome:'Honorário (isento)', qtd:1, cor:'#fb923c'},{nome:'Contribuinte Sênior', qtd:1, cor:'#e8192c'},{nome:'Patrimonial Individual', qtd:1, cor:'#b0b0d0'}],
+    motivos:[{motivo:'Não informado', qtd:38, pct:56.72, cor:'#3d7bff'},{motivo:'Não utilização', qtd:20, pct:29.85, cor:'#00e5a0'},{motivo:'Transferência', qtd:2, pct:2.99, cor:'#a855f7'},{motivo:'Viagem', qtd:2, pct:2.99, cor:'#f2b705'},{motivo:'Mudança', qtd:2, pct:2.99, cor:'#06b6d4'},{motivo:'Saúde', qtd:2, pct:2.99, cor:'#fb923c'},{motivo:'Financeiro', qtd:1, pct:1.49, cor:'#e8192c'}],
+    totalDesligamentos:67,
+    ticketMedio:'—', dependentes:'—', residual:'34', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:0, nao:0},
     quadroSocial:64,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">67 solicitações</b> de fevereiro, <b>47 resultaram em desligamento</b> e 20 não foram desligadas. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>67 solicitações</b> e <b>67 desligamentos</b> — de novo nenhuma retenção. O mês com mais saídas do primeiro trimestre. Não informado volta a ser o maior grupo (38 de 67, 57%): a qualidade do registro de motivo piorou em relação a janeiro. Entre os declarados, não utilização domina (20). Contribuinte e Contribuinte Individual somam 53 das 67 saídas. O quadro social registrou <b>64 desligamentos</b>.',
+
   },
   mar2026: {
     periodoTag:'Março/2026',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'41', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'9', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'0', sub:'nenhuma de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'32', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'3', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'38', sub:'9 retenções + 0 licenças', valorCor:'#00e5a0'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'32', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'9', sub:'9 retenções', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:2, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:1, cor:'#a855f7'}],
-    motivos:[{motivo:'Financeiro', qtd:2, pct:66.67, cor:'#00e5a0'},{motivo:'Não utilização', qtd:1, pct:33.33, cor:'#3d7bff'}],
-    totalDesligamentos:3,
-    ticketMedio:'R$ 359,00', dependentes:'—', residual:'9', residualLabel:'Residual Acumulado',
+    categorias:[{nome:'Contribuinte', qtd:16, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:7, cor:'#00e5a0'},{nome:'Patrimonial', qtd:6, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Patrimonial Individual', qtd:1, cor:'#06b6d4'}],
+    motivos:[{motivo:'Não utilização', qtd:8, pct:25.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:6, pct:18.75, cor:'#00e5a0'},{motivo:'Mudança', qtd:5, pct:15.62, cor:'#a855f7'},{motivo:'Saúde', qtd:4, pct:12.50, cor:'#f2b705'},{motivo:'Sem motivo', qtd:4, pct:12.50, cor:'#06b6d4'},{motivo:'Separação', qtd:2, pct:6.25, cor:'#fb923c'},{motivo:'Insatisfação', qtd:1, pct:3.12, cor:'#e8192c'},{motivo:'Viagem', qtd:1, pct:3.12, cor:'#b0b0d0'},{motivo:'Outros', qtd:1, pct:3.12, cor:'#5a5c78'}],
+    totalDesligamentos:32,
+    ticketMedio:'R$ 359,00', dependentes:'—', residual:'0', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:0, nao:1},
     quadroSocial:32,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">41 solicitações</b> de março, <b>3 resultaram em desligamento</b> e 38 não foram desligadas (9 retenções + 0 licenças). Ticket médio de R$ 359,00. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>41 solicitações</b>, com 32 desligamentos e <b>9 retidos</b> — o primeiro mês com retenção efetiva no ano. Todas as solicitações foram abertas no próprio mês: nenhuma veio da fila anterior, o que indica que o passivo de fevereiro foi zerado. Não utilização (8) e financeiro (6) lideram. Ticket médio de R$ 359,00, o mais baixo do ano. O quadro social registrou <b>32 desligamentos</b>, igual ao CRA.',
+
   },
   abr2026: {
     periodoTag:'Abril/2026',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'140', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'127', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'novas solicitações'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'143', sub:'no período'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'95', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'45', sub:'novas solicitações'},
         {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'140', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'não desligados', valorCor:'#00e5a0'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'3', sub:'3 retenções', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'},{nome:'Patrimonial', qtd:33, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'},{nome:'Contribuinte Universitario', qtd:4, cor:'#8b8fa8'},{nome:'Patrimonial Individual', qtd:3, cor:'#fb923c'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Veterano', qtd:2, cor:'#5a5c78'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#8b8fa8'},{nome:'Laureado Contribuinte', qtd:1, cor:'#8b8fa8'},{nome:'Não informada', qtd:3, cor:'#5a5c78'}],
-    motivos:[{motivo:'Não utilização', qtd:42, pct:30.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:27, pct:19.29, cor:'#00e5a0'},{motivo:'Sem Motivo', qtd:25, pct:17.86, cor:'#5a5c78'},{motivo:'Mudança', qtd:22, pct:15.71, cor:'#f2b705'},{motivo:'Pessoal', qtd:8, pct:5.71, cor:'#8b8fa8'},{motivo:'Saúde', qtd:6, pct:4.29, cor:'#a855f7'},{motivo:'Desemprego', qtd:4, pct:2.86, cor:'#e8192c'},{motivo:'Retenção', qtd:3, pct:2.14, cor:'#8b8fa8'},{motivo:'Insatisfação', qtd:2, pct:1.43, cor:'#06b6d4'},{motivo:'Viagem', qtd:1, pct:0.71, cor:'#fb923c'}],
+    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'},{nome:'Patrimonial', qtd:33, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'},{nome:'Contribuinte Universitário', qtd:4, cor:'#f2b705'},{nome:'Veterano Contribuinte', qtd:3, cor:'#06b6d4'},{nome:'Patrimonial Individual', qtd:3, cor:'#fb923c'},{nome:'Veterano contribuinte (2ª faixa)', qtd:3, cor:'#e8192c'},{nome:'Veterano (isento)', qtd:1, cor:'#b0b0d0'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#5a5c78'},{nome:'Laureado Contribuinte', qtd:1, cor:'#22d3ee'}],
+    motivos:[{motivo:'Não utilização', qtd:42, pct:30.66, cor:'#3d7bff'},{motivo:'Financeiro', qtd:27, pct:19.71, cor:'#00e5a0'},{motivo:'Sem motivo', qtd:25, pct:18.25, cor:'#a855f7'},{motivo:'Mudança', qtd:22, pct:16.06, cor:'#f2b705'},{motivo:'Pessoal', qtd:8, pct:5.84, cor:'#06b6d4'},{motivo:'Saúde', qtd:6, pct:4.38, cor:'#fb923c'},{motivo:'Desemprego', qtd:4, pct:2.92, cor:'#e8192c'},{motivo:'Insatisfação', qtd:2, pct:1.46, cor:'#b0b0d0'},{motivo:'Viagem', qtd:1, pct:0.73, cor:'#5a5c78'}],
     totalDesligamentos:140,
-    ticketMedio:'R$ 546,78', dependentes:'2,24', residual:'127', residualLabel:'Residual Acumulado',
-    desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:29, nao:108},
+    ticketMedio:'R$ 518,45', dependentes:'2,3', residual:'95', residualLabel:'Residual Acumulado',
+    desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:5, nao:32},
     quadroSocial:138,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">140 solicitações</b> de abril, <b>140 resultaram em desligamento</b> e 0 não foram desligadas. Ticket médio de R$ 546,78. Isenção de modalidade foi ofertada a 29 dos 140 desligados. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>O pior mês do ano: 143 solicitações e 140 desligamentos</b>, com apenas 3 retidos. <b>95 das solicitações eram residuais</b> — fila acumulada de meses anteriores processada de uma vez, o que explica o pico. Não utilização (42) e financeiro (27) lideram, mas <b>sem motivo (25) é o terceiro maior</b>. Contribuinte responde por 73 das saídas e Patrimonial por 33. Ticket médio de R$ 518,45 e 2,3 dependentes por titular. Isenção de modalidade ofertada a apenas 5 dos 140. O quadro social registrou <b>138 desligamentos</b>.',
+
   },
   mai2026: {
     periodoTag:'Maio/2026',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'92', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'56', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'36', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'84', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'8', sub:'2 retenções + 5 licenças', valorCor:'#00e5a0'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'93', sub:'no período'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'42', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'43', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'85', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'8', sub:'2 retenções + 6 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:42, cor:'#3d7bff'},{nome:'Patrimonial', qtd:22, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:11, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#06b6d4'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Universitario', qtd:2, cor:'#8b8fa8'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#8b8fa8'},{nome:'Patrimonial Individual', qtd:1, cor:'#fb923c'}],
-    motivos:[{motivo:'Não utilização', qtd:30, pct:36.14, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:28.92, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:18.07, cor:'#f2b705'},{motivo:'Sem Motivo', qtd:9, pct:10.84, cor:'#5a5c78'},{motivo:'Saúde', qtd:1, pct:1.20, cor:'#a855f7'},{motivo:'Divorcio', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Desemprego', qtd:1, pct:1.20, cor:'#e8192c'},{motivo:'Licença', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Transferência', qtd:1, pct:1.20, cor:'#8b8fa8'},{motivo:'Não informado', qtd:1, pct:1.19, cor:'#5a5c78'}],
-    totalDesligamentos:84,
-    ticketMedio:'R$ 551,55', dependentes:'1,95', residual:'56', residualLabel:'Residual Acumulado',
+    categorias:[{nome:'Contribuinte', qtd:42, cor:'#3d7bff'},{nome:'Patrimonial', qtd:23, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:11, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#f2b705'},{nome:'Veterano Contribuinte', qtd:2, cor:'#06b6d4'},{nome:'Contribuinte Universitário', qtd:2, cor:'#fb923c'},{nome:'Patrimonial Individual', qtd:1, cor:'#e8192c'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#b0b0d0'}],
+    motivos:[{motivo:'Não utilização', qtd:30, pct:34.48, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:27.59, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:17.24, cor:'#a855f7'},{motivo:'Sem motivo', qtd:9, pct:10.34, cor:'#f2b705'},{motivo:'Licença', qtd:6, pct:6.90, cor:'#06b6d4'},{motivo:'Transferência', qtd:1, pct:1.15, cor:'#fb923c'},{motivo:'Saúde', qtd:1, pct:1.15, cor:'#e8192c'},{motivo:'Desemprego', qtd:1, pct:1.15, cor:'#b0b0d0'}],
+    totalDesligamentos:85,
+    ticketMedio:'R$ 551,55', dependentes:'1,9', residual:'42', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:16, nao:67},
     quadroSocial:91,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">92 solicitações</b> de maio, <b>84 resultaram em desligamento</b> e 8 não foram desligadas (2 retenções + 5 licenças). Ticket médio de R$ 551,55. Isenção de modalidade foi ofertada a 16 dos 84 desligados. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>93 solicitações</b>, com 85 desligamentos e <b>8 retidos</b> (2 retenções + 6 licenças). O volume cai pela metade em relação a abril, mas segue alto. Não utilização (30) e financeiro (24) concentram 64% dos motivos. Contribuinte responde por 42 das saídas e Patrimonial por 23. Ticket médio de R$ 551,55 e 2,0 dependentes por titular. Isenção de modalidade ofertada a 16 dos 85. O quadro social registrou <b>91 desligamentos</b>, 6 a mais que os 85 do CRA.',
+
   },
   jun2026: {
     periodoTag:'Junho/2026',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'62', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'37', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'25', sub:'novas solicitações'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'18', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'34', sub:'novas solicitações'},
         {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'52', sub:'com data de desligamento', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'10', sub:'5 retenções + 5 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:26, cor:'#3d7bff'},{nome:'Patrimonial', qtd:12, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:12, cor:'#a855f7'},{nome:'Veterano', qtd:2, cor:'#5a5c78'}],
-    motivos:[{motivo:'Não utilização', qtd:26, pct:50.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:13, pct:25.00, cor:'#00e5a0'},{motivo:'Mudança', qtd:8, pct:15.38, cor:'#f2b705'},{motivo:'Viagem', qtd:2, pct:3.85, cor:'#fb923c'},{motivo:'Localização', qtd:1, pct:1.92, cor:'#22d3ee'},{motivo:'Saúde', qtd:1, pct:1.92, cor:'#a855f7'},{motivo:'Insatisfação', qtd:1, pct:1.92, cor:'#06b6d4'}],
+    categorias:[{nome:'Contribuinte', qtd:26, cor:'#3d7bff'},{nome:'Patrimonial', qtd:12, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:12, cor:'#a855f7'},{nome:'Veterano', qtd:2, cor:'#f2b705'}],
+    motivos:[{motivo:'Não utilização', qtd:26, pct:50.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:13, pct:25.00, cor:'#00e5a0'},{motivo:'Mudança', qtd:8, pct:15.38, cor:'#f2b705'},{motivo:'Viagem', qtd:2, pct:3.85, cor:'#fb923c'},{motivo:'Localização', qtd:1, pct:1.92, cor:'#06b6d4'},{motivo:'Saúde', qtd:1, pct:1.92, cor:'#a855f7'},{motivo:'Insatisfação', qtd:1, pct:1.92, cor:'#e8192c'}],
     totalDesligamentos:52,
-    ticketMedio:'R$ 567,92', dependentes:'1,98', residual:'37', residualLabel:'Residual Acumulado',
+    ticketMedio:'R$ 567,90', dependentes:'2,0', residual:'18', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:15, nao:37},
     quadroSocial:55,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">62 solicitações</b> de junho, <b>52 resultaram em desligamento</b> e 10 não foram desligadas (5 retenções + 5 licenças). Ticket médio de R$ 567,92. Isenção de modalidade foi ofertada a 15 dos 52 desligados. ',
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Junho. <b>62 solicitações</b>, das quais 52 resultaram em desligamento e <b>10 foram retidas</b> (5 retenções + 5 licenças). Não utilização é o motivo dominante (26 de 52, metade exata), seguido de financeiro (13). Contribuinte responde por 26 das saídas. Ticket médio de R$ 567,90 e 2,0 dependentes por titular. Isenção de modalidade ofertada a 15 dos 52. Nenhum desligamento gerou taxa nem valor negociado. O quadro social registrou <b>55 desligamentos</b> no mês — 3 a mais que os 52 tratados pelo CRA.',
+
   },
   jul2026: {
     periodoTag:'Julho/2026',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'61', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'25', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'36', sub:'novas solicitações'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'62', sub:'no período'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'24', sub:'novas solicitações'},
         {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'44', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'17', sub:'9 retenções + 8 licenças', valorCor:'#00e5a0'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'18', sub:'10 retenções + 8 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
     categorias:[{nome:'Contribuinte', qtd:24, cor:'#3d7bff'},{nome:'Patrimonial', qtd:7, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:7, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Contribuinte Derivado', qtd:2, cor:'#06b6d4'},{nome:'Patrimonial Individual', qtd:1, cor:'#fb923c'}],
     motivos:[{motivo:'Financeiro', qtd:15, pct:34.09, cor:'#00e5a0'},{motivo:'Não utilização', qtd:15, pct:34.09, cor:'#3d7bff'},{motivo:'Mudança', qtd:8, pct:18.18, cor:'#f2b705'},{motivo:'Desemprego', qtd:2, pct:4.55, cor:'#e8192c'},{motivo:'Saúde', qtd:2, pct:4.55, cor:'#a855f7'},{motivo:'Viagem', qtd:1, pct:2.27, cor:'#fb923c'},{motivo:'Insatisfação', qtd:1, pct:2.27, cor:'#06b6d4'}],
     totalDesligamentos:44,
-    ticketMedio:'R$ 631,57', dependentes:'2,46', residual:'25', residualLabel:'Residual Acumulado',
-    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:15, nao:29},
+    ticketMedio:'R$ 631,60', dependentes:'2,5', residual:'19', residualLabel:'Residual Acumulado',
+    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:16, nao:29},
     quadroSocial:52,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">61 solicitações</b> de julho, <b>44 resultaram em desligamento</b> e 17 não foram desligadas (9 retenções + 8 licenças). Ticket médio de R$ 631,57. Isenção de modalidade foi ofertada a 15 dos 44 desligados. 1 pagou taxa de desligamento (R$ 1.002,00). ',
+    negociacoesDesligados:'R$ 1.210,08',
+    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Julho. <b>62 solicitações</b>, com 44 desligamentos e <b>18 retidos</b> (10 retenções + 8 licenças) — a melhor taxa de retenção do semestre, 29% das solicitações. Financeiro e não utilização empatam no topo (15 cada, 34% cada). Contribuinte concentra 24 das 44 saídas. Ticket médio de R$ 631,60 e 2,5 dependentes por titular. Isenção de modalidade ofertada a 16 dos 44. 1 desligamento gerou taxa (R$ 1.002,00) e houve R$ 1.210,08 em valores negociados. O quadro social registrou <b>52 desligamentos</b> no mês.',
+
   },
   ago2026: {
     periodoTag:'Agosto/2026 (parcial)',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'28', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'solicitadas em julho', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'9', sub:'novas solicitações'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'8', sub:'novas solicitações'},
         {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'24', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 licenças + 2 retenções', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'1', sub:'desligamento em 11/08', valorCor:'#fb923c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 retenções + 2 licenças', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:12, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:1, cor:'#06b6d4'},{nome:'Contribuinte Universitário', qtd:1, cor:'#8b8fa8'}],
-    motivos:[{motivo:'Financeiro', qtd:9, pct:37.50, cor:'#00e5a0'},{motivo:'Não utilização', qtd:6, pct:25.00, cor:'#3d7bff'},{motivo:'Mudança', qtd:3, pct:12.50, cor:'#f2b705'},{motivo:'Saúde', qtd:2, pct:8.33, cor:'#a855f7'},{motivo:'Pessoal', qtd:2, pct:8.33, cor:'#b0b0d0'},{motivo:'Insatisfação', qtd:1, pct:4.17, cor:'#e8192c'},{motivo:'Não informou motivo', qtd:1, pct:4.17, cor:'#5a5c78'}],
+    categorias:[{nome:'Contribuinte', qtd:12, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:1, cor:'#fb923c'},{nome:'Contribuinte Universitário', qtd:1, cor:'#5a5c78'}],
+    motivos:[{motivo:'Financeiro', qtd:9, pct:37.50, cor:'#00e5a0'},{motivo:'Não utilização', qtd:6, pct:25.00, cor:'#3d7bff'},{motivo:'Mudança', qtd:3, pct:12.50, cor:'#f2b705'},{motivo:'Saúde', qtd:2, pct:8.33, cor:'#a855f7'},{motivo:'Pessoal', qtd:2, pct:8.33, cor:'#b0b0d0'},{motivo:'Insatisfação', qtd:1, pct:4.17, cor:'#e8192c'},{motivo:'Sem motivo', qtd:1, pct:4.17, cor:'#5a5c78'}],
     totalDesligamentos:24,
-    ticketMedio:'R$ 615,22', dependentes:'1,9', residual:'19', residualLabel:'Residual Acumulado',
+    ticketMedio:'R$ 615,20', dependentes:'1,9', residual:'16', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:6, nao:18},
-    quadroSocial:24,
-    analise:'Fonte: planilha Desligamento 2026 revisada pela gestora do CRA, contagem conferida registro a registro. <b style="color:var(--gold);">Mês em andamento</b> — posição 11/08. As solicitações subiram de 20 para <b>28</b> e os desligamentos de 16 para <b>24</b> em relação à leitura anterior (03/08). Das 28 solicitações, <b>19 vieram de julho</b> e 9 foram abertas em agosto. Os desligamentos se concentram em 01/08 (16 casos), com 3 em 10/08 e 1 programado para 11/08. <b>Financeiro é o motivo dominante (9 de 24, 37,5%)</b>, à frente de não utilização (6). Contribuinte responde por metade das saídas (12 de 24). Ticket médio de R$ 615,22 e média de 1,9 dependente por titular. Dos 24 desligados, apenas <b>6 praticavam alguma modalidade</b> — os outros 18 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. <b>4 associados foram retidos</b>: 2 viraram licença e 2 aceitaram acordo (isenção com permanência até dezembro e isenção de ginástica por 3 meses). 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados no mês.',
+    quadroSocial:28,
+    negociacoesDesligados:'R$ 0,00',
+    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style="color:var(--gold);">Mês em andamento</b> — posição 11/08. <b>28 solicitações</b>, com 24 desligamentos e 4 retidos (2 retenções + 2 licenças). <b>Financeiro é o motivo dominante (9 de 24, 37,5%)</b>, à frente de não utilização (6). Contribuinte responde por metade das saídas (12 de 24). Ticket médio de R$ 615,20 e 1,9 dependente por titular. Dos 24 desligados, apenas <b>6 praticavam alguma modalidade</b> — os outros 18 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura.',
 
   },
 };
