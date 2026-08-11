@@ -211,11 +211,24 @@
   }
 
   /* Cards de modalidade: grade densa, só nome e resultado. O detalhe abre abaixo. */
-  .esp-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(215px, 1fr)); gap:11px; }
+  /* min(215px,100%) em vez de 215px puro: sem isso a coluna tem piso fixo de
+     215px e, num container de 328px (celular de 360-430px), a grade monta duas
+     colunas de 410px e o .content — que é overflow-x:hidden — CORTA a segunda
+     em vez de rolar. Era o que aparecia no celular: cards fatiados na direita,
+     sem como chegar neles. Com min(), a coluna nunca pede mais que a largura
+     disponível e a grade cai para uma coluna sozinha. */
+  .esp-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(215px,100%), 1fr)); gap:11px; }
   .esp-card{ transition:border-color .15s ease, transform .1s ease; }
   .esp-card:hover{ border-color:var(--blue); transform:translateY(-1px); }
   .esp-card.ativo{ border-color:var(--blue); background:rgba(61,123,255,.09); }
-  @media (max-width:680px){ .esp-grid{ grid-template-columns:1fr 1fr; gap:9px; } }
+  /* 1fr tem piso de conteúdo: a coluna cresce até caber "Athletic Trainning"
+     e a grade passa do container, que o .content corta (overflow-x:hidden).
+     minmax(0,1fr) tira esse piso — a coluna nunca empurra a grade para fora.
+     E abaixo de 460px duas colunas não cabem sem espremer o valor, então
+     vira coluna única. Testado em 360/390/412/430, que é a faixa real dos
+     celulares e que a bateria não cobria (ia de 480 direto para 768). */
+  @media (max-width:680px){ .esp-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:9px; } }
+  @media (max-width:460px){ .esp-grid{ grid-template-columns:1fr; } }
   .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; flex-wrap:wrap; }
   .rh-subtab-btn{
     background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:700;
@@ -393,6 +406,8 @@
 
   .donut-wrap{display:flex; align-items:center; gap:22px; flex-wrap:wrap;}
   .donut{width:190px; height:190px; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
+  /* o SVG do donut de Obras vinha 2px mais largo que a caixa de 190px */
+  .donut > svg{ max-width:100%; height:auto; }
   .donut-ring{ animation:donutIn .65s cubic-bezier(.34,1.56,.64,1); transform-origin:center; }
   @keyframes donutIn{ from{ transform:scale(.72) rotate(-90deg);} to{ transform:scale(1) rotate(0deg);} }
 
@@ -488,6 +503,39 @@
     .kpi-row-icons, .kpi-row-icons.cols-4, .kpi-row-icons.cols-3, .kpi-row-icons.cols-6, .kpi-row-icons.cols-5, .kpi-grid, .kpi-grid.cols-5{ grid-template-columns:1fr; }
     .mini-stat-label{ font-size:8.7px; letter-spacing:.2px; }
     .mini-stat-value{ font-size:14px; }
+  }
+
+  /* ── REDE DE SEGURANÇA DE TEXTO — não remover. ──
+     Cards de KPI recebem texto que vem do DADO, não da interface: nome de
+     modalidade, de centro de custo, de fornecedor. Uma palavra única e longa
+     ("MUSCULAÇÃO", "HIDROGINÁSTICA") não tem espaço onde quebrar, então o
+     navegador a deixa vazar para fora do card em vez de encolher o texto.
+     Apareceu ao estender o painel na TV, mas não é problema de largura: é
+     qualquer combinação de card estreito + palavra longa + fonte maior, e
+     TV, projetor e zoom do navegador caem todos nesse caso.
+     min-width:0 deixa o card encolher junto com a grade; overflow-wrap
+     permite quebrar a palavra dentro do card, como último recurso.
+     Coberto por checarTransbordo() na bateria testes_layout.py. */
+  .kpi-icon-card, .kpi-icon-info, .kpi-card-top, .kpi-card, .card{ min-width:0; }
+  .kpi-icon-info .value,
+  .kpi-icon-info .label,
+  .kpi-icon-info .delta,
+  .card-value, .card-label,
+  .status-item-top .nome,
+  .legend-row, .legend-btn{ min-width:0; overflow-wrap:anywhere; }
+  .donut-wrap > *{ min-width:0; }
+
+  /* ── Faixa de notebook (681 a 1300px) — não havia tratamento aqui. ──
+     Só existia ajuste para celular (<=680px) e para desktop largo. No meio
+     disso três coisas estouravam e o .card, que tem overflow:hidden, cortava
+     em silêncio: a última coluna das tabelas largas sumia, o valor grande do
+     card ficava com o final decepado e o rótulo "DESLIGADOS" passava do
+     mini-stat. Faixa fechada dos dois lados de propósito: sem o min-width
+     estas regras venceriam as do celular, que vêm antes no arquivo. */
+  @media (min-width:681px) and (max-width:1300px){
+    .card{ overflow-x:auto; }              /* mesma solução já usada no celular */
+    .card-value{ font-size:31px; }
+    .mini-stat-label{ font-size:10px; letter-spacing:.2px; }
   }
 </style>
 </head>
