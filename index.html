@@ -4431,6 +4431,11 @@ function aplicarFiltroMes(){
   const mesKeyFlx = mesesFlx.length ? mesesFlx[mesesFlx.length-1].key : (uFlx ? uFlx.key : null);
   renderFluxoCaixaPeriodo(mesKeyFlx, de, ate, mesesFlx);
   renderRetencaoPeriodo(mesKeyRet, mesesRet);
+  // _mesesFiltro precisa existir ANTES destes renders: eles usam essa lista para
+  // saber se HÁ filtro ativo. Sem isso, um mês fora da cobertura da área devolvia
+  // lista vazia, o render entendia "sem filtro" e mostrava a base inteira SEM AVISO —
+  // foi o que fez a gestora ver 105 manifestações ao filtrar julho.
+  window._mesesFiltro = mesesDoFiltro(mIni, aIni, mFim, aFim);
   renderRetencaoCRA(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_RETENCAO_CRA));
   renderOcorrencias(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_OCORRENCIAS));
   // Satisfação (CRA): cobertura própria Jan-Jun, mesma sistemática de filtro
@@ -5455,7 +5460,7 @@ const RETENCAO_CRA = [
  },
  {
   "nome": "L.F.M.S.",
-  "cat": "Univertsitário",
+  "cat": "Universitário",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
@@ -5500,7 +5505,7 @@ const RETENCAO_CRA = [
  },
  {
   "nome": "R.C.C.",
-  "cat": "Senior",
+  "cat": "Sênior",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
@@ -5864,10 +5869,25 @@ function renderRetencaoCRA(mesesSel){
   const el = document.getElementById('retencaoConteudo');
   if(!el) return;
   const keys = (mesesSel||[]).map(m=>m.key);
-  const noPeriodo = keys.length ? RETENCAO_CRA.filter(r=>r.mes && keys.includes(r.mes)) : RETENCAO_CRA;
+  const filtroAtivo0 = !!(window._mesesFiltro && window._mesesFiltro.length);
+  // Com filtro ativo e nenhum mês coberto por esta área, o recorte é VAZIO —
+  // antes caía no "else" e devolvia a base inteira, como se não houvesse filtro.
+  const noPeriodo = keys.length ? RETENCAO_CRA.filter(r=>r.mes && keys.includes(r.mes))
+                  : (filtroAtivo0 ? [] : RETENCAO_CRA);
   const semData = RETENCAO_CRA.filter(r=>!r.mes);
-  const casos = noPeriodo.length ? noPeriodo : RETENCAO_CRA;
-  const recorteVazio = keys.length && !noPeriodo.length;
+  // Acordo sem data de início na planilha (hoje só B.G.) não cabe em nenhum mês,
+  // então ficava fora de TODO filtro — inclusive "ano inteiro", onde o painel
+  // mostrava 24 e a planilha 25. A gestora estranhou, com razão: com o período
+  // cobrindo o ano, o número tem de ser o total. Quando o filtro abrange todos
+  // os meses cobertos, os sem data entram; num recorte menor, continuam fora
+  // (não há como saber a que mês pertencem) e o aviso no topo explica.
+  const cobertos = Object.keys(COBERTURA_RETENCAO_CRA);
+  const periodoTotal = keys.length && cobertos.every(k=>keys.includes(k));
+  const base = periodoTotal ? noPeriodo.concat(semData) : noPeriodo;
+  const casos = base.length ? base : RETENCAO_CRA;
+  const filtroAtivo = filtroAtivo0;
+  // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
+  const recorteVazio = filtroAtivo && !noPeriodo.length;
 
   const tag = document.getElementById('retencaoPeriodoTag');
   if(tag) tag.textContent = recorteVazio ? 'Sem acordo no período — exibindo todos'
@@ -5967,11 +5987,16 @@ function renderRetencaoCRA(mesesSel){
     </tr>`).join('');
 
   el.innerHTML = `
-    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Nenhum acordo de retenção iniciado no período filtrado — exibindo os ${RETENCAO_CRA.length} acordos de 2026.</div></div>` : ''}
+    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
+        <b>Os números abaixo NÃO são do período que você filtrou.</b> Nenhum acordo foi iniciado
+        nesse recorte, então a tela está mostrando <b>todos os ${RETENCAO_CRA.length} acordos de 2026</b>.
+        O registro cobre <b>${textoCobertura(COBERTURA_RETENCAO_CRA)}</b>.
+      </div></div>` : ''}
     ${semData.length ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>
         <b>${semData.length} acordo${semData.length===1?'':'s'} sem data de início na planilha</b> (${semData.map(x=>x.nome).join(', ')}).
-        ${keys.length ? `Por isso ${semData.length===1?'fica':'ficam'} de fora quando há filtro de período — os totais de 2026 inteiro somam ${RETENCAO_CRA.length} acordos.`
-                      : `${semData.length===1?'Entra':'Entram'} nos totais, mas não ${semData.length===1?'aparece':'aparecem'} na evolução mensal.`}
+        ${(!keys.length || periodoTotal)
+            ? `${semData.length===1?'Entra':'Entram'} nos totais deste período, mas não ${semData.length===1?'aparece':'aparecem'} na evolução mensal, por não ${semData.length===1?'ter':'terem'} mês.`
+            : `Com o período restrito a alguns meses, ${semData.length===1?'fica':'ficam'} de fora — não há como saber a que mês ${semData.length===1?'pertence':'pertencem'}. Cobrindo o ano inteiro, o total é ${RETENCAO_CRA.length} acordos.`}
       </div></div>` : ''}
 
     <div class="grid-2">
@@ -5987,7 +6012,11 @@ function renderRetencaoCRA(mesesSel){
           <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
             <div class="card-label">Receita Retida</div>
             <div style="font-size:26px; font-weight:900; color:#00e5a0; line-height:1.2;">${fmtBRL0(receita)}</div>
-            <div class="card-meta">valor base dos contratos salvos</div>
+            <div class="card-meta">valor base dos contratos <b>salvos</b> (${salvos.length} de ${casos.length})</div>
+            ${perdidos.length ? `<div class="card-meta" style="margin-top:6px;">
+              O quadro-resumo da planilha traz <b>${fmtBRL0(receita+perdida)}</b> como "valor retido": ali entram
+              os ${casos.length} acordos, inclusive ${perdidos.length===1?'o que desistiu':'os que desistiram'}
+              (${fmtBRL0(perdida)}). Aqui só contam os que ficaram.</div>` : ''}
           </div>
         </div>
       </div>
@@ -7108,8 +7137,14 @@ function renderOcorrencias(mesesSel){
   const el = document.getElementById('ocorrenciasConteudo');
   if(!el) return;
   const keys = (mesesSel||[]).map(m=>m.key);
-  const noPeriodo = keys.length ? OCORRENCIAS.filter(o=>o.mes && keys.includes(o.mes)) : OCORRENCIAS;
-  const recorteVazio = keys.length && !noPeriodo.length;
+  const filtroAtivo0 = !!(window._mesesFiltro && window._mesesFiltro.length);
+  // Com filtro ativo e nenhum mês coberto por esta área, o recorte é VAZIO —
+  // antes caía no "else" e devolvia a base inteira, como se não houvesse filtro.
+  const noPeriodo = keys.length ? OCORRENCIAS.filter(o=>o.mes && keys.includes(o.mes))
+                  : (filtroAtivo0 ? [] : OCORRENCIAS);
+  const filtroAtivo = filtroAtivo0;
+  // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
+  const recorteVazio = filtroAtivo && !noPeriodo.length;
   const ocs = noPeriodo.length ? noPeriodo : OCORRENCIAS;
 
   const comPrazo = ocs.filter(o=>o.prazo!=null);
@@ -7188,10 +7223,14 @@ function renderOcorrencias(mesesSel){
     </tr>`).join('');
 
   el.innerHTML = `
-    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Nenhuma ocorrência aberta no período filtrado — exibindo as ${OCORRENCIAS.length} de 2026. O registro cobre <b>Janeiro a Junho/2026</b>.</div></div>` : ''}
+    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
+        <b>Os números abaixo NÃO são do período que você filtrou.</b> Não há ocorrência
+        registrada nesse recorte, então a tela está mostrando <b>todas as ${OCORRENCIAS.length} de 2026</b>.
+        O registro de ocorrências cobre <b>${textoCobertura(COBERTURA_OCORRENCIAS)}</b>.
+      </div></div>` : ''}
 
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
-      ${cardKpi('📋 Ocorrências', String(ocs.length), keys.length && !recorteVazio ? 'abertas no período' : 'registradas em 2026')}
+      ${cardKpi('📋 Ocorrências', String(ocs.length), !recorteVazio && (keys.length||0) ? 'abertas no período' : 'registradas em 2026')}
       ${cardKpi('⏱️ Tempo Médio', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `contados em D+1, sem fim de semana · ${comPrazo.length} fechadas`)}
       ${cardKpi('⚡ Resolvidas em até 7 dias', String(rapidas), comPrazo.length?`${(rapidas/comPrazo.length*100).toFixed(0)}% das fechadas · dias úteis`:'—')}
       ${cardKpi('💰 Ressarcimentos', fmtBRL0(valorRess), `${ressarc.length} ocorrência${ressarc.length===1?'':'s'} com cobrança`)}
@@ -8969,6 +9008,17 @@ const COBERTURA_MANIFESTACOES = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
 };
+// Descreve a cobertura de um bloco a partir do próprio dado. Antes, o aviso de
+// "nenhum registro no período" trazia a frase "Janeiro a Junho/2026" cravada no
+// texto — envelheceu assim que julho entrou e passou a informar errado.
+function textoCobertura(cob){
+  const ks = Object.keys(cob||{});
+  if(!ks.length) return 'sem período definido';
+  const ext = {jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',
+               jul:'Julho',ago:'Agosto',set:'Setembro',out:'Outubro',nov:'Novembro',dez:'Dezembro'};
+  const nome = k => (ext[k.slice(0,3)]||k) + '/' + k.slice(3);
+  return ks.length===1 ? nome(ks[0]) : nome(ks[0]) + ' a ' + nome(ks[ks.length-1]);
+}
 const COR_TIPO_MANIF = {'Reclamação':'#e8192c','Sugestão':'#f2b705','Elogio':'#00e5a0'};
 const SLA_MANIF = 5;   // prazo de resposta acordado, em dias
 
@@ -8976,12 +9026,22 @@ function renderManifestacoes(mesesSel){
   const el = document.getElementById('satisfacaoConteudo');
   if(!el) return;
   const keys = (mesesSel||[]).map(m=>m.key);
-  const noPeriodo = keys.length ? MANIFESTACOES.filter(m=>m.mes && keys.includes(m.mes)) : MANIFESTACOES;
-  const recorteVazio = keys.length && !noPeriodo.length;
+  const filtroAtivo0 = !!(window._mesesFiltro && window._mesesFiltro.length);
+  // Com filtro ativo e nenhum mês coberto por esta área, o recorte é VAZIO —
+  // antes caía no "else" e devolvia a base inteira, como se não houvesse filtro.
+  const noPeriodo = keys.length ? MANIFESTACOES.filter(m=>m.mes && keys.includes(m.mes))
+                  : (filtroAtivo0 ? [] : MANIFESTACOES);
+  const filtroAtivo = filtroAtivo0;
+  // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
+  const recorteVazio = filtroAtivo && !noPeriodo.length;
   const ms = noPeriodo.length ? noPeriodo : MANIFESTACOES;
 
   const abertas   = ms.filter(m=>!m.fechamento);
   const comPrazo  = ms.filter(m=>m.prazo!=null);
+  // Protocolo com fechamento ANTES da abertura: diasUteisD1 devolve null e o
+  // registro sumia da conta de prazo sem deixar rastro — a soma "X de Y
+  // respondidas" ficava menor que o total e ninguém sabia por quê.
+  const dataInvertida = ms.filter(m=>m.fechamento && m.prazo==null);
   const noSla     = comPrazo.filter(m=>m.prazo<=SLA_MANIF);
   const prazoMedio= comPrazo.length ? comPrazo.reduce((s,m)=>s+m.prazo,0)/comPrazo.length : null;
   const recl      = ms.filter(m=>m.tipo==='Reclamação').length;
@@ -9058,14 +9118,23 @@ function renderManifestacoes(mesesSel){
     </tr>`).join('');
 
   el.innerHTML = `
-    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Nenhuma manifestação aberta no período filtrado — exibindo as ${MANIFESTACOES.length} de 2026. O registro cobre <b>Janeiro a Junho/2026</b>.</div></div>` : ''}
+    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
+        <b>Os números abaixo NÃO são do período que você filtrou.</b> Não há manifestação
+        registrada nesse recorte, então a tela está mostrando <b>todas as ${MANIFESTACOES.length} de 2026</b>.
+        O registro de manifestações cobre <b>${textoCobertura(COBERTURA_MANIFESTACOES)}</b>.
+      </div></div>` : ''}
 
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
-      ${cardKpi('💬 Manifestações', String(ms.length), keys.length && !recorteVazio ? 'abertas no período' : 'registradas em 2026')}
+      ${cardKpi('💬 Manifestações', String(ms.length), !recorteVazio && (keys.length||0) ? 'abertas no período' : 'registradas em 2026')}
       ${cardKpi('🚩 Reclamações', String(recl), ms.length?`${(recl/ms.length*100).toFixed(0)}% do total`:'—')}
       ${cardKpi('⏱️ Tempo Médio de Resposta', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `SLA acordado: ${SLA_MANIF} dias úteis`)}
       ${cardKpi('✅ Dentro do Prazo', comPrazo.length?`${(noSla.length/comPrazo.length*100).toFixed(0)}%` : '—', `${noSla.length} de ${comPrazo.length} respondidas`)}
     </div>
+
+    ${(ms.length !== comPrazo.length) ? `<div class="alert-box" style="margin-top:16px;"><span>🧮</span><div>
+      Das <b>${ms.length}</b> manifestações do período, <b>${comPrazo.length}</b> entram no cálculo de prazo.
+      ${abertas.length?`${abertas.length} ainda ${abertas.length===1?'está em aberto':'estão em aberto'} (sem data de fechamento)`:''}${abertas.length&&dataInvertida.length?' e ':''}${dataInvertida.length?`<b>${dataInvertida.length}</b> ${dataInvertida.length===1?'tem':'têm'} data de fechamento anterior à de abertura na planilha (protocolo ${dataInvertida.map(m=>m.prot||'?').join(', ')}) — precisa de correção na origem`:''}.
+      </div></div>` : ''}
 
     ${comPrazo.length && noSla.length/comPrazo.length < 0.5 ? `<div class="alert-box" style="border-color:var(--red); margin-top:16px;"><span>⚠️</span><div>
       <b>Só ${(noSla.length/comPrazo.length*100).toFixed(0)}% das manifestações foram respondidas dentro do prazo de ${SLA_MANIF} dias.</b>
