@@ -408,6 +408,21 @@
   .donut{width:190px; height:190px; flex-shrink:0; display:flex; align-items:center; justify-content:center;}
   /* o SVG do donut de Obras vinha 2px mais largo que a caixa de 190px */
   .donut > svg{ max-width:100%; height:auto; }
+
+  /* Abertura por nível: no celular a tabela de 5 colunas não cabe em 380px —
+     ou rolava lateralmente, ou a coluna Cobertura ficava fora da vista, que é
+     justamente o número que interessa. Abaixo de 560px cada nível vira um
+     bloco empilhado, com rótulo ao lado do valor. */
+  @media (max-width:560px){
+    .niveis-tab thead{ display:none; }
+    .niveis-tab, .niveis-tab tbody, .niveis-tab tfoot, .niveis-tab tr, .niveis-tab td{ display:block; width:100%; }
+    .niveis-tab tr{ border:1px solid var(--border); border-radius:9px; padding:10px 12px; margin-bottom:9px; }
+    .niveis-tab td{ border:none !important; padding:3px 0 !important; text-align:left !important;
+                    display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+    .niveis-tab td[data-rot]:before{ content:attr(data-rot); color:var(--muted); font-size:12px; font-weight:600; }
+    .niveis-tab td:first-child{ font-weight:800; font-size:14px; margin-bottom:5px;
+                                padding-bottom:6px !important; border-bottom:1px solid var(--border) !important; }
+  }
   .donut-ring{ animation:donutIn .65s cubic-bezier(.34,1.56,.64,1); transform-origin:center; }
   @keyframes donutIn{ from{ transform:scale(.72) rotate(-90deg);} to{ transform:scale(1) rotate(0deg);} }
 
@@ -1677,6 +1692,75 @@ const ESPORTES_MESES = [
 // Atletismo conferido em 11/08: fevereiro -29.090 e junho -36.803 (leitura anterior
 // estava errada). A soma dos meses passa a fechar com o total do ano declarado.
 
+// ── Despesa e receita por modalidade, MÊS A MÊS (jan–jun/2026) ──────────────
+// Fonte: planilha de centros de custo da Controladoria (modalidade × natureza
+// × mês). Até aqui o painel só tinha o resultado líquido, então "Judô -230 mil"
+// não dizia se era receita fraca ou despesa alta. 'd' = despesa (negativa),
+// 'r' = receita, 'n' = abertura por nível (form/rend/alto) para as modalidades
+// que têm essa separação na origem.
+//
+// COBERTURA: jan a JUNHO. Julho existe na planilha mas só com 9 lançamentos e
+// R$ 7,9 mil — é resíduo, não mês fechado. Por isso o bloco de despesa/receita
+// para em jun enquanto ESPORTES_MESES vai até jul. Quando o filtro pega julho,
+// a tela avisa em vez de mostrar número pela metade.
+//
+// MANUTENÇÃO fica FORA, de propósito: ESPORTES_MESES sempre excluiu essa
+// natureza, e incluí-la aqui faria despesa+receita não bater com o resultado
+// que já está na tela. São R$ 277 mil no semestre (Tênis -231 mil, Musculação
+// -20 mil, Atletismo -14 mil, Bocha -11 mil), hoje fora do painel — decisão
+// pendente com o usuário.
+//
+// Conferido linha a linha: d+r de cada modalidade em cada mês bate com
+// ESPORTES_MESES, sem uma única divergência acima de R$ 1,50.
+const ESPORTES_DR = [
+  {nome:'Aikido', d:{jan:-1264.91, fev:-1169, mar:-1150.3, abr:-1490.72, mai:-1617.32, jun:-1213.81}, r:{jan:1807.02, fev:1670, mar:1220.3, abr:2736.59, mai:2310.45, jun:1734.02}, n:{serv:{d:{jan:-1264.91, fev:-1169, mar:-1150.3, abr:-1490.72, mai:-1617.32, jun:-1213.81}, r:{jan:1807.02, fev:1670, mar:1220.3, abr:2736.59, mai:2310.45, jun:1734.02}}}},
+  {nome:'Athletic Trainning', d:{jan:-11340.4, fev:-11477.7, mar:-11856.9, abr:-9777.78, mai:-14317.6, jun:-10172.2}, r:{jan:1789.83, fev:2372.11, mar:2433.24, abr:2786.09, mai:2982.8, jun:2528.93}, n:{serv:{d:{jan:-11340.4, fev:-11477.7, mar:-11856.9, abr:-9777.78, mai:-14317.6, jun:-10172.2}, r:{jan:1789.83, fev:2372.11, mar:2433.24, abr:2786.09, mai:2982.8, jun:2528.93}}}},
+  {nome:'Atletismo', d:{jan:-23831.5, fev:-38045.1, mar:-33445.4, abr:-42853.7, mai:-70056.6, jun:-50845.8}, r:{jan:5147.32, fev:8954.95, mar:14137.6, abr:14046.7, mai:17334.4, jun:14042.5}, n:{form:{d:{jan:-3276.06, fev:-4645.99, mar:-6264.91, abr:-5755.55, mai:-5647.43, jun:-4794.77}, r:{jan:260.48, fev:3242.37, mar:6581.51, abr:6781.77, mai:8078.01, jun:6317.32}}, rend:{d:{jan:-7742.74, fev:-16302.9, mar:-14007.1, abr:-21532.7, mai:-25865.2, jun:-18271}, r:{jan:4886.84, fev:5712.58, mar:7556.05, abr:7264.9, mai:7256.37, jun:7531.9}}, alto:{d:{jan:-12539.5, fev:-11334.2, mar:-11531.5, abr:-14845.5, mai:-22486.5, jun:-21759.6}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:193.24}}, comp:{d:{jan:-273.21, fev:-5761.98, mar:-890.54, abr:-719.95, mai:-10178, jun:-4670.37}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, ev:{d:{jan:0, fev:0, mar:-751.36, abr:0, mai:-5879.5, jun:-1350}, r:{jan:0, fev:0, mar:0, abr:0, mai:2000, jun:0}}}},
+  {nome:'Ballet Gutierres', d:{jan:-297.23, fev:0, mar:-1696.88, abr:-2204.45, mai:-1767.87, jun:-1617}, r:{jan:424.62, fev:0, mar:2494.12, abr:3149.22, mai:2525.53, jun:2380}, n:{serv:{d:{jan:-297.23, fev:0, mar:-1696.88, abr:-2204.45, mai:-1767.87, jun:-1617}, r:{jan:424.62, fev:0, mar:2494.12, abr:3149.22, mai:2525.53, jun:2380}}}},
+  {nome:'Basquete', d:{jan:-7557.59, fev:-15566.2, mar:-15091.4, abr:-29453.1, mai:-59954.2, jun:-69661.2}, r:{jan:4565.49, fev:20861.1, mar:29520.5, abr:31892, mai:33057.8, jun:33872.6}, n:{serv:{d:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}, r:{jan:1097.12, fev:1480.71, mar:1274.82, abr:818.93, mai:1833.4, jun:1718.33}}, form:{d:{jan:3325.21, fev:-4422.9, mar:-5554.23, abr:-5977.61, mai:-6278.77, jun:-5827.75}, r:{jan:984.86, fev:4107.59, mar:8014.09, abr:7462.7, mai:8238.42, jun:7819.48}}, rend:{d:{jan:-10882.8, fev:-11143.3, mar:-9537.15, abr:-15743, mai:-23771.6, jun:-31969.8}, r:{jan:1235.93, fev:8712.8, mar:20155.4, abr:22990.4, mai:22986, jun:24334.7}}, comp:{d:{jan:0, fev:0, mar:0, abr:-7732.46, mai:-29903.8, jun:-31863.7}, r:{jan:1247.58, fev:6559.99, mar:76.17, abr:620, mai:0, jun:0}}}},
+  {nome:'Beach Tennis', d:{jan:-4142.2, fev:-6373, mar:-9527.08, abr:-7070.35, mai:-11306.1, jun:-8465.96}, r:{jan:490, fev:3954.95, mar:5855.16, abr:6458.54, mai:8671.81, jun:6266.98}, n:{serv:{d:{jan:-1631.2, fev:-6358.84, mar:-8820.28, abr:-7014.19, mai:-8581.64, jun:-7720.96}, r:{jan:490, fev:3954.95, mar:5855.16, abr:6112.22, mai:6991.81, jun:6266.98}}, comp:{d:{jan:0, fev:0, mar:0, abr:0, mai:-59.46, jun:0}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, ev:{d:{jan:-2511, fev:-14.16, mar:-706.8, abr:-56.16, mai:-2665, jun:-745}, r:{jan:0, fev:0, mar:0, abr:346.32, mai:1680, jun:0}}}},
+  {nome:'Boxe', d:{jan:-17368.9, fev:-17745.6, mar:-19651, abr:-17832.2, mai:-18952, jun:-18711.4}, r:{jan:24650.7, fev:25700.9, mar:28514.9, abr:26263.7, mai:27270.8, jun:26015.4}, n:{serv:{d:{jan:-17368.9, fev:-17745.6, mar:-19651, abr:-17832.2, mai:-18952, jun:-18711.4}, r:{jan:24650.7, fev:25700.9, mar:28514.9, abr:26263.7, mai:27270.8, jun:26015.4}}}},
+  {nome:'Fitness', d:{jan:-3751.52, fev:-5663.73, mar:-5832.51, abr:-5425.54, mai:-8254.96, jun:-7051.95}, r:{jan:3952.11, fev:3323.43, mar:4774.44, abr:4547.43, mai:4445.31, jun:5398.72}, n:{serv:{d:{jan:-3751.52, fev:-5663.73, mar:-5832.51, abr:-5425.54, mai:-8254.96, jun:-7051.95}, r:{jan:3952.11, fev:3323.43, mar:4774.44, abr:4547.43, mai:4445.31, jun:5398.72}}}},
+  {nome:'Futebol', d:{jan:-8694.46, fev:-9253.89, mar:-10528.2, abr:-11301.5, mai:-14015.3, jun:-22005.3}, r:{jan:4702.61, fev:9525.01, mar:11051.8, abr:15420.8, mai:19919.4, jun:8618.72}, n:{serv:{d:{jan:-45.6, fev:0, mar:0, abr:-356.25, mai:-339.15, jun:-5600.55}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, form:{d:{jan:-8648.86, fev:-9253.89, mar:-10528.2, abr:-10945.3, mai:-12502.4, jun:-12593.6}, r:{jan:4050.61, fev:9131.78, mar:7975.13, abr:8809.32, mai:15694.9, jun:5479.1}}, rend:{d:{jan:0, fev:0, mar:0, abr:0, mai:-634.44, jun:-1911.38}, r:{jan:652, fev:393.23, mar:3076.62, abr:2957.2, mai:3964.54, jun:3139.62}}, ev:{d:{jan:0, fev:0, mar:0, abr:0, mai:-539.32, jun:-1899.8}, r:{jan:0, fev:0, mar:0, abr:3654.24, mai:260, jun:0}}}},
+  {nome:'Ginástica Artística', d:{jan:-28923.5, fev:-37849.3, mar:-54862.2, abr:-52828.7, mai:-103406, jun:-104782}, r:{jan:8364.23, fev:33390.1, mar:72657.9, abr:72452.1, mai:79472.8, jun:94826.1}, n:{form:{d:{jan:-6123.67, fev:-5783.01, mar:-6627.2, abr:-12710.1, mai:-9733.8, jun:-7851.64}, r:{jan:5016.02, fev:26645.6, mar:64179.9, abr:66753.2, mai:70108.6, jun:68768.9}}, rend:{d:{jan:-15487, fev:-25729.5, mar:-28803, abr:-30229.7, mai:-29859.6, jun:-47819.1}, r:{jan:3348.21, fev:6744.5, mar:8478.02, abr:5698.94, mai:7874.23, jun:5087.29}}, alto:{d:{jan:-7312.91, fev:-6336.79, mar:-9436.03, abr:-9818.93, mai:-7710.06, jun:-10961.3}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, comp:{d:{jan:0, fev:0, mar:-9615.9, abr:-70, mai:-56102.8, jun:-8032.25}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:8400}}, ev:{d:{jan:0, fev:0, mar:-380, abr:0, mai:0, jun:-30117.8}, r:{jan:0, fev:0, mar:0, abr:0, mai:1490, jun:12570}}}},
+  {nome:'Ginástica Rítmica', d:{jan:-16112.4, fev:-9230.5, mar:-24301.4, abr:-36229.4, mai:-31730.7, jun:-27861.2}, r:{jan:8655.55, fev:19174.9, mar:40670.9, abr:37191.3, mai:38096.6, jun:44680.6}, n:{form:{d:{jan:-2644.99, fev:-7463.51, mar:-11289.5, abr:-11553.6, mai:-12461.6, jun:-10326.5}, r:{jan:3491.74, fev:15077.8, mar:31920.2, abr:30787.4, mai:32064.4, jun:35440.8}}, rend:{d:{jan:-3938.21, fev:3779.1, mar:-3356.17, abr:-15351.6, mai:-7321.12, jun:-5762.4}, r:{jan:5163.81, fev:4097.11, mar:7206.43, abr:6403.91, mai:6032.24, jun:9239.82}}, alto:{d:{jan:-9529.15, fev:-5546.09, mar:-9655.68, abr:-9324.13, mai:-10567.7, jun:-10059.4}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, comp:{d:{jan:0, fev:0, mar:0, abr:0, mai:-1380.32, jun:-193.2}, r:{jan:0, fev:0, mar:1544.28, abr:0, mai:0, jun:0}}, ev:{d:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:-1519.67}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}}},
+  {nome:'Ginástica Veteranas', d:{jan:-14.16, fev:-4040.69, mar:-4092.49, abr:-3617.51, mai:-3617.51, jun:-3617.51}, r:{jan:244.9, fev:0, mar:8659.37, abr:7412.74, mai:7225.25, jun:7268.46}, n:{serv:{d:{jan:-14.16, fev:-4040.69, mar:-4092.49, abr:-3617.51, mai:-3617.51, jun:-3617.51}, r:{jan:244.9, fev:0, mar:8659.37, abr:7412.74, mai:7225.25, jun:7268.46}}}},
+  {nome:'Hidroginástica', d:{jan:-416.83, fev:-2300.11, mar:-2300.11, abr:-2474.78, mai:-2164.38, jun:-2479.38}, r:{jan:161.77, fev:2464.02, mar:11612.2, abr:13191.2, mai:13009.1, jun:12133.9}, n:{serv:{d:{jan:-416.83, fev:-2300.11, mar:-2300.11, abr:-2474.78, mai:-2164.38, jun:-2479.38}, r:{jan:161.77, fev:2464.02, mar:11612.2, abr:13191.2, mai:13009.1, jun:12133.9}}}},
+  {nome:'Judô', d:{jan:-79040.9, fev:-64629, mar:-74279.8, abr:-82028.1, mai:-85742.2, jun:-96206.9}, r:{jan:14453.3, fev:25009.2, mar:53854.4, abr:43341.1, mai:55360.5, jun:60000.3}, n:{form:{d:{jan:-4034.51, fev:-12586, mar:-12555.5, abr:-17193.6, mai:-15887.2, jun:-14248.9}, r:{jan:2561.58, fev:14811.7, mar:34472.9, abr:33677.8, mai:38152.8, jun:38520.4}}, rend:{d:{jan:-25678.8, fev:-34379.8, mar:-24050.2, abr:-25886.1, mai:-30348.1, jun:-25893.2}, r:{jan:9435.27, fev:10197.5, mar:9502.06, abr:9189.31, mai:12947.6, jun:11984.9}}, alto:{d:{jan:-35819.9, fev:-7284.73, mar:-12483.8, abr:-21965.5, mai:-22883.2, jun:-22299.6}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, comp:{d:{jan:-13507.8, fev:-10378.5, mar:-22935.3, abr:-16982.8, mai:-9173.34, jun:-33765.2}, r:{jan:2456.43, fev:0, mar:2089.44, abr:474, mai:560, jun:1415}}, ev:{d:{jan:0, fev:0, mar:-2255, abr:0, mai:-7450.32, jun:0}, r:{jan:0, fev:0, mar:7790, abr:0, mai:3700, jun:8080}}}},
+  {nome:'Kung Fu', d:{jan:-907.9, fev:-645.15, mar:-1068.2, abr:-866.6, mai:-604.8, jun:-604.8}, r:{jan:1297, fev:921.64, mar:1526, abr:1238, mai:604.8, jun:1123.2}, n:{serv:{d:{jan:-907.9, fev:-645.15, mar:-1068.2, abr:-866.6, mai:-604.8, jun:-604.8}, r:{jan:1297, fev:921.64, mar:1526, abr:1238, mai:604.8, jun:1123.2}}}},
+  {nome:'Levantamento de Peso', d:{jan:-4699.02, fev:-6580, mar:-6479.41, abr:-11785.8, mai:-15457.8, jun:-17019}, r:{jan:14172.2, fev:14273, mar:14768.8, abr:14757.7, mai:15272.1, jun:14841.2}, n:{form:{d:{jan:-4587.67, fev:-6580, mar:-6479.41, abr:-11652.2, mai:-13030, jun:-12644.9}, r:{jan:13994.3, fev:14017.1, mar:14081.8, abr:14017.1, mai:14017.1, jun:13952.4}}, rend:{d:{jan:-111.35, fev:0, mar:0, abr:-133.62, mai:-45, jun:-4374.1}, r:{jan:177.92, fev:255.9, mar:687.02, abr:740.61, mai:1255.06, jun:888.76}}, comp:{d:{jan:0, fev:0, mar:0, abr:0, mai:-2382.82, jun:0}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}}},
+  {nome:'Musculação', d:{jan:-52708.5, fev:-52566.6, mar:-61895.1, abr:-59781.5, mai:-67451.7, jun:-62890.7}, r:{jan:165995, fev:161503, mar:179977, abr:168331, mai:171009, jun:180530}, n:{serv:{d:{jan:-52708.5, fev:-52566.6, mar:-61895.1, abr:-59781.5, mai:-67451.7, jun:-62890.7}, r:{jan:165995, fev:161503, mar:179977, abr:168331, mai:171009, jun:180530}}}},
+  {nome:'Natação', d:{jan:-8906.63, fev:-20034.5, mar:-29810.4, abr:-25760.1, mai:-36125, jun:-35303.6}, r:{jan:2572.97, fev:15125.7, mar:48907.2, abr:55154.7, mai:55549.3, jun:53761.8}, n:{serv:{d:{jan:-8906.63, fev:-20034.5, mar:-29810.4, abr:-25760.1, mai:-36125, jun:-35303.6}, r:{jan:2572.97, fev:15125.7, mar:48907.2, abr:55154.7, mai:55549.3, jun:53761.8}}}},
+  {nome:'Patinação', d:{jan:-719.94, fev:-4745.1, mar:-10110, abr:-10956.6, mai:-11545.3, jun:-11467.4}, r:{jan:799.93, fev:5107.95, mar:12197.4, abr:13500.8, mai:14274.5, jun:13505.2}, n:{serv:{d:{jan:-719.94, fev:-4745.1, mar:-10110, abr:-10956.6, mai:-11545.3, jun:-11467.4}, r:{jan:799.93, fev:5107.95, mar:12197.4, abr:13500.8, mai:14274.5, jun:13505.2}}}},
+  {nome:'Percorrer', d:{jan:-22734.8, fev:-24911, mar:-29842.3, abr:-28471.4, mai:-27512, jun:-24833.3}, r:{jan:31089.9, fev:33116, mar:38815.8, abr:37893.2, mai:36720.9, jun:32802.7}, n:{serv:{d:{jan:-22734.8, fev:-24911, mar:-29842.3, abr:-28471.4, mai:-27512, jun:-24833.3}, r:{jan:31089.9, fev:33116, mar:38815.8, abr:37893.2, mai:36720.9, jun:32802.7}}}},
+  {nome:'Personal Postura', d:{jan:-13891.2, fev:-11691.2, mar:-10497.4, abr:-18072.2, mai:-10187.6, jun:-16815}, r:{jan:26001.1, fev:20505, mar:14787.5, abr:33111.8, mai:10187.6, jun:33332.6}, n:{serv:{d:{jan:-13891.2, fev:-11691.2, mar:-10497.4, abr:-18072.2, mai:-10187.6, jun:-16815}, r:{jan:26001.1, fev:20505, mar:14787.5, abr:33111.8, mai:10187.6, jun:33332.6}}}},
+  {nome:'Personal Tênis', d:{jan:-25639.4, fev:-22954.9, mar:-27216.6, abr:-23580, mai:-29010, jun:-18893.1}, r:{jan:27409.4, fev:24844.9, mar:29166.6, abr:28405.3, mai:31330, jun:20933.1}, n:{alto:{d:{jan:-25639.4, fev:-22954.9, mar:-27216.6, abr:-23580, mai:-29010, jun:-18893.1}, r:{jan:27409.4, fev:24844.9, mar:29166.6, abr:28405.3, mai:31330, jun:20933.1}}}},
+  {nome:'Personal Vaqueiro', d:{jan:-450, fev:-875, mar:-1109.13, abr:-1100, mai:-1951.7, jun:-1100}, r:{jan:1301.68, fev:1726.68, mar:1960.81, abr:1951.68, mai:2803.38, jun:1951.68}, n:{serv:{d:{jan:-450, fev:-875, mar:-1109.13, abr:-1100, mai:-1951.7, jun:-1100}, r:{jan:1301.68, fev:1726.68, mar:1960.81, abr:1951.68, mai:2803.38, jun:1951.68}}}},
+  {nome:'Punhobol', d:{jan:-5333.18, fev:-6159.51, mar:-20799.8, abr:-14750.4, mai:-25330.5, jun:-8040.37}, r:{jan:2626.61, fev:4152.7, mar:10974.4, abr:8595.38, mai:8863.47, jun:9967.9}, n:{form:{d:{jan:-42.75, fev:0, mar:-1435.65, abr:0, mai:-1400, jun:0}, r:{jan:0, fev:1429.84, mar:2004.64, abr:2003.82, mai:1954.73, jun:2633.85}}, rend:{d:{jan:-5023.19, fev:-5834.27, mar:-6815.85, abr:-9492.61, mai:-8307.74, jun:-8040.37}, r:{jan:2626.61, fev:2722.86, mar:6502.65, abr:6591.56, mai:6908.74, jun:7334.05}}, comp:{d:{jan:-267.24, fev:-325.24, mar:-543.33, abr:0, mai:-15271, jun:0}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, ev:{d:{jan:0, fev:0, mar:-12004.9, abr:-5257.78, mai:-351.8, jun:0}, r:{jan:0, fev:0, mar:2467.08, abr:0, mai:0, jun:0}}}},
+  {nome:'Ritmos', d:{jan:0, fev:0, mar:-297.61, abr:-1061.86, mai:-1395.78, jun:-1940.16}, r:{jan:0, fev:0, mar:367.61, abr:1644.49, mai:1465.78, jun:3084.36}, n:{serv:{d:{jan:0, fev:0, mar:-297.61, abr:-1061.86, mai:-1395.78, jun:-1940.16}, r:{jan:0, fev:0, mar:367.61, abr:1644.49, mai:1465.78, jun:3084.36}}}},
+  {nome:'Tênis', d:{jan:-42117.3, fev:-54180.5, mar:-71753.9, abr:-87731.9, mai:-116454, jun:-78972.4}, r:{jan:54028.8, fev:48165.6, mar:86141.9, abr:62462.8, mai:94613, jun:87234.1}, n:{serv:{d:{jan:-9579.54, fev:-8965.84, mar:-10800.1, abr:-12394.1, mai:-12128.4, jun:-12299.1}, r:{jan:19063.7, fev:18503.9, mar:15103.5, abr:14884.3, mai:16207.2, jun:14243.9}}, form:{d:{jan:-4302.81, fev:-7877.61, mar:-7994.75, abr:-8707.86, mai:-8531.1, jun:-9205.79}, r:{jan:1132.35, fev:6824.35, mar:22154.7, abr:24052.2, mai:27628, jun:26749}}, rend:{d:{jan:-27524.7, fev:-22302.9, mar:-22429.4, abr:-30723.4, mai:-38216.7, jun:-28867.8}, r:{jan:12335.9, fev:12188.2, mar:13399.9, abr:15689.2, mai:12936.9, jun:21299.5}}, comp:{d:{jan:-710.28, fev:0, mar:-1520, abr:-15048.5, mai:-4030.84, jun:-972.73}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, ev:{d:{jan:0, fev:-15034.2, mar:-29009.5, abr:-20858.2, mai:-53546.8, jun:-27627}, r:{jan:21496.8, fev:10649.1, mar:35483.8, abr:7837.08, mai:37840.8, jun:24941.8}}}},
+  {nome:'Tênis de Mesa', d:{jan:-5405.48, fev:-13767.7, mar:-19335.8, abr:-18854.7, mai:-14296, jun:-21600.6}, r:{jan:6485.41, fev:12151.8, mar:17879.4, abr:17998.3, mai:18799.9, jun:21541.4}, n:{form:{d:{jan:-2537.3, fev:-10412.7, mar:-14841, abr:-9655.84, mai:-10872.7, jun:-10286.5}, r:{jan:2720.69, fev:7849.29, mar:13832.7, abr:14405.7, mai:13298, jun:17557.2}}, rend:{d:{jan:-2260.97, fev:-3355, mar:-2551.17, abr:-3477.5, mai:-1471.73, jun:-1351.73}, r:{jan:3764.72, fev:4302.53, mar:4046.73, abr:3592.57, mai:5501.88, jun:3984.22}}, alto:{d:{jan:-607.21, fev:0, mar:0, abr:-1011.9, mai:-1951.65, jun:-1004.82}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}, comp:{d:{jan:0, fev:0, mar:-1943.58, abr:-4709.41, mai:0, jun:-8957.58}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}}},
+  {nome:'Vôlei', d:{jan:-25737, fev:-28393.5, mar:-87172.8, abr:-81371.1, mai:-88026.6, jun:-107887}, r:{jan:10421.1, fev:37194.3, mar:71890.2, abr:64393.7, mai:73851, jun:105886}, n:{serv:{d:{jan:-754, fev:0, mar:0, abr:-987.08, mai:-382.5, jun:0}, r:{jan:1076.61, fev:1410.95, mar:2563.8, abr:2562.05, mai:2633.75, jun:2566.46}}, form:{d:{jan:0, fev:0, mar:-561.71, abr:-1367.36, mai:-1579.37, jun:-202.5}, r:{jan:4915.83, fev:15964.9, mar:28886.8, abr:22076.7, mai:25832.9, jun:25552}}, rend:{d:{jan:-24983, fev:-28393.5, mar:-44115.3, abr:-34866.5, mai:-60298.9, jun:-46457.4}, r:{jan:1468.95, fev:19651.7, mar:40439.7, abr:39621.6, mai:45104.3, jun:65850.5}}, comp:{d:{jan:0, fev:0, mar:-42495.8, abr:-44150.2, mai:-25343.7, jun:-60804.6}, r:{jan:2959.69, fev:166.68, mar:0, abr:133.34, mai:279.99, jun:11917.2}}, ev:{d:{jan:0, fev:0, mar:0, abr:0, mai:-422.16, jun:-422.16}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}}},
+  {nome:'Vôlei Kika', d:{jan:-265.91, fev:-133.39, mar:-2944.73, abr:-3511.25, mai:-4413.4, jun:-4075.91}, r:{jan:443.19, fev:355.71, mar:4890.83, abr:5634.47, mai:7355.66, jun:6987.39}, n:{serv:{d:{jan:-265.91, fev:-133.39, mar:-2944.73, abr:-3511.25, mai:-4413.4, jun:-4075.91}, r:{jan:443.19, fev:355.71, mar:4890.83, abr:5634.47, mai:7355.66, jun:6987.39}}}},
+  {nome:'Vôlei Veteranas', d:{jan:-354.31, fev:-1315.1, mar:294.78, abr:-2290.35, mai:-59.97, jun:-34.31}, r:{jan:127.58, fev:55.75, mar:1278.57, abr:1571.32, mai:966.13, jun:943.31}, n:{serv:{d:{jan:-354.31, fev:302.2, mar:294.78, abr:-2290.35, mai:-59.97, jun:-34.31}, r:{jan:127.58, fev:55.75, mar:1278.57, abr:1571.32, mai:966.13, jun:943.31}}, ev:{d:{jan:0, fev:-1617.3, mar:0, abr:0, mai:0, jun:0}, r:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0}}}},
+  {nome:'Yoga', d:{jan:-2933.15, fev:-2570.2, mar:-2553.08, abr:-3254.07, mai:-3018.32, jun:-3089.61}, r:{jan:1870.68, fev:4812.08, mar:2939.47, abr:3175.64, mai:3176.18, jun:3469.09}, n:{serv:{d:{jan:-2933.15, fev:-2570.2, mar:-2553.08, abr:-3254.07, mai:-3018.32, jun:-3089.61}, r:{jan:1870.68, fev:4812.08, mar:2939.47, abr:3175.64, mai:3176.18, jun:3469.09}}}},
+];
+// Meses cobertos pelo bloco acima. Usado para avisar quando o filtro
+// pega um mês sem abertura de despesa/receita.
+const ESPORTES_DR_MESES = ['jan','fev','mar','abr','mai','jun'];
+// Todas as naturezas, não só os três níveis: se a tabela mostrasse apenas
+// Formação/Rendimento/Alto Rendimento, as linhas não somariam o resultado da
+// modalidade e quem fizesse a conta na reunião acharia um rombo. No Vôlei a
+// diferença era de R$ 147 mil, escondida em Serviços e Competições.
+const ESPORTES_NIVEIS = [
+  {key:'serv', nome:'Serviços',        cor:'#00e5a0'},
+  {key:'form', nome:'Formação',        cor:'#3d7bff'},
+  {key:'rend', nome:'Rendimento',      cor:'#a855f7'},
+  {key:'alto', nome:'Alto Rendimento', cor:'#06b6d4'},
+  {key:'comp', nome:'Competições',     cor:'#e8192c'},
+  {key:'ev',   nome:'Eventos',         cor:'#fb923c'},
+];
+
 const ESPORTES_MODALIDADES = [
   {nome:'MUSCULAÇÃO', comp:null, ev:null, serv:670050, form:null, rend:null, alto:null, tot:670050},
   {nome:'NATAÇÃO', comp:null, ev:null, serv:75131, form:null, rend:null, alto:null, tot:75131},
@@ -1844,6 +1928,20 @@ const REINGRESSO_HISTORICO = [
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
   {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
     campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
+  // Agosto/26 — parcial. As duas campanhas do mês vieram SEM quantidade por
+  // campanha, então entram como texto (campanhasTexto) e não no gráfico: dividir
+  // os 9 entre elas seria inventar número. 'categorias' é novo aqui — o
+  // histórico de reingresso não tinha essa abertura até agora.
+  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial)', total:9, valor:9023.55,
+    campanhas:null,
+    campanhasTexto:['Mês do Aniversário do Clube com taxa reduzida',
+                    'Aniversariantes do mês de agosto com taxa zero'],
+    categorias:[
+      {nome:'Contribuinte', qtd:5, cor:'#3d7bff'},
+      {nome:'Patrimonial', qtd:3, cor:'#00e5a0'},
+      {nome:'Contribuinte Individual', qtd:1, cor:'#f2b705'},
+    ],
+    alerta: 'Agosto em andamento: <b>9 reingressos e R$ 9.023,55</b> até aqui, ticket médio de R$ 1.002,62 — o segundo maior do ano (só janeiro foi mais alto, R$ 1.188,93) e quase o dobro de junho, puxado pelos 3 Patrimoniais. A meta do mês é 40 (desafio 45), então o mês está em 22,5% da meta. As duas campanhas em curso vieram sem quebra por quantidade, por isso não aparecem no gráfico.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -2941,6 +3039,16 @@ function agregarReingresso(meses){
     cmap[c.nome].qtd += c.qtd;
   }));
   const campanhas = Object.values(cmap).sort((a,b)=> b.qtd - a.qtd);
+  // categorias de sócio (abertura nova, veio a partir de ago/26)
+  const gmap = {};
+  itens.forEach(h=> (h.categorias||[]).forEach(c=>{
+    if(!gmap[c.nome]) gmap[c.nome] = {nome:c.nome, qtd:0, cor:c.cor};
+    gmap[c.nome].qtd += c.qtd;
+  }));
+  const categorias = Object.values(gmap).sort((a,b)=> b.qtd - a.qtd);
+  // campanhas informadas sem quebra por quantidade — viram lista, não gráfico
+  const campTexto = [];
+  itens.forEach(h=> (h.campanhasTexto||[]).forEach(t=>{ if(!campTexto.includes(t)) campTexto.push(t); }));
   const alertas = itens.map(h=> h.alerta).filter(Boolean);
   if(!qtdCompleta && itens.length > 1){
     alertas.push(`Total e ticket médio do período não incluem ${semQtd.map(h=>h.periodoTag).join(', ')}, pois a quantidade de reingressos ainda não foi informada — o valor arrecadado, sim, está somado.`);
@@ -2950,6 +3058,8 @@ function agregarReingresso(meses){
     : `${itens[0].periodoTag} a ${itens[itens.length-1].periodoTag}`;
   return {periodoTag:tag, total, valor, ticketMedio:ticket, qtdCompleta,
           campanhas: campanhas.length ? campanhas : null,
+          categorias: categorias.length ? categorias : null,
+          campTexto: campTexto.length ? campTexto : null,
           alerta: alertas.length ? alertas.join(' ') : null};
 }
 
@@ -2984,6 +3094,35 @@ function renderReingressoMeses(meses){
     <div class="grid-2 reverse">
       <div class="card"><div class="card-label">Por Campanha</div><div id="reingressoChart"></div></div>
       <div class="card"><div class="card-label">Distribuição</div><div id="reingressoDonut" class="donut-wrap"></div></div>
+    </div>`;
+  }
+  if(r.categorias){
+    const totCat = r.categorias.reduce((s,c)=>s+c.qtd,0);
+    const linhasCat = r.categorias.map(c=>`
+      <div style="display:flex; align-items:center; gap:10px; padding:7px 0;">
+        <span style="width:9px; height:9px; border-radius:2px; background:${c.cor||'#5a5c78'}; flex-shrink:0;"></span>
+        <span style="font-size:14px; color:var(--text); min-width:0; overflow-wrap:anywhere;">${c.nome}</span>
+        <span style="margin-left:auto; display:flex; align-items:center; gap:10px; flex-shrink:0;">
+          <span style="width:96px; height:8px; background:rgba(255,255,255,.05); border-radius:4px; overflow:hidden; display:inline-block;">
+            <span style="display:block; height:100%; width:${(c.qtd/totCat*100).toFixed(1)}%; background:${c.cor||'#5a5c78'};"></span>
+          </span>
+          <b style="font-size:14px; font-variant-numeric:tabular-nums;">${c.qtd}</b>
+          <span style="font-size:12px; color:var(--muted); width:44px; text-align:right;">${(c.qtd/totCat*100).toFixed(0)}%</span>
+        </span>
+      </div>`).join('');
+    html += `
+    <div class="card" style="margin-top:16px;">
+      <div class="card-label">Por Categoria de Sócio</div>
+      ${linhasCat}
+      <div class="card-meta" style="margin-top:8px;">${totCat} reingresso${totCat===1?'':'s'} com categoria informada no período.</div>
+    </div>`;
+  }
+  if(r.campTexto){
+    html += `
+    <div class="card" style="margin-top:16px;">
+      <div class="card-label">Campanhas do Período</div>
+      ${r.campTexto.map(t=>`<div style="display:flex; gap:9px; padding:5px 0; font-size:14px;"><span style="color:var(--gold);">▸</span><span style="min-width:0; overflow-wrap:anywhere;">${t}</span></div>`).join('')}
+      <div class="card-meta" style="margin-top:8px;">Campanhas informadas sem quantidade por campanha — por isso não entram no gráfico de distribuição.</div>
     </div>`;
   }
   el.innerHTML = html;
@@ -3967,10 +4106,14 @@ const VENDAS_EXTRA_MESES = {
     ],
     alerta: 'Mês em andamento — <b>12 associações novas até 08/08</b>, somando R$ 5.841,64. A campanha de aniversário do clube já responde por metade das vendas (6 de 12), confirmando o retorno da peça em veiculação. Ticket médio de R$ 486,80, abaixo dos R$ 633,20 de julho, puxado pelas entradas de convênio. <b>Helena entra como terceira consultora</b>, empatada com Claudia em quantidade (5 cada).',
     metas:{
-      vendas:{orcado:23, real:12}, reingressos:{orcado:32, real:null},
-      totalVR:{orcado:55, real:12}, desafioVenda:26, desafioReingresso:40,
-      total:{orcado:66, real:12, gap:-54},
-      taxaAdesao:5841.64, taxaReingresso:0, taxaTotal:5841.64,
+      // Meta de reingresso de agosto = 40 e desafio = 45, informados pela
+      // Sec. Adm. Antes estavam 32/40, repetidos de julho — eram provisórios.
+      // TOTAL da tabela = desafioVenda + desafioReingresso (26+45), mesma
+      // fórmula dos meses anteriores.
+      vendas:{orcado:23, real:12}, reingressos:{orcado:40, real:9},
+      totalVR:{orcado:63, real:21}, desafioVenda:26, desafioReingresso:45,
+      total:{orcado:71, real:21, gap:-50},
+      taxaAdesao:5841.64, taxaReingresso:9023.55, taxaTotal:14865.19,
     },
   },
 };
@@ -4064,6 +4207,9 @@ const COBERTURA_REINGRESSO = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  // Agosto em andamento. Data-fim = 11/08, dia em que a Sec. Adm. passou os
+  // números; não veio corte explícito na origem — confirmar com a área.
+  ago2026: {ini:'2026-08-01', fim:'2026-08-11'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
@@ -5047,6 +5193,13 @@ function mudarSubAbaRet(qual){
 
 
 
+// Atualizado em 11/08 com a planilha revisada pela gestora do CRA.
+// 25 acordos (eram 23): entraram C.B.T. e A.D.R., ambos de julho, R$ 3.006 cada.
+// Reconciliado contra o quadro-resumo da própria planilha: 25 retenções, 23
+// licenças, 48 no total, valor retido R$ 66.565,50 e negociado R$ 5.499,96 —
+// tudo conferindo. Única exceção: o resumo diz "valor ofertado 9.578", que
+// conta só o 1º benefício; somando o 2º benefício de 4 associados dá 11.843.
+// Aqui vale a linha (11.843), como manda a regra.
 const RETENCAO_CRA = [
  {
   "nome": "A.P.A.",
@@ -5059,14 +5212,14 @@ const RETENCAO_CRA = [
    "1 Mensalidade"
   ],
   "vBeneficio": 501.0,
-  "negociacao": "Parcelamento 10X",
+  "negociacao": "Parcelamento 10x",
   "vNegociacao": 1169.0,
   "sucesso": true
  },
  {
   "nome": "B.G.",
   "cat": "Patrimonial Individual",
-  "perm": "desistiu desligamento",
+  "perm": "desistiu do desligamento",
   "mes": null,
   "inicio": null,
   "valor": 0.0,
@@ -5084,7 +5237,7 @@ const RETENCAO_CRA = [
   "inicio": "01/07/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Natação"
+   "3m Natação"
   ],
   "vBeneficio": 765.0,
   "negociacao": null,
@@ -5099,7 +5252,7 @@ const RETENCAO_CRA = [
   "inicio": "01/04/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Natação"
+   "3m Natação"
   ],
   "vBeneficio": 765.0,
   "negociacao": null,
@@ -5114,7 +5267,7 @@ const RETENCAO_CRA = [
   "inicio": "01/07/2026",
   "valor": 4308.0,
   "beneficios": [
-   "6M De Academia",
+   "6m De Academia",
    "Fitness"
   ],
   "vBeneficio": 1740.0,
@@ -5176,7 +5329,7 @@ const RETENCAO_CRA = [
   "valor": 2154.0,
   "beneficios": [
    "Troca De Categoria",
-   "3M Academia"
+   "3m Academia"
   ],
   "vBeneficio": 420.0,
   "negociacao": null,
@@ -5199,7 +5352,7 @@ const RETENCAO_CRA = [
   "sucesso": true
  },
  {
-  "nome": "J.A.S.",
+  "nome": "J.D.A.S.",
   "cat": "Veterano",
   "perm": "6 meses",
   "mes": "mar2026",
@@ -5221,7 +5374,7 @@ const RETENCAO_CRA = [
   "inicio": "01/03/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Vôlei"
+   "3m Vôlei"
   ],
   "vBeneficio": 570.0,
   "negociacao": null,
@@ -5236,7 +5389,7 @@ const RETENCAO_CRA = [
   "inicio": "01/03/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Natação"
+   "3m Natação"
   ],
   "vBeneficio": 765.0,
   "negociacao": null,
@@ -5267,7 +5420,7 @@ const RETENCAO_CRA = [
   "valor": 3006.0,
   "beneficios": [],
   "vBeneficio": 0.0,
-  "negociacao": "Parcelamento 10X",
+  "negociacao": "Parcelamento 10x",
   "vNegociacao": 2239.0,
   "sucesso": true
  },
@@ -5296,13 +5449,13 @@ const RETENCAO_CRA = [
   "valor": 3006.0,
   "beneficios": [],
   "vBeneficio": 0.0,
-  "negociacao": "Parcelamento 12X",
+  "negociacao": "Parcelamento 12x",
   "vNegociacao": 2091.96,
   "sucesso": true
  },
  {
   "nome": "L.F.M.S.",
-  "cat": "Universitário",
+  "cat": "Univertsitário",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
@@ -5323,7 +5476,7 @@ const RETENCAO_CRA = [
   "inicio": "01/05/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Academia"
+   "3m Academia"
   ],
   "vBeneficio": 420.0,
   "negociacao": null,
@@ -5338,7 +5491,7 @@ const RETENCAO_CRA = [
   "inicio": "01/05/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Academia"
+   "3m Academia"
   ],
   "vBeneficio": 420.0,
   "negociacao": null,
@@ -5347,14 +5500,14 @@ const RETENCAO_CRA = [
  },
  {
   "nome": "R.C.C.",
-  "cat": "Sênior",
+  "cat": "Senior",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
   "valor": 1596.0,
   "beneficios": [
    "Troca De Categoria",
-   "3M Academia"
+   "3m Academia"
   ],
   "vBeneficio": 420.0,
   "negociacao": null,
@@ -5384,84 +5537,109 @@ const RETENCAO_CRA = [
   "inicio": "01/06/2026",
   "valor": 2254.5,
   "beneficios": [
-   "2M Natação"
+   "2m Natação"
   ],
   "vBeneficio": 1020.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true
+ },
+ {
+  "nome": "C.B.T.",
+  "cat": "Patrimonial",
+  "perm": "6 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "6m Academia"
+  ],
+  "vBeneficio": 840.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true
+ },
+ {
+  "nome": "A.R.",
+  "cat": "Patrimonial",
+  "perm": "6 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "Isenção Babá"
+  ],
+  "vBeneficio": 1002.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true
  }
-];
+]
+// 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
+// vazia. A planilha revisada tem só uma. Bate com o resumo (23).
 const LICENCAS_CRA = [
  {
   "nome": "A.M.C.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": "abr2026",
   "inicio": "10/04/2026",
   "fim": "10/06/2026"
  },
  {
   "nome": "B.C.M.",
-  "cat": "Não informada",
+  "cat": "Contribuinte Individual",
   "mes": "jul2026",
   "inicio": "02/07/2026",
   "fim": "30/09/2026"
  },
  {
   "nome": "C.M.",
-  "cat": "Não informada",
+  "cat": "Contribuinte Individual",
   "mes": "jul2026",
   "inicio": "01/07/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "E.R.A.",
-  "cat": "Não informada",
+  "cat": "Contribuinte Individual",
   "mes": "mai2026",
   "inicio": "21/05/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "G.M.S.",
-  "cat": "Não informada",
+  "cat": "Patrimonial Individual",
   "mes": "jun2026",
   "inicio": "01/06/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "H.A.C.F.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "abr2026",
   "inicio": "27/04/2026",
   "fim": "30/11/2026"
  },
  {
   "nome": "J.A.P.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "abr2026",
   "inicio": "30/04/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "L.G.S.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "jul2026",
   "inicio": "28/07/2026",
   "fim": "01/12/2026"
  },
  {
   "nome": "L.T.S.",
-  "cat": "Não informada",
+  "cat": "Contribuinte Individual",
   "mes": "jun2026",
   "inicio": "26/06/2026",
   "fim": "01/07/2030"
- },
- {
-  "nome": "L.T.S.",
-  "cat": "Não informada",
-  "mes": null,
-  "inicio": null,
-  "fim": null
  },
  {
   "nome": "L.T.L.",
@@ -5472,28 +5650,28 @@ const LICENCAS_CRA = [
  },
  {
   "nome": "L.W.S.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": "mai2026",
   "inicio": "15/05/2026",
   "fim": "15/05/2027"
  },
  {
   "nome": "M.M.",
-  "cat": "Não informada",
+  "cat": "Patrimonial Individual",
   "mes": "jul2026",
   "inicio": "01/07/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "M.P.",
-  "cat": "Não informada",
+  "cat": "Contribuinte Universitario",
   "mes": null,
   "inicio": null,
   "fim": null
  },
  {
   "nome": "M.P.S.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": "jul2026",
   "inicio": "30/07/2026",
   "fim": "01/12/2026"
@@ -5507,61 +5685,61 @@ const LICENCAS_CRA = [
  },
  {
   "nome": "M.S.G.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": "jun2026",
   "inicio": "01/06/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "N.T.B.M.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "jun2026",
   "inicio": "01/06/2026",
   "fim": "01/06/2030"
  },
  {
   "nome": "R.L.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": null,
   "inicio": null,
   "fim": null
  },
  {
   "nome": "R.N.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": null,
   "inicio": null,
   "fim": null
  },
  {
   "nome": "S.A.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "abr2026",
   "inicio": "29/04/2026",
   "fim": "28/02/2027"
  },
  {
   "nome": "T.M.S.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "jun2026",
   "inicio": "01/06/2026",
   "fim": "01/06/2030"
  },
  {
   "nome": "T.F.",
-  "cat": "Não informada",
+  "cat": "Contribuinte",
   "mes": "jul2026",
   "inicio": "03/07/2026",
   "fim": "31/12/2026"
  },
  {
   "nome": "V.P.M.",
-  "cat": "Não informada",
+  "cat": "Patrimonial",
   "mes": "mai2026",
   "inicio": "16/05/2026",
   "fim": "28/02/2027"
  }
-];
+]
 
 // ═══════════════════════════════════════════════════════════
 // RETENÇÃO — CRA (Gestão de Relacionamento com o Associado)
@@ -5713,7 +5891,7 @@ function renderRetencaoCRA(mesesSel){
       <div style="width:106px; height:106px; border-radius:50%; background:var(--card);
            display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
         <div style="font-size:24px; font-weight:900; line-height:1.1; color:var(--text);">${pctRet.toFixed(1).replace('.',',')}%</div>
-        <div style="font-size:11px; color:var(--muted); line-height:1.25;">de sucesso</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.25;">de retenção</div>
       </div>
     </div>`;
 
@@ -5800,7 +5978,7 @@ function renderRetencaoCRA(mesesSel){
       <div class="card" style="display:flex; align-items:center; gap:22px; flex-wrap:wrap;">
         ${donut}
         <div style="flex:1; min-width:150px;">
-          <div class="card-label">Taxa de Sucesso</div>
+          <div class="card-label">Taxa de Retenção</div>
           <div style="font-size:15px; color:var(--text); margin-top:8px;"><b>${salvos.length} de ${casos.length}</b> casos retidos</div>
           <div style="margin-top:8px; display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px;">
             <span><span class="dot" style="background:#3d7bff;"></span> Retidos — <b>${salvos.length}</b></span>
@@ -7056,6 +7234,8 @@ function renderOcorrencias(mesesSel){
     </div>`;
 }
 
+// Jan–Jul/26. Julho (+27) importado em 11/08. Prazo em dias úteis é
+// recalculado no navegador por recalcularPrazos().
 const MANIFESTACOES = [
  {
   "tipo": "Reclamação",
@@ -8421,8 +8601,359 @@ const MANIFESTACOES = [
   "prazo": 7,
   "prazoCorridos": 9,
   "prot": "8469"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.G.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Gerência Administrativa",
+  "assunto": "Atendimento",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "16/07/2026",
+  "prazo": null,
+  "prazoCorridos": 14,
+  "prot": "8578"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.M.C.S.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "16/07/2026",
+  "fechamento": "22/07/2026",
+  "prazo": null,
+  "prazoCorridos": 6,
+  "prot": "8605"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.S.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jul2026",
+  "abertura": "04/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 6,
+  "prot": "8583"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.P.L.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "06/07/2026",
+  "fechamento": "07/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8584"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.R.B.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 2,
+  "prot": "8588"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.M.L.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "28/07/2026",
+  "fechamento": "29/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8620"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.B.C.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "04/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 6,
+  "prot": "8582"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.B.H.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 2,
+  "prot": "8590"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.N.A.",
+  "ger": "Gerência Manutenção",
+  "local": "Estacionamento",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "09/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8591"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.R.R.",
+  "ger": "Gerência Manutenção",
+  "local": "Praça pequena",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "10/07/2026",
+  "fechamento": "24/07/2026",
+  "prazo": null,
+  "prazoCorridos": 14,
+  "prot": "8593"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.F.S.",
+  "ger": "Gerência Manutenção",
+  "local": "Tênis",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "11/07/2026",
+  "fechamento": "28/07/2026",
+  "prazo": null,
+  "prazoCorridos": 17,
+  "prot": "8594"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.Z.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8595"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.W.",
+  "ger": "Gerência Manutenção",
+  "local": "Tênis",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "21/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": null,
+  "prazoCorridos": 10,
+  "prot": "8615"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.G.M.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "02/07/2026",
+  "prazo": null,
+  "prazoCorridos": 0,
+  "prot": "8577"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.J.R.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "07/07/2026",
+  "fechamento": "08/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8585"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.B.H.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": 2,
+  "prot": "8589"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.M.N.C.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8596"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.B.R.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "20/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": null,
+  "prazoCorridos": -10,
+  "prot": "8609"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.G.A.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "20/07/2026",
+  "fechamento": "23/07/2026",
+  "prazo": null,
+  "prazoCorridos": 3,
+  "prot": "8613"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.S.C.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "29/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": null,
+  "prazoCorridos": 2,
+  "prot": "8623"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "R.T.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "10/07/2026",
+  "fechamento": "16/07/2026",
+  "prazo": null,
+  "prazoCorridos": 6,
+  "prot": "8592"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "K.B.C.",
+  "ger": "Gerência Esportiva",
+  "local": "VOLEI",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "08/07/2026",
+  "prazo": null,
+  "prazoCorridos": 0,
+  "prot": "8587"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "L.M.B.M.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "16/07/2026",
+  "fechamento": "07/08/2026",
+  "prazo": null,
+  "prazoCorridos": 22,
+  "prot": "8604"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "J.S.R.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "03/07/2026",
+  "prazo": null,
+  "prazoCorridos": 1,
+  "prot": "8579"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "J.A.B.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "03/07/2026",
+  "fechamento": "03/07/2026",
+  "prazo": null,
+  "prazoCorridos": 0,
+  "prot": "8581"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "M.W.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "16/07/2026",
+  "prazo": null,
+  "prazoCorridos": 3,
+  "prot": "8600"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "H.B.W.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário do tênis",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "17/07/2026",
+  "fechamento": "22/07/2026",
+  "prazo": null,
+  "prazoCorridos": 5,
+  "prot": "8606"
  }
-];
+]
 
 // ═══════════════════════════════════════════════════════════
 // MANIFESTAÇÕES — CRA
@@ -8436,6 +8967,7 @@ const COBERTURA_MANIFESTACOES = {
   abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
+  jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
 };
 const COR_TIPO_MANIF = {'Reclamação':'#e8192c','Sugestão':'#f2b705','Elogio':'#00e5a0'};
 const SLA_MANIF = 5;   // prazo de resposta acordado, em dias
@@ -9321,20 +9853,21 @@ const DESLIGAMENTOS_MESES = {
   ago2026: {
     periodoTag:'Agosto/2026 (parcial)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'24', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'5', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'18', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'6', sub:'1 retenções + 2 licenças', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'28', sub:'no período'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'solicitadas em julho', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'9', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'24', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 licenças + 2 retenções', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'1', sub:'desligamento em 11/08', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:8, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'}],
-    motivos:[{motivo:'Financeiro', qtd:7, pct:38.89, cor:'#00e5a0'},{motivo:'Não utilização', qtd:4, pct:22.22, cor:'#3d7bff'},{motivo:'Mudança', qtd:3, pct:16.67, cor:'#f2b705'},{motivo:'Pessoal', qtd:2, pct:11.11, cor:'#8b8fa8'},{motivo:'Saúde', qtd:1, pct:5.56, cor:'#a855f7'},{motivo:'Não Informou Motivo', qtd:1, pct:5.56, cor:'#5a5c78'}],
-    totalDesligamentos:18,
-    ticketMedio:'R$ 579,50', dependentes:'1,72', residual:'19', residualLabel:'Residual Acumulado',
-    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:3, nao:15},
-    quadroSocial:23,
-    analise:'Fonte: planilha Desligamento 2026, contagem conferida registro a registro. Das <b style=\"color:var(--text)\">24 solicitações</b> de agosto, <b>18 resultaram em desligamento</b> e 6 não foram desligadas (1 retenções + 2 licenças). Ticket médio de R$ 579,50. Isenção de modalidade foi ofertada a 3 dos 18 desligados. 1 pagou taxa de desligamento (R$ 1.002,00). ',
+    categorias:[{nome:'Contribuinte', qtd:12, cor:'#3d7bff'},{nome:'Patrimonial', qtd:6, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:1, cor:'#06b6d4'},{nome:'Contribuinte Universitário', qtd:1, cor:'#8b8fa8'}],
+    motivos:[{motivo:'Financeiro', qtd:9, pct:37.50, cor:'#00e5a0'},{motivo:'Não utilização', qtd:6, pct:25.00, cor:'#3d7bff'},{motivo:'Mudança', qtd:3, pct:12.50, cor:'#f2b705'},{motivo:'Saúde', qtd:2, pct:8.33, cor:'#a855f7'},{motivo:'Pessoal', qtd:2, pct:8.33, cor:'#b0b0d0'},{motivo:'Insatisfação', qtd:1, pct:4.17, cor:'#e8192c'},{motivo:'Não informou motivo', qtd:1, pct:4.17, cor:'#5a5c78'}],
+    totalDesligamentos:24,
+    ticketMedio:'R$ 615,22', dependentes:'1,9', residual:'19', residualLabel:'Residual Acumulado',
+    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:6, nao:18},
+    quadroSocial:24,
+    analise:'Fonte: planilha Desligamento 2026 revisada pela gestora do CRA, contagem conferida registro a registro. <b style="color:var(--gold);">Mês em andamento</b> — posição 11/08. As solicitações subiram de 20 para <b>28</b> e os desligamentos de 16 para <b>24</b> em relação à leitura anterior (03/08). Das 28 solicitações, <b>19 vieram de julho</b> e 9 foram abertas em agosto. Os desligamentos se concentram em 01/08 (16 casos), com 3 em 10/08 e 1 programado para 11/08. <b>Financeiro é o motivo dominante (9 de 24, 37,5%)</b>, à frente de não utilização (6). Contribuinte responde por metade das saídas (12 de 24). Ticket médio de R$ 615,22 e média de 1,9 dependente por titular. Dos 24 desligados, apenas <b>6 praticavam alguma modalidade</b> — os outros 18 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. <b>4 associados foram retidos</b>: 2 viraram licença e 2 aceitaram acordo (isenção com permanência até dezembro e isenção de ginástica por 3 meses). 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados no mês.',
+
   },
 };
 
@@ -10530,6 +11063,159 @@ function renderEsportesCards(mesesEsp){
   if(window._detalheEsporteAberto) abrirDetalheEsporte(window._detalheEsporteAberto, true);
 }
 
+// ── Bloco de despesa × receita do detalhe da modalidade ─────────────────────
+// Devolve '' quando a modalidade não tem abertura (Esgrima) — o detalhe segue
+// funcionando igual, só sem esta seção.
+function blocoDespesaReceita(nome, chaves, totalTopo){
+  const dr = (typeof ESPORTES_DR !== 'undefined') ? ESPORTES_DR.find(x=>x.nome===nome) : null;
+  if(!dr) return '';
+  // só os meses do filtro que existem na cobertura de despesa/receita
+  const uteis = chaves.filter(k=>ESPORTES_DR_MESES.includes(k));
+  if(!uteis.length) return '';
+  const fora = chaves.filter(k=>!ESPORTES_DR_MESES.includes(k));
+  // Arredonda para real inteiro AQUI e soma os já arredondados. Se somasse os
+  // centavos e arredondasse só no fim, cada linha da tabela apareceria
+  // arredondada por conta própria e a coluna não bateria com o TOTAL — quem
+  // conferisse somando na calculadora acharia R$ 1 de erro. Assim o que está
+  // escrito na tela soma exatamente o que está escrito no TOTAL.
+  const rnat = k => ({
+    d: Math.round(uteis.reduce((s,m)=>s+((dr.n && dr.n[k] ? dr.n[k].d[m] : 0)||0), 0)),
+    r: Math.round(uteis.reduce((s,m)=>s+((dr.n && dr.n[k] ? dr.n[k].r[m] : 0)||0), 0))
+  });
+  const natsUsadas = (typeof ESPORTES_NIVEIS!=='undefined' && dr.n)
+      ? ESPORTES_NIVEIS.filter(nv=>dr.n[nv.key]) : [];
+  const valNat = {};
+  natsUsadas.forEach(nv=>{ valNat[nv.key] = rnat(nv.key); });
+  const somaD = natsUsadas.length
+      ? natsUsadas.reduce((s,nv)=>s+valNat[nv.key].d, 0)
+      : Math.round(uteis.reduce((s,k)=>s+(dr.d[k]||0), 0));
+  const somaR = natsUsadas.length
+      ? natsUsadas.reduce((s,nv)=>s+valNat[nv.key].r, 0)
+      : Math.round(uteis.reduce((s,k)=>s+(dr.r[k]||0), 0));
+  // ESPORTES_DR guarda CENTAVOS, não reais inteiros: arredondar cada natureza
+  // antes de somar deixava até R$ 4 de diferença entre este bloco e o número
+  // do topo, e entre a linha TOTAL e a soma das suas próprias colunas. Um
+  // número que não fecha por R$ 4 na frente do Conselho derruba a confiança
+  // nos outros. Somando em centavos e arredondando só na exibição, tudo fecha.
+  const res = somaD + somaR;
+  // barra proporcional: quanto da receita é consumido pela despesa
+  const escala = Math.max(Math.abs(somaD), somaR) || 1;
+  const pctD = Math.abs(somaD)/escala*100, pctR = somaR/escala*100;
+  // para cada R$ 1 de receita, quanto se gasta
+  const porReal = somaR>0 ? Math.abs(somaD)/somaR : null;
+
+  const barra = (rot, valor, pct, cor)=>`
+    <div style="margin-top:10px;">
+      <div style="display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:4px;">
+        <span style="color:var(--muted);">${rot}</span>
+        <span style="color:${cor}; font-weight:700; font-variant-numeric:tabular-nums;">${fmtSinEsp(valor)}</span>
+      </div>
+      <div style="height:9px; background:rgba(255,255,255,.05); border-radius:5px; overflow:hidden;">
+        <div style="height:100%; width:${pct.toFixed(1)}%; background:${cor}; border-radius:5px;"></div>
+      </div>
+    </div>`;
+
+  // abertura por nível, quando a modalidade tem
+  let niveis = '';
+  if(dr.n){
+    let temRateio = false;
+    const linhas = ESPORTES_NIVEIS.filter(nv=>dr.n[nv.key]).map(nv=>{
+      const nd = valNat[nv.key].d;
+      const nr = valNat[nv.key].r;
+      const nres = nd + nr;
+      const cobre = nr>0 && nd<0 ? (nr/Math.abs(nd)*100) : null;
+      // Cobertura acima de ~300% não é eficiência, é rateio: significa que a
+      // despesa daquele nível ficou lançada em outro. No Vôlei, Formação tem
+      // R$ 3,7 mil de despesa contra R$ 123 mil de receita (cobertura 3322%)
+      // porque o custo dos professores está todo em Rendimento. Mostrar "3322%"
+      // como se fosse desempenho seria enganoso, então o número sai e entra a
+      // marca de rateio.
+      const rateio = cobre!=null && cobre>300;
+      if(rateio) temRateio = true;
+      return `<tr>
+        <td style="padding:8px 10px;"><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:${nv.cor}; margin-right:7px;"></span>${nv.nome}</td>
+        <td class="num" data-rot="Despesa" style="padding:8px 10px; color:#ff6b6b;">${fmtSinEsp(nd)}</td>
+        <td class="num" data-rot="Receita" style="padding:8px 10px; color:#00e5a0;">${fmtSinEsp(nr)}</td>
+        <td class="num" data-rot="Resultado" style="padding:8px 10px; font-weight:800; color:${nres>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(nres)}</td>
+        <td class="num" data-rot="Cobertura" style="padding:8px 10px; color:${rateio?'var(--yellow)':'var(--muted)'};">${
+          rateio ? '⚠ rateio' : (cobre!=null ? cobre.toFixed(0)+'%' : '—')}</td>
+      </tr>`;
+    }).join('');
+    if(linhas){
+      niveis = `
+      <div style="margin-top:18px;">
+        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Abertura por natureza</div>
+        <div style="overflow-x:auto;">
+        <table class="niveis-tab" style="font-size:13.5px;">
+          <thead><tr>
+            <th>Natureza</th><th class="num">Despesa</th><th class="num">Receita</th>
+            <th class="num">Resultado</th><th class="num">Cobertura</th>
+          </tr></thead>
+          <tbody>${linhas}</tbody>
+          <tfoot><tr class="total-highlight">
+            <td style="padding:11px 10px;">TOTAL</td>
+            <td class="num" data-rot="Despesa" style="padding:11px 10px;">${fmtSinEsp(somaD)}</td>
+            <td class="num" data-rot="Receita" style="padding:11px 10px;">${fmtSinEsp(somaR)}</td>
+            <td class="num" data-rot="Resultado" style="padding:11px 10px;">${fmtSinEsp(res)}</td>
+            <td class="num" data-rot="Cobertura" style="padding:11px 10px;">${somaD<0 && somaR>0 ? (somaR/Math.abs(somaD)*100).toFixed(0)+'%' : '—'}</td>
+          </tr></tfoot>
+        </table></div>
+        <div style="font-size:11.5px; color:var(--muted); margin-top:7px;">
+          Cobertura = quanto da despesa do nível é paga pela receita dele.
+          O que falta para 100% vem do resto do clube.
+          ${temRateio ? '<br><span style="color:var(--yellow);">⚠ rateio</span> = a receita do nível é muitas vezes maior que a despesa registrada nele, sinal de que o custo (em geral a folha dos professores) está lançado em outro nível. O resultado da modalidade continua correto; a divisão entre níveis é que não reflete o esforço real.' : ''}
+        </div>
+      </div>`;
+    }
+  }
+
+
+
+  // Reconciliação com o número do topo. Quando o filtro inclui um mês sem
+  // abertura (julho), este bloco fecha num resultado diferente do cabeçalho —
+  // e ver dois números diferentes na mesma tela, sem explicação, faz o usuário
+  // (com razão) desconfiar dos dois. Aqui a diferença é dita com o valor.
+  const rotPeriodoDR = uteis.length===1
+    ? (ROT_MES_ESP[uteis[0]]||uteis[0])+'/26'
+    : (ROT_MES_ESP[uteis[0]]||uteis[0])+'–'+(ROT_MES_ESP[uteis[uteis.length-1]]||uteis[uteis.length-1])+'/26';
+  const difTopo = (typeof totalTopo === 'number') ? (totalTopo - res) : null;
+  // Sem mês faltando, topo e tabela são a mesma grandeza arredondada duas
+  // vezes por caminhos diferentes (lá o líquido do mês; aqui despesa e receita
+  // de cada natureza). Sobra até R$ 2. É o mesmo arredondamento de centavos já
+  // documentado na aba, e é melhor dizer do que deixar o usuário achar.
+  const centavos = (!fora.length && difTopo!==null && Math.abs(difTopo) > 0 && Math.abs(difTopo) <= 3)
+    ? `<div style="font-size:11.5px; color:var(--muted); margin-top:8px;">
+         O topo mostra ${fmtSinEsp(totalTopo)} e esta tabela ${fmtSinEsp(res)}:
+         R$ ${Math.abs(difTopo)} de arredondamento de centavos na origem, não é divergência de dado.
+       </div>` : '';
+  const reconc = (fora.length && difTopo!==null && Math.abs(difTopo) > 1)
+    ? `<div style="font-size:12.5px; color:var(--yellow); margin-top:8px; line-height:1.5;">
+         Este bloco cobre <b>${rotPeriodoDR}</b>, e por isso fecha em
+         <b>${fmtSinEsp(res)}</b> — diferente do <b>${fmtSinEsp(totalTopo)}</b> do topo.
+         A diferença de <b>${fmtSinEsp(difTopo)}</b> é
+         ${fora.map(k=>ROT_MES_ESP[k]||k).join(', ')}, que entra no resultado do topo
+         mas ainda não tem despesa e receita separadas na planilha.
+       </div>`
+    : '';
+
+  return `
+    <div style="margin-top:18px; border-top:1px solid var(--border); padding-top:16px;">
+      <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;">Despesa × Receita</div>
+        <div style="font-size:12px; color:var(--muted);">${rotPeriodoDR}</div>
+      </div>
+      ${barra('Receita', somaR, pctR, '#00e5a0')}
+      ${barra('Despesa', somaD, pctD, '#ff6b6b')}
+      <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:13px;">
+        <div>Resultado: <b style="color:${res>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(res)}</b></div>
+        ${porReal!=null ? `<div style="color:var(--muted);">Gasta <b style="color:var(--text);">R$ ${porReal.toFixed(2).replace('.',',')}</b> para cada R$ 1,00 que arrecada</div>` : ''}
+      </div>
+      ${reconc}
+      ${centavos}
+      ${niveis}
+    </div>`;
+}
+
 function abrirDetalheEsporte(nome, manter){
   const alvo = document.getElementById('detalhe-esporte');
   if(!alvo) return;
@@ -10605,6 +11291,7 @@ function abrirDetalheEsporte(nome, manter){
         ${cardKpi('🔺 Melhor mês', fmtSinEsp(melhor.v), melhor.rot+'/26')}
         ${cardKpi('🔻 Pior mês', fmtSinEsp(pior.v), pior.rot+'/26')}
       </div>
+      ${blocoDespesaReceita(mod.nome, chaves, total)}
       <div class="alert-box" style="margin-top:14px;"><span>🧭</span><div>${leitura}</div></div>
     </div>`;
   if(!manter && alvo.scrollIntoView) alvo.scrollIntoView({behavior:'smooth', block:'nearest'});
