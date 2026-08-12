@@ -1964,13 +1964,14 @@ const VENDAS_CAMPANHAS = [
 //     no meio de março.
 //   - o Conselho pode ter visto os números antigos (jun R$ 304 mil) numa
 //     versão anterior do painel; se perguntarem, a régua mudou aqui.
-// Contatos de abr/mai/jun mantidos; julho aguarda o número da área.
+// Contatos de julho: 804, informados pela Sec. Adm. em 11/08 (segue a curva
+// crescente da equipe: 335 -> 512 -> 614 -> 804). Total mar-jul: 2.302 contatos.
 const NEGOCIACOES = [
   {mes:'Mar/26', valor:23632,  contatos:37},
   {mes:'Abr/26', valor:5575,   contatos:335},
   {mes:'Mai/26', valor:7957,   contatos:512},
   {mes:'Jun/26', valor:30971,  contatos:614},
-  {mes:'Jul/26', valor:101825, contatos:null},
+  {mes:'Jul/26', valor:101825, contatos:804},
 ];
 const INADIMPLENCIA = [
   {mes:'Mar/26', real:12.5, meta:12.5},
@@ -5216,6 +5217,14 @@ function mudarSubAbaRet(qual){
 // tudo conferindo. Única exceção: o resumo diz "valor ofertado 9.578", que
 // conta só o 1º benefício; somando o 2º benefício de 4 associados dá 11.843.
 // Aqui vale a linha (11.843), como manda a regra.
+// CORRECAO 11/08: a coluna UTILIZADO da planilha indica se o BENEFICIO foi
+// usufruido, NAO se o associado ficou. UTILIZADO='N' estava sendo lido como
+// desistencia, e o painel exibia "1 desistiu" para J.C.P. — um acordo de 6
+// meses cumprido (01/03 a 01/08) em que o associado apenas nao usou a cortesia.
+// Todos os 25 acordos resultaram em permanencia, inclusive B.G., cuja
+// PERMANENCIA na planilha e literalmente "desistiu do desligamento": desistiu
+// de SAIR, o melhor desfecho possivel.
+// 'sucesso' = associado permaneceu. 'beneficioUsado' = usufruiu do beneficio.
 const RETENCAO_CRA = [
  {
   "nome": "A.P.A.",
@@ -5230,7 +5239,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 501.0,
   "negociacao": "Parcelamento 10x",
   "vNegociacao": 1169.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "B.G.",
@@ -5243,7 +5253,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "B.C.A.",
@@ -5258,7 +5269,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 765.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "C.C.B.",
@@ -5273,7 +5285,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 765.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "C.J.J.",
@@ -5289,7 +5302,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 1740.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "D.K.B.",
@@ -5304,7 +5318,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 1670.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "D.T.F.",
@@ -5319,7 +5334,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "E.L.S.",
@@ -5334,7 +5350,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "F.B.S.",
@@ -5350,7 +5367,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 420.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "G.S.B.",
@@ -5365,7 +5383,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.D.A.S.",
@@ -5380,7 +5399,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.B.M.",
@@ -5395,7 +5415,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 570.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.C.P.",
@@ -5410,7 +5431,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 765.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": false
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.Z.R.P.O.",
@@ -5425,7 +5447,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.C.F.C.S.",
@@ -5438,7 +5461,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": "Parcelamento 10x",
   "vNegociacao": 2239.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "J.M.O.",
@@ -5454,7 +5478,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 525.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "L.A.K.",
@@ -5467,7 +5492,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": "Parcelamento 12x",
   "vNegociacao": 2091.96,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "L.F.M.S.",
@@ -5482,7 +5508,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "M.P.A.",
@@ -5497,7 +5524,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 420.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "M.B.O.V.",
@@ -5512,7 +5540,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 420.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "R.C.C.",
@@ -5528,7 +5557,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 420.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "R.R.F.",
@@ -5543,7 +5573,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "T.E.C.",
@@ -5558,7 +5589,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 1020.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "C.B.T.",
@@ -5573,7 +5605,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 840.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  },
  {
   "nome": "A.R.",
@@ -5588,7 +5621,8 @@ const RETENCAO_CRA = [
   "vBeneficio": 1002.0,
   "negociacao": null,
   "vNegociacao": 0.0,
-  "sucesso": true
+  "sucesso": true,
+  "beneficioUsado": true
  }
 ]
 // 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
@@ -6024,6 +6058,11 @@ function renderRetencaoCRA(mesesSel){
             <div class="card-label">Receita Retida</div>
             <div style="font-size:26px; font-weight:900; color:#00e5a0; line-height:1.2;">${fmtBRL0(receita)}</div>
             <div class="card-meta">valor base dos contratos <b>salvos</b> (${salvos.length} de ${casos.length})</div>
+            ${(()=>{const semUso = casos.filter(c=>c.beneficioUsado===false);
+              return semUso.length ? `<div class="card-meta" style="margin-top:6px;">
+                ${semUso.length} associado${semUso.length===1?'':'s'} (${semUso.map(c=>c.nome).join(', ')})
+                ${semUso.length===1?'permaneceu':'permaneceram'} sem usar o benefício concedido —
+                retenção pelo mesmo custo de contrato, sem custo de cortesia.</div>` : '';})()}
             ${perdidos.length ? `<div class="card-meta" style="margin-top:6px;">
               O quadro-resumo da planilha traz <b>${fmtBRL0(receita+perdida)}</b> como "valor retido": ali entram
               os ${casos.length} acordos, inclusive ${perdidos.length===1?'o que desistiu':'os que desistiram'}
@@ -6098,6 +6137,12 @@ function renderRetencaoCRA(mesesSel){
         <thead><tr><th>Período</th><th class="num">Desligamentos</th><th class="num">Retenção</th><th class="num">Residual</th><th class="num">Ticket Médio</th><th class="num">Dependentes</th></tr></thead>
         <tbody id="tabelaHistoricoRetencao"></tbody>
       </table>
+        <div class="card-meta" style="margin-top:8px;">
+          <b>Não apurado</b> = a planilha do mês não traz o dado: em Janeiro e Fevereiro as colunas de
+          ticket e dependentes estão vazias, e Março tem apenas um ticket lançado (marcado com <span style="color:var(--yellow);">*</span>),
+          o que não sustenta uma média. Retenção zerada em Jan/Fev também é real —
+          o acompanhamento de retenção começou em Março.
+        </div>
       <div class="card-meta" style="margin-top:10px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior.</div>
     </div>
     `;
@@ -9485,7 +9530,12 @@ function preencherHistoricoRetencao(){
   alvo.innerHTML = keys.map(k=>{
     const rr = getRetencaoMes(k);
     const retido = rr.kpis.find(x=>x.label==='Retenção' || x.label==='Retidos');
-    return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : '—'}</td><td class="num">${rr.residual}</td><td class="num">${rr.ticketMedio}</td><td class="num">${rr.dependentes}</td></tr>`;
+    // "—" puro fazia parecer erro do painel. Em jan/fev as colunas TICKET e
+    // DEPENDENTE estão vazias na planilha (zero registros preenchidos) e março
+    // tem um único ticket lançado: é ausência de apuração, não falha de carga.
+    const semDado = v => (!v || v==='—')
+      ? '<span style="color:var(--muted); font-style:italic;">não apurado</span>' : v;
+    return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : '—'}</td><td class="num">${rr.residual}</td><td class="num">${semDado(rr.ticketMedio)}${rr.ticketBase1?' <span title="média de um único registro" style="color:var(--yellow);">*</span>':''}</td><td class="num">${semDado(rr.dependentes)}</td></tr>`;
   }).join('');
 }
 
@@ -9857,7 +9907,7 @@ const DESLIGAMENTOS_MESES = {
     categorias:[{nome:'Contribuinte', qtd:16, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:7, cor:'#00e5a0'},{nome:'Patrimonial', qtd:6, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:2, cor:'#f2b705'},{nome:'Patrimonial Individual', qtd:1, cor:'#06b6d4'}],
     motivos:[{motivo:'Não utilização', qtd:8, pct:25.00, cor:'#3d7bff'},{motivo:'Financeiro', qtd:6, pct:18.75, cor:'#00e5a0'},{motivo:'Mudança', qtd:5, pct:15.62, cor:'#a855f7'},{motivo:'Saúde', qtd:4, pct:12.50, cor:'#f2b705'},{motivo:'Sem motivo', qtd:4, pct:12.50, cor:'#06b6d4'},{motivo:'Separação', qtd:2, pct:6.25, cor:'#fb923c'},{motivo:'Insatisfação', qtd:1, pct:3.12, cor:'#e8192c'},{motivo:'Viagem', qtd:1, pct:3.12, cor:'#b0b0d0'},{motivo:'Outros', qtd:1, pct:3.12, cor:'#5a5c78'}],
     totalDesligamentos:32,
-    ticketMedio:'R$ 359,00', dependentes:'—', residual:'0', residualLabel:'Residual Acumulado',
+    ticketMedio:'R$ 359,00', ticketBase1:true, dependentes:'—', residual:'0', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:0, nao:1},
     quadroSocial:32,
     negociacoesDesligados:'R$ 0,00',
