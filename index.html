@@ -3030,11 +3030,22 @@ function renderLegendaGraficoNeg(elId, chartElId, detailElId){
   const comCont  = visiveis.filter(n=>n.contatos!=null);
   const faixa = arr => arr.length ? (arr.length===1 ? arr[0].mes
       : `${arr[0].mes.split('/')[0].toLowerCase()}-${arr[arr.length-1].mes.split('/')[0].toLowerCase()}/26`) : '—';
+  // A linha azul é só o BOTÃO de destaque da série — sem número. Antes ela
+  // repetia o total da barra dourada, e o R$ 460.277 aparecia duas vezes sem
+  // existir em barra nenhuma. Quem quer valor lê no gráfico, que já os rotula.
+  // Quando o recorte não tem NENHUM mês apurado, o gráfico recorre à série
+  // inteira. Isso precisa ficar escrito na tela: sem o aviso, quem filtrou
+  // julho vê barras de mar-jun e acha que são de julho.
+  const caiuNaSerieInteira = !!window._negSerieCompleta;
+  const mesesSemV = visiveis.filter(n=>n.valor==null).map(n=>n.mes.split('/')[0].toLowerCase());
   const comInadV = idxV.map(i=>INADIMPLENCIA[i]).filter(d=>d && d.real!=null);
   const ultima = comInadV.length ? comInadV[comInadV.length-1] : {mes:'—', real:0, meta:0};
-  el.innerHTML = `
-    <div class="legend-btn" data-serie="valor" onclick="highlightSerie('valor','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#3d7bff"></span>Valor Recuperado (mês) — <b style="color:var(--text)">${fmtBRL0(totalValor)}</b> <span class="muted">(${faixa(comValor)})</span></div>
-    <div class="legend-btn" data-serie="acumulado" onclick="highlightSerie('acumulado','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#f2b705"></span>Total do Período — <b style="color:#f2b705">${fmtBRL0(totalValor)}</b> <span class="muted">barra dourada</span></div>
+  const avisoSerie = caiuNaSerieInteira
+    ? `<div class="alert-box" style="border-color:var(--gold); margin-bottom:10px;"><span>🔎</span><div><b>O período filtrado ainda não tem valor apurado</b> — o gráfico abaixo está mostrando <b>todo o histórico disponível (mar-jun/26)</b>, não o mês que você selecionou. Assim que a gestora enviar o fechamento, ele passa a responder ao filtro.</div></div>`
+    : '';
+  el.innerHTML = avisoSerie + `
+    <div class="legend-btn" data-serie="valor" onclick="highlightSerie('valor','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#3d7bff"></span>Valor Recuperado por mês</div>
+    <div class="legend-btn" data-serie="acumulado" onclick="highlightSerie('acumulado','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#f2b705"></span>Total do Período — <b style="color:#f2b705">${fmtBRL0(totalValor)}</b> <span class="muted">${comValor.length===1 ? 'mês único — igual à barra azul' : `soma das ${comValor.length} barras azuis`}${mesesSemV.length?` · ${mesesSemV.join(', ')} ainda sem fechamento`:''}</span></div>
     <div class="legend-btn" data-serie="contatos" onclick="highlightSerie('contatos','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#00e5a0"></span>Contatos Enviados — <b style="color:var(--text)">${totalContatos}</b> <span class="muted">(${faixa(comCont)})</span></div>
     <div class="legend-btn" data-serie="inadReal" onclick="highlightSerie('inadReal','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#ff8a3d"></span>Inadimplência Real (${ultima.mes}) — <b style="color:#ff8a3d">${fmtPct(ultima.real)}</b></div>
   `;
@@ -3085,40 +3096,14 @@ function renderInadJulho(){
       Somando categorias isentas e não sócios, são <b>${(D.totalSocios.qtd + D.naoSocios.qtd)}</b> inadimplentes e <b>${fmtBRL0(D.totalSocios.valor + D.naoSocios.valor)}</b> em atraso.
     </div></div>
 
-    <div class="card full">
-      <div class="card-label">Composição da Dívida por Tempo de Atraso — pagantes</div>
-      <div style="display:flex; gap:22px; flex-wrap:wrap; margin-top:16px;">${faixasHtml}</div>
-      <div class="card-meta" style="margin-top:14px;"><b>${(fx[0].valor/totFx*100).toFixed(0)}% da dívida é recente</b> (vencida em julho) — é onde a cobrança tem mais chance de recuperar. Os ${fmtBRL0(fx[3].valor)} com mais de 91 dias envolvem ${fx[3].qtd} associados, o segundo maior grupo em quantidade.</div>
-    </div>
-
-    <div class="card full" style="margin-top:16px;">
-      <div class="card-label">Por Categoria de Sócio — pagantes</div>
-      <div class="scrollx" style="margin-top:12px;"><table>
-        <thead><tr><th>Categoria</th><th class="num">Titulares</th><th class="num">Depend.</th><th class="num">Valor Gerado</th><th class="num">Inadimpl.</th><th class="num">% Inadimpl.</th><th class="num">Valor em Atraso</th></tr></thead>
-        <tbody>${catHtml}
-          <tr style="border-top:2px solid var(--border); font-weight:800;">
-            <td>Total Pagantes</td>
-            <td class="num">${D.pagantes.titulares.toLocaleString('pt-BR')}</td>
-            <td class="num">${D.pagantes.dependentes.toLocaleString('pt-BR')}</td>
-            <td class="num">${fmtBRL0(D.pagantes.gerado)}</td>
-            <td class="num">${D.pagantes.qtd}</td>
-            <td class="num" style="color:#ff8a3d;">${D.pagantes.pct.toFixed(2).replace('.',',')}%</td>
-            <td class="num">${fmtBRL0(D.pagantes.valor)}</td>
-          </tr>
-          <tr style="color:var(--muted);">
-            <td>Categorias isentas</td><td class="num">${D.isentas.titulares}</td><td class="num">${D.isentas.dependentes}</td>
-            <td class="num">${fmtBRL0(D.isentas.gerado)}</td><td class="num">${D.isentas.qtd}</td>
-            <td class="num">${D.isentas.pct.toFixed(1).replace('.',',')}%</td><td class="num">${fmtBRL0(D.isentas.valor)}</td>
-          </tr>
-          <tr style="color:var(--muted);">
-            <td>Não sócios (atletas, escola, escoteiros...)</td><td class="num">${D.naoSocios.titulares.toLocaleString('pt-BR')}</td><td class="num">${D.naoSocios.dependentes}</td>
-            <td class="num">${fmtBRL0(D.naoSocios.gerado)}</td><td class="num">${D.naoSocios.qtd}</td>
-            <td class="num">${D.naoSocios.pct.toFixed(1).replace('.',',')}%</td><td class="num">${fmtBRL0(D.naoSocios.valor)}</td>
-          </tr>
-        </tbody>
-      </table></div>
-      <div class="card-meta" style="margin-top:10px;">O percentual de cada categoria é sobre os titulares dela. <b>Contribuinte e Patrimonial concentram ${D.categorias[0].valor + D.categorias[1].valor >= 0 ? fmtBRL0(D.categorias[0].valor + D.categorias[1].valor) : ''}</b> dos ${fmtBRL0(D.pagantes.valor)} em atraso — ${((D.categorias[0].valor+D.categorias[1].valor)/D.pagantes.valor*100).toFixed(0)}% do total. Fonte: Quadro total por categoria + Inadimplência (jul/26).</div>
-    </div>`;
+    <!-- REMOVIDO EM 13/08 a pedido da gestora (via diretor): os cards
+         "Composição da Dívida por Tempo de Atraso — pagantes" e
+         "Por Categoria de Sócio — pagantes" saíram da tela.
+         Os DADOS seguem intactos em INADIMPLENCIA_JUL (faixas e categorias) e
+         o cálculo continua rodando — só a exibição foi retirada. Para trazer de
+         volta, basta reinserir os dois blocos <div class="card full"> aqui.
+         O alerta-resumo de julho acima permanece. -->
+`;
 }
 
 function renderLegendaNegociacoes(elId){
@@ -6362,7 +6347,9 @@ function renderRetencaoCRA(mesesSel){
           <div style="font-size:15px; color:var(--text); margin-top:8px;"><b>${salvos.length} de ${casos.length}</b> casos retidos</div>
           <div style="margin-top:8px; display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px;">
             <span><span class="dot" style="background:#3d7bff;"></span> Retidos — <b>${salvos.length}</b></span>
-            <span><span class="dot" style="background:#e8192c;"></span> Desistiram — <b>${perdidos.length}</b></span>
+            <!-- "Desistiram" retirado em 13/08 a pedido da gestora do CRA (via diretor).
+                 A variável perdidos continua calculada e é usada na nota do
+                 quadro-resumo mais abaixo — só o item da legenda saiu daqui. -->
           </div>
           <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
             <div class="card-label">Receita Retida</div>
