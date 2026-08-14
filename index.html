@@ -2201,7 +2201,7 @@ const NEGOCIACOES = [
   {mes:'Mai/26', valor:84982,  contatos:512},
   {mes:'Jun/26', valor:304596, contatos:614},
   {mes:'Jul/26', valor:402369, contatos:804},
-  {mes:'Ago/26', valor:146346, contatos:null},
+  {mes:'Ago/26', valor:204757, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -2226,7 +2226,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jul/26':784793, 'Ago/26':796422};
+const NEG_ESTOQUE = {'Jul/26':784793, 'Ago/26':796422};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -2958,14 +2958,24 @@ const NEG_FAIXAS = [
       {fx:'FORA', idade:'4+ meses', ref:'≤ mar/26', abertura:148287, rec:21166,  ab:127121},
     ], selo:235437900 },
   { mes:'Ago/26', label:'Agosto/2026', fechado:false,
-    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'13/08/2026',
-    inicio:796422, base:796422, totRec:146346, totAb:650076,
+    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'14/08/2026',
+    inicio:796422, base:796422, totRec:204757, totAb:591665,
     faixas:[
-      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:413608, rec:101825, ab:311784},
-      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:174868, rec:30971,  ab:143896},
-      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:52810,  rec:7975,   ab:44835},
-      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:155136, rec:5575,   ab:149561},
-    ], selo:238926600 },
+      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:413608, rec:139209, ab:274399},
+      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:174868, rec:42713,  ab:132154},
+      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:52810,  rec:11375,  ab:41435},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:155136, rec:11459,  ab:143677},
+    ], selo:238926500 },
+  // ATUALIZAÇÃO DE 14/08 — agosto segue em curso, então NÃO entra como período
+  // novo: é o mesmo mês, com a cobrança mais adiantada. As quatro ABERTURAS estão
+  // idênticas às de 11/08 (413.608 · 174.868 · 52.810 · 155.136), o que confirma
+  // que o estoque de abertura não mudou — só o recuperado avançou.
+  //   recuperado 146.346 -> 204.757  (+58.411 em três dias)
+  //   em aberto  650.076 -> 591.665
+  //   taxa        18,38% -> 25,71%
+  // A tabela declara recuperado total 204.757 e a soma das faixas dá 204.756:
+  // R$ 1 de arredondamento na FX2 (174.868 = 132.154 + 42.713 + 1). Mantive os
+  // valores por faixa como a Cobrança enviou; o total do painel é a soma delas.
 ];
 
 function validarHistoricoNeg(){
@@ -3024,7 +3034,7 @@ function acenderFaixa(id){
 //   quebra por faixa ... jul-ago    retrato ............ jul
 // Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
 // rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
-const NEG_ATUALIZACAO = '11/08/2026';
+const NEG_ATUALIZACAO = '14/08/2026';
 const NEG_RETRATO = {
   'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
              inadTotal:931, atrasoTotal:602186}
@@ -5851,7 +5861,7 @@ const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'recuperado em julho', esperado:402369, calc:()=>NEGOCIACOES[4].valor},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
-   oque:'recuperado em agosto', esperado:146346, calc:()=>NEGOCIACOES[5].valor},
+   oque:'recuperado em agosto', esperado:204757, calc:()=>NEGOCIACOES[5].valor},
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'inadimplência em aberto, abertura de julho', esperado:784793, calc:()=>NEG_ESTOQUE['Jul/26']},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
