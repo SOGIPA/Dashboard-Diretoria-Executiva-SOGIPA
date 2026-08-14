@@ -8,6 +8,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  .neg-oculto{display:none !important;}
+  .neg-num{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;
+    border-radius:50%; background:var(--blue); color:#fff; font-size:12.5px; font-weight:900;
+    margin-right:10px; flex:none;}
+  .neg-flag{display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.09em;
+    padding:2px 8px; border-radius:3px; margin-left:8px; vertical-align:middle;
+    background:rgba(242,183,5,.16); color:var(--gold); border:1px solid rgba(242,183,5,.4);}
+  .neg-flag.foto{background:rgba(232,25,44,.14); color:#ff6b7a; border-color:rgba(232,25,44,.4);}
+  .neg-moedas{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  .neg-moedas svg{flex:none; width:300px; height:auto;}
+  .neg-moedas .txt{flex:1; min-width:250px;}
+  .neg-moedas .frase{font-size:16px; line-height:1.5;}
+  .neg-moedas .det{font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.55;}
+  .neg-prog{height:24px; background:var(--surface); border:1px solid var(--border); border-radius:7px;
+    overflow:hidden; margin-top:12px;}
+  .neg-prog .fill{height:100%; background:var(--blue); display:flex; align-items:center;
+    padding-left:10px; font-size:12px; font-weight:800; white-space:nowrap;}
   :root{
     --bg:#13151d; --surface:#1a1c26; --sidebar:#16171f; --card:#20222e; --border:#40415a;
     --green:#00e5a0; --yellow:#ffd32a; --red:#e8192c; --blue:#3d7bff;
@@ -716,10 +733,15 @@
            totalizadora); Vendas e Retenção empilhados na coluna ao lado. -->
       <div class="grid-neg">
         <div class="card">
-          <div class="card-label">Negociações — Valor Recuperado</div>
-          <div id="vgChartNegociacoes"></div>
-          <div id="vgLegendaNeg" style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;"></div>
-          <div id="vgSerieDetalhe" style="margin-top:8px;"></div>
+          <div class="card-label">Negociação — Recuperação por Faixa de Atraso</div>
+          <div class="card-meta" style="margin-bottom:12px;">Os quatro cards e as colunas mostram sempre o <b>último mês do período filtrado</b> — regra de estoque.</div>
+          <div id="vgFaixaKpis" class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); margin-bottom:14px;"></div>
+          <div id="vgFaixaChart" class="scrollx"></div>
+          <div id="vgFaixaLegenda" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
+          <!-- 14/08: a Visão Geral repetia o gráfico antigo de valor recuperado por
+               mês, que saiu da aba de Negociação. Agora espelha o mesmo gráfico por
+               faixa. Os antigos vgChartNegociacoes/vgLegendaNeg/vgSerieDetalhe foram
+               removidos, e as chamadas a drawNegInadInteractive para eles também. -->
         </div>
         <div class="grid-neg-lado">
           <div class="card">
@@ -1015,34 +1037,108 @@
       </div>
       <div id="secSubNeg">
 <div class="subpage" id="subpage-negociacao">
+      <!-- ─────────────────────────────────────────────────────────────
+           14/08 — a pedido do diretor, a aba passa a mostrar SOMENTE o
+           gráfico "Recuperação por Faixa de Atraso" e seus 4 cards.
+           Tudo o mais foi OCULTADO, não apagado: cada bloco está dentro de
+           <div class="neg-oculto">, que é display:none. Para trazer de volta,
+           basta remover a classe (ou trocar o CSS de .neg-oculto para block).
+           O código de render dos blocos ocultos segue vivo e sem erro.
+           ───────────────────────────────────────────────────────────── -->
       <div class="section-title">Cobrança — Inadimplência e Recuperação de Valores<div class="line"></div></div>
 
       <div id="negAvisoPeriodo"></div>
 
-      <div class="alert-box red">
+<div class="neg-oculto">      <div class="alert-box red">
         <span>🚨</span>
         <div id="negAlertaTopo"></div>
-      </div>
+      </div></div>
 
-      <div class="grid-3" id="negResumoCards"></div>
+<div class="neg-oculto">      <div class="section-title" style="margin-top:22px;"><span class="neg-num">1</span>O tamanho do problema<div class="line"></div></div></div>
+      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">Quanto a SOGIPA tem a receber e quanto isso pesa.</div>
 
-      <div class="card full">
-        <div class="card-label">Negociações × Inadimplência Real · Valor Recuperado × Contatos</div>
-        <div class="card-meta" style="margin-bottom:10px;">Fonte: Painel Institucional (inadimplência) + Cobrança (negociações). Clique em um item da legenda para destacar a linha/barra correspondente. Ainda não temos o saldo absoluto em R$ da dívida em atraso — só a taxa percentual. Se você tiver esse valor, me manda que eu incluo aqui também.</div>
+<div class="neg-oculto">      <div class="kpi-grid" id="negKpis1" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-bottom:14px;"></div></div>
+
+<div class="neg-oculto">      <div class="card full" id="negCardMoedas">
+        <div class="card-label">Quanto do faturamento não entra no caixa <span class="neg-flag" id="negFlagMoedas"></span></div>
+        <div id="negMoedasBox"></div>
+      </div></div>
+
+<div class="neg-oculto">      <div class="alert-box" id="negNotaRecorteBox"><span>ℹ️</span><div id="negNotaRecorte"></div></div></div>
+
+<div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num">2</span>O que a equipe fez<div class="line"></div></div></div>
+      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">Quantas pessoas foram contatadas, quanto voltou e em que ritmo.</div>
+
+<div class="neg-oculto">      <div class="grid-3" id="negResumoCards" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));"></div></div>
+
+<div class="neg-oculto">      <div class="card full">
+        <div class="card-label">Atividade da Negociação — contatos enviados e valor recuperado por mês</div>
+        <div class="card-meta" style="margin-bottom:10px;">O que o setor de cobrança fez em cada mês: quantas pessoas contatou e quanto trouxe de volta. Fonte: Cobrança. Clique em um item da legenda para destacar a série. A dívida em aberto fica no gráfico por faixa, mais abaixo — aqui só entra a atividade da equipe, para não misturar o que a equipe fez com o tamanho do problema.</div>
         <div id="negChartFull" class="scrollx"></div>
         <div id="negLegendaNeg" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;"></div>
         <div id="negSerieDetalhe" style="margin-top:10px;"></div>
-        <div class="alert-box" id="negAlertaRodapeBox">
+<div class="neg-oculto">        <div class="alert-box" id="negAlertaRodapeBox">
           <span>📊</span>
           <div id="negAlertaRodape"></div>
-        </div>
-      </div>
+        </div></div>
+      </div></div>
+<div class="neg-oculto">      <div class="card full" id="negCardRitmo">
+        <div class="card-label">Ritmo do mês — contra o desempenho do último mês fechado <span class="neg-flag" id="negFlagRitmo"></span></div>
+        <div id="negRitmoBox"></div>
+      </div></div>
+
+<div class="neg-oculto">      <div class="card full" id="negCardProd">
+        <div class="card-label">Quanto cada pessoa contatada trouxe de volta</div>
+        <div id="negProdChart" class="scrollx"></div>
+        <div class="card-meta" id="negProdNota" style="margin-top:10px;"></div>
+      </div></div>
+
+<div class="neg-oculto">      <div class="alert-box"><span>⚠️</span>
+        <div><b>A equipe de cobrança não se dedica só a isto.</b> R$ por pessoa contatada e ritmo do mês supõem dedicação integral, e não é o caso — a mesma equipe acumula outras
+        atividades da Secretaria. Servem para <b>acompanhar tendência</b>, não para julgar desempenho, e
+        provavelmente <b>subestimam</b> a eficiência do tempo aplicado à cobrança.</div>
+      </div></div>
+
+<div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num">3</span>De onde o dinheiro volta<div class="line"></div></div></div>
+
       <div class="card full">
-        <div class="card-label">Detalhamento por Competência</div>
-        <div id="tabelaLegendaNeg" class="scrollx"></div>
+        <div class="card-label">Recuperação por Faixa de Atraso</div>
+        <div class="card-meta" style="margin-bottom:12px;">
+          A dívida envelhece uma faixa por mês: o que a faixa 1 não recupera vira faixa 2 no mês
+          seguinte, depois faixa 3, e por fim cai em “fora da faixa”, onde segue em cobrança.
+          Os quatro cards e as colunas mostram sempre o <b>último mês do período filtrado</b> —
+          regra de estoque, igual à de sócios ativos.
+        </div>
+        <div id="negFaixaKpis" class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-bottom:16px;"></div>
+        <div id="negFaixaChart" class="scrollx"></div>
+        <div id="negFaixaLegenda" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);"></div>
+        <div id="negFaixaNota"></div>
       </div>
 
-      <div id="inadJulBloco"></div>
+<div class="neg-oculto">      <div class="alert-box red" id="negCemiterioBox"><span>🪦</span><div id="negCemiterio"></div></div></div>
+
+<div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num">4</span>Por que a dívida não acaba<div class="line"></div></div></div>
+      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">A equipe recupera bem. Então por que o saldo não cai.</div>
+
+<div class="neg-oculto">      <div class="card full" id="negCardEsteira">
+        <div class="card-label">A esteira — entra mais do que sai</div>
+        <div id="negEsteiraBox"></div>
+      </div></div>
+
+<div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num">5</span>Detalhamento<div class="line"></div></div></div>
+      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">Os números mês a mês e o retrato do quadro.</div>
+
+<div class="neg-oculto">      <div class="card full">
+        <div class="card-label">Por Competência</div>
+        <div id="tabelaLegendaNeg" class="scrollx"></div>
+      </div></div>
+
+      <div id="inadJulBloco" class="neg-oculto"></div>
+
+<div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num" style="background:var(--muted)">i</span>Cobertura e Origem dos Dados<div class="line"></div></div></div>
+<div class="neg-oculto">      <div class="card full">
+        <div class="scrollx"><table class="tbl" id="negTabCobertura"></table></div>
+      </div></div>
     </div>
 
     <!-- ══════════════════ REINGRESSO ══════════════════ -->
@@ -1148,6 +1244,20 @@
       </div>
       <div id="retSubOcor" style="display:none;">
         <div class="section-title">Ocorrências<div class="line"></div></div>
+
+        <!-- Nota do processo, informada pelo CRA em 14/08. É explicativa, não é
+             cálculo: o painel não recalcula prazo a partir dela. Serve para quem
+             lê entender por que um caso de 10 dias pode estar dentro do prazo. -->
+        <div class="alert-box"><span>⏱️</span>
+          <div><b>Como funciona o prazo das ocorrências.</b> O CRA tem <b>10 dias úteis</b> para tratar
+          cada ocorrência, contados a partir do <b>dia seguinte ao registro (D+1)</b>. Não entram no
+          cálculo <b>sábados, domingos e feriados</b>. Esses 10 dias já incluem os <b>4 dias reservados
+          à análise de imagens do monitoramento por câmeras</b>, quando o caso exige essa verificação —
+          ou seja, não é prazo adicional, está dentro do total.<br>
+          <span class="muted">Por isso um caso com muitos dias corridos pode continuar dentro do prazo:
+          a contagem oficial é em dias úteis.</span></div>
+        </div>
+
         <div id="ocorrenciasConteudo"></div>
       </div>
       <div id="retSubDeslig" style="display:none;">
@@ -1667,38 +1777,38 @@ const ESPORTES_COLUNAS = [
 // 'ano' é o total declarado na planilha; 'm' traz cada mês. Diferenças de ±R$ 1 entre
 // a soma dos meses e o total declarado são arredondamento de centavos na origem.
 const ESPORTES_MESES = [
-  {nome:'Aikido', ano:4014, m:{jan:542, fev:501, mar:70, abr:1246, mai:693, jun:520, jul:442}},
-  {nome:'Athletic Trainning', ano:-67341, m:{jan:-9551, fev:-9106, mar:-9424, abr:-6992, mai:-11335, jun:-7643, jul:-13290}},
-  {nome:'Atletismo', ano:-238858, m:{jan:-18684, fev:-29090, mar:-19308, abr:-28807, mai:-52722, jun:-36803, jul:-53444}},
-  {nome:'Ballet Gutierres', ano:4403, m:{jan:127, fev:0, mar:797, abr:945, mai:758, jun:763, jul:1013}},
-  {nome:'Basquete', ano:-31173, m:{jan:-2992, fev:5295, mar:14429, abr:2439, mai:-26896, jun:-35789, jul:12341}},
-  {nome:'Beach Tennis', ano:-18633, m:{jan:-3652, fev:-2418, mar:-3672, abr:-612, mai:-2634, jun:-2199, jul:-3446}},
-  {nome:'Boxe', ano:55943, m:{jan:7282, fev:7955, mar:8864, abr:8432, mai:8319, jun:7304, jul:7787}},
+  {nome:'Aikido', ano:4014.32, m:{jan:542.11, fev:501, mar:70, abr:1245.87, mai:693.13, jun:520.21, jul:442}},
+  {nome:'Athletic Trainning', ano:-67339.616596, m:{jan:-9550.587148, fev:-9105.559768, mar:-9423.689768, abr:-6991.693304, mai:-11334.793304, jun:-7643.293304, jul:-13290}},
+  {nome:'Atletismo', ano:-238858.76945, m:{jan:-18684.13945, fev:-29090.15, mar:-19307.89, abr:-28807.02, mai:-52722.25, jun:-36803.32, jul:-53444}},
+  {nome:'Ballet Gutierres', ano:4403.06, m:{jan:127.39, fev:0, mar:797.24, abr:944.77, mai:757.66, jun:763, jul:1013}},
+  {nome:'Basquete', ano:-31173.3308, m:{jan:-2992.1008, fev:5294.87, mar:14429.07, abr:2438.89, mai:-26896.4, jun:-35788.66, jul:12341}},
+  {nome:'Beach Tennis', ano:-18633.25, m:{jan:-3652.2, fev:-2418.05, mar:-3671.92, abr:-611.81, mai:-2634.29, jun:-2198.98, jul:-3446}},
+  {nome:'Boxe', ano:55942.3, m:{jan:7281.79, fev:7955.28, mar:8863.86, abr:8431.56, mai:8318.8, jun:7304.01, jul:7787}},
   {nome:'Esgrima', ano:527, m:{jan:0, fev:0, mar:0, abr:0, mai:67, jun:54, jul:406}},
-  {nome:'Fitness', ano:-11322, m:{jan:201, fev:-2340, mar:-1058, abr:-878, mai:-3810, jun:-1653, jul:-1784}},
-  {nome:'Futebol', ano:-4782, m:{jan:-3992, fev:271, mar:524, abr:4119, mai:5904, jun:-13387, jul:1779}},
-  {nome:'Ginástica Artística', ano:19597, m:{jan:-20559, fev:-4459, mar:17796, abr:19623, mai:-23933, jun:-9956, jul:41085}},
-  {nome:'Ginástica Rítmica', ano:34747, m:{jan:-7457, fev:9944, mar:16370, abr:962, mai:6366, jun:16819, jul:-8257}},
-  {nome:'Ginástica Veteranas', ano:16196, m:{jan:231, fev:-4041, mar:4567, abr:3795, mai:3608, jun:3651, jul:4385}},
-  {nome:'Hidroginástica', ano:47272, m:{jan:-255, fev:164, mar:9312, abr:10716, mai:10845, jun:9655, jul:6835}},
-  {nome:'Judô', ano:-276685, m:{jan:-64588, fev:-39620, mar:-20425, abr:-38687, mai:-30382, jun:-36207, jul:-46776}},
-  {nome:'Kung Fu', ano:2297, m:{jan:389, fev:276, mar:458, abr:371, mai:0, jun:518, jul:285}},
-  {nome:'Levantamento de Peso', ano:29956, m:{jan:9473, fev:7693, mar:8289, abr:2972, mai:-186, jun:-2178, jul:3893}},
-  {nome:'Musculação', ano:785051, m:{jan:113286, fev:108936, mar:118082, abr:108550, mai:103557, jun:117639, jul:115001}},
-  {nome:'Natação', ano:86529, m:{jan:-6334, fev:-4909, mar:19097, abr:29395, mai:19424, jun:18458, jul:11398}},
-  {nome:'Patinação', ano:12571, m:{jan:80, fev:363, mar:2087, abr:2544, mai:2729, jun:2038, jul:2730}},
-  {nome:'Percorrer', ano:61746, m:{jan:8355, fev:8205, mar:8973, abr:9422, mai:9209, jun:7969, jul:9613}},
-  {nome:'Personal Postura', ano:66772, m:{jan:12110, fev:8814, mar:4290, abr:15040, mai:0, jun:16518, jul:10000}},
-  {nome:'Personal Tênis', ano:17825, m:{jan:1770, fev:1890, mar:1950, abr:4825, mai:2320, jun:2040, jul:3030}},
-  {nome:'Personal Vaqueiro', ano:4012, m:{jan:852, fev:852, mar:852, abr:852, mai:852, jun:852, jul:-1100}},
-  {nome:'Punhobol', ano:-35387, m:{jan:-2707, fev:-2007, mar:-9825, abr:-6155, mai:-16467, jun:1928, jul:-154}},
-  {nome:'Ritmos', ano:2716, m:{jan:0, fev:0, mar:70, abr:583, mai:70, jun:1144, jul:849}},
-  {nome:'Tênis', ano:20411, m:{jan:11911, fev:-6015, mar:14388, abr:-25269, mai:-21841, jun:8262, jul:38975}},
-  {nome:'Tênis de Mesa', ano:6703, m:{jan:1080, fev:-1616, mar:-1456, abr:-856, mai:4504, jun:-59, jul:5106}},
-  {nome:'Vôlei', ano:-35678, m:{jan:-15316, fev:8801, mar:-15283, abr:-16977, mai:-14176, jun:-2001, jul:19274}},
-  {nome:'Vôlei Kika', ano:13579, m:{jan:177, fev:222, mar:1946, abr:2123, mai:2942, jun:2911, jul:3258}},
-  {nome:'Vôlei Veteranas', ano:2136, m:{jan:-227, fev:-1259, mar:1573, abr:-719, mai:906, jun:909, jul:953}},
-  {nome:'Yoga', ano:2033, m:{jan:-1062, fev:2242, mar:386, abr:-78, mai:158, jun:379, jul:8}},
+  {nome:'Fitness', ano:-11322.760871, m:{jan:200.588068, fev:-2340.295247, mar:-1058.065247, abr:-878.109482, mai:-3809.649482, jun:-1653.229482, jul:-1784}},
+  {nome:'Futebol', ano:-4781.494487, m:{jan:-3991.854488, fev:271.12, mar:523.54, abr:4119.24, mai:5904.09, jun:-13386.63, jul:1779}},
+  {nome:'Ginástica Artística', ano:19596.2746, m:{jan:-20559.3054, fev:-4459.16, mar:17795.75, abr:19623.38, mai:-23933.44, jun:-9955.95, jul:41085}},
+  {nome:'Ginástica Rítmica', ano:34747.328541, m:{jan:-7456.80267, fev:9944.359146, mar:16369.539146, abr:961.887639, mai:6365.927639, jun:16819.417639, jul:-8257}},
+  {nome:'Ginástica Veteranas', ano:16195.845497, m:{jan:230.74, fev:-4040.685989, mar:4566.884011, abr:3795.225825, mai:3607.735825, jun:3650.945825, jul:4385}},
+  {nome:'Hidroginástica', ano:47271.630255, m:{jan:-255.06, fev:163.912635, mar:9312.142635, abr:10716.394995, mai:10844.704995, jun:9654.534995, jul:6835}},
+  {nome:'Judô', ano:-276684.13724, m:{jan:-64587.66724, fev:-39619.86, mar:-20425.37, abr:-38686.98, mai:-30381.72, jun:-36206.54, jul:-46776}},
+  {nome:'Kung Fu', ano:2298.19, m:{jan:389.1, fev:276.49, mar:457.8, abr:371.4, mai:0, jun:518.4, jul:285}},
+  {nome:'Levantamento de Peso', ano:29956.95, m:{jan:9473.23, fev:7692.98, mar:8289.37, abr:2971.89, mai:-185.65, jun:-2177.87, jul:3893}},
+  {nome:'Musculação', ano:785051.14295, m:{jan:113286.13885, fev:108936.18015, mar:118082.13015, abr:108549.5146, mai:103557.3446, jun:117638.8346, jul:115001}},
+  {nome:'Natação', ano:86529.381095, m:{jan:-6333.65865, fev:-4908.832635, mar:19096.817365, abr:29394.585005, mai:19424.335005, jun:18458.135005, jul:11398}},
+  {nome:'Patinação', ano:12571.34, m:{jan:79.99, fev:362.85, mar:2087.39, abr:2544.21, mai:2729.15, jun:2037.75, jul:2730}},
+  {nome:'Percorrer', ano:61746.49, m:{jan:8355.04, fev:8204.96, mar:8973.49, abr:9421.77, mai:9208.84, jun:7969.39, jul:9613}},
+  {nome:'Personal Postura', ano:66771.16, m:{jan:12109.98, fev:8813.82, mar:4290.15, abr:15039.63, mai:0, jun:16517.58, jul:10000}},
+  {nome:'Personal Tênis', ano:17825.29, m:{jan:1770, fev:1890, mar:1950, abr:4825.29, mai:2320, jun:2040, jul:3030}},
+  {nome:'Personal Vaqueiro', ano:4010.09308, m:{jan:851.68436, fev:851.68436, mar:851.68, abr:851.68436, mai:851.68, jun:851.68, jul:-1100}},
+  {nome:'Punhobol', ano:-35387.31, m:{jan:-2706.57, fev:-2006.81, mar:-9825.38, abr:-6155.01, mai:-16467.07, jun:1927.53, jul:-154}},
+  {nome:'Ritmos', ano:2715.83, m:{jan:0, fev:0, mar:70, abr:582.63, mai:70, jun:1144.2, jul:849}},
+  {nome:'Tênis', ano:20411.33278, m:{jan:11911.46278, fev:-6014.91, mar:14388.0, abr:-25269.09, mai:-21840.84, jun:8261.71, jul:38975}},
+  {nome:'Tênis de Mesa', ano:6701.9971, m:{jan:1079.9271, fev:-1615.84, mar:-1456.36, abr:-856.37, mai:4503.85, jun:-59.21, jul:5106}},
+  {nome:'Vôlei', ano:-35677.3296, m:{jan:-15315.9396, fev:8800.83, mar:-15282.58, abr:-16977.42, mai:-14175.64, jun:-2000.58, jul:19274}},
+  {nome:'Vôlei Kika', ano:13580.66, m:{jan:177.28, fev:222.32, mar:1946.1, abr:2123.22, mai:2942.26, jun:2911.48, jul:3258}},
+  {nome:'Vôlei Veteranas', ano:2136.4, m:{jan:-226.73, fev:-1259.35, mar:1573.35, abr:-719.03, mai:906.16, jun:909, jul:953}},
+  {nome:'Yoga', ano:2032.71, m:{jan:-1062.47, fev:2241.88, mar:386.39, abr:-78.43, mai:157.86, jun:379.48, jul:8}},
 ];
 // Atletismo conferido em 11/08: fevereiro -29.090 e junho -36.803 (leitura anterior
 // estava errada). A soma dos meses passa a fechar com o total do ano declarado.
@@ -2074,6 +2184,13 @@ const VENDAS_CAMPANHAS = [
 // (37 + 335 + 512 + 614) somam exatamente 1.498 — o mesmo total da
 // apresentação. Os contatos nunca estiveram errados; só os valores.
 //
+// CONTATOS = PESSOAS CONTATADAS, não número de disparos. Confirmado com o diretor
+// em 14/08. A checagem que fecha: 804 contatos em julho contra 931 inadimplentes
+// no quadro total (pagantes + isentos + não sócios) = 86% de alcance. Uma análise
+// anterior dividiu 804 por 574 (só os pagantes) e concluiu "1,4 contatos por
+// pessoa" — a base estava errada e a conclusão também.
+// Alcance da cobrança: mar 4% · abr 36% · mai 55% · jun 66% · jul 86% do quadro.
+//
 // Julho: a apresentação vai até junho, então julho fica SEM VALOR APURADO
 // (valor:null) até a gestora enviar o fechamento. Os 804 contatos de julho
 // vieram da Sec. Adm. em 11/08 e seguem registrados — são contagem de ações,
@@ -2083,8 +2200,13 @@ const NEGOCIACOES = [
   {mes:'Abr/26', valor:47067,  contatos:335},
   {mes:'Mai/26', valor:84982,  contatos:512},
   {mes:'Jun/26', valor:304596, contatos:614},
-  {mes:'Jul/26', valor:null,   contatos:804},
+  {mes:'Jul/26', valor:402369, contatos:804},
+  {mes:'Ago/26', valor:146346, contatos:null},
 ];
+// Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
+// Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
+//   julho  R$ 402.369 (fechado)   ·  agosto R$ 146.346 (mês em andamento)
+// Contatos de agosto ainda não informados pela Sec. Adm.
 // Total apurado mar-jun: R$ 460.277,00 · 1.498 contatos. Confere com a apresentação.
 const NEG_TOTAL_APRESENTACAO = 460277;
 const NEG_CONTATOS_APRESENTACAO = 1498;
@@ -2094,7 +2216,23 @@ const INADIMPLENCIA = [
   {mes:'Mai/26', real:16.4, meta:13.3},
   {mes:'Jun/26', real:18.0, meta:12.34},
   {mes:'Jul/26', real:16.29, meta:null},   // 574 inadimplentes / 3.524 titulares pagantes
+  {mes:'Ago/26', real:null,  meta:null},   // mês em andamento
 ];
+
+// ── ESTOQUE DE INADIMPLÊNCIA EM R$ (fonte: tabelas por faixa da Cobrança) ──
+// É o total em atraso na ABERTURA do mês, somando todas as faixas. Flutua: sobe
+// com dívida nova, desce com o que a negociação recupera.
+// ATENÇÃO — não confundir com o retrato mensal (R$ 440.189 em jul), que conta só
+// o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
+// e é o número que casa com o gráfico por faixa logo abaixo.
+// Mar a jun não têm estoque em R$ na base — só a taxa percentual.
+const NEG_ESTOQUE = {'Jul/26':784793, 'Ago/26':796422};
+function estoqueDoRecorte(meses){
+  for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
+    if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
+  }
+  return null;
+}
 // ═══════════════════════════════════════════════════════════
 // INADIMPLÊNCIA — retrato de Julho/2026 por categoria e faixa de atraso
 // Fonte: Quadro total por categoria + Inadimplência (posição jul/26).
@@ -2772,12 +2910,451 @@ function drawReceitaDespesaChart(elId, compact, totais){
 // Mapeia o filtro (de/ate ISO) para os meses de Negociação visíveis (Mar-Jun).
 // Retorna os índices de NEGOCIACOES que caem dentro do intervalo.
 function negMesesNoIntervalo(de, ate){
-  const mapa = {'Mar/26':'2026-03','Abr/26':'2026-04','Mai/26':'2026-05','Jun/26':'2026-06','Jul/26':'2026-07'};
+  // Mapa derivado do próprio rótulo, não escrito à mão. A lista fixa que existia
+  // aqui não conhecia agosto: o mês entrou nos dados, o filtro ia até agosto, e o
+  // gráfico continuava parando em julho — sem erro e sem aviso. Agora todo mês
+  // novo é reconhecido sozinho.
+  const ABREV = {jan:'01',fev:'02',mar:'03',abr:'04',mai:'05',jun:'06',
+                 jul:'07',ago:'08',set:'09',out:'10',nov:'11',dez:'12'};
+  const mapa = {};
+  NEGOCIACOES.forEach(x=>{
+    const m = ABREV[x.mes.slice(0,3).toLowerCase()];
+    const a = x.mes.split('/')[1];
+    if(m && a) mapa[x.mes] = '20'+a+'-'+m;
+  });
   if(!de || !ate) return NEGOCIACOES.map((_,i)=>i);
   const deM = de.slice(0,7), ateM = ate.slice(0,7);
   const idx = [];
   NEGOCIACOES.forEach((n,i)=>{ const ym = mapa[n.mes]; if(ym && ym>=deM && ym<=ateM) idx.push(i); });
   return idx.length ? idx : NEGOCIACOES.map((_,i)=>i);
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// NEGOCIAÇÃO POR FAIXA DE ATRASO — série histórica, cresce um mês por vez
+// ═══════════════════════════════════════════════════════════
+// Fonte: tabelas de fechamento/período da Cobrança. Cada mês entra como objeto
+// NOVO no fim do array; períodos já importados nunca são reescritos. O campo
+// "selo" é a soma dos valores gravada na importação — se alguém alterar um
+// número antigo sem atualizar o selo, validarHistoricoNeg() acusa na abertura.
+// Foi o silêncio nesse tipo de alteração que derrubou a série da gestora em 11/08.
+//
+// Ao importar um mês novo: acrescentar no FIM, rodar seloNeg(obj), gravar em
+// selo, e conferir que validarHistoricoNeg() volta limpo.
+//
+// Em julho a base do cálculo é a coluna FECHAMENTO (a Controladoria revisa o
+// INÍCIO durante o mês); em agosto, mês em andamento, é a ABERTURA.
+function seloNeg(p){
+  return Math.round((p.faixas.reduce((t,f)=>t+f.rec+f.ab,0) + p.totRec + p.totAb + p.base)*100);
+}
+const NEG_FAIXAS = [
+  { mes:'Jul/26', label:'Julho/2026', fechado:true,
+    fonte:'Fechamento Julho/26 (Cobrança)', importadoEm:'13/08/2026',
+    inicio:879654, base:784793, totRec:402369, totAb:382424,
+    faixas:[
+      {fx:'FX1',  idade:'1 mês',    ref:'jun/26',   abertura:474278, rec:299750, ab:174528},
+      {fx:'FX2',  idade:'2 meses',  ref:'mai/26',   abertura:112997, rec:60187,  ab:52810},
+      {fx:'FX3',  idade:'3 meses',  ref:'abr/26',   abertura:49231,  rec:21266,  ab:27965},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ mar/26', abertura:148287, rec:21166,  ab:127121},
+    ], selo:235437900 },
+  { mes:'Ago/26', label:'Agosto/2026', fechado:false,
+    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'13/08/2026',
+    inicio:796422, base:796422, totRec:146346, totAb:650076,
+    faixas:[
+      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:413608, rec:101825, ab:311784},
+      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:174868, rec:30971,  ab:143896},
+      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:52810,  rec:7975,   ab:44835},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:155136, rec:5575,   ab:149561},
+    ], selo:238926600 },
+];
+
+function validarHistoricoNeg(){
+  const q=[];
+  NEG_FAIXAS.forEach((p,i)=>{
+    if(p.selo != null && seloNeg(p) !== p.selo)
+      q.push(`${p.label}: números alterados desde a importação de ${p.importadoEm} — selo ${p.selo}, atual ${seloNeg(p)}`);
+    p.faixas.forEach(f=>{
+      if(Math.abs((f.rec+f.ab)-f.abertura) > 1)
+        q.push(`${p.label} · ${f.fx}: abertura ${f.abertura} ≠ ${f.rec} + ${f.ab}`);
+    });
+    if(Math.abs(p.totRec+p.totAb-p.base) > 1) q.push(`${p.label}: base ${p.base} ≠ recuperado + em aberto`);
+    if(Math.abs(p.faixas.reduce((t,f)=>t+f.rec,0)-p.totRec) > 2) q.push(`${p.label}: soma do recuperado das faixas ≠ total`);
+    // a barra INADIMPL. do gráfico de cima tem de mostrar exatamente esta base
+    if(NEG_ESTOQUE[p.mes] !== p.base)
+      q.push(`${p.label}: NEG_ESTOQUE diz ${NEG_ESTOQUE[p.mes]} mas a tabela por faixa abre com ${p.base}`);
+    const nx = NEG_FAIXAS[i+1];
+    if(nx) [[0,1],[1,2]].forEach(([a,bb])=>{
+      if(Math.abs(p.faixas[a].ab - nx.faixas[bb].abertura) > p.faixas[a].ab*0.05 + 500)
+        q.push(`esteira ${p.label}→${nx.label}: ${p.faixas[a].fx} deixou ${p.faixas[a].ab} aberto, ${nx.faixas[bb].fx} abriu com ${nx.faixas[bb].abertura}`);
+    });
+  });
+  window.__AUDIT_NEG = {ok:q.length===0, quebras:q};
+  if(q.length){ _log.erro('🚨 NEGOCIAÇÃO POR FAIXA — '+q.length+' problema(s):');
+                q.forEach(m=>_log.erro('   · '+m)); }
+  return window.__AUDIT_NEG;
+}
+if(typeof window!=='undefined') window.addEventListener('load', ()=>{ try{ validarHistoricoNeg(); }catch(e){ _log.warn('validador '+'validarHistoricoNeg'+' falhou: '+e.message); } });
+
+let _negFaixaAceso = null;
+// O destaque vale para as duas telas ao mesmo tempo: o gráfico existe na aba de
+// Negociação e na Visão Geral, e clicar numa acende a série nas duas.
+function acenderFaixa(id){
+  _negFaixaAceso = (_negFaixaAceso===id) ? null : id;
+  ['neg','vg'].forEach(pfx=>{
+    document.querySelectorAll('#'+pfx+'FaixaChart [data-sf]').forEach(el=>{
+      el.style.opacity = (_negFaixaAceso && el.dataset.sf!==_negFaixaAceso) ? '.12' : '1';
+    });
+    document.querySelectorAll('#'+pfx+'FaixaLegenda .legend-btn').forEach(el=>{
+      el.classList.toggle('ativo', _negFaixaAceso===el.dataset.sf);
+    });
+  });
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// NEGOCIAÇÃO — blocos analíticos da aba (seções 1, 2, 4 e cobertura)
+// ═══════════════════════════════════════════════════════════
+// Todos respondem ao filtro do topo. Onde não há dado, mostram "—" com o motivo,
+// nunca repetem o último mês em silêncio — foi assim que a série da gestora
+// sumiu em 11/08 sem ninguém perceber.
+//
+// Cobertura por bloco (mantida em NEG_COBERTURA, no fim):
+//   recuperado ......... mar-ago    contatos ........... mar-jul
+//   inadimplência % .... mar-jul    dívida em aberto ... jul-ago
+//   quebra por faixa ... jul-ago    retrato ............ jul
+// Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
+// rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
+const NEG_ATUALIZACAO = '11/08/2026';
+const NEG_RETRATO = {
+  'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
+             inadTotal:931, atrasoTotal:602186}
+};
+
+function negMesesDoRecorte(idx){
+  return (idx && idx.length ? idx : NEGOCIACOES.map((_,i)=>i)).map(i=>NEGOCIACOES[i].mes);
+}
+function negUltimoCom(meses, obj){
+  for(let i=meses.length-1;i>=0;i--) if(obj[meses[i]] != null) return meses[i];
+  return null;
+}
+
+// ── SEÇÃO 1 ──
+function renderNegSecao1(meses){
+  const kEl=document.getElementById('negKpis1'); if(!kEl) return;
+  const mEst = negUltimoCom(meses, NEG_ESTOQUE);
+  const mapaPct = {}; NEGOCIACOES.forEach((n,i)=>{ const d=INADIMPLENCIA[i]; if(d && d.real!=null) mapaPct[n.mes]=d.real; });
+  const mPct = negUltimoCom(meses, mapaPct);
+  const mRet = negUltimoCom(meses, NEG_RETRATO);
+
+  const kpi=(rot,val,meta,cor)=>`<div class="card">
+    <div class="card-label" style="min-height:30px;">${rot}</div>
+    <div class="card-value" style="${val==null?'color:var(--muted);':(cor?`color:${cor};`:'')} white-space:nowrap;">${val==null?'—':val}</div>
+    <div class="card-meta">${meta}</div></div>`;
+
+  kEl.innerHTML =
+    kpi('Dívida em aberto', mEst?fmtBRL0(NEG_ESTOQUE[mEst]):null,
+        mEst?`estoque na abertura de ${mEst}`:'sem estoque em R$ neste período','var(--gold)') +
+    kpi('Inadimplência', mPct?fmtPct(mapaPct[mPct]):null,
+        mPct?(()=>{ const i=NEGOCIACOES.findIndex(x=>x.mes===mPct); const d=INADIMPLENCIA[i];
+              return d && d.meta!=null
+                ? `${mPct} · meta ${fmtPct(d.meta)} · gap ${(d.real-d.meta)>=0?'+':''}${(d.real-d.meta).toFixed(1).replace('.',',')} p.p.`
+                : `taxa de ${mPct} · meta não definida`; })()
+            :'sem taxa apurada neste período','var(--red)') +
+    kpi('Ticket médio da dívida', mRet?fmtBRL0(NEG_RETRATO[mRet].ticket):null,
+        mRet?`por inadimplente · ${mRet}`:'retrato só existe em jul/26') +
+    kpi('Inadimplentes', mRet?NEG_RETRATO[mRet].inad:null,
+        mRet?`de ${NEG_RETRATO[mRet].tit.toLocaleString('pt-BR')} pagantes · ${mRet}`:'retrato só existe em jul/26');
+
+  // moedas — a proporção do faturamento que não entra
+  const moeda=(cx,on)=> on
+    ? `<g><circle cx="${cx}" cy="34" r="21" fill="rgba(232,25,44,.14)" stroke="#e8192c" stroke-width="2.4"/><text x="${cx}" y="41" text-anchor="middle" fill="#ff6b7a" font-size="16" font-weight="900">R$</text></g>`
+    : `<g><circle cx="${cx}" cy="34" r="21" fill="rgba(0,229,160,.08)" stroke="#3f6b60" stroke-width="2"/><text x="${cx}" y="41" text-anchor="middle" fill="#5f8f83" font-size="16" font-weight="800">R$</text></g>`;
+  const card=document.getElementById('negCardMoedas'), flag=document.getElementById('negFlagMoedas');
+  if(mRet){
+    const R=NEG_RETRATO[mRet], p=R.atraso/R.gerado*100, n=Math.max(1,Math.round(p/20));
+    card.style.borderColor='rgba(232,25,44,.3)';
+    flag.textContent=mRet; flag.className='neg-flag foto';
+    document.getElementById('negMoedasBox').innerHTML=`<div class="neg-moedas">
+      <svg viewBox="0 0 300 68">${[0,1,2,3,4].map(i=>moeda(30+i*60, i<n)).join('')}</svg>
+      <div class="txt">
+        <div class="frase"><b style="color:#ff6b7a">R$ 1 de cada R$ 5</b> faturados em ${mRet} não entrou no caixa</div>
+        <div class="det">${fmtBRL0(R.atraso)} em atraso sobre ${fmtBRL0(R.gerado)} gerados no mês · ${fmtPct(p)}</div>
+      </div></div>`;
+  } else {
+    card.style.borderColor='var(--border)';
+    flag.textContent='SEM DADO'; flag.className='neg-flag';
+    document.getElementById('negMoedasBox').innerHTML=`<div class="neg-moedas">
+      <svg viewBox="0 0 300 68" style="opacity:.3">${[0,1,2,3,4].map(i=>moeda(30+i*60,false)).join('')}</svg>
+      <div class="txt"><div class="frase" style="font-size:14.5px; color:var(--muted);">Sem retrato de inadimplência neste período</div>
+      <div class="det">O retrato em R$ existe apenas para jul/26. Ao filtrar outro mês, o card não repete julho — mostra que não há dado.</div></div></div>`;
+  }
+
+  document.getElementById('negNotaRecorte').innerHTML = mRet
+    ? `Os números acima são de <b>titulares pagantes</b>. Somando categorias isentas e não sócios, são
+       <b>${NEG_RETRATO[mRet].inadTotal} inadimplentes e ${fmtBRL0(NEG_RETRATO[mRet].atrasoTotal)}</b> —
+       mais ${NEG_RETRATO[mRet].inadTotal-NEG_RETRATO[mRet].inad} pessoas e 27% de dívida fora deste recorte.`
+    : `A cobertura em R$ da inadimplência começa em <b>jul/26</b>. Meses anteriores têm apenas a taxa percentual.`;
+}
+
+// ── SEÇÃO 2: ritmo do mês e produtividade ──
+function renderNegRitmo(meses){
+  const box=document.getElementById('negRitmoBox'); if(!box) return;
+  const card=document.getElementById('negCardRitmo'), flag=document.getElementById('negFlagRitmo');
+  // o mês em curso é o último do recorte que tem faixa mas não está fechado
+  const noRec = NEG_FAIXAS.filter(p=>meses.indexOf(p.mes)>=0);
+  const curso = noRec.filter(p=>!p.fechado).slice(-1)[0];
+  const base  = NEG_FAIXAS.filter(p=>p.fechado && NEG_FAIXAS.indexOf(p) < NEG_FAIXAS.indexOf(curso||{})).slice(-1)[0];
+  if(!curso || !base){
+    card.style.display='none'; return;
+  }
+  card.style.display='';
+  flag.textContent=curso.label.toUpperCase()+' EM CURSO'; flag.className='neg-flag';
+  // aplica a taxa de cada faixa do mês fechado à abertura do mês em curso
+  const esperado = curso.faixas.reduce((t,f,i)=>{
+    const b=base.faixas[i]; return t + f.abertura * (b.rec/b.abertura);
+  },0);
+  const pct = curso.totRec/esperado*100;
+  box.innerHTML=`<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+      <div class="card"><div class="card-label">Esperado ao fechar</div>
+        <div class="card-value" style="color:var(--gold)">${fmtBRL0(esperado)}</div>
+        <div class="card-meta">taxas de ${base.label.toLowerCase()} aplicadas a cada faixa</div></div>
+      <div class="card"><div class="card-label">Realizado até agora</div>
+        <div class="card-value" style="color:#3d7bff">${fmtBRL0(curso.totRec)}</div>
+        <div class="card-meta">${fmtPct(pct)} do esperado</div></div>
+      <div class="card"><div class="card-label">Falta para o ritmo</div>
+        <div class="card-value" style="color:var(--muted)">${fmtBRL0(Math.max(0,esperado-curso.totRec))}</div>
+        <div class="card-meta">para igualar ${base.label.toLowerCase()}</div></div>
+    </div>
+    <div class="neg-prog"><div class="fill" style="width:${Math.min(100,pct).toFixed(1)}%">${fmtPct(pct)}</div></div>
+    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:5px;">
+      <span>R$ 0</span><span style="color:var(--gold)">alvo ${fmtBRL0(esperado)}</span></div>`;
+}
+
+function renderNegProdutividade(meses){
+  const el=document.getElementById('negProdChart'); if(!el) return;
+  const card=document.getElementById('negCardProd');
+  const dados = NEGOCIACOES.filter(n=>meses.indexOf(n.mes)>=0 && n.contatos!=null && n.valor!=null)
+                           .map(n=>({mes:n.mes, v:n.valor/n.contatos, ct:n.contatos}));
+  if(dados.length<2){ card.style.display='none'; return; }
+  card.style.display='';
+  // base pequena distorce: março teve 37 disparos e R$ 639/contato
+  dados.forEach(d=>{ d.fraco = d.ct < 100; });
+  const W=880,H=214,L=52,R=22,T=30,B=48, pw=W-L-R, ph=H-T-B;
+  const max=Math.max(...dados.map(d=>d.v))*1.2;
+  const y=v=>T+ph-(v/max*ph);
+  const band=pw/dados.length, bw=Math.min(56,band*0.4), cx=i=>L+band*i+band/2;
+  let g='',b='',e='';
+  const passo = max>500?200:100;
+  for(let v=0; v<=max; v+=passo)
+    g+=`<line x1="${L}" y1="${y(v)}" x2="${L+pw}" y2="${y(v)}" stroke="#40415a" stroke-width="1" opacity="${v===0?'.8':'.25'}"/>`+
+       `<text x="${L-9}" y="${y(v)+4}" text-anchor="end" fill="#6d6f8e" font-size="10">${v}</text>`;
+  dados.forEach((d,i)=>{
+    const yy=y(d.v), cor=d.fraco?'#4a4c68':'#3d7bff';
+    b+=`<rect x="${cx(i)-bw/2}" y="${yy}" width="${bw}" height="${(T+ph)-yy}" fill="${cor}" rx="3"><title>${d.mes} · ${fmtBRL0(d.v)} por pessoa contatada · ${d.ct} pessoas</title></rect>`;
+    b+=`<text x="${cx(i)}" y="${yy-7}" text-anchor="middle" fill="${d.fraco?'#7c7e9c':'#6f9dff'}" font-size="11.5" font-weight="800">${fmtBRL0(d.v)}</text>`;
+    e+=`<text x="${cx(i)}" y="${T+ph+19}" text-anchor="middle" fill="${d.fraco?'#6d6f8e':'#dfe2f0'}" font-size="11.5" font-weight="700">${d.mes}</text>`;
+    e+=`<text x="${cx(i)}" y="${T+ph+33}" text-anchor="middle" fill="#6d6f8e" font-size="10">${d.ct} pessoas${d.fraco?' · base pequena':''}</text>`;
+  });
+  el.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:100%; max-width:${W}px; height:auto;">${g}${b}${e}</svg>`;
+  const fortes=dados.filter(d=>!d.fraco);
+  document.getElementById('negProdNota').innerHTML = fortes.length>1
+    ? `A equipe multiplicou por <b style="color:var(--green)">${(fortes[fortes.length-1].v/fortes[0].v).toFixed(1).replace('.',',')}</b> o retorno por pessoa contatada entre ${fortes[0].mes} e ${fortes[fortes.length-1].mes}, enquanto ampliava o alcance de ${fortes[0].ct} para ${fortes[fortes.length-1].ct} pessoas. Ganhou escala e eficiência ao mesmo tempo.`
+    : `Meses com menos de 100 pessoas contatadas aparecem em cinza: a base é pequena demais para servir de referência.`;
+}
+
+// ── SEÇÃO 3: nota do cemitério ──
+function renderNegCemiterio(meses){
+  const box=document.getElementById('negCemiterioBox'); if(!box) return;
+  const noRec=NEG_FAIXAS.filter(p=>meses.indexOf(p.mes)>=0);
+  if(noRec.length<2){ box.style.display='none'; return; }
+  const a=noRec[noRec.length-2], b=noRec[noRec.length-1];
+  const fa=a.faixas[3], fb=b.faixas[3];
+  const cresc=(fb.abertura-fa.abertura)/fa.abertura*100;
+  const passo=fb.abertura-fa.abertura;
+  box.style.display='';
+  document.getElementById('negCemiterio').innerHTML =
+    `<b>A dívida fora da faixa subiu ${fmtPct(cresc)} em um mês</b> — de ${fmtBRL0(fa.abertura)} para
+     ${fmtBRL0(fb.abertura)} — e é a que menos volta: <b>${fmtPct(fa.rec/fa.abertura*100)}</b> de
+     recuperação contra ${fmtPct(a.faixas[0].rec/a.faixas[0].abertura*100)} na faixa 1. Cada mês sem
+     acordo empurra o débito para cá e a chance de recuperar despenca. Nesse ritmo, fecha o ano em torno
+     de <b>${fmtBRL0(fb.abertura+passo*4)}</b> parados — dinheiro que existe no papel e não no caixa.`;
+}
+
+// ── SEÇÃO 4: a esteira ──
+function renderNegEsteira(meses){
+  const box=document.getElementById('negEsteiraBox'); if(!box) return;
+  const card=document.getElementById('negCardEsteira');
+  const noRec=NEG_FAIXAS.filter(p=>meses.indexOf(p.mes)>=0);
+  if(noRec.length<2){
+    card.style.display='';
+    box.innerHTML=`<div class="card-meta">Para medir a esteira preciso de <b>dois meses consecutivos</b> com quebra por faixa no recorte — a dívida nova de um mês é a abertura dele menos o que sobrou do anterior. Hoje só a passagem <b>jul → ago</b> é calculável. Filtre um intervalo que inclua os dois.</div>`;
+    return;
+  }
+  card.style.display='';
+  const a=noRec[noRec.length-2], b=noRec[noRec.length-1];
+  const sobrou=a.base-a.totRec, nova=b.base-sobrou, saldo=nova-a.totRec;
+  const razao=nova/a.totRec*100;
+  box.innerHTML=`<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+      <div class="card"><div class="card-label">Recuperado em ${a.label.split('/')[0].toLowerCase()}</div>
+        <div class="card-value" style="color:var(--green)">${fmtBRL0(a.totRec)}</div>
+        <div class="card-meta">${fmtPct(a.totRec/a.base*100)} da dívida de abertura</div></div>
+      <div class="card"><div class="card-label">Dívida nova em ${b.label.split('/')[0].toLowerCase()}</div>
+        <div class="card-value" style="color:var(--red)">${fmtBRL0(nova)}</div>
+        <div class="card-meta">associados que pararam de pagar</div></div>
+      <div class="card"><div class="card-label">Saldo</div>
+        <div class="card-value" style="color:var(--gold)">${saldo>=0?'+':''}${fmtBRL0(saldo)}</div>
+        <div class="card-meta">a dívida ${saldo>=0?'cresceu':'caiu'}, apesar da recuperação</div></div>
+    </div>
+    <div class="card-meta" style="margin-top:12px;">
+      <b style="color:#fff;">Para cada R$ 100 que a equipe recupera, entram R$ ${Math.round(razao)} de dívida nova.</b>
+      As duas contas fecham: ${fmtBRL0(nova)} − ${fmtBRL0(a.totRec)} = ${fmtBRL0(saldo)}, e a dívida foi de
+      ${fmtBRL0(a.base)} para ${fmtBRL0(b.base)} — a mesma diferença.
+    </div>
+    <div class="alert-box" style="border-color:var(--gold); margin-top:14px;"><span>📌</span>
+      <div><b>A conclusão de gestão.</b> A cobrança recupera <b>${fmtPct(a.totRec/a.base*100)} do estoque</b>
+      no mês — desempenho alto. O problema não está nela: está na <b>entrada</b>. Enquanto nascerem
+      ${fmtBRL0(nova)} de dívida nova por mês, nenhuma equipe de negociação zera esse saldo. A pergunta
+      que sobra — por que os associados param de pagar — é de retenção, não de cobrança.<br>
+      <span style="color:#c9b06a;">Uma medição só. Com o próximo fechamento dá para dizer se a esteira acelera ou estabiliza.</span></div>
+    </div>`;
+}
+
+// ── COBERTURA E ORIGEM ──
+const NEG_COBERTURA=[
+  {bloco:'Recuperado por mês',    tem:m=>{const n=NEGOCIACOES.find(x=>x.mes===m); return !!(n&&n.valor!=null);},
+   fonte:'Gestora (mar-jun) + Cobrança (jul-ago)', obs:''},
+  {bloco:'Contatos (pessoas)',     tem:m=>{const n=NEGOCIACOES.find(x=>x.mes===m); return !!(n&&n.contatos!=null);},
+   fonte:'Sec. Adm.', obs:'ago ainda em contagem'},
+  {bloco:'Inadimplência (%)',     tem:m=>{const i=NEGOCIACOES.findIndex(x=>x.mes===m); return i>=0 && INADIMPLENCIA[i] && INADIMPLENCIA[i].real!=null;},
+   fonte:'Painel Institucional', obs:'ago fecha no início de setembro'},
+  {bloco:'Dívida em aberto (R$)', tem:m=>NEG_ESTOQUE[m]!=null,
+   fonte:'Cobrança — tabelas por faixa', obs:'série começa em jul/26'},
+  {bloco:'Quebra por faixa',      tem:m=>NEG_FAIXAS.some(p=>p.mes===m),
+   fonte:'Cobrança — tabelas por faixa', obs:'série começa em jul/26'},
+  {bloco:'Retrato (ticket, nº)',  tem:m=>NEG_RETRATO[m]!=null,
+   fonte:'Painel Institucional', obs:'só jul/26 recebido'},
+];
+function renderNegCobertura(meses){
+  const el=document.getElementById('negTabCobertura'); if(!el) return;
+  const todos=NEGOCIACOES.map(n=>n.mes);
+  let linhas='';
+  NEG_COBERTURA.forEach(c=>{
+    const tem=todos.filter(c.tem);
+    const periodo = tem.length ? (tem.length===1 ? tem[0] : `${tem[0].split('/')[0]} a ${tem[tem.length-1]}`) : '—';
+    const falta = meses.filter(m=>!c.tem(m)).map(m=>m.split('/')[0]);
+    let cor, sit;
+    if(!falta.length){ cor='#00e5a0'; sit='Cobre todo o período filtrado'; }
+    else if(falta.length===meses.length){ cor='#ff6b6b'; sit='Sem dado no período filtrado'; }
+    else { cor='#f2b705'; sit='Falta '+falta.join(', '); }
+    linhas+=`<tr><td style="white-space:nowrap;"><b>${c.bloco}</b></td>
+      <td style="white-space:nowrap;">${periodo}</td>
+      <td style="white-space:nowrap;"><span class="dot" style="background:${cor}; margin-right:7px;"></span><span style="color:${cor};">${sit}</span></td>
+      <td class="muted" style="font-size:12.5px; white-space:nowrap;">${c.fonte}${c.obs?`<br><span style="color:#c9a13e;">${c.obs}</span>`:''}</td></tr>`;
+  });
+  const completos=todos.filter(m=>NEG_COBERTURA.every(c=>c.tem(m)));
+  el.innerHTML=`<thead><tr><th>Bloco</th><th>Período coberto</th><th>Situação no filtro</th><th>Origem</th></tr></thead>
+    <tbody>${linhas}</tbody>
+    <tfoot><tr><td colspan="4" class="muted" style="font-size:12.5px; border-top:1px solid var(--border);">
+      Mês com cobertura completa: <b style="color:#00e5a0;">${completos.join(', ')||'nenhum'}</b> —
+      filtrando ele, todos os blocos desta aba respondem.</td></tr></tfoot>`;
+}
+
+function renderNegAnalises(idxVisiveis){
+  const meses = negMesesDoRecorte(idxVisiveis);
+  try{ renderNegSecao1(meses); }catch(e){ _log.warn('negSecao1: '+e.message); }
+  try{ renderNegRitmo(meses); }catch(e){ _log.warn('negRitmo: '+e.message); }
+  try{ renderNegProdutividade(meses); }catch(e){ _log.warn('negProd: '+e.message); }
+  try{ renderNegCemiterio(meses); }catch(e){ _log.warn('negCemiterio: '+e.message); }
+  try{ renderNegEsteira(meses); }catch(e){ _log.warn('negEsteira: '+e.message); }
+  try{ renderNegCobertura(meses); }catch(e){ _log.warn('negCobertura: '+e.message); }
+}
+
+// pfx permite renderizar o MESMO gráfico em dois lugares: 'neg' na aba de
+// Negociação e 'vg' na Visão Geral. Sem isso a Visão Geral ficaria com uma cópia
+// do código, que é como ela acabou exibindo um gráfico já aposentado.
+function renderNegFaixas(meses, pfx){
+  pfx = pfx || 'neg';
+  const kEl=document.getElementById(pfx+'FaixaKpis'), cEl=document.getElementById(pfx+'FaixaChart');
+  const lEl=document.getElementById(pfx+'FaixaLegenda'), nEl=document.getElementById(pfx+'FaixaNota');
+  if(!kEl||!cEl) return;
+  // REGRA DE ESTOQUE: as faixas vêm do ÚLTIMO mês do recorte. Somar as aberturas
+  // de meses seguidos contaria a mesma dívida duas vezes — o saldo não pago só
+  // muda de faixa. Já o recuperado SOMA o intervalo, porque é fluxo.
+  // REGRA DE ESTOQUE (14/08): TODOS os quatro cards passam a refletir o ÚLTIMO mês
+  // do recorte, inclusive o "Recuperado". Antes ele somava o intervalo (fluxo) e os
+  // outros três mostravam estoque — filtrando jul-ago aparecia R$ 548.715 no card
+  // enquanto o gráfico mostrava R$ 146.346 de agosto. Agora card e gráfico saem do
+  // mesmo mês, sempre.
+  const noRecorte = NEG_FAIXAS.filter(p=>!meses || !meses.length || meses.indexOf(p.mes)>=0);
+  // Sem tabela no recorte, cai para o ÚLTIMO mês disponível — e só ele. Somar a
+  // série inteira aqui faria o card "Recuperado" mostrar dois meses como se
+  // fossem do período filtrado.
+  const fallback = noRecorte.length === 0;
+  const usados = fallback ? NEG_FAIXAS.slice(-1) : noRecorte;
+  const p = usados[usados.length-1];
+  const recSomado = p.totRec;   // estoque: o mês exibido no gráfico, não a soma
+  const CORES=['#00e5a0','#00e5a0','#00e5a0','#00e5a0'];
+
+  kEl.innerHTML =
+    cardKpi('Inadimplência na abertura', fmtBRL0(p.base), `estoque no início de ${p.label.toLowerCase()}`) +
+    cardKpi('Recuperado', fmtBRL0(recSomado), `recuperado em ${p.label.toLowerCase()}`, '#00e5a0') +
+    cardKpi('Em aberto', fmtBRL0(p.totAb), 'envelhece uma faixa no mês seguinte', '#9b86ff') +
+    cardKpi('Taxa de recuperação', fmtPct(p.totRec/p.base*100), `recuperado ÷ abertura · dados de ${NEG_ATUALIZACAO}`, '#f2b705');
+
+  const cols=[...p.faixas.map(f=>({...f, tot:f.abertura})),
+    {fx:'TOTAL', idade:'todas as faixas', ref:'', abertura:p.base, rec:p.totRec, ab:p.totAb, tot:p.base, total:true}];
+  const anteriores = NEG_FAIXAS.filter(x=>x.mes!==p.mes && NEG_FAIXAS.indexOf(x)<NEG_FAIXAS.indexOf(p));
+  const comps = anteriores.slice(-1).map(q=>({id:'cmp_'+q.mes, label:'Recuperado '+q.label.split('/')[0],
+    cor:'#ffd32a', pcts:[...q.faixas.map(f=>f.rec/f.abertura*100), q.totRec/q.base*100]}));
+
+  const W=880,H=372,L=52,R=22,T=44,B=64, pw=W-L-R, ph=H-T-B;
+  const y=v=>T+ph-(v/100*ph);
+  const band=pw/cols.length, bw=Math.min(72, band*0.52), cx=i=>L+band*i+band/2;
+
+  let g='';
+  for(let v=0; v<=100; v+=20)
+    g+=`<line x1="${L}" y1="${y(v)}" x2="${L+pw}" y2="${y(v)}" stroke="#40415a" stroke-width="1" opacity="${v===0?'.85':'.4'}"/>`+
+       `<text x="${L-9}" y="${y(v)+4}" text-anchor="end" fill="#75779a" font-size="10.5">${v}%</text>`;
+
+  let barras='', eixo='';
+  cols.forEach((c,i)=>{
+    const pr=c.rec/c.tot*100, hRec=pr/100*ph, hAb=ph-hRec, x=cx(i)-bw/2;
+    const cRec=c.total?'#f2b705':'#00e5a0', cAb=c.total?'rgba(242,183,5,.20)':'#6d4fe0';
+    barras+=`<rect x="${x}" y="${T}" width="${bw}" height="${hAb}" fill="${cAb}" rx="3"><title>${c.fx} · em aberto ${fmtBRL0(c.ab)}</title></rect>`+
+            `<rect x="${x}" y="${T+hAb}" width="${bw}" height="${hRec}" fill="${cRec}" rx="3"><title>${c.fx} · recuperado ${fmtBRL0(c.rec)}</title></rect>`;
+    if(hAb>30) barras+=`<text x="${cx(i)}" y="${T+19}" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">${Math.round(c.ab).toLocaleString('pt-BR')}</text>`;
+    barras+= hRec>26
+      ? `<text x="${cx(i)}" y="${T+hAb+hRec/2+4}" text-anchor="middle" fill="${c.total?'#3a2c00':'#00352a'}" font-size="12" font-weight="800">${Math.round(c.rec).toLocaleString('pt-BR')}</text>`
+      : `<text x="${cx(i)}" y="${T+ph+16}" text-anchor="middle" fill="${cRec}" font-size="12" font-weight="800">${Math.round(c.rec).toLocaleString('pt-BR')}</text>`;
+    barras+=`<text x="${cx(i)}" y="${T-12}" text-anchor="middle" fill="${c.total?'#f2b705':'#00e5a0'}" font-size="13.5" font-weight="900">${fmtPct(pr)}</text>`;
+    eixo+=`<text x="${cx(i)}" y="${T+ph+36}" text-anchor="middle" fill="${c.total?'#f2b705':'#dfe2f0'}" font-size="12.5" font-weight="800">${c.fx}</text>`+
+          `<text x="${cx(i)}" y="${T+ph+52}" text-anchor="middle" fill="#75779a" font-size="10.5">${c.idade}${c.ref?' · '+c.ref:''}</text>`;
+  });
+  const xDiv=L+band*(cols.length-1);
+  eixo=`<line x1="${xDiv}" y1="${T-6}" x2="${xDiv}" y2="${T+ph+6}" stroke="#40415a" stroke-dasharray="3,3"/>`+eixo;
+
+  let linhas='';
+  comps.forEach(cm=>{
+    const pts=cm.pcts.map((v,i)=>`${cx(i)},${y(v)}`).join(' ');
+    linhas+=`<g data-sf="${cm.id}" style="transition:opacity .25s;">
+      <polyline points="${pts}" fill="none" stroke="${cm.cor}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      ${cm.pcts.map((v,i)=>`<circle cx="${cx(i)}" cy="${y(v)}" r="4.2" fill="#13151d" stroke="${cm.cor}" stroke-width="2.2"><title>${cm.label}: ${fmtPct(v)}</title></circle>`).join('')}</g>`;
+  });
+
+  cEl.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:100%; max-width:${W}px; height:auto;">
+    ${g}<g data-sf="barras" style="transition:opacity .25s;">${barras}</g>${linhas}${eixo}</svg>`;
+
+  lEl.innerHTML =
+    `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#00e5a0"></span>Recuperado — <b>${fmtBRL0(p.totRec)}</b></div>`+
+    `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#6d4fe0"></span>Em aberto — <b>${fmtBRL0(p.totAb)}</b></div>`+
+    comps.map(cm=>`<div class="legend-btn" data-sf="${cm.id}" onclick="acenderFaixa('${cm.id}')"><span class="dot" style="background:${cm.cor}"></span>${cm.label}</div>`).join('');
+
+  if(!nEl) return;   // a Visão Geral não tem o bloco de notas — só cards, gráfico e legenda
+  nEl.innerHTML =
+    (fallback ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>🔎</span><div><b>O período filtrado ainda não tem tabela por faixa.</b> A quebra por faixa começa em julho/26 — exibindo ${p.label}.</div></div>` : '') +
+    (usados.length>1 ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>📐</span><div><b>Intervalo selecionado.</b> Os cards e as colunas mostram <b>${p.label}</b>, o último mês do período. É regra de estoque: somar meses contaria a mesma dívida mais de uma vez, porque o saldo não pago apenas muda de faixa no mês seguinte.</div></div>` : '') +
+    `<div class="card-meta" style="margin-top:10px;">A taxa cai de <b style="color:#00e5a0">${fmtPct(p.faixas[0].rec/p.faixas[0].abertura*100)}</b> na faixa 1 para <b style="color:#9b86ff">${fmtPct(p.faixas[3].rec/p.faixas[3].abertura*100)}</b> fora da faixa: cada mês que o débito atravessa sem acordo reduz muito a chance de voltar.</div>`;
+  if(_negFaixaAceso) acenderFaixa(_negFaixaAceso), acenderFaixa(_negFaixaAceso);
 }
 
 function drawNegInadInteractive(chartElId, legendElId, detailElId, idxVisiveis){
@@ -2803,12 +3380,16 @@ function drawNegInadInteractive(chartElId, legendElId, detailElId, idxVisiveis){
   const totalPeriodo = dados.reduce((s,x)=>s+(x.valor||0), 0);
   const mesesApurados = dados.filter(x=>x.valor!=null).map(x=>x.mes);
 
-  const W = 860, H = 320, padL=64, padR=60, padT=34, padB=36;
-  const maxV = Math.max(Math.max.apply(null, dados.map(n=>n.valor||0)), totalPeriodo)*1.15;
+  // duas colunas de resumo à direita: TOTAL recuperado e ESTOQUE de inadimplência.
+  // Declarado aqui porque maxV precisa dele para a escala caber o estoque.
+  const estoque = estoqueDoRecorte(dados.map(d=>d.mes));
+  const W = 920, H = 336, padL=64, padR=30, padT=34, padB=50;
+  const maxV = Math.max(Math.max.apply(null, dados.map(n=>n.valor||0)), totalPeriodo,
+                        estoque ? estoque.valor : 0)*1.15;
   const maxC = Math.max.apply(null, NEGOCIACOES.filter(n=>n.contatos!=null).map(n=>n.contatos))*1.25;
   const maxP = Math.max.apply(null, INADIMPLENCIA.filter(d=>d.real!=null).map(d=>Math.max(d.real,d.meta)))*1.3;
   const n = dados.length;
-  const nCols = n + 1;                       // +1 para a coluna TOTAL
+  const nCols = n + 1;
   const bw = (W-padL-padR)/nCols;
   const cxAt = i => padL + i*bw + bw/2;
   const yV = v => padT + (1-v/maxV)*(H-padT-padB);
@@ -2819,49 +3400,78 @@ function drawNegInadInteractive(chartElId, legendElId, detailElId, idxVisiveis){
   dados.forEach((nItem,k)=>{
     const cx = cxAt(k), barW = bw*0.4;
     if(nItem.valor == null){   // mês sem apuração de recuperação: só rótulo do eixo
-      labels += `<text x="${cx}" y="${H-12}" text-anchor="middle" fill="#b0b0d0" font-size="13">${nItem.mes}</text>`;
-      const dNull = inad[k];
-      if(dNull && dNull.real != null){
-        const pyN = yP(dNull.real);
-        dotsReal += `<circle cx="${cx.toFixed(1)}" cy="${pyN.toFixed(1)}" r="5.5" fill="#ff8a3d" stroke="#13151d" stroke-width="1.5"><title>${dNull.mes} · Inadimplência Real: ${fmtPct(dNull.real)}</title></circle>`;
-        lineReal += (lineReal===''?'M':'L') + ` ${cx.toFixed(1)} ${pyN.toFixed(1)}`;
-      }
+      labels += `<text x="${cx}" y="${H-20}" text-anchor="middle" fill="#b0b0d0" font-size="13">${nItem.mes}</text>`;
       return;
     }
     const barH = (H-padT-padB) - (yV(nItem.valor)-padT);
     bars += `<rect x="${(cx-barW/2).toFixed(1)}" y="${yV(nItem.valor).toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#3d7bff" rx="3"><title>${nItem.mes} · Valor Recuperado no mês: ${fmtBRL0(nItem.valor)}</title></rect>`;
     bars += `<text x="${cx}" y="${yV(nItem.valor)-8}" text-anchor="middle" fill="#3d7bff" font-size="13" font-weight="800">${fmtBRL0(nItem.valor)}</text>`;
-    labels += `<text x="${cx}" y="${H-12}" text-anchor="middle" fill="#b0b0d0" font-size="13">${nItem.mes}</text>`;
+    labels += `<text x="${cx}" y="${H-20}" text-anchor="middle" fill="#b0b0d0" font-size="13">${nItem.mes}</text>`;
 
 
     const d = inad[k];
     if(nItem.contatos != null){
       const pyC = yC(nItem.contatos);
-      dotsContatos += `<circle cx="${cx.toFixed(1)}" cy="${pyC.toFixed(1)}" r="5" fill="#00e5a0" stroke="#13151d" stroke-width="1.5"><title>${nItem.mes} · Contatos Enviados: ${nItem.contatos}</title></circle>`;
+      dotsContatos += `<circle cx="${cx.toFixed(1)}" cy="${pyC.toFixed(1)}" r="5.5" fill="#00e5a0" stroke="#13151d" stroke-width="1.5"><title>${nItem.mes} · Contatos Enviados: ${nItem.contatos}</title></circle>`;
+      // O número em cada ponto: sem ele a linha era só um pontilhado sem
+      // significado visível, e passava despercebida ao lado das barras rotuladas.
+      dotsContatos += `<text x="${cx.toFixed(1)}" y="${(pyC-13).toFixed(1)}" text-anchor="middle" fill="#00e5a0" font-size="11.5" font-weight="800">${nItem.contatos}</text>`;
       lineContatos += (lineContatos===''?'M':'L') + ` ${cx.toFixed(1)} ${pyC.toFixed(1)}`;
-    }
-    if(d.real != null){
-      const pyR = yP(d.real);
-      dotsReal += `<circle cx="${cx.toFixed(1)}" cy="${pyR.toFixed(1)}" r="5.5" fill="#ff8a3d" stroke="#13151d" stroke-width="1.5"><title>${d.mes} · Inadimplência Real: ${fmtPct(d.real)}</title></circle>`;
-      lineReal += (lineReal===''?'M':'L') + ` ${cx.toFixed(1)} ${pyR.toFixed(1)}`;
+    } else {
+      // Mês sem contatos informados: marca vazada, para ficar claro que é dado
+      // que não chegou, e não zero contatos.
+      // a marca fica na altura do ÚLTIMO mês com contagem, não no zero: no zero
+      // ela caía dentro da barra do mês e o texto ficava ilegível.
+      const ultC = idx.map(i=>NEGOCIACOES[i]).filter(x=>x.contatos!=null).slice(-1)[0];
+      const yVaga = yC(ultC ? ultC.contatos : 0);
+      dotsContatos += `<circle cx="${cx.toFixed(1)}" cy="${yVaga.toFixed(1)}" r="4.5" fill="none" stroke="#00e5a0" stroke-width="1.6" stroke-dasharray="2,2" opacity=".6"><title>${nItem.mes} · contatos ainda não informados</title></circle>`;
+      dotsContatos += `<text x="${cx.toFixed(1)}" y="${(yVaga-13).toFixed(1)}" text-anchor="middle" fill="#6d8f84" font-size="10">sem contagem</text>`;
     }
   });
 
   // ── coluna TOTAL do período ──
+  // ORDEM (13/08): meses · TOTAL recuperado · INADIMPLÊNCIA por último.
+  // A inadimplência é o número âncora — o tamanho da dívida contra o qual se lê
+  // todo o resto — então fica na ponta e recebe o dourado. O TOTAL passou a azul
+  // fechado porque é a MESMA métrica das barras azuis, apenas somada; dourado
+  // nele fazia parecer outra coisa e já confundiu na leitura do diretor.
   const cxT = cxAt(n), barWT = bw*0.52;
   const yT = yV(totalPeriodo), barHT = (H-padT-padB) - (yT-padT);
   const xDiv = padL + n*bw;
   let totalCol = `<line x1="${xDiv.toFixed(1)}" y1="${padT-6}" x2="${xDiv.toFixed(1)}" y2="${H-padB}" stroke="#40415a" stroke-dasharray="3,3"/>`;
-  totalCol += `<rect x="${(cxT-barWT/2).toFixed(1)}" y="${yT.toFixed(1)}" width="${barWT.toFixed(1)}" height="${barHT.toFixed(1)}" fill="#f2b705" rx="3" opacity="0.92"><title>Total recuperado no período (${mesesApurados.join(', ')}): ${fmtBRL0(totalPeriodo)}</title></rect>`;
-  totalCol += `<text x="${cxT}" y="${(yT-8).toFixed(1)}" text-anchor="middle" fill="#f2b705" font-size="15" font-weight="900">${fmtBRL0(totalPeriodo)}</text>`;
-  totalCol += `<text x="${cxT}" y="${H-12}" text-anchor="middle" fill="#f2b705" font-size="12.5" font-weight="800" letter-spacing="0.5">TOTAL</text>`;
+  totalCol += `<rect x="${(cxT-barWT/2).toFixed(1)}" y="${yT.toFixed(1)}" width="${barWT.toFixed(1)}" height="${barHT.toFixed(1)}" fill="#1f4fbf" rx="3"><title>Total recuperado no período (${mesesApurados.join(', ')}): ${fmtBRL0(totalPeriodo)}</title></rect>`;
+  totalCol += `<text x="${cxT}" y="${(yT-8).toFixed(1)}" text-anchor="middle" fill="#6f9dff" font-size="15" font-weight="900">${fmtBRL0(totalPeriodo)}</text>`;
+  totalCol += `<text x="${cxT}" y="${H-20}" text-anchor="middle" fill="#6f9dff" font-size="12.5" font-weight="800" letter-spacing="0.3">RECUPERADO</text>`;
+  totalCol += `<text x="${cxT}" y="${H-6}" text-anchor="middle" fill="#75779a" font-size="10">soma de ${mesesApurados.length} ${mesesApurados.length===1?'mês':'meses'}</text>`;
+
+  // ── coluna do ESTOQUE DE INADIMPLÊNCIA ──
+  // Substitui a antiga linha de inadimplência %, que só dava a taxa. Aqui é o
+  // saldo em R$, o mesmo valor da abertura no gráfico por faixa logo abaixo.
+  // Regra de estoque: num intervalo, mostra o ÚLTIMO mês com dado — somar as
+  // aberturas contaria a mesma dívida mais de uma vez, porque o saldo não pago
+  // apenas muda de faixa no mês seguinte.
+  // BARRA DE INADIMPLÊNCIA REMOVIDA EM 13/08 (fim do dia).
+  // Ela media ESTOQUE (dívida num instante) e ficava ao lado de barras de FLUXO
+  // (recuperado no mês). Lado a lado, na mesma escala, convidava a comparar o
+  // que não se compara — e foi o que aconteceu na leitura do diretor. O estoque
+  // agora vive só no gráfico por faixa, onde tem contexto. NEG_ESTOQUE segue
+  // alimentando aquele gráfico e a trava de totais; só a barra saiu daqui.
+  let inadCol = '';
+  if(false && estoque){
+    const cxI = cxAt(n+1), barWI = bw*0.58;
+    const yI = yV(estoque.valor), barHI = (H-padT-padB) - (yI-padT);
+    inadCol = `<rect x="${(cxI-barWI/2).toFixed(1)}" y="${yI.toFixed(1)}" width="${barWI.toFixed(1)}" height="${barHI.toFixed(1)}" fill="#f2b705" rx="3"><title>Inadimplência em aberto na abertura de ${estoque.mes}: ${fmtBRL0(estoque.valor)} — estoque, mesmo valor do gráfico por faixa</title></rect>`;
+    inadCol += `<text x="${cxI}" y="${(yI-8).toFixed(1)}" text-anchor="middle" fill="#f2b705" font-size="15" font-weight="900">${fmtBRL0(estoque.valor)}</text>`;
+    inadCol += `<text x="${cxI}" y="${H-20}" text-anchor="middle" fill="#f2b705" font-size="12" font-weight="800" letter-spacing="0.3">INADIMPLÊNCIA</text>`;
+    inadCol += `<text x="${cxI}" y="${H-6}" text-anchor="middle" fill="#75779a" font-size="10">em aberto · ${estoque.mes}</text>`;
+  }
 
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${chartElId==='vgChartNegociacoes'?'100%':W+'px'}; max-width:${W}px; height:auto;">
     <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#40415a"/>
     <g id="${chartElId}-serie-valor" style="transition:opacity .25s ease;">${bars}</g>
     <g id="${chartElId}-serie-acumulado" style="transition:opacity .25s ease;">${totalCol}</g>
     <g id="${chartElId}-serie-contatos" style="transition:opacity .25s ease;"><path d="${lineContatos}" fill="none" stroke="#00e5a0" stroke-width="2" stroke-dasharray="4,3"/>${dotsContatos}</g>
-    <g id="${chartElId}-serie-inadReal" style="transition:opacity .25s ease;"><path d="${lineReal}" fill="none" stroke="#ff8a3d" stroke-width="2.4"/>${dotsReal}</g>
+    <g id="${chartElId}-serie-inadEstoque" style="transition:opacity .25s ease;">${inadCol}</g>
     ${labels}
   </svg>`;
 
@@ -3000,9 +3610,12 @@ function renderNegociacaoResumo(mesKey, de, ate){
     ? ` · ${mesesSemValor.join(', ')} ainda sem fechamento da gestora`
     : '';
   document.getElementById('negResumoCards').innerHTML = `
-    <div class="card"><div class="card-label">🔴 Inadimplência (${ultimaSel.mes.toLowerCase()})</div><div class="card-value" style="color:var(--red)">${fmtPct(ultimaSel.real)}</div><div class="card-meta">${ultimaSel.meta!=null ? `meta: ${ultimaSel.meta.toFixed(1).replace('.',',')}% · gap de ${gapSel>=0?'+':''}${gapSel.toFixed(1).replace('.',',')} p.p.` : 'meta ainda não definida'}</div></div>
-    <div class="card"><div class="card-label">💵 Recuperado no Período</div><div class="card-value" style="color:${semApuracao?'var(--muted)':'var(--green)'}">${semApuracao ? '—' : fmtBRL(totalValor)}</div><div class="card-meta">${semApuracao ? `sem valor apurado no recorte${notaPendente}` : `via ${totalContatos} contatos, ${faixaTxt}${notaPendente}`}</div></div>
-    <div class="card"><div class="card-label">📞 Contatos Enviados</div><div class="card-value">${totalContatos}</div><div class="card-meta">volume de ações de cobrança, ${faixaTxt}</div></div>
+    <!-- Card de inadimplência REMOVIDO daqui em 13/08: ele passou a viver na seção 1
+         ("O tamanho do problema"), junto com dívida em aberto e ticket médio. Esta
+         seção é sobre o que a EQUIPE fez — misturar a taxa aqui repetia o número e
+         embaralhava as duas leituras. A meta segue na tabela por competência. -->
+    <div class="card"><div class="card-label">💵 Recuperado no Período</div><div class="card-value" style="color:${semApuracao?'var(--muted)':'var(--green)'}">${semApuracao ? '—' : fmtBRL(totalValor)}</div><div class="card-meta">${semApuracao ? `sem valor apurado no recorte${notaPendente}` : `via ${totalContatos} pessoas contatadas, ${faixaTxt}${notaPendente}`}</div></div>
+    <div class="card"><div class="card-label">📞 Contatos Enviados</div><div class="card-value">${totalContatos}</div><div class="card-meta">pessoas contatadas, ${faixaTxt}</div></div>
   `;
 
   const apurados = apuradosU;
@@ -3039,15 +3652,17 @@ function renderLegendaGraficoNeg(elId, chartElId, detailElId){
   const caiuNaSerieInteira = !!window._negSerieCompleta;
   const mesesSemV = visiveis.filter(n=>n.valor==null).map(n=>n.mes.split('/')[0].toLowerCase());
   const comInadV = idxV.map(i=>INADIMPLENCIA[i]).filter(d=>d && d.real!=null);
+  // a linha de inadimplência % saiu do gráfico em 13/08 e virou barra de estoque em R$
+  const estoqueL = estoqueDoRecorte(idxV.map(i=>NEGOCIACOES[i].mes));
   const ultima = comInadV.length ? comInadV[comInadV.length-1] : {mes:'—', real:0, meta:0};
   const avisoSerie = caiuNaSerieInteira
     ? `<div class="alert-box" style="border-color:var(--gold); margin-bottom:10px;"><span>🔎</span><div><b>O período filtrado ainda não tem valor apurado</b> — o gráfico abaixo está mostrando <b>todo o histórico disponível (mar-jun/26)</b>, não o mês que você selecionou. Assim que a gestora enviar o fechamento, ele passa a responder ao filtro.</div></div>`
     : '';
   el.innerHTML = avisoSerie + `
     <div class="legend-btn" data-serie="valor" onclick="highlightSerie('valor','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#3d7bff"></span>Valor Recuperado por mês</div>
-    <div class="legend-btn" data-serie="acumulado" onclick="highlightSerie('acumulado','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#f2b705"></span>Total do Período — <b style="color:#f2b705">${fmtBRL0(totalValor)}</b> <span class="muted">${comValor.length===1 ? 'mês único — igual à barra azul' : `soma das ${comValor.length} barras azuis`}${mesesSemV.length?` · ${mesesSemV.join(', ')} ainda sem fechamento`:''}</span></div>
-    <div class="legend-btn" data-serie="contatos" onclick="highlightSerie('contatos','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#00e5a0"></span>Contatos Enviados — <b style="color:var(--text)">${totalContatos}</b> <span class="muted">(${faixa(comCont)})</span></div>
-    <div class="legend-btn" data-serie="inadReal" onclick="highlightSerie('inadReal','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#ff8a3d"></span>Inadimplência Real (${ultima.mes}) — <b style="color:#ff8a3d">${fmtPct(ultima.real)}</b></div>
+    <div class="legend-btn" data-serie="acumulado" onclick="highlightSerie('acumulado','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#1f4fbf"></span>Recuperado no Período — <b style="color:#6f9dff">${fmtBRL0(totalValor)}</b> <span class="muted">${comValor.length===1 ? 'mês único — igual à barra azul' : `soma das ${comValor.length} barras azuis`}${mesesSemV.length?` · ${mesesSemV.join(', ')} ainda sem fechamento`:''}</span></div>
+    <div class="legend-btn" data-serie="contatos" onclick="highlightSerie('contatos','${chartElId}','${elId}','${detailElId}')"><span class="dot" style="background:#00e5a0"></span>Contatos Enviados — <b style="color:#00e5a0">${totalContatos}</b> <span class="muted">pessoas contatadas em ${faixa(comCont)}${(()=>{const sem=idxV.map(i=>NEGOCIACOES[i]).filter(x=>x.contatos==null).map(x=>x.mes.split('/')[0].toLowerCase()); return sem.length?` · ${sem.join(', ')} ainda sem contagem`:'';})()}</span></div>
+    ${estoqueL ? `<div class="card-meta" style="width:100%; margin-top:6px; line-height:1.55;">A dívida em aberto (<b>${fmtBRL0(estoqueL.valor)}</b> em ${estoqueL.mes}) está no gráfico por faixa, logo abaixo. Ela não entra aqui porque é <b>estoque</b> — quanto se deve num instante — e estas barras são <b>fluxo</b>, o que entrou em cada mês.</div>` : ''}
   `;
 }
 
@@ -3096,6 +3711,15 @@ function renderInadJulho(){
       Somando categorias isentas e não sócios, são <b>${(D.totalSocios.qtd + D.naoSocios.qtd)}</b> inadimplentes e <b>${fmtBRL0(D.totalSocios.valor + D.naoSocios.valor)}</b> em atraso.
     </div></div>
 
+    <!-- RESTAURADO EM 13/08 (fim do dia): a pedido do diretor, o card de
+         Composição da Dívida por Tempo de Atraso voltou para a tela.
+         O card "Por Categoria de Sócio — pagantes" segue REMOVIDO. -->
+    <div class="card full">
+      <div class="card-label">Composição da Dívida por Tempo de Atraso — pagantes</div>
+      <div style="display:flex; gap:22px; flex-wrap:wrap; margin-top:16px;">${faixasHtml}</div>
+      <div class="card-meta" style="margin-top:14px;"><b>${(fx[0].valor/totFx*100).toFixed(0)}% da dívida é recente</b> (vencida em julho) — é onde a cobrança tem mais chance de recuperar. Os ${fmtBRL0(fx[3].valor)} com mais de 91 dias envolvem ${fx[3].qtd} associados, o segundo maior grupo em quantidade.</div>
+    </div>
+
     <!-- REMOVIDO EM 13/08 a pedido da gestora (via diretor): os cards
          "Composição da Dívida por Tempo de Atraso — pagantes" e
          "Por Categoria de Sócio — pagantes" saíram da tela.
@@ -3111,7 +3735,7 @@ function renderLegendaNegociacoes(elId){
   const totalValor = NEGOCIACOES.reduce((s,n)=>s+(n.valor||0),0);
   const totalContatos = NEGOCIACOES.reduce((s,n)=>s+(n.contatos||0),0);
   el.innerHTML = `<table>
-    <thead><tr><th>Competência</th><th class="num">Valor Recuperado</th><th class="num">Contatos</th><th class="num">R$/contato</th><th class="num">Inadimpl. Real</th><th class="num">Meta</th></tr></thead>
+    <thead><tr><th>Competência</th><th class="num">Valor Recuperado</th><th class="num">Contatos<br><span style="font-weight:400; text-transform:none; letter-spacing:0;">pessoas contatadas</span></th><th class="num">R$/pessoa</th><th class="num">Inadimpl. Real</th><th class="num">Meta</th></tr></thead>
     <tbody>
       ${NEGOCIACOES.map((n,i)=>{
         const d = INADIMPLENCIA[i] || {real:null, meta:null};
@@ -3145,7 +3769,7 @@ function renderCampanhasCombo(elId){
 // ═══════════════════════════════════════════════════════════
 // (a composição do saldo agora é uma barra dinâmica, pintada por pintarComposicaoSaldo)
 // (o donut de pagamentos na Visão Geral é atualizado dentro de renderPagamentosMeses, junto com o filtro)
-drawNegInadInteractive('vgChartNegociacoes', 'vgLegendaNeg', 'vgSerieDetalhe');
+renderNegFaixas(null, 'vg');
 renderVGVendasResumo(null);
 drawDonut('vgRetencaoDonut', RETENCAO_CATEGORIAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '23', 'desligamentos', {semLegenda:true});
 
@@ -3162,6 +3786,8 @@ function renderVisaoGeralHE(){
 // RENDERIZAÇÃO — NEGOCIAÇÃO (aba dedicada)
 // ═══════════════════════════════════════════════════════════
 drawNegInadInteractive('negChartFull', 'negLegendaNeg', 'negSerieDetalhe');
+renderNegFaixas(null);
+renderNegAnalises(null);
 renderLegendaNegociacoes('tabelaLegendaNeg');
 renderInadJulho();
 
@@ -3921,7 +4547,7 @@ const COBERTURA_MES = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 // Negociação/Inadimplência tem histórico próprio (Mar-Jun), independente do resto
-const COBERTURA_NEGOCIACAO = {ini:'2026-03-01', fim:'2026-07-31'};
+const COBERTURA_NEGOCIACAO = {ini:'2026-03-01', fim:'2026-08-31'};
 
 // Retenção tem histórico próprio mais longo (Jan, Fev, Mar, Mai, Jun, Jul — Abril não foi preenchido
 // na planilha da Cíntia), independente da cobertura de Fluxo de Caixa/Vendas (que só tem Jun/Jul)
@@ -4608,7 +5234,9 @@ function aplicarFiltroMes(){
   // Gráfico responde ao filtro; acumulado do ano sempre soma desde março até o mês visível
   const negIdx = negMesesNoIntervalo(de, ate);
   drawNegInadInteractive('negChartFull', 'negLegendaNeg', 'negSerieDetalhe', negIdx);
-  drawNegInadInteractive('vgChartNegociacoes', 'vgLegendaNeg', 'vgSerieDetalhe', negIdx);
+  renderNegFaixas(negIdx.map(i=>NEGOCIACOES[i].mes));
+  renderNegAnalises(negIdx);
+  renderNegFaixas(negIdx.map(i=>NEGOCIACOES[i].mes), 'vg');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -5085,6 +5713,22 @@ const DADOS_MES = {
 // cada aba registrada e publica o laudo em window.__AUDIT_IMPORT.
 // Para cobrir uma aba nova: acrescentar uma entrada em AUDITORIAS_IMPORT.
 // Nada aqui altera dado — só verifica e avisa.
+
+// Alguns ambientes que hospedam o painel expõem um console PARCIAL — o
+// visualizador do chat, por exemplo, não implementa console.info, e a chamada
+// derrubava o validador com "console.info is not a function" logo na abertura.
+// Os avisos das travas não podem depender de qual método existe: passam por aqui.
+const _log = (function(){
+  const saida = (nome, alt) => {
+    const c = (typeof console !== 'undefined') ? console : null;
+    if(c && typeof c[nome] === 'function') return c[nome].bind(c);
+    if(c && typeof c[alt]  === 'function') return c[alt].bind(c);
+    if(c && typeof c.log   === 'function') return c.log.bind(c);
+    return function(){};
+  };
+  return { info: saida('info','log'), warn: saida('warn','log'), erro: saida('error','warn') };
+})();
+
 const TOL_IMPORT = 0.25;               // tolerância em R$ mil (arredondamento da Controladoria)
 const _perto = (a,b,t) => Math.abs((a||0)-(b||0)) <= (t===undefined?TOL_IMPORT:t);
 let _herdadas = [];
@@ -5173,14 +5817,14 @@ function validarImportacao(silencioso){
   const totalFalhas = laudo.reduce((n,x)=>n+x.falhas.length,0);
   window.__AUDIT_IMPORT = {ok: totalFalhas===0, totalFalhas, laudo, herdadas: _herdadas.slice()};
   if(!silencioso && _herdadas.length)
-    console.info(`ℹ ${_herdadas.length} quebra(s) herdada(s) na projeção de jan–jun/26 (relatórios antigos da Controladoria omitiam dias) — não vieram desta importação.`);
+    _log.info(`ℹ ${_herdadas.length} quebra(s) herdada(s) na projeção de jan–jun/26 (relatórios antigos da Controladoria omitiam dias) — não vieram desta importação.`);
   if(!silencioso && totalFalhas){
-    console.warn(`⚠ Importação incompleta — ${totalFalhas} campo(s) fora de coerência:`);
-    laudo.forEach(x=>x.falhas.forEach(m=>console.warn('   · '+m)));
+    _log.warn(`⚠ Importação incompleta — ${totalFalhas} campo(s) fora de coerência:`);
+    laudo.forEach(x=>x.falhas.forEach(m=>_log.warn('   · '+m)));
   }
   return window.__AUDIT_IMPORT;
 }
-if(typeof window !== 'undefined') window.addEventListener('load', ()=>validarImportacao());
+if(typeof window !== 'undefined') window.addEventListener('load', ()=>{ try{ validarImportacao(); }catch(e){ _log.warn('validador '+'validarImportacao'+' falhou: '+e.message); } });
 
 // ═══════════════════════════════════════════════════════════
 // TOTAIS ASSINADOS — trava contra perda de número
@@ -5203,7 +5847,15 @@ if(typeof window !== 'undefined') window.addEventListener('load', ()=>validarImp
 const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'valor recuperado mar-jun', esperado:460277,
-   calc:()=>NEGOCIACOES.filter(n=>n.valor!=null).reduce((t,n)=>t+n.valor,0)},
+   calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.valor||0),0)},
+  {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
+   oque:'recuperado em julho', esperado:402369, calc:()=>NEGOCIACOES[4].valor},
+  {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
+   oque:'recuperado em agosto', esperado:146346, calc:()=>NEGOCIACOES[5].valor},
+  {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
+   oque:'inadimplência em aberto, abertura de julho', esperado:784793, calc:()=>NEG_ESTOQUE['Jul/26']},
+  {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
+   oque:'inadimplência em aberto, abertura de agosto', esperado:796422, calc:()=>NEG_ESTOQUE['Ago/26']},
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'contatos enviados mar-jun', esperado:1498,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.contatos||0),0)},
@@ -5236,12 +5888,12 @@ function conferirTotaisAssinados(){
   });
   window.__TOTAIS_ASSINADOS = {ok: quebras.length===0, quebras};
   if(quebras.length){
-    console.error(`🚨 NÚMERO PERDIDO — ${quebras.length} total(is) não batem com o documento de origem:`);
-    quebras.forEach(m=>console.error('   · '+m));
+    _log.erro(`🚨 NÚMERO PERDIDO — ${quebras.length} total(is) não batem com o documento de origem:`);
+    quebras.forEach(m=>_log.erro('   · '+m));
   }
   return window.__TOTAIS_ASSINADOS;
 }
-if(typeof window !== 'undefined') window.addEventListener('load', ()=>conferirTotaisAssinados());
+if(typeof window !== 'undefined') window.addEventListener('load', ()=>{ try{ conferirTotaisAssinados(); }catch(e){ _log.warn('validador '+'conferirTotaisAssinados'+' falhou: '+e.message); } });
 
 
 // Totaliza a Retenção somando os meses do período. Campos somáveis são somados;
@@ -6235,6 +6887,48 @@ function renderRetencaoCRA(mesesSel){
   const periodoTotal = keys.length && cobertos.every(k=>keys.includes(k));
   const base = periodoTotal ? noPeriodo.concat(semData) : noPeriodo;
   const casos = base.length ? base : RETENCAO_CRA;
+
+  // ── CARDS DE TOTAIS (14/08) ────────────────────────────────────────────────
+  // Três cards no topo, como nas outras sub-abas do CRA: o total geral e as duas
+  // partes que o compõem. Licenças usam EXATAMENTE a mesma regra de recorte das
+  // retenções — inclusive a dos registros sem data de início, que só entram
+  // quando o filtro cobre todo o período apurado; num recorte menor não há como
+  // saber a que mês pertencem.
+  // Cobertura difere entre as duas bases: retenções vão de mar a ago/26;
+  // licenças só de abr a jul/26. Por isso o card de licenças pode zerar num
+  // período em que o de retenções tem número — e isso é dado, não erro.
+  const licNoPeriodo = keys.length ? LICENCAS_CRA.filter(l=>l.mes && keys.includes(l.mes))
+                     : (filtroAtivo0 ? [] : LICENCAS_CRA);
+  const licSemData   = LICENCAS_CRA.filter(l=>!l.mes);
+  const licencas     = periodoTotal ? licNoPeriodo.concat(licSemData) : licNoPeriodo;
+  const nRet = casos.length, nLic = licencas.length, nTot = nRet + nLic;
+  // Os objetos de mesesSel só trazem {key:'mar2026'} — não há campo de rótulo.
+  // Derivar daqui evita "undefined a undefined" no card.
+  const rotKey = k => { const m=String(k).match(/^([a-z]{3})(\d{4})$/);
+    return m ? m[1].charAt(0).toUpperCase()+m[1].slice(1)+'/'+m[2].slice(2) : String(k); };
+  const rotuloPeriodo = keys.length
+    ? (keys.length===1 ? rotKey(keys[0]) : `${rotKey(keys[0])} a ${rotKey(keys[keys.length-1])}`)
+    : 'todo o histórico de 2026';
+  const cardsTotais = `
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div class="card">
+        <div class="card-label">🤝 Total de Retenções</div>
+        <div class="card-value" style="color:var(--green);">${nTot}</div>
+        <div class="card-meta">retenções + licenças · ${rotuloPeriodo}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🔄 Retenções</div>
+        <div class="card-value">${nRet}</div>
+        <div class="card-meta">${nTot?((nRet/nTot*100).toFixed(0)+'% do total'):'sem registro no período'}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">⏸️ Licenças</div>
+        <div class="card-value" style="${nLic?'':'color:var(--muted);'}">${nLic}</div>
+        <div class="card-meta">${nLic ? (nTot?((nLic/nTot*100).toFixed(0)+'% do total'):'') : 'sem licença registrada neste período'}</div>
+      </div>
+    </div>
+`;   // o aviso de registros sem data já existe abaixo nesta mesma tela
+
   const filtroAtivo = filtroAtivo0;
   // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
   const recorteVazio = filtroAtivo && !noPeriodo.length;
@@ -6326,7 +7020,7 @@ function renderRetencaoCRA(mesesSel){
 
   // linhasTab removido junto com a tabela "Casos do Período".
 
-  el.innerHTML = `
+  el.innerHTML = cardsTotais + `
     ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
         <b>Os números abaixo NÃO são do período que você filtrou.</b> Nenhum acordo foi iniciado
         nesse recorte, então a tela está mostrando <b>todos os ${RETENCAO_CRA.length} acordos de 2026</b>.
@@ -11518,7 +12212,11 @@ function graficoEvolucaoEsportes(chaves){
     dotsAnt += `<circle cx="${x}" cy="${y(d.ant)}" r="3" fill="#8b8fa8"/>`;
   });
 
-  // barra TOTAL — mesmo número do card e do ranking
+  // barra TOTAL — mesmo número E MESMO FORMATO do card do topo.
+  // Antes o rótulo usava fmtMilReais ("R$ 577,2 mil") enquanto o card usava
+  // fmtSinEsp ("R$ 577.179"). O valor era idêntico, mas a leitura lado a lado
+  // parecia divergência. Regra desta tela: o total aparece sempre com o mesmo
+  // formato do card — nada de abreviação onde há conferência.
   const xT = cx(n), lgT = Math.min(bw*0.44, 54);
   const mostrarTotal = !umMes;
   const yT = y(totReal), altT = Math.abs(yT - y0);
@@ -11526,7 +12224,7 @@ function graficoEvolucaoEsportes(chaves){
     <line x1="${xT-bw/2}" y1="${padT-6}" x2="${xT-bw/2}" y2="${H-padB+6}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
     <rect x="${xT-lgT/2}" y="${Math.min(yT,y0)}" width="${lgT}" height="${Math.max(altT,1)}" rx="3" fill="#f2b705" opacity=".92">
       <title>TOTAL do período: realizado ${fmtSinEsp(Math.round(totReal))} · orçado ${fmtSinEsp(Math.round(totOrc))} · 2025 ${fmtSinEsp(Math.round(totAnt))}</title></rect>
-    <text x="${xT}" y="${Math.min(yT,y0)-7}" text-anchor="middle" font-size="12" font-weight="800" fill="#f2b705">${fmtMilReais(totReal)}</text>
+    <text x="${xT}" y="${Math.min(yT,y0)-7}" text-anchor="middle" font-size="12" font-weight="800" fill="#f2b705">${fmtSinEsp(totReal)}</text>
     <text x="${xT}" y="${H-padB+18}" text-anchor="middle" font-size="12" font-weight="800" fill="#f2b705">TOTAL</text>
     <text x="${xT}" y="${H-padB+32}" text-anchor="middle" font-size="10.5" fill="${totReal-totOrc>=0?'#00e5a0':'#ff6b6b'}">${totReal-totOrc>=0?'+':''}${Math.round((totReal-totOrc)/1000)}k</text>`;
 
@@ -11562,8 +12260,8 @@ function graficoEvolucaoEsportes(chaves){
       <svg viewBox="0 0 ${W} ${H}" style="width:100%; min-width:620px; height:auto; display:block;">
         <line x1="${padL-8}" y1="${y0}" x2="${W-padR}" y2="${y0}" stroke="var(--border)" stroke-width="1"/>
         <text x="${padL-12}" y="${y0+4}" text-anchor="end" font-size="11" fill="var(--muted)">R$ 0</text>
-        <text x="${padL-12}" y="${y(vMax)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmtMilReais(vMax)}</text>
-        <text x="${padL-12}" y="${y(vMin)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmtMilReais(vMin)}</text>
+        <text x="${padL-12}" y="${y(vMax)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmtSinEsp(vMax)}</text>
+        <text x="${padL-12}" y="${y(vMin)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmtSinEsp(vMin)}</text>
         ${barras}
         <path d="${linAnt}" fill="none" stroke="#8b8fa8" stroke-width="2" stroke-dasharray="5 4"/>
         <path d="${linOrc}" fill="none" stroke="#f2b705" stroke-width="2.5"/>
@@ -11713,18 +12411,34 @@ function blocoOrcado(nome, chaves){
   // A tabela por natureza só pode ir até onde existe abertura de despesa/receita
   // (ESPORTES_DR). Se o filtro passa disso, ela usa a janela menor e avisa —
   // caso contrário, o TOTAL dela não bateria com os cartões acima.
+  // NOTA AMARELA REMOVIDA EM 14/08 a pedido do diretor: o parágrafo que explicava
+  // por que a tabela para em jun e julho entra em linha própria. Saiu só o TEXTO —
+  // a mecânica segue intacta: natMenor continua calculado, a janela de cobertura
+  // continua no cabeçalho ao lado do título (amarela quando menor que o filtro) e
+  // a linha "(sem quebra por natureza)" continua na tabela, identificada.
+  // 14/08 (2ª rodada): saiu TAMBÉM a etiqueta de meses ao lado do título
+  // ("Jan, Fev, Mar, Abr, Mai, Jun/26"), que aparecia em todas as modalidades e
+  // dizia jun enquanto o filtro estava em jul. Nada de cálculo mudou — mesesNat
+  // segue definindo a janela real da tabela. Quando julho fechar nos centros de
+  // custo, a janela vira jan-jul sozinha e aí se decide se a etiqueta volta.
+  // Reavaliar quando julho fechar nos centros de custo: hoje 8 de 32 modalidades
+  // lançadas, contra 31 em junho. O texto original está no v205.
   const mesesNat = av.meses.filter(k=>drMesesDisponiveis().includes(k));
   const natMenor = mesesNat.length !== av.meses.length;
   let temRateio = false, tDesp=0, tRec=0, tOrc=0, tReal=0, tAnt=0;
   const linhas = mesesNat.length ? ESPORTES_NIVEIS.map(nv=>{
     const on = o.n && o.n[nv.key];
-    const orcN = on ? Math.round(mesesNat.reduce((s,k)=>s+(on.o[IDX[k]]||0),0)) : 0;
-    const antN = on ? Math.round(mesesNat.reduce((s,k)=>s+(on.r25[IDX[k]]||0),0)) : 0;
+    // Math.round() REMOVIDO destas quatro somas em 14/08. Elas alimentam
+    // tOrc/tAnt/tDesp/tRec, ou seja, o arredondamento por linha entrava no TOTAL
+    // da tabela — até seis linhas arredondadas por modalidade. Agora a soma é
+    // exata e o arredondamento, quando existe, é só de exibição.
+    const orcN = on ? mesesNat.reduce((s,k)=>s+(on.o[IDX[k]]||0),0) : 0;
+    const antN = on ? mesesNat.reduce((s,k)=>s+(on.r25[IDX[k]]||0),0) : 0;
     let despN = 0, recN = 0, temReal = false;
     if(dr && dr.n && dr.n[nv.key]){
       temReal = true;
-      despN = Math.round(mesesNat.reduce((s,k)=>s+(dr.n[nv.key].d[k]||0),0));
-      recN  = Math.round(mesesNat.reduce((s,k)=>s+(dr.n[nv.key].r[k]||0),0));
+      despN = mesesNat.reduce((s,k)=>s+(dr.n[nv.key].d[k]||0),0);
+      recN  = mesesNat.reduce((s,k)=>s+(dr.n[nv.key].r[k]||0),0);
     }
     if(!on && !temReal) return null;
     const realN = despN + recN;
@@ -11736,12 +12450,12 @@ function blocoOrcado(nome, chaves){
     const zerado = !orcN && !realN && !antN;
     return `<tr${zerado?' style="opacity:.5;"':''}>
       <td style="padding:8px 10px;"><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:${nv.cor}; margin-right:7px;"></span>${nv.nome}</td>
-      <td class="num" data-rot="Despesa" style="padding:8px 10px; color:#ff6b6b;">${fmtSinEsp(despN)}</td>
-      <td class="num" data-rot="Receita" style="padding:8px 10px; color:#00e5a0;">${fmtSinEsp(recN)}</td>
-      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${realN>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(realN)}</td>
-      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEsp(orcN)}</td>
-      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dif>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dif>0?'+':'')+fmtSinEsp(dif)}</td>
-      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEsp(antN)}</td>
+      <td class="num" data-rot="Despesa" style="padding:8px 10px; color:#ff6b6b;">${fmtSinEspC(despN)}</td>
+      <td class="num" data-rot="Receita" style="padding:8px 10px; color:#00e5a0;">${fmtSinEspC(recN)}</td>
+      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${realN>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(realN)}</td>
+      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(orcN)}</td>
+      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dif>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dif>0?'+':'')+fmtSinEspC(dif)}</td>
+      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(antN)}</td>
       <td class="num" data-rot="Cobertura" style="padding:8px 10px; color:${rateio?'var(--yellow)':'var(--muted)'};">${rateio?'⚠ rateio':(cobre!=null?cobre.toFixed(0)+'%':'—')}</td>
     </tr>`;
   }).filter(Boolean).join('') : '';
@@ -11755,9 +12469,12 @@ function blocoOrcado(nome, chaves){
   const mesesFora = av.meses.filter(k=>!mesesNat.includes(k));
   if(mesesFora.length){
     const serieMod = ESPORTES_MESES.find(x=>x.nome===nome);
-    const rFora = Math.round(mesesFora.reduce((s,k)=>s+((serieMod && serieMod.m[k])||0),0));
-    const oFora = Math.round(mesesFora.reduce((s,k)=>s+((o.od[IDX[k]]||0)+(o.orr[IDX[k]]||0)),0));
-    const aFora = Math.round(mesesFora.reduce((s,k)=>s+(o.r25[IDX[k]]||0),0));
+    // Math.round() REMOVIDO daqui em 14/08: arredondava antes de somar em tOrc/
+    // tReal/tAnt, injetando até R$ 0,50 de erro no TOTAL da tabela. O valor exato
+    // entra na soma; o arredondamento, se houver, é só de exibição.
+    const rFora = mesesFora.reduce((s,k)=>s+((serieMod && serieMod.m[k])||0),0);
+    const oFora = mesesFora.reduce((s,k)=>s+((o.od[IDX[k]]||0)+(o.orr[IDX[k]]||0)),0);
+    const aFora = mesesFora.reduce((s,k)=>s+(o.r25[IDX[k]]||0),0);
     const dFora = rFora - oFora;
     tOrc+=oFora; tReal+=rFora; tAnt+=aFora;
     const rot = mesesFora.map(k=>ROT_MES_ESP[k]||k).join(', ');
@@ -11765,10 +12482,10 @@ function blocoOrcado(nome, chaves){
       <td style="padding:8px 10px;"><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:#f2b705; margin-right:7px;"></span>${rot} <span style="color:var(--muted); font-size:11.5px;">(sem quebra por natureza)</span></td>
       <td class="num" data-rot="Despesa" style="padding:8px 10px; color:var(--muted);">—</td>
       <td class="num" data-rot="Receita" style="padding:8px 10px; color:var(--muted);">—</td>
-      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${rFora>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(rFora)}</td>
-      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEsp(oFora)}</td>
-      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dFora>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dFora>0?'+':'')+fmtSinEsp(dFora)}</td>
-      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEsp(aFora)}</td>
+      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${rFora>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(rFora)}</td>
+      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(oFora)}</td>
+      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dFora>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dFora>0?'+':'')+fmtSinEspC(dFora)}</td>
+      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(aFora)}</td>
       <td class="num" data-rot="Cobertura" style="padding:8px 10px; color:var(--muted);">—</td>
     </tr>`;
   }
@@ -11799,10 +12516,10 @@ function blocoOrcado(nome, chaves){
         <div style="font-size:12px; color:var(--muted);">${av.meses.map(k=>ROT_MES_ESP[k]||k).join(', ')}/26</div>
       </div>
       <div style="display:flex; gap:11px; flex-wrap:wrap; margin-top:11px;">
-        ${cartao('Orçado', fmtSinEsp(Math.round(av.orc)), 'var(--text)', 'meta do período')}
-        ${cartao('Realizado', fmtSinEsp(Math.round(av.real)), av.real>=0?'#00e5a0':'#ff6b6b', 'apurado')}
-        ${cartao('vs Orçado', (av.difOrc>=0?'+':'') + fmtSinEsp(Math.round(av.difOrc)), c, av.rotulo)}
-        ${cartao('Mesmo período 2025', fmtSinEsp(Math.round(av.ant)), 'var(--text)', av.semAnt?'sem base em 2025':`${av.difAnt>=0?'melhor':'pior'} em ${fmtSinEsp(Math.round(Math.abs(av.difAnt))).replace('-','')}`)}
+        ${cartao('Orçado', fmtSinEspC(av.orc), 'var(--text)', 'meta do período')}
+        ${cartao('Realizado', fmtSinEspC(av.real), av.real>=0?'#00e5a0':'#ff6b6b', 'apurado')}
+        ${cartao('vs Orçado', (av.difOrc>=0?'+':'') + fmtSinEspC(av.difOrc), c, av.rotulo)}
+        ${cartao('Mesmo período 2025', fmtSinEspC(av.ant), 'var(--text)', av.semAnt?'sem base em 2025':`${av.difAnt>=0?'melhor':'pior'} em ${fmtSinEspC(Math.abs(av.difAnt))}`)}
       </div>
       ${insc?`
       <div style="display:flex; gap:11px; flex-wrap:wrap; margin-top:11px;">
@@ -11817,17 +12534,9 @@ function blocoOrcado(nome, chaves){
       <div style="margin-top:18px;">
         <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
           <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;">Detalhamento da modalidade — por natureza</div>
-          <div style="font-size:12px; color:${natMenor?'var(--yellow)':'var(--muted)'};">${mesesNat.map(k=>ROT_MES_ESP[k]||k).join(', ')}/26</div>
+
         </div>
-        ${natMenor ? (()=>{
-          const faltam = av.meses.filter(k=>!mesesNat.includes(k)).map(k=>ROT_MES_ESP[k]||k);
-          const um = faltam.length===1;
-          return `<div style="font-size:11.5px; color:var(--yellow); margin-bottom:8px;">
-          Esta tabela vai de <b>${ROT_MES_ESP[mesesNat[0]]} a ${ROT_MES_ESP[mesesNat[mesesNat.length-1]]}</b>, com todos os meses completos.
-          ${um?'Falta':'Faltam'} <b>${faltam.join(', ')}</b>: o resultado ${um?'desse mês':'desses meses'} já está apurado e entra nos
-          cartões acima, mas na planilha de centros de custo ${um?'ele foi lançado só parcialmente':'eles foram lançados só parcialmente'} —
-          em Jul, apenas 8 das 32 modalidades têm movimento, contra 31 em Jun. Entrar com ${um?'esse mês':'esses meses'} aqui
-          mostraria zero em modalidades que de fato tiveram resultado. Por isso ele aparece em <b>linha própria</b> abaixo, com resultado, orçado e 2025, mas sem divisão por natureza — assim o TOTAL desta tabela fecha com os cartões acima.</div>`;})() : ''}
+
         <div style="overflow-x:auto;">
         <table class="niveis-tab" style="font-size:13px;">
           <thead><tr>
@@ -11838,12 +12547,12 @@ function blocoOrcado(nome, chaves){
           <tbody>${linhas}${linhaSemQuebra}</tbody>
           <tfoot><tr class="total-highlight">
             <td style="padding:11px 10px;">TOTAL</td>
-            <td class="num" data-rot="Despesa" style="padding:11px 10px;">${fmtSinEsp(tDesp)}</td>
-            <td class="num" data-rot="Receita" style="padding:11px 10px;">${fmtSinEsp(tRec)}</td>
-            <td class="num" data-rot="Realizado" style="padding:11px 10px;">${fmtSinEsp(tReal)}</td>
-            <td class="num" data-rot="Orçado" style="padding:11px 10px;">${fmtSinEsp(tOrc)}</td>
-            <td class="num" data-rot="Diferença" style="padding:11px 10px;">${(tReal-tOrc>0?'+':'')+fmtSinEsp(tReal-tOrc)}</td>
-            <td class="num" data-rot="2025" style="padding:11px 10px;">${fmtSinEsp(tAnt)}</td>
+            <td class="num" data-rot="Despesa" style="padding:11px 10px;">${fmtSinEspC(tDesp)}</td>
+            <td class="num" data-rot="Receita" style="padding:11px 10px;">${fmtSinEspC(tRec)}</td>
+            <td class="num" data-rot="Realizado" style="padding:11px 10px;">${fmtSinEspC(tReal)}</td>
+            <td class="num" data-rot="Orçado" style="padding:11px 10px;">${fmtSinEspC(tOrc)}</td>
+            <td class="num" data-rot="Diferença" style="padding:11px 10px;">${(tReal-tOrc>0?'+':'')+fmtSinEspC(tReal-tOrc)}</td>
+            <td class="num" data-rot="2025" style="padding:11px 10px;">${fmtSinEspC(tAnt)}</td>
             <td class="num" data-rot="Cobertura" style="padding:11px 10px;">${tDesp<0&&tRec>0?(tRec/Math.abs(tDesp)*100).toFixed(0)+'%':'—'}</td>
           </tr></tfoot>
         </table></div>
@@ -12235,6 +12944,16 @@ function renderEsportes(mesesEsp){
 }
 // negativo sai como "-R$ 43.040" em vez de "R$ -43.040"
 function fmtSinEsp(v){ if(v==null||isNaN(v)) return '—'; return (v<0?'-':'') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR',{maximumFractionDigits:0}); }
+// CENTAVOS NAS TABELAS DE CONFERÊNCIA (14/08).
+// O dado sempre esteve certo — a auditoria contra a planilha dá 0 divergências em
+// 6.324 células. O que não batia era a TELA: fmtSinEsp arredondava para real
+// inteiro, e as 31 modalidades exibiam um número diferente do que o gestor lê na
+// planilha dele (até R$ 0,48 de diferença). Ele conferia linha a linha e nada
+// fechava. Onde há conferência número a número, agora vão os centavos.
+// Nos cards grandes e nos gráficos o arredondamento fica: centavos ali só poluem,
+// e o valor exato aparece no title (tooltip).
+function fmtSinEspC(v){ if(v==null||isNaN(v)) return '—';
+  return (v<0?'-':'') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 
 function renderObras(){
   const el = document.getElementById('obrasConteudo');
