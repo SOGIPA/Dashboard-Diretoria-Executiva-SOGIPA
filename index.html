@@ -2147,20 +2147,25 @@ const REINGRESSO_HISTORICO = [
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
   {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
     campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
-  // Agosto/26 — parcial. As duas campanhas do mês vieram SEM quantidade por
-  // campanha, então entram como texto (campanhasTexto) e não no gráfico: dividir
-  // os 9 entre elas seria inventar número. 'categorias' é novo aqui — o
-  // histórico de reingresso não tinha essa abertura até agora.
-  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial)', total:11, valor:10114.55,
-    campanhas:null,
-    campanhasTexto:['Mês do Aniversário do Clube com taxa reduzida',
-                    'Aniversariantes do mês de agosto com taxa zero'],
+  // Agosto/26 — parcial, ATUALIZADO EM 14/08 (Sec. Adm.).
+  //   11 -> 15 reingressos · R$ 10.114,55 -> R$ 12.687,40
+  // As categorias somam exatamente 15 (8 + 2 + 5), então fecham com o total.
+  // As campanhas informadas somam apenas 4 (1 + 1 + 2): os outros 11 entraram
+  // sem campanha vinculada. Isso entra como linha própria no gráfico, igual ao
+  // que julho já faz — julho tinha 31 com campanha e 6 sem.
+  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial · até 14/08)', total:15, valor:12687.40,
+    campanhas:[
+      {nome:'Lista de excluídos', qtd:2, cor:'#3d7bff'},
+      {nome:'Aniversariantes de agosto', qtd:1, cor:'#00e5a0'},
+      {nome:'Pesquisa de satisfação', qtd:1, cor:'#f2b705'},
+      {nome:'Sem campanha vinculada', qtd:11, cor:'#4a4c68'},
+    ],
     categorias:[
-      {nome:'Contribuinte', qtd:6, cor:'#3d7bff'},
-      {nome:'Patrimonial', qtd:3, cor:'#00e5a0'},
+      {nome:'Contribuinte', qtd:8, cor:'#3d7bff'},
+      {nome:'Patrimonial', qtd:5, cor:'#00e5a0'},
       {nome:'Contribuinte Individual', qtd:2, cor:'#f2b705'},
     ],
-    alerta: 'Agosto em andamento: <b>11 reingressos e R$ 10.114,55</b> até aqui, ticket médio de R$ 919,50 — o segundo maior do ano, atrás só de janeiro (R$ 1.188,93). A meta do mês é 40 (desafio 45), então o mês está em 27,5% da meta. As duas campanhas em curso vieram sem quebra por quantidade, por isso não aparecem no gráfico.'},
+    alerta: 'Agosto em andamento — <b>15 reingressos e R$ 12.687,40</b> até 14/08, ticket médio de R$ 845,83, o terceiro maior do ano. A meta do mês é 40 (desafio 45), então o mês está em <b>37,5% da meta</b>. As campanhas identificadas respondem por <b>4 dos 15</b> reingressos: lista de excluídos (2), aniversariantes de agosto (1) e pesquisa de satisfação (1). Os outros 11 entraram sem campanha vinculada.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -3357,11 +3362,16 @@ function renderNegFaixas(meses, pfx){
   lEl.innerHTML =
     `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#00e5a0"></span>Recuperado — <b>${fmtBRL0(p.totRec)}</b></div>`+
     `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#6d4fe0"></span>Em aberto — <b>${fmtBRL0(p.totAb)}</b></div>`+
-    comps.map(cm=>`<div class="legend-btn" data-sf="${cm.id}" onclick="acenderFaixa('${cm.id}')"><span class="dot" style="background:${cm.cor}"></span>${cm.label}</div>`).join('');
+    comps.map(cm=>`<div class="legend-btn" data-sf="${cm.id}" onclick="acenderFaixa('${cm.id}')"><span class="dot" style="background:${cm.cor}"></span>${cm.label}</div>`).join('') +
+    // A linha amarela compara com o mês fechado anterior. No PRIMEIRO mês da
+    // série (jul/26) não existe anterior, e o gráfico saía sem linha e sem
+    // explicação — a diferença entre as telas de jul e ago gerou dúvida.
+    (comps.length ? '' : `<div class="legend-btn" style="opacity:.6; cursor:default;"><span class="dot" style="background:var(--muted)"></span><span class="muted">Sem mês anterior para comparar — ${p.label} é o primeiro da série</span></div>`);
 
   if(!nEl) return;   // a Visão Geral não tem o bloco de notas — só cards, gráfico e legenda
   nEl.innerHTML =
-    (fallback ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>🔎</span><div><b>O período filtrado ainda não tem tabela por faixa.</b> A quebra por faixa começa em julho/26 — exibindo ${p.label}.</div></div>` : '') +
+    /* nota de fallback removida em 14/08 a pedido do diretor. O comportamento
+       segue igual: sem tabela por faixa no recorte, exibe o último mês disponível. */
     (usados.length>1 ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>📐</span><div><b>Intervalo selecionado.</b> Os cards e as colunas mostram <b>${p.label}</b>, o último mês do período. É regra de estoque: somar meses contaria a mesma dívida mais de uma vez, porque o saldo não pago apenas muda de faixa no mês seguinte.</div></div>` : '') +
     `<div class="card-meta" style="margin-top:10px;">A taxa cai de <b style="color:#00e5a0">${fmtPct(p.faixas[0].rec/p.faixas[0].abertura*100)}</b> na faixa 1 para <b style="color:#9b86ff">${fmtPct(p.faixas[3].rec/p.faixas[3].abertura*100)}</b> fora da faixa: cada mês que o débito atravessa sem acordo reduz muito a chance de voltar.</div>`;
   if(_negFaixaAceso) acenderFaixa(_negFaixaAceso), acenderFaixa(_negFaixaAceso);
@@ -4480,13 +4490,17 @@ const PAGAMENTOS_MESES = {
     ],
   },
   ago2026: {
-    // Agosto em andamento: por enquanto só o corte de 03 a 07/08.
-    // Dias 01 e 02 caíram em sábado e domingo — não há execução de pagamento.
-    label:'Agosto/2026 (parcial · 03 a 07/08)', qtd:170, total:1204168.67,
-    maiorQtd:25, maiorTotal:1046489.32, menorQtd:145, menorTotal:157679.35,
+    // Agosto em andamento, CONSOLIDADO em 17/08: cortes de 03 a 07/08 e de
+    // 10 a 14/08. Dias 01, 02, 08 e 09 caíram em fim de semana — sem execução.
+    // O corte novo (RELATORIO_PAGAMENTOS_AGOSTO_10_A_14, emitido 17/08 10:33)
+    // trouxe 175 lançamentos e R$ 818.508,04, conferidos contra o rodapé do
+    // relatório e contra as duas faixas do quadro gerencial.
+    // Total do mês até aqui: 345 lançamentos · R$ 2.022.676,71.
+    label:'Agosto/2026 (parcial · 03 a 14/08)', qtd:345, total:2022676.71,
+    maiorQtd:55, maiorTotal:1635648.15, menorQtd:290, menorTotal:387028.56,
     fornecedoresDistintos:null, parcial:true,
-    top:[{nome:'Folha Pagamento',qtd:16,valor:607625.00,pct:50.46},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:12.78},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:3.32},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:2.71},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:2.70},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:28366.59,pct:2.36},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:27780.00,pct:2.31},{nome:'Comite Brasileiro De Clubes',qtd:1,valor:17842.50,pct:1.48},{nome:'Hotel Dall Onder Ltda',qtd:1,valor:16435.50,pct:1.36},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15773.69,pct:1.31},{nome:'W3K Tecnologia Ltda',qtd:2,valor:15111.94,pct:1.25},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:14514.82,pct:1.21},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:10000.00,pct:0.83},{nome:'Contabilizi Consultoria Ltda',qtd:1,valor:9592.00,pct:0.80},{nome:'Beckenkamp Vestuario Ltda',qtd:2,valor:9156.75,pct:0.76}],
-    bancos:[{nome:'Banrisul',qtd:165,total:1087364.30},{nome:'Projeto Olim',qtd:1,total:52586.39},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Alto Rendime',qtd:1,total:7500.00},{nome:'Patrocínio A',qtd:1,total:7440.00},{nome:'Caixa Sogipa',qtd:1,total:1673.50}],
+    top:[{nome:'Folha Pagamento',qtd:18,valor:614150.80,pct:30.36},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:7.61},{nome:'Sam Music Edicoes Musicais Ltda',qtd:1,valor:117600.00,pct:5.81},{nome:'Departamento Municipal De Agua E Esgotos',qtd:6,valor:106003.77,pct:5.24},{nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M',qtd:6,valor:96748.86,pct:4.78},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:2,valor:54951.00,pct:2.72},{nome:'Center Broilo Com De Sistemas De Aquecim Ltd',qtd:1,valor:49000.00,pct:2.42},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:1.98},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:1.61},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:1.61},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:28366.59,pct:1.40},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:27780.00,pct:1.37},{nome:'Ambientallize Locadora De Materiais Para Eve',qtd:1,valor:20691.44,pct:1.02},{nome:'Centro De Integração Empresa Escola',qtd:2,valor:19324.65,pct:0.96},{nome:'Daniel Borges Cargnin',qtd:2,valor:19000.00,pct:0.94}],
+    bancos:[{nome:'Banrisul',qtd:285,total:1680092.34},{nome:'Projeto Olim',qtd:51,total:208586.39},{nome:'Índices Cons',qtd:1,total:49000.00},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Patrocínio A',qtd:4,total:26440.00},{nome:'Alto Rendime',qtd:1,total:7500.00},{nome:'Caixa Sogipa',qtd:2,total:3453.50}],
   },
 };
 const COBERTURA_PAGAMENTOS = {
@@ -4536,6 +4550,13 @@ const PAGAMENTOS_POR_PERIODO = {
   '03-07ago': {label:'03 a 07/08/2026', qtd:170, total:1204168.67, maiorQtd:25, maiorTotal:1046489.32, menorQtd:145, menorTotal:157679.35,
     top:[{nome:'Folha Pagamento',qtd:16,valor:607625.00,pct:50.46},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:12.78},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:3.32},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:2.71},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:2.70},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:28366.59,pct:2.36},{nome:'Santori Comercio De Moveis Eireli',qtd:1,valor:27780.00,pct:2.31},{nome:'Comite Brasileiro De Clubes',qtd:1,valor:17842.50,pct:1.48},{nome:'Hotel Dall Onder Ltda',qtd:1,valor:16435.50,pct:1.36},{nome:'Centro De Integração Empresa Escola',qtd:1,valor:15773.69,pct:1.31},{nome:'W3K Tecnologia Ltda',qtd:2,valor:15111.94,pct:1.25},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:14514.82,pct:1.21},{nome:'Federacao Capixaba De Basquetebol',qtd:1,valor:10000.00,pct:0.83},{nome:'Contabilizi Consultoria Ltda',qtd:1,valor:9592.00,pct:0.80},{nome:'Beckenkamp Vestuario Ltda',qtd:2,valor:9156.75,pct:0.76}],
     bancos:[{nome:'Banrisul',qtd:165,total:1087364.30},{nome:'Projeto Olim',qtd:1,total:52586.39},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Alto Rendime',qtd:1,total:7500.00},{nome:'Patrocínio A',qtd:1,total:7440.00},{nome:'Caixa Sogipa',qtd:1,total:1673.50}]},
+  // 10 a 14/08/2026 — RELATORIO_PAGAMENTOS_AGOSTO_10_A_14, emitido 17/08 10:33.
+  // 175 lançamentos e R$ 818.508,04, conferidos contra o rodapé do relatório,
+  // inclusive as duas faixas do quadro gerencial (30 · R$ 589.158,83 e
+  // 145 · R$ 229.349,21) e os R$ 0,01 de desconto.
+  '10-14ago': {label:'10 a 14/08/2026', qtd:175, total:818508.04, maiorQtd:30, maiorTotal:589158.83, menorQtd:145, menorTotal:229349.21,
+    top:[{nome:'Sam Music Edicoes Musicais Ltda',qtd:1,valor:117600.00,pct:14.37},{nome:'Departamento Municipal De Agua E Esgotos',qtd:6,valor:106003.77,pct:12.95},{nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M',qtd:6,valor:96748.86,pct:11.82},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:2,valor:54951.00,pct:6.71},{nome:'Center Broilo Com De Sistemas De Aquecim Ltd',qtd:1,valor:49000.00,pct:5.99},{nome:'Ambientallize Locadora De Materiais Para Eve',qtd:1,valor:20691.44,pct:2.53},{nome:'Daniel Borges Cargnin',qtd:2,valor:19000.00,pct:2.32},{nome:'Soji Centro De Capacitacao De Idiomas Ltda',qtd:1,valor:14918.24,pct:1.82},{nome:'Minuzzi Faccin E Simon Sociedade De Advogado',qtd:2,valor:13812.05,pct:1.69},{nome:'Jb Esporte E Marketing Ltda',qtd:1,valor:13471.79,pct:1.65},{nome:'Almir Cunha Dos Santos',qtd:1,valor:12000.00,pct:1.47},{nome:'Guilherme César Schimidt',qtd:1,valor:11000.00,pct:1.34},{nome:'Rafael Godoy De Macedo',qtd:1,valor:10000.00,pct:1.22},{nome:'Leonardo Ribeiro Goncalves',qtd:1,valor:9000.00,pct:1.10},{nome:'Prefeitura Municipal De Porto Alegre',qtd:3,valor:8311.76,pct:1.02}],
+    bancos:[{nome:'Banrisul',qtd:120,total:592728.04},{nome:'Projeto Olim',qtd:50,total:156000.00},{nome:'Índices Cons',qtd:1,total:49000.00},{nome:'Patrocínio A',qtd:3,total:19000.00},{nome:'Caixa Sogipa',qtd:1,total:1780.00}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -4548,7 +4569,8 @@ const PERIODOS = [
   {key:'13-17jul',     temDados:{pagamentos:true}, ini:'2026-07-13', fim:'2026-07-17'},
   {key:'20-24jul',     temDados:{pagamentos:true}, ini:'2026-07-20', fim:'2026-07-24'},
   {key:'27-31jul',     temDados:{pagamentos:true}, ini:'2026-07-27', fim:'2026-07-31'},
-  {key:'03-07ago',     temDados:{pagamentos:true}, ini:'2026-08-03', fim:'2026-08-07', atual:true},
+  {key:'03-07ago',     temDados:{pagamentos:true}, ini:'2026-08-03', fim:'2026-08-07'},
+  {key:'10-14ago',     temDados:{pagamentos:true}, ini:'2026-08-10', fim:'2026-08-14', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -4865,35 +4887,73 @@ const VENDAS_EXTRA_MESES = {
     },
   },
   ago2026: {
-    periodoTag:'Agosto/2026 (parcial · até 08/08)',
-    associacoesNovas:'12', valorArrecadado:'R$ 5.841,64', ticketMedio:'R$ 486,80',
+    // ── ATUALIZADO EM 14/08 (ENTRADAS_REALIZADAS_V6) ──────────────────────
+    // A planilha declara no topo 24 vendas e R$ 15.731,31. A conferência linha
+    // a linha encontrou 23 nomes e 22 com valor — e essas 22 somam EXATAMENTE
+    // os R$ 15.731,31 declarados. A diferença de contagem vem de:
+    //   · a numeração pula o #5 (vai de 4 para 6);
+    //   · o #14 é uma linha só com nome, duplicata do #15 (ANDRÉIA ZEN),
+    //     sem valor, data, matrícula ou consultor.
+    // ── ATUALIZADO EM 17/08 (ENTRADAS_REALIZADAS_V6 · importar 17_8) ─────────
+    // As 2 vendas da Nicole que estavam "a informar" ENTRARAM na planilha, com
+    // canal e categoria. Nada mais fica pendente nesta aba.
+    //   24 vendas com valor · R$ 17.384,06 · ticket R$ 724,34
+    // O valor bate EXATAMENTE com a Taxa de Adesão declarada no topo da planilha.
+    //
+    // Sobre a contagem: o topo da planilha declara "real 26", mas só 24 linhas
+    // têm valor. A diferença é estrutural e se repete desde 14/08:
+    //   · a numeração pula o #5 (vai de 4 para 6);
+    //   · o #14 é duplicata de #15 (ANDRÉIA ZEN), com nome e canal mas sem
+    //     valor, consultor, categoria ou data.
+    // Adotamos 24: é o número que as três quebras somam (consultores, canais e
+    // categorias) e o que corresponde aos R$ 17.384,06. Usar 26 obrigaria a
+    // criar linhas de preenchimento, que o diretor já vetou em 14/08.
+    //
+    // O valor informado por mensagem em 14/08 para as 2 vendas novas era
+    // R$ 1.860,00; a planilha traz R$ 1.652,75 (Nicole passou de R$ 1.584,04
+    // para R$ 3.236,79). Vale o da planilha.
+    // As quebras somam 24 com uma linha "Sem registro completo", que representa
+    // o que a planilha conta mas não detalha:
+    //   campanhas   23 com canal      + 1 = 24
+    //   consultores 22 com consultor  + 2 = 24
+    //   categorias  22 com categoria  + 2 = 24
+    // Sem essa linha, as quebras somavam 22 ou 23 enquanto o card dizia 24 — e a
+    // diferença aparecia na tela sem explicação. O valor dela é ZERO: os
+    // R$ 15.731,31 estão inteiros nos 22 registros com adesão.
+    // As 6 em efetivação (R$ 3.006,00) ficam em VENDAS_EM_PROCESSO, fora dos cards.
+    periodoTag:'Agosto/2026 (parcial · até 14/08)',
+    associacoesNovas:'24', valorArrecadado:'R$ 17.384,06', ticketMedio:'R$ 724,34',
     campanhas:[
-      {nome:'Promo Aniversário', qtd:6, cor:'#f2b705'},
-      {nome:'Visita', qtd:2, cor:'#00e5a0'},
+      {nome:'Promo Aniversário', qtd:15, cor:'#f2b705'},
+      {nome:'Visita', qtd:3, cor:'#00e5a0'},
+      {nome:'Convênio', qtd:3, cor:'#a855f7'},
+      {nome:'Convênio OAB', qtd:1, cor:'#06b6d4'},
       {nome:'Promo o Melhor das Férias', qtd:1, cor:'#3d7bff'},
       {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
-      {nome:'Convênio', qtd:1, cor:'#a855f7'},
-      {nome:'Convênio OAB', qtd:1, cor:'#06b6d4'},
     ],
     consultores:[
-      {nome:'Claudia', qtd:5, valor:2694.89},
-      {nome:'Helena', qtd:5, valor:2379.75},
-      {nome:'Sabrina', qtd:2, valor:767.00},
+      {nome:'Helena', qtd:14, valor:10226.01},
+      {nome:'Nicole', qtd:4, valor:3236.79},
+      {nome:'Claudia', qtd:4, valor:3074.26},
+      {nome:'Sabrina', qtd:2, valor:847.00},
     ],
     categorias:[
-      {nome:'Contribuinte', qtd:11},
-      {nome:'Contribuinte Sênior', qtd:1},
+      {nome:'Contribuinte', qtd:21},
+      {nome:'Contribuinte Sênior', qtd:2},
+      {nome:'Sênior', qtd:1},
     ],
-    alerta: 'Mês em andamento — <b>12 associações novas até 08/08</b>, somando R$ 5.841,64. A campanha de aniversário do clube já responde por metade das vendas (6 de 12), confirmando o retorno da peça em veiculação. Ticket médio de R$ 486,80, abaixo dos R$ 633,20 de julho, puxado pelas entradas de convênio. <b>Helena entra como terceira consultora</b>, empatada com Claudia em quantidade (5 cada).',
+    alerta: 'Mês em andamento — <b>24 associações novas até 17/08</b>, somando <b>R$ 17.384,06</b>, exatamente a Taxa de Adesão declarada na planilha. Há ainda <b>6 vendas em efetivação</b> (R$ 3.006,00), no bloco próprio abaixo, que entram nos cards quando confirmadas. A <b>campanha de aniversário responde por 15 das 24 vendas</b> — 62,5% do mês. <b>Duas consultoras estreiam em agosto: Helena e Nicole</b> — Helena com <b>14 vendas e R$ 10.226,01</b>, mais que as outras duas somadas, e Nicole com 4 vendas e o <b>maior ticket do mês, R$ 809,20</b>. Ticket médio geral de R$ 724,34, acima dos R$ 633,20 de julho. <b>A meta de agosto subiu para 42</b> (desafio 100), contra 23 em julho: o mês está em 57% da meta.',
     metas:{
       // Meta de reingresso de agosto = 40 e desafio = 45, informados pela
-      // Sec. Adm. Antes estavam 32/40, repetidos de julho — eram provisórios.
-      // TOTAL da tabela = desafioVenda + desafioReingresso (26+45), mesma
-      // fórmula dos meses anteriores.
-      vendas:{orcado:23, real:12}, reingressos:{orcado:40, real:11},
-      totalVR:{orcado:63, real:23}, desafioVenda:26, desafioReingresso:45,
-      total:{orcado:71, real:23, gap:-48},
-      taxaAdesao:5841.64, taxaReingresso:10114.55, taxaTotal:15956.19,
+      // Sec. Adm. TOTAL da tabela = desafioVenda + desafioReingresso (26+45).
+      // real de vendas passou de 12 para 30 na atualização de 14/08.
+      // META CORRIGIDA EM 17/08: a planilha declara orçado 42 e desafio 100 para
+      // agosto (julho era 23 e 26). O painel estava com os números de julho —
+      // a versão de 14/08 da planilha já traía 42/100 e passou batido.
+      vendas:{orcado:42, real:24}, reingressos:{orcado:40, real:15},
+      totalVR:{orcado:82, real:39}, desafioVenda:100, desafioReingresso:45,
+      total:{orcado:145, real:39, gap:-106},
+      taxaAdesao:17384.06, taxaReingresso:12687.40, taxaTotal:30071.46,
     },
   },
 };
@@ -4987,9 +5047,9 @@ const COBERTURA_REINGRESSO = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
-  // Agosto em andamento. Data-fim = 11/08, dia em que a Sec. Adm. passou os
-  // números; não veio corte explícito na origem — confirmar com a área.
-  ago2026: {ini:'2026-08-01', fim:'2026-08-11'},
+  // Agosto em andamento. Data-fim = 14/08, dia em que a Sec. Adm. passou os
+  // números atualizados (antes era 11/08).
+  ago2026: {ini:'2026-08-01', fim:'2026-08-14'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
@@ -5881,6 +5941,12 @@ const TOTAIS_ASSINADOS = [
   {aba:'Esportes', doc:'ORÇADO 2026 - importar para o painel', ate:'dez/2026',
    oque:'orçado do ano, 31 modalidades', esperado:4834547.97,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.od.reduce((a,b)=>a+b,0)+m.orr.reduce((a,b)=>a+b,0),0)},
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · importar 17_8', ate:'17/08/2026',
+   oque:'soma das vendas por consultor = valor arrecadado', esperado:17384.06,
+   calc:()=>VENDAS_EXTRA_MESES.ago2026.consultores.reduce((t,c)=>t+c.valor,0)},
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · Agosto-2026', ate:'14/08/2026',
+   oque:'soma das vendas por campanha = associações novas', esperado:24,
+   calc:()=>VENDAS_EXTRA_MESES.ago2026.campanhas.reduce((t,c)=>t+c.qtd,0)},
   {aba:'Esportes', doc:'REALIZADO 2025 (mesma pasta)', ate:'dez/2025',
    oque:'realizado 2025, 31 modalidades', esperado:2424200.08,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.r25.reduce((a,b)=>a+b,0),0)},
@@ -6782,11 +6848,14 @@ const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','
 // arrecadado — só viram venda realizada quando a Gestoria de Vendas confirmar
 // e elas aparecerem na planilha de ENTRADAS.
 // Para acrescentar: uma linha por venda, com mes no formato 'ago2026'.
+// ATUALIZADO EM 14/08: 6 vendas em efetivação, R$ 3.006,00 (6 × R$ 501,00),
+// informadas pelo diretor junto com a planilha ENTRADAS_REALIZADAS_V6.
+// Elas NÃO entram nos cards de agosto — os cards trazem as 24 da planilha e os
+// R$ 15.731,31, exatamente como a Vendas registra. Entram aqui, no bloco próprio,
+// e passam para os cards quando a adesão/contrato for confirmada.
 const VENDAS_EM_PROCESSO = [
-  {mes:'ago2026', qtd:4, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'Helena',
-   pendencia:'Adesão ou contrato', conferir:true},
-  {mes:'ago2026', qtd:1, categoria:'Convênio OAB', valorUnit:375.75, consultor:'Helena',
-   pendencia:'Adesão ou contrato', conferir:true},
+  {mes:'ago2026', qtd:6, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'—',
+   pendencia:'Em efetivação', conferir:true},
 ];
 const COBERTURA_VENDAS_PROCESSO = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
@@ -6830,18 +6899,31 @@ function renderVendasEmProcesso(mesesSel){
       confirmadas e lançadas na planilha de entradas. Serve para o diretor enxergar o que está por vir.
     </div></div>
 
-    ${aConferir.length ? `<div class="alert-box" style="border-color:var(--red);"><span>⚠️</span><div>
-      <b>${aConferir.reduce((s,x)=>s+x.qtd,0)} destas vendas precisam ser conferidas antes de contar como pipeline.</b>
-      A planilha de entradas de agosto já traz 5 vendas da Helena com exatamente esta composição
-      (4 de R$ 501,00 e 1 de R$ 375,75, somando R$ 2.379,75), lançadas como <b>realizadas</b> entre 05 e 08/08.
-      Ou elas já foram efetivadas e devem sair daqui, ou foram lançadas na planilha por engano e precisam sair de lá —
-      caso contrário o mesmo negócio aparece duas vezes.
+    ${aConferir.length ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
+      <b>Confirmar antes de tratar como pipeline.</b> São <b>${aConferir.reduce((s,x)=>s+x.qtd,0)} vendas em efetivação</b>
+      informadas pela Vendas em 14/08, sem consultor identificado na origem. Verificar se já foram
+      lançadas na planilha de entradas — se tiverem sido, saem daqui, senão o mesmo negócio conta duas vezes.
     </div></div>` : ''}
 
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('⏳ Vendas em Processo', String(qtd), 'aguardando adesão ou contrato')}
       ${cardKpi('💰 Valor Potencial', fmtBRL(valor), 'se todas forem efetivadas')}
-      ${cardKpi('👤 Por Consultor', Object.entries(porConsultor).map(([k,v])=>`${k}: ${v}`).join(' · '), 'origem das negociações')}
+      ${(()=>{
+        // Antes o card montava "nome: qtd" cegamente. Com o consultor gravado
+        // como '—' (não informado), a tela exibia "—: 6", que virou pergunta.
+        // Agora: nomes conhecidos aparecem como "Nome: n"; os sem consultor
+        // entram como "n sem consultor informado". Se NENHUM tem consultor,
+        // o card mostra só o traço e explica na linha de baixo.
+        const conhecidos = Object.entries(porConsultor).filter(([k])=>k && k!=='—' && k!=='?');
+        const semNome = Object.entries(porConsultor)
+          .filter(([k])=>!k || k==='—' || k==='?')
+          .reduce((t,[,v])=>t+v, 0);
+        const partes = conhecidos.map(([k,v])=>`${k}: ${v}`);
+        if(semNome) partes.push(`${semNome} sem consultor informado`);
+        return cardKpi('👤 Por Consultor', partes.length?partes.join(' · '):'—',
+          conhecidos.length ? 'origem das negociações'
+                            : 'consultor não informado na origem');
+      })()}
     </div>
 
     <div class="card full" style="margin-top:16px;">
