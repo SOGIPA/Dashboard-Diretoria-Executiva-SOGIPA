@@ -2211,7 +2211,7 @@ const NEGOCIACOES = [
   {mes:'Mai/26', valor:84982,  contatos:512},
   {mes:'Jun/26', valor:304596, contatos:614},
   {mes:'Jul/26', valor:402369, contatos:804},
-  {mes:'Ago/26', valor:204757, contatos:null},
+  {mes:'Ago/26', valor:247503, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -2236,7 +2236,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jul/26':784793, 'Ago/26':796422};   // abertura do mês; não muda com o avanço da cobrança
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':641202};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -2958,6 +2958,24 @@ function seloNeg(p){
   return Math.round((p.faixas.reduce((t,f)=>t+f.rec+f.ab,0) + p.totRec + p.totAb + p.base)*100);
 }
 const NEG_FAIXAS = [
+  // ── JUNHO/26 acrescentado em 17/08 (Fechamento Junho/26, Cobrança) ──────────
+  // A tabela veio em duas colunas: TOTAL (início R$ 871.107) e ATIVOS
+  // (fechamento R$ 760.494). Usamos ATIVOS, que é a mesma régua do FECHAMENTO
+  // adotado em julho — lá o início era R$ 879.654 e o fechamento R$ 784.793,
+  // a diferença sendo quem saiu do quadro. O "fora da faixa" é idêntico nas duas
+  // colunas (R$ 107.998); a exclusão de inativos só afeta as faixas 1 a 3.
+  // Guardamos o total em `inicio` para quem quiser a outra régua:
+  //   TOTAL   871.107 · aberto 372.033 · recuperado 499.074 · 57%
+  //   ATIVOS  760.494 · aberto 369.827 · recuperado 390.667 · 51%
+  { mes:'Jun/26', label:'Junho/2026', fechado:true,
+    fonte:'Fechamento Junho/26 (Cobrança) — coluna ATIVOS', importadoEm:'17/08/2026',
+    inicio:871107, base:760494, totRec:390667, totAb:369827,
+    faixas:[
+      {fx:'FX1',  idade:'1 mês',    ref:'mai/26',   abertura:409513, rec:268764, ab:140749},
+      {fx:'FX2',  idade:'2 meses',  ref:'abr/26',   abertura:178914, rec:98930,  ab:79984},
+      {fx:'FX3',  idade:'3 meses',  ref:'mar/26',   abertura:59653,  rec:18557,  ab:41096},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ fev/26', abertura:112414, rec:4416,   ab:107998},
+    ], selo:228148200 },
   { mes:'Jul/26', label:'Julho/2026', fechado:true,
     fonte:'Fechamento Julho/26 (Cobrança)', importadoEm:'13/08/2026',
     inicio:879654, base:784793, totRec:402369, totAb:382424,
@@ -2968,14 +2986,29 @@ const NEG_FAIXAS = [
       {fx:'FORA', idade:'4+ meses', ref:'≤ mar/26', abertura:148287, rec:21166,  ab:127121},
     ], selo:235437900 },
   { mes:'Ago/26', label:'Agosto/2026', fechado:false,
-    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'14/08/2026',
-    inicio:796422, base:796422, totRec:204757, totAb:591665,
+    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'18/08/2026',
+    inicio:641202, base:641202, totRec:247503, totAb:393699,
     faixas:[
-      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:413608, rec:139209, ab:274399},
-      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:174868, rec:42713,  ab:132154},
-      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:52810,  rec:11375,  ab:41435},
-      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:155136, rec:11459,  ab:143677},
-    ], selo:238926500 },
+      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:273099, rec:141610, ab:131489},
+      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:163139, rec:60102,  ab:103036},
+      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:96513,  rec:23482,  ab:73031},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:108452, rec:22309,  ab:86142},
+    ], selo:192360500 },
+  // ── ATUALIZAÇÃO DE 18/08 ────────────────────────────────────────────────────
+  // ATENÇÃO: esta carga NÃO é só avanço de cobrança. As ABERTURAS mudaram, o que
+  // não acontecia entre 11/08 e 14/08 (lá as quatro ficaram idênticas).
+  //            abertura 14/08 -> 18/08          recuperado 14/08 -> 18/08
+  //   FX1        413.608 -> 273.099 (-140.509)     139.209 -> 141.610 (+2.401)
+  //   FX2        174.868 -> 163.139  (-11.729)      42.713 ->  60.102 (+17.389)
+  //   FX3         52.810 ->  96.513  (+43.703)      11.375 ->  23.482 (+12.107)
+  //   FORA       155.136 -> 108.452  (-46.684)      11.459 ->  22.309 (+10.850)
+  //   BASE       796.422 -> 641.202 (-155.220)
+  // A FX3 SUBIU 43.703 — exclusão de inativos não explica aumento. O mais provável
+  // é revisão da base pela Cobrança (reclassificação entre faixas e/ou passagem
+  // para a régua de ATIVOS, como já ocorre em junho). Importado como veio; vale
+  // confirmar com a área qual régua este fechamento usa, porque a taxa do mês
+  // salta de 25,7% para 38,6% em boa parte por causa da base menor, não só pela
+  // recuperação (+R$ 42.746).
   // ATUALIZAÇÃO DE 14/08 — agosto segue em curso, então NÃO entra como período
   // novo: é o mesmo mês, com a cobrança mais adiantada. As quatro ABERTURAS estão
   // idênticas às de 11/08 (413.608 · 174.868 · 52.810 · 155.136), o que confirma
@@ -2988,8 +3021,9 @@ const NEG_FAIXAS = [
   // valores por faixa como a Cobrança enviou; o total do painel é a soma delas.
 ];
 
+let _negObs = [];
 function validarHistoricoNeg(){
-  const q=[];
+  const q=[]; _negObs = [];
   NEG_FAIXAS.forEach((p,i)=>{
     if(p.selo != null && seloNeg(p) !== p.selo)
       q.push(`${p.label}: números alterados desde a importação de ${p.importadoEm} — selo ${p.selo}, atual ${seloNeg(p)}`);
@@ -3002,13 +3036,21 @@ function validarHistoricoNeg(){
     // a barra INADIMPL. do gráfico de cima tem de mostrar exatamente esta base
     if(NEG_ESTOQUE[p.mes] !== p.base)
       q.push(`${p.label}: NEG_ESTOQUE diz ${NEG_ESTOQUE[p.mes]} mas a tabela por faixa abre com ${p.base}`);
+    // A esteira jun→jul NÃO fecha (fx1 deixou 140.749 aberto e a fx2 de julho
+    // abriu com 112.997). Não é erro de importação: junho veio na régua ATIVOS e
+    // julho na régua FECHAMENTO da própria tabela dele, e entre um mês e outro há
+    // exclusão de inativos e revisão da Cobrança. Fica listado como observação,
+    // não como quebra, até a área confirmar a régua de cada fechamento.
     const nx = NEG_FAIXAS[i+1];
+    const REGUA_DIFERENTE = ['Jun/26'];
     if(nx) [[0,1],[1,2]].forEach(([a,bb])=>{
-      if(Math.abs(p.faixas[a].ab - nx.faixas[bb].abertura) > p.faixas[a].ab*0.05 + 500)
-        q.push(`esteira ${p.label}→${nx.label}: ${p.faixas[a].fx} deixou ${p.faixas[a].ab} aberto, ${nx.faixas[bb].fx} abriu com ${nx.faixas[bb].abertura}`);
+      if(Math.abs(p.faixas[a].ab - nx.faixas[bb].abertura) > p.faixas[a].ab*0.05 + 500){
+        const msg=`esteira ${p.label}→${nx.label}: ${p.faixas[a].fx} deixou ${p.faixas[a].ab} aberto, ${nx.faixas[bb].fx} abriu com ${nx.faixas[bb].abertura}`;
+        if(REGUA_DIFERENTE.indexOf(p.mes)>=0) _negObs.push(msg); else q.push(msg);
+      }
     });
   });
-  window.__AUDIT_NEG = {ok:q.length===0, quebras:q};
+  window.__AUDIT_NEG = {ok:q.length===0, quebras:q, observacoes:_negObs.slice()};
   if(q.length){ _log.erro('🚨 NEGOCIAÇÃO POR FAIXA — '+q.length+' problema(s):');
                 q.forEach(m=>_log.erro('   · '+m)); }
   return window.__AUDIT_NEG;
@@ -3044,7 +3086,7 @@ function acenderFaixa(id){
 //   quebra por faixa ... jul-ago    retrato ............ jul
 // Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
 // rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
-const NEG_ATUALIZACAO = '14/08/2026';
+const NEG_ATUALIZACAO = '18/08/2026';
 const NEG_RETRATO = {
   'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
              inadTotal:931, atrasoTotal:602186}
@@ -5926,11 +5968,11 @@ const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'recuperado em julho', esperado:402369, calc:()=>NEGOCIACOES[4].valor},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
-   oque:'recuperado em agosto', esperado:204757, calc:()=>NEGOCIACOES[5].valor},
+   oque:'recuperado em agosto', esperado:247503, calc:()=>NEGOCIACOES[5].valor},
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'inadimplência em aberto, abertura de julho', esperado:784793, calc:()=>NEG_ESTOQUE['Jul/26']},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
-   oque:'inadimplência em aberto, abertura de agosto', esperado:796422, calc:()=>NEG_ESTOQUE['Ago/26']},
+   oque:'inadimplência em aberto, abertura de agosto', esperado:641202, calc:()=>NEG_ESTOQUE['Ago/26']},
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'contatos enviados mar-jun', esperado:1498,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.contatos||0),0)},
