@@ -2977,6 +2977,19 @@ const NEG_FAIXAS = [
       {fx:'FORA', idade:'4+ meses', ref:'≤ fev/26', abertura:112414, rec:4416,   ab:107998},
     ], selo:228148200 },
   { mes:'Jul/26', label:'Julho/2026', fechado:true,
+    // TAXAS REVISADAS pela Cobrança em 19/08 (imagem "RECUPERADO JULHO"):
+    //   FX1 71% · FX2 52% · FX3 79% · FORA 22% · TOTAL 57%
+    // Elas NÃO batem com os valores absolutos que temos de julho, que dão
+    // 63,2 · 53,3 · 43,2 · 14,3 · 51,3. A FX3 é a maior diferença: 79% contra
+    // 43,2%. Para a taxa total ser 57% com recuperado de R$ 402.369, a base
+    // teria de ser R$ 705.911 — não é o fechamento (784.793) nem o início
+    // (879.654), então julho foi recalculado numa régua que ainda não temos.
+    // Enquanto a tabela nova não chega, a LINHA DE COMPARAÇÃO do gráfico usa as
+    // taxas informadas (é o que a área quer ver) e os CARDS e COLUNAS de julho
+    // seguem com os valores absolutos conferidos. As duas leituras convivem, e a
+    // legenda avisa. Ao receber a tabela de julho revisada, substituir os
+    // absolutos e apagar pctsInformados — aí tudo volta a sair de uma fonte só.
+    pctsInformados:{fx:[71,52,79,22], total:57, em:'19/08/2026'},
     fonte:'Fechamento Julho/26 (Cobrança)', importadoEm:'13/08/2026',
     inicio:879654, base:784793, totRec:402369, totAb:382424,
     faixas:[
@@ -3366,8 +3379,13 @@ function renderNegFaixas(meses, pfx){
   const cols=[...p.faixas.map(f=>({...f, tot:f.abertura})),
     {fx:'TOTAL', idade:'todas as faixas', ref:'', abertura:p.base, rec:p.totRec, ab:p.totAb, tot:p.base, total:true}];
   const anteriores = NEG_FAIXAS.filter(x=>x.mes!==p.mes && NEG_FAIXAS.indexOf(x)<NEG_FAIXAS.indexOf(p));
-  const comps = anteriores.slice(-1).map(q=>({id:'cmp_'+q.mes, label:'Recuperado '+q.label.split('/')[0],
-    cor:'#ffd32a', pcts:[...q.faixas.map(f=>f.rec/f.abertura*100), q.totRec/q.base*100]}));
+  const comps = anteriores.slice(-1).map(q=>({
+    id:'cmp_'+q.mes, label:'Recuperado '+q.label.split('/')[0], cor:'#ffd32a',
+    informado: !!q.pctsInformados,
+    // Se a área informou as taxas direto, valem elas; senão, calcula dos absolutos.
+    pcts: q.pctsInformados
+      ? [...q.pctsInformados.fx, q.pctsInformados.total]
+      : [...q.faixas.map(f=>f.rec/f.abertura*100), q.totRec/q.base*100]}));
 
   const W=880,H=372,L=52,R=22,T=44,B=64, pw=W-L-R, ph=H-T-B;
   const y=v=>T+ph-(v/100*ph);
@@ -3409,7 +3427,7 @@ function renderNegFaixas(meses, pfx){
   lEl.innerHTML =
     `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#00e5a0"></span>Recuperado — <b>${fmtBRL0(p.totRec)}</b></div>`+
     `<div class="legend-btn" data-sf="barras" onclick="acenderFaixa('barras')"><span class="dot" style="background:#6d4fe0"></span>Em aberto — <b>${fmtBRL0(p.totAb)}</b></div>`+
-    comps.map(cm=>`<div class="legend-btn" data-sf="${cm.id}" onclick="acenderFaixa('${cm.id}')"><span class="dot" style="background:${cm.cor}"></span>${cm.label}</div>`).join('') +
+    comps.map(cm=>`<div class="legend-btn" data-sf="${cm.id}" onclick="acenderFaixa('${cm.id}')"><span class="dot" style="background:${cm.cor}"></span>${cm.label}${cm.informado?' <span class="muted">· taxas informadas pela Cobrança</span>':''}</div>`).join('') +
     // A linha amarela compara com o mês fechado anterior. No PRIMEIRO mês da
     // série (jul/26) não existe anterior, e o gráfico saía sem linha e sem
     // explicação — a diferença entre as telas de jul e ago gerou dúvida.
@@ -4941,7 +4959,20 @@ const VENDAS_EXTRA_MESES = {
     //   · a numeração pula o #5 (vai de 4 para 6);
     //   · o #14 é uma linha só com nome, duplicata do #15 (ANDRÉIA ZEN),
     //     sem valor, data, matrícula ou consultor.
-    // ── ATUALIZADO EM 17/08 (ENTRADAS_REALIZADAS_V6 · importar 17_8) ─────────
+    // ── ATUALIZADO EM 19/08 (ENTRADAS_REALIZADAS_V6 · importar 19) ───────────
+    // 36 vendas · R$ 23.223,27 · ticket R$ 645,09.
+    // O valor bate EXATAMENTE com a Taxa de Adesão declarada no topo da planilha.
+    // Contagem: a planilha declara 36 e o diretor confirmou 36. As linhas com
+    // valor são 33; a diferença de 3 vem da numeração pular o #5, do #14
+    // (ANDRÉIA ZEN, linha sem valor) e de mais um registro ainda não lançado.
+    // Como as quebras só conseguem detalhar 33, entram com a linha
+    // "Aguardando registro na planilha" (qtd 3, valor 0) para fechar em 36 sem
+    // inventar consultor, canal ou categoria. Some sozinha quando a Vendas
+    // completar os lançamentos.
+    // Canal "Vista" (1 registro) foi lido como Visita — erro de digitação na
+    // origem; Visita passa de 6 para 7.
+    //
+    // ── histórico: 17/08 (V6 · importar 17_8) ────────────────────────────────
     // As 2 vendas da Nicole que estavam "a informar" ENTRARAM na planilha, com
     // canal e categoria. Nada mais fica pendente nesta aba.
     //   24 vendas com valor · R$ 17.384,06 · ticket R$ 724,34
@@ -4969,27 +5000,32 @@ const VENDAS_EXTRA_MESES = {
     // R$ 15.731,31 estão inteiros nos 22 registros com adesão.
     // As 6 em efetivação (R$ 3.006,00) ficam em VENDAS_EM_PROCESSO, fora dos cards.
     periodoTag:'Agosto/2026 (parcial · até 14/08)',
-    associacoesNovas:'24', valorArrecadado:'R$ 17.384,06', ticketMedio:'R$ 724,34',
+    associacoesNovas:'36', valorArrecadado:'R$ 23.223,27', ticketMedio:'R$ 645,09',
     campanhas:[
-      {nome:'Promo Aniversário', qtd:15, cor:'#f2b705'},
-      {nome:'Visita', qtd:3, cor:'#00e5a0'},
+      {nome:'Promo Aniversário', qtd:18, cor:'#f2b705'},
+      {nome:'Visita', qtd:7, cor:'#00e5a0'},
       {nome:'Convênio', qtd:3, cor:'#a855f7'},
+      {nome:'Amigo Indica', qtd:2, cor:'#fb923c'},
       {nome:'Convênio OAB', qtd:1, cor:'#06b6d4'},
       {nome:'Promo o Melhor das Férias', qtd:1, cor:'#3d7bff'},
       {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
+      {nome:'Aguardando registro na planilha', qtd:3, cor:'#4a4c68'},
     ],
     consultores:[
-      {nome:'Helena', qtd:14, valor:10226.01},
-      {nome:'Nicole', qtd:4, valor:3236.79},
-      {nome:'Claudia', qtd:4, valor:3074.26},
+      {nome:'Helena', qtd:18, valor:12975.02},
+      {nome:'Nicole', qtd:8, valor:5825.99},
+      {nome:'Claudia', qtd:5, valor:3575.26},
       {nome:'Sabrina', qtd:2, valor:847.00},
+      {nome:'Aguardando registro na planilha', qtd:3, valor:0},
     ],
     categorias:[
-      {nome:'Contribuinte', qtd:21},
+      {nome:'Contribuinte', qtd:28},
       {nome:'Contribuinte Sênior', qtd:2},
+      {nome:'Contribuinte Teen', qtd:2},
       {nome:'Sênior', qtd:1},
+      {nome:'Aguardando registro na planilha', qtd:3},
     ],
-    alerta: 'Mês em andamento — <b>24 associações novas até 17/08</b>, somando <b>R$ 17.384,06</b>, exatamente a Taxa de Adesão declarada na planilha. Há ainda <b>6 vendas em efetivação</b> (R$ 3.006,00), no bloco próprio abaixo, que entram nos cards quando confirmadas. A <b>campanha de aniversário responde por 15 das 24 vendas</b> — 62,5% do mês. <b>Duas consultoras estreiam em agosto: Helena e Nicole</b> — Helena com <b>14 vendas e R$ 10.226,01</b>, mais que as outras duas somadas, e Nicole com 4 vendas e o <b>maior ticket do mês, R$ 809,20</b>. Ticket médio geral de R$ 724,34, acima dos R$ 633,20 de julho. <b>A meta de agosto subiu para 42</b> (desafio 100), contra 23 em julho: o mês está em 57% da meta.',
+    alerta: '<b>🤝 O setor de Vendas fechou parceria com a Secretaria de Cultura.</b> É um ganho importante para o setor e para o clube, e abre um canal novo de captação.<br><br>Mês em andamento — <b>36 associações novas até 19/08</b>, somando <b>R$ 23.223,27</b>, exatamente a Taxa de Adesão declarada na planilha. Há ainda <b>6 vendas em efetivação</b> (R$ 3.006,00), no bloco próprio abaixo. A <b>campanha de aniversário responde por 18 vendas</b> e as visitas saltaram de 3 para 7. <b>Helena chega a 18 vendas e R$ 12.975,02</b>, e <b>Nicole dobra para 8 vendas</b> — as duas estreantes de agosto somam 26 das 36. Ticket médio de R$ 645,09. <b>A meta de agosto é 42</b> (desafio 100): o mês está em <b>86% da meta</b>, contra 57% em 17/08.',
     metas:{
       // Meta de reingresso de agosto = 40 e desafio = 45, informados pela
       // Sec. Adm. TOTAL da tabela = desafioVenda + desafioReingresso (26+45).
@@ -4997,10 +5033,10 @@ const VENDAS_EXTRA_MESES = {
       // META CORRIGIDA EM 17/08: a planilha declara orçado 42 e desafio 100 para
       // agosto (julho era 23 e 26). O painel estava com os números de julho —
       // a versão de 14/08 da planilha já traía 42/100 e passou batido.
-      vendas:{orcado:42, real:24}, reingressos:{orcado:40, real:15},
-      totalVR:{orcado:82, real:39}, desafioVenda:100, desafioReingresso:45,
-      total:{orcado:145, real:39, gap:-106},
-      taxaAdesao:17384.06, taxaReingresso:12687.40, taxaTotal:30071.46,
+      vendas:{orcado:42, real:36}, reingressos:{orcado:40, real:15},
+      totalVR:{orcado:82, real:51}, desafioVenda:100, desafioReingresso:45,
+      total:{orcado:145, real:51, gap:-94},
+      taxaAdesao:23223.27, taxaReingresso:12687.40, taxaTotal:35910.67,
     },
   },
 };
@@ -5988,11 +6024,11 @@ const TOTAIS_ASSINADOS = [
   {aba:'Esportes', doc:'ORÇADO 2026 - importar para o painel', ate:'dez/2026',
    oque:'orçado do ano, 31 modalidades', esperado:4834547.97,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.od.reduce((a,b)=>a+b,0)+m.orr.reduce((a,b)=>a+b,0),0)},
-  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · importar 17_8', ate:'17/08/2026',
-   oque:'soma das vendas por consultor = valor arrecadado', esperado:17384.06,
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · importar 19', ate:'19/08/2026',
+   oque:'soma das vendas por consultor = valor arrecadado', esperado:23223.27,
    calc:()=>VENDAS_EXTRA_MESES.ago2026.consultores.reduce((t,c)=>t+c.valor,0)},
   {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · Agosto-2026', ate:'14/08/2026',
-   oque:'soma das vendas por campanha = associações novas', esperado:24,
+   oque:'soma das vendas por campanha = associações novas', esperado:36,
    calc:()=>VENDAS_EXTRA_MESES.ago2026.campanhas.reduce((t,c)=>t+c.qtd,0)},
   {aba:'Esportes', doc:'REALIZADO 2025 (mesma pasta)', ate:'dez/2025',
    oque:'realizado 2025, 31 modalidades', esperado:2424200.08,
