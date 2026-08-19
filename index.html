@@ -3418,7 +3418,10 @@ function renderNegFaixas(meses, pfx){
     const pts=cm.pcts.map((v,i)=>`${cx(i)},${y(v)}`).join(' ');
     linhas+=`<g data-sf="${cm.id}" style="transition:opacity .25s;">
       <polyline points="${pts}" fill="none" stroke="${cm.cor}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-      ${cm.pcts.map((v,i)=>`<circle cx="${cx(i)}" cy="${y(v)}" r="4.2" fill="#13151d" stroke="${cm.cor}" stroke-width="2.2"><title>${cm.label}: ${fmtPct(v)}</title></circle>`).join('')}</g>`;
+      ${cm.pcts.map((v,i)=>`<circle cx="${cx(i)}" cy="${y(v)}" r="4.2" fill="#13151d" stroke="${cm.cor}" stroke-width="2.2"><title>${cm.label}: ${fmtPct(v)}</title></circle>`).join('')}
+      ${/* 19/08: o número de cada ponto passa a ficar ESCRITO. Antes só existia no
+            tooltip, e a linha do mês anterior parecia não ter valor nenhum. */''}
+      ${cm.pcts.map((v,i)=>`<text x="${cx(i)}" y="${y(v)-11}" text-anchor="middle" fill="${cm.cor}" font-size="11.5" font-weight="800" paint-order="stroke" stroke="#13151d" stroke-width="3" stroke-linejoin="round">${Math.round(v)}%</text>`).join('')}</g>`;
   });
 
   cEl.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:100%; max-width:${W}px; height:auto;">
