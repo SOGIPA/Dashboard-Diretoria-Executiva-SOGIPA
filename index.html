@@ -2163,29 +2163,30 @@ const REINGRESSO_HISTORICO = [
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
   {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
     campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
-  // Agosto/26 — parcial, ATUALIZADO EM 21/08 (Sec. Adm.).
-  //   15 -> 30 reingressos · R$ 12.687,40 -> R$ 18.698,81 · ticket R$ 623,29
-  // CAMPANHAS informadas somam 13 (6 + 4 + 2 + 1); as outras 17 entraram sem
-  // campanha vinculada e vão para a linha própria, como julho já faz.
-  // CATEGORIAS: a Sec. Adm. não enviou a abertura desta rodada. As três linhas
-  // abaixo são as dos 15 primeiros reingressos (8 + 5 + 2), informadas em 14/08.
-  // Os 15 novos entram como "Categoria a informar" para o gráfico fechar em 30
-  // sem inventar distribuição. Some quando a área mandar a abertura.
-  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial · até 21/08)', total:30, valor:18698.81,
+  // Agosto/26 — parcial, ATUALIZADO EM 24/08 (Sec. Adm., informado pela gestora).
+  //   30 -> 40 reingressos · R$ 18.698,81 -> R$ 23.284,81 · ticket R$ 582,12
+  // META BATIDA: 40 de 40 (100%); desafio 45 em 88,9%.
+  // CAMPANHAS informadas seguem somando 13 (6 + 4 + 2 + 1); as outras 27 entraram
+  // sem campanha vinculada e vão para a linha própria, como julho já faz.
+  // CATEGORIAS: a Sec. Adm. ainda não enviou a abertura. As três linhas abaixo são
+  // as dos 15 primeiros reingressos (8 + 5 + 2), informadas em 14/08. Os outros 25
+  // entram como "Categoria a informar" para o gráfico fechar em 40 sem inventar
+  // distribuição. Some quando a área mandar a abertura.
+  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial · até 24/08)', total:40, valor:23284.81,
     campanhas:[
-      {nome:'Sem campanha vinculada', qtd:17, cor:'#4a4c68'},
+      {nome:'Sem campanha vinculada', qtd:27, cor:'#4a4c68'},
       {nome:'Lista de excluídos', qtd:6, cor:'#3d7bff'},
       {nome:'Aniversariantes de agosto', qtd:4, cor:'#00e5a0'},
       {nome:'Patrimonial (Benefícios)', qtd:2, cor:'#a855f7'},
       {nome:'Pesquisa de satisfação', qtd:1, cor:'#f2b705'},
     ],
     categorias:[
-      {nome:'Categoria a informar', qtd:15, cor:'#4a4c68'},
+      {nome:'Categoria a informar', qtd:25, cor:'#4a4c68'},
       {nome:'Contribuinte', qtd:8, cor:'#3d7bff'},
       {nome:'Patrimonial', qtd:5, cor:'#00e5a0'},
       {nome:'Contribuinte Individual', qtd:2, cor:'#f2b705'},
     ],
-    alerta: 'Agosto em andamento — <b>30 reingressos e R$ 18.698,81</b> até 21/08, o <b>dobro dos 15 registrados em 14/08</b>. A meta do mês é 40 (desafio 45): o mês está em <b>75% da meta</b>, contra 37,5% uma semana atrás. As campanhas identificadas respondem por <b>13 dos 30</b>: lista de excluídos (6), aniversariantes de agosto (4), Patrimonial/Benefícios (2) e pesquisa de satisfação (1) — os outros 17 entraram sem campanha vinculada. Ticket médio de R$ 623,29, abaixo dos R$ 845,83 de 14/08: o volume novo veio com valor menor por reingresso. <b>A abertura por categoria dos 15 novos ainda não foi enviada.</b>'},
+    alerta: 'Agosto em andamento — <b>40 reingressos e R$ 23.284,81</b> até 24/08, contra 30 e R$ 18.698,81 em 21/08. <b style=\"color:var(--green);\">A meta do mês, de 40, foi batida</b> (100%); o desafio de 45 está em 88,9%. As campanhas identificadas respondem por <b>13 dos 40</b>: lista de excluídos (6), aniversariantes de agosto (4), Patrimonial/Benefícios (2) e pesquisa de satisfação (1) — os outros 27 entraram sem campanha vinculada. Ticket médio de R$ 582,12, ante R$ 623,29 em 21/08: o volume novo seguiu vindo com valor menor por reingresso. <b>A Sec. Adm. não enviou a abertura por campanha nem por categoria desta rodada</b>, então os 10 reingressos novos entram sem campanha vinculada e como categoria a informar, para os gráficos fecharem em 40 sem inventar distribuição.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -2366,8 +2367,8 @@ const FOLHA_DADOS = {
 };
 
 const DP_INDICADORES = {
-  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,111,78,73,null,null], meta:null, formato:'int', invertido:true,   // jun e jul: 'AGUARDANDO RH' na planilha
-                     nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária.'},
+  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
+                     nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
   horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16], meta:null, formato:'num', jornada:true},
   horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
@@ -5086,10 +5087,10 @@ const VENDAS_EXTRA_MESES = {
       // META CORRIGIDA EM 17/08: a planilha declara orçado 42 e desafio 100 para
       // agosto (julho era 23 e 26). O painel estava com os números de julho —
       // a versão de 14/08 da planilha já traía 42/100 e passou batido.
-      vendas:{orcado:42, real:48}, reingressos:{orcado:40, real:30},
-      totalVR:{orcado:82, real:78}, desafioVenda:100, desafioReingresso:45,
-      total:{orcado:145, real:78, gap:-67},
-      taxaAdesao:29500.35, taxaReingresso:18698.81, taxaTotal:48199.16,
+      vendas:{orcado:42, real:48}, reingressos:{orcado:40, real:40},
+      totalVR:{orcado:82, real:88}, desafioVenda:100, desafioReingresso:45,
+      total:{orcado:145, real:88, gap:-57},
+      taxaAdesao:29500.35, taxaReingresso:23284.81, taxaTotal:52785.16,
     },
   },
 };
@@ -6417,10 +6418,10 @@ const RETENCAO_CRA = [
  {
   "nome": "B.G.",
   "cat": "Patrimonial Individual",
-  "perm": "desistiu do desligamento",
-  "mes": null,
-  "inicio": null,
-  "valor": 0.0,
+  "perm": "6 meses",
+  "mes": "mai2026",
+  "inicio": "01/05/2026",
+  "valor": 2154.0,
   "beneficios": [],
   "vBeneficio": 0.0,
   "negociacao": null,
@@ -6809,6 +6810,119 @@ const RETENCAO_CRA = [
   "vBeneficio": 334.0,
   "negociacao": "Parcelamento 12x",
   "vNegociacao": 2012.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "M.M.",
+  "cat": "Contribuinte Individual",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 2154.0,
+  "beneficios": [
+   "Isenção Mensalidade"
+  ],
+  "vBeneficio": 359.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "M.L.S.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3M Ginástica"
+  ],
+  "vBeneficio": 519.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "K.B.C.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3M Ginástica",
+   "3M Academia"
+  ],
+  "vBeneficio": 825.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "A.C.C.",
+  "cat": "Contribuinte Individual",
+  "perm": "12 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 4308.0,
+  "beneficios": [
+   "3M Academia"
+  ],
+  "vBeneficio": 840.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "U.K.",
+  "cat": "Contribuinte Sênior",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 1596.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "P.M.F.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "Isenção Dependente"
+  ],
+  "vBeneficio": 1002.0,
+  "negociacao": "Isenção do dependente até dezembro como acompanhante em atividade",
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "C.C.B.",
+  "cat": "Contribuinte Individual",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 2154.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
+  "vBeneficio": 0.0,
+  "negociacao": "Troca de plano para Contribuinte Individual",
+  "vNegociacao": 0.0,
   "sucesso": true,
   "beneficioUsado": true
  }
@@ -11364,21 +11478,21 @@ const DESLIGAMENTOS_MESES = {
   ago2026: {
     periodoTag:'Agosto/2026 (parcial)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'41', sub:'no período'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'45', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'20', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'36', sub:'com data de desligamento', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'5', sub:'3 retenções + 2 licenças', valorCor:'#00e5a0'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'37', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'8', sub:'5 retenções + 3 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:16, cor:'#3d7bff'},{nome:'Patrimonial', qtd:7, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:5, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Contribuinte Universitário', qtd:3, cor:'#5a5c78'},{nome:'Contribuinte Derivado', qtd:1, cor:'#fb923c'},{nome:'Veterano', qtd:1, cor:'#06b6d4'}],
-    motivos:[{motivo:'Financeiro', qtd:13, pct:36.11, cor:'#00e5a0'},{motivo:'Não utilização', qtd:9, pct:25.00, cor:'#3d7bff'},{motivo:'Mudança', qtd:4, pct:11.11, cor:'#f2b705'},{motivo:'Pessoal', qtd:3, pct:8.33, cor:'#b0b0d0'},{motivo:'Saúde', qtd:2, pct:5.56, cor:'#a855f7'},{motivo:'Falecimento', qtd:2, pct:5.56, cor:'#5a5c78'},{motivo:'Atualização', qtd:2, pct:5.56, cor:'#06b6d4'},{motivo:'Insatisfação', qtd:1, pct:2.78, cor:'#e8192c'}],
-    totalDesligamentos:36,
+    categorias:[{nome:'Contribuinte', qtd:16, cor:'#3d7bff'},{nome:'Patrimonial', qtd:7, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:6, cor:'#a855f7'},{nome:'Veterano Contribuinte', qtd:3, cor:'#f2b705'},{nome:'Contribuinte Universitário', qtd:3, cor:'#5a5c78'},{nome:'Contribuinte Derivado', qtd:1, cor:'#fb923c'},{nome:'Veterano', qtd:1, cor:'#06b6d4'}],
+    motivos:[{motivo:'Financeiro', qtd:14, pct:37.84, cor:'#00e5a0'},{motivo:'Não utilização', qtd:9, pct:24.32, cor:'#3d7bff'},{motivo:'Mudança', qtd:4, pct:10.81, cor:'#f2b705'},{motivo:'Pessoal', qtd:3, pct:8.11, cor:'#b0b0d0'},{motivo:'Saúde', qtd:2, pct:5.41, cor:'#a855f7'},{motivo:'Falecimento', qtd:2, pct:5.41, cor:'#5a5c78'},{motivo:'Atualização', qtd:2, pct:5.41, cor:'#06b6d4'},{motivo:'Insatisfação', qtd:1, pct:2.70, cor:'#e8192c'}],
+    totalDesligamentos:37,
     ticketMedio:'R$ 598,23', dependentes:'1,8', residual:'16', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:7, nao:21},
-    quadroSocial:40,
+    quadroSocial:44,
     negociacoesDesligados:'R$ 0,00',
-    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Mês em andamento</b> — posição 24/08. <b>41 solicitações</b>, com 36 desligamentos e 5 retidos (3 retenções + 2 licenças). <b>Financeiro é o motivo dominante (13 de 36, 36,1%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 36 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura. <b style=\"color:var(--gold);\">A gestora reviu o quadro-resumo em 24/08</b>: \"fianceiro\" foi somado a Financeiro (12→13), Atualização passou a constar (2) e o veterano isento foi corrigido de 0 para 1 — com isso o resumo passou a fechar com as linhas, o que não acontecia na versão anterior.',
+    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Mês em andamento</b> — posição 24/08. <b>45 solicitações</b>, com 37 desligamentos e 8 retidos na aba (5 retenções + 3 licenças). <b>Financeiro é o motivo dominante (14 de 37, 37,8%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 37 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. <b style=\"color:var(--gold);\">O campo \"quantos foram desligados\" da planilha ficou em 36</b> enquanto o total do quadro, as categorias e os motivos já dizem 37; vale a contagem de 37, confirmada pela gestora. Por isso as solicitações aqui somam 45 (37 + 8), e não os 44 declarados naquele mesmo campo.',
 
   },
 };
