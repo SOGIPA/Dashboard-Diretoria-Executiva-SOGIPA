@@ -4591,15 +4591,21 @@ const PAGAMENTOS_MESES = {
     ],
   },
   ago2026: {
-    // Agosto em andamento, CONSOLIDADO em 24/08: cortes de 03-07, 10-14 e 17-21/08.
-    // Dias 01, 02, 08, 09, 15, 16, 22 e 23 caíram em fim de semana — sem execução.
-    // O corte novo trouxe 159 lançamentos e R$ 1.369.923,51, conferidos contra o
-    // rodapé do relatório. Total do mês até aqui: 504 lançamentos · R$ 3.392.600,22.
-    label:'Agosto/2026 (parcial · 03 a 21/08)', qtd:504, total:3392600.22,
-    maiorQtd:89, maiorTotal:2837056.88, menorQtd:415, menorTotal:555543.34,
+    // Agosto em andamento, CONSOLIDADO em 28/08: cortes de 03-07, 10-14, 17-21 e 24-28/08.
+    // Dias 01, 02, 08, 09, 15, 16, 22, 23, 29 e 30 caíram em fim de semana — sem execução.
+    // O corte novo trouxe 144 lançamentos e R$ 531.044,47, recontados dos lançamentos brutos.
+    // Total do mês até aqui: 648 lançamentos · R$ 3.923.644,69.
+    // Quantidade, valor, faixas e bancos são SOMA EXATA dos quatro cortes.
+    // RESSALVA no top de fornecedores: dos cortes anteriores só temos o top-15
+    // acumulado, não os lançamentos brutos. Quem estava fora daquele top tinha menos
+    // de R$ 31.289,05 no mês e pode estar subestimado aqui. Afeta em especial Cia De Gas Do Estado Do Rs Sulgas,
+    // que aparece pela primeira vez agora. Para fechar, pedir à Controladoria o
+    // relatório ACUMULADO de 03 a 28/08 em vez dos cortes soltos.
+    label:'Agosto/2026 (parcial · 03 a 28/08)', qtd:648, total:3923644.69,
+    maiorQtd:106, maiorTotal:3208811.03, menorQtd:542, menorTotal:714833.66,
     fornecedoresDistintos:null, parcial:true,
-    top:[{nome:'Folha Pagamento',qtd:24,valor:776161.34,pct:22.88},{nome:'Secretaria Da Receita Federal',qtd:3,valor:546280.85,pct:16.10},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:4.54},{nome:'Caixa Economica Federal',qtd:4,valor:127270.43,pct:3.75},{nome:'Sam Music Edicoes Musicais Ltda',qtd:1,valor:117600.00,pct:3.47},{nome:'Departamento Municipal De Agua E Esgotos',qtd:6,valor:106003.77,pct:3.12},{nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M',qtd:6,valor:96748.86,pct:2.85},{nome:'Companhia Estadual De Distribuição De Energi',qtd:2,valor:59451.20,pct:1.75},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:2,valor:54951.00,pct:1.62},{nome:'Center Broilo Com De Sistemas De Aquecim Ltd',qtd:1,valor:49000.00,pct:1.44},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:8,valor:48078.54,pct:1.42},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:1.18},{nome:'Capitale Energia Comercializadora Ltda.',qtd:1,valor:32608.18,pct:0.96},{nome:'Merithu Consultoria Em Gestao Empresarial',qtd:1,valor:32534.66,pct:0.96},{nome:'Percorrer Atividades Fisicas Ltda-Me',qtd:1,valor:31289.05,pct:0.92}],
-    bancos:[{nome:'Banrisul',qtd:432,total:2985497.30},{nome:'Projeto Olim',qtd:55,total:243572.43},{nome:'Índices Cons',qtd:2,total:55778.98},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Patrocínio A',qtd:7,total:32150.33},{nome:'Alto Rendime',qtd:5,total:24543.20},{nome:'Caixa Sogipa',qtd:2,total:3453.50}],
+    top:[{nome:'Folha Pagamento',qtd:27,valor:790879.94,pct:20.16},{nome:'Secretaria Da Receita Federal',qtd:4,valor:546320.43,pct:13.92},{nome:'Gba Brasil Administracao De Pessoas Ltda',qtd:1,valor:153945.18,pct:3.92},{nome:'Caixa Economica Federal',qtd:5,valor:130531.65,pct:3.33},{nome:'Sam Music Edicoes Musicais Ltda',qtd:1,valor:117600.00,pct:3.00},{nome:'Departamento Municipal De Agua E Esgotos',qtd:6,valor:106003.77,pct:2.70},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:3,valor:101910.70,pct:2.60},{nome:'Unimed Porto Alegre Soc. Coop. De Trabalho M',qtd:6,valor:96748.86,pct:2.47},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:13,valor:89115.92,pct:2.27},{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:82376.10,pct:2.10},{nome:'Milwaukee Producao De Eventos Ltda',qtd:2,valor:75150.00,pct:1.92},{nome:'Companhia Estadual De Distribuição De Energi',qtd:2,valor:59451.20,pct:1.52},{nome:'Vt Solucoes Administracao E Servicos Ltda',qtd:2,valor:51281.54,pct:1.31},{nome:'Center Broilo Com De Sistemas De Aquecim Ltd',qtd:1,valor:49000.00,pct:1.25},{nome:'Rbg Setter Academy Ltda',qtd:1,valor:40000.00,pct:1.02}],
+    bancos:[{nome:'Banrisul',qtd:562,total:3481082.18},{nome:'Projeto Olim',qtd:56,total:253754.81},{nome:'Índices Cons',qtd:4,total:65858.10},{nome:'Cbc Edit 11 R',qtd:1,total:47604.48},{nome:'Patrocínio A',qtd:8,total:43551.93},{nome:'Alto Rendime',qtd:5,total:24543.20},{nome:'Caixa Sogipa',qtd:12,total:7249.99}],
   },
 };
 const COBERTURA_PAGAMENTOS = {
@@ -4663,6 +4669,9 @@ const PAGAMENTOS_POR_PERIODO = {
   '17-21ago': {label:'17 a 21/08/2026', qtd:159, total:1369923.51, maiorQtd:34, maiorTotal:1201408.73, menorQtd:125, menorTotal:168514.78,
     top:[{nome:'Secretaria Da Receita Federal',qtd:3,valor:546280.85,pct:39.88},{nome:'Folha Pagamento',qtd:6,valor:162010.54,pct:11.83},{nome:'Caixa Economica Federal',qtd:4,valor:127270.43,pct:9.29},{nome:'Companhia Estadual De Distribuição De Energi',qtd:2,valor:59451.20,pct:4.34},{nome:'Percorrer Atividades Fisicas Ltda-Me',qtd:1,valor:31289.05,pct:2.28},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:28458.50,pct:2.08},{nome:'Sara Francisca Floriano Ribas 81332602053',qtd:1,valor:26000.00,pct:1.90},{nome:'Rodrigo Da Costa Ferreiro',qtd:1,valor:21783.54,pct:1.59},{nome:'L.Andre Da Silva',qtd:1,valor:21715.96,pct:1.59},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:4,valor:19711.95,pct:1.44},{nome:'Aimoré D Goulart',qtd:1,valor:18055.29,pct:1.32},{nome:'Drogaria Benjamin',qtd:1,valor:16114.20,pct:1.18},{nome:'Decooprisma Eventos Ltda',qtd:1,valor:11626.67,pct:0.85},{nome:'Clube Patine Aulas De Patinação Eireli',qtd:1,valor:11616.84,pct:0.85},{nome:'Mercadopago.Com Representacoes Ltda.',qtd:8,valor:11149.63,pct:0.81}],
     bancos:[{nome:'Banrisul',qtd:147,total:1305404.96},{nome:'Projeto Olim',qtd:4,total:34986.04},{nome:'Alto Rendime',qtd:4,total:17043.20},{nome:'Índices Cons',qtd:1,total:6778.98},{nome:'Patrocínio A',qtd:3,total:5710.33}]},
+  '24-28ago': {label:'24 a 28/08/2026', qtd:144, total:531044.47, maiorQtd:17, maiorTotal:371754.15, menorQtd:127, menorTotal:159290.32,
+    top:[{nome:'Cia De Gas Do Estado Do Rs Sulgas',qtd:1,valor:82376.10,pct:15.51},{nome:'Milwaukee Producao De Eventos Ltda',qtd:2,valor:75150.00,pct:14.15},{nome:'Vt Solucoes Administracao E Servicos Ltda',qtd:2,valor:51281.54,pct:9.66},{nome:'Vitale Restaurantes Empresariais Ltda',qtd:1,valor:46959.70,pct:8.84},{nome:'5 Continentes Viagens E Assessoria Ltda',qtd:5,valor:41037.38,pct:7.73},{nome:'3S Solucoes Em Servicos E Seguranca Ltda',qtd:1,valor:24534.45,pct:4.62},{nome:'Folha Pagamento',qtd:3,valor:14718.60,pct:2.77},{nome:'Federação Gaucha De Judô',qtd:3,valor:13364.85,pct:2.52},{nome:'Teletex Sul Tecnologia E Automacao Ltda',qtd:4,valor:11075.37,pct:2.09},{nome:'59.520.521 Irineu Santos Da Silva',qtd:2,valor:11024.51,pct:2.08}],
+    bancos:[{nome:'Banrisul',qtd:130,total:495584.88},{nome:'Patrocínio A',qtd:1,total:11401.60},{nome:'Projeto Olim',qtd:1,total:10182.38},{nome:'Índices Cons',qtd:2,total:10079.12},{nome:'Caixa Sogipa',qtd:10,total:3796.49}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -4677,7 +4686,8 @@ const PERIODOS = [
   {key:'27-31jul',     temDados:{pagamentos:true}, ini:'2026-07-27', fim:'2026-07-31'},
   {key:'03-07ago',     temDados:{pagamentos:true}, ini:'2026-08-03', fim:'2026-08-07'},
   {key:'10-14ago',     temDados:{pagamentos:true}, ini:'2026-08-10', fim:'2026-08-14'},
-  {key:'17-21ago',     temDados:{pagamentos:true}, ini:'2026-08-17', fim:'2026-08-21', atual:true},
+  {key:'17-21ago',     temDados:{pagamentos:true}, ini:'2026-08-17', fim:'2026-08-21'},
+  {key:'24-28ago',     temDados:{pagamentos:true}, ini:'2026-08-24', fim:'2026-08-28', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
