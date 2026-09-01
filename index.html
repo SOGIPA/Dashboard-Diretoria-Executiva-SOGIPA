@@ -13672,10 +13672,10 @@ function renderObras(){
             <td class="num muted">${(e.valor/o.contabilizadoVendas*100).toFixed(1).replace('.',',')}%</td>
           </tr>`).join('')}
           <tr class="total-highlight" style="font-weight:800;">
-            <td style="color:var(--red);">TOTAL</td>
-            <td class="num" style="color:var(--red);">${o.areaVendida.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-            <td class="num" style="color:var(--red);">${fmtBRL0(o.contabilizadoVendas)}</td>
-            <td class="num" style="color:var(--red);">100,0%</td>
+            <td style="color:var(--green);">TOTAL</td>
+            <td class="num" style="color:var(--green);">${o.areaVendida.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+            <td class="num" style="color:var(--green);">${fmtBRL0(o.contabilizadoVendas)}</td>
+            <td class="num" style="color:var(--green);">100,0%</td>
           </tr>
         </tbody>
       </table>
@@ -14548,7 +14548,7 @@ function pintarVendas(v, aviso){
                 <td style="color:var(--green);">TOTAL</td><td class="num" style="color:var(--green);">${totC}</td>
                 <td class="num" style="color:var(--green);">${fmtBRL(totV)}</td>
                 <td class="num" style="color:var(--green);">${fmtBRL(totV/totC)}</td>
-                <td class="num" style="color:var(--red);">100,0%</td></tr>
+                <td class="num" style="color:var(--green);">100,0%</td></tr>
             </tbody>
           </table>
         </div>
