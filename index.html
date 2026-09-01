@@ -14597,13 +14597,26 @@ function renderMetasSetorHTML(mt){
             ${linha('Meta Desafio Reingressos', mt.desafioReingresso, null)}
           </tbody>
           <tfoot><tr style="font-weight:800; border-top:2px solid var(--border);">
-            <td>TOTAL</td>
+            <td>TOTAL — Desafio</td>
             <td class="num">${mt.total.orcado}</td>
             <td class="num">${mt.total.real}</td>
-            <td class="num" style="color:${mt.total.gap>=0?'var(--green)':'var(--red)'};">${mt.total.gap>=0?'+':''}${mt.total.gap}</td>
+            ${(()=>{
+              // O gap compara o realizado contra o DESAFIO (${mt.desafioVenda} + ${mt.desafioReingresso}),
+              // não contra a meta da coluna de cima. Vermelho só quando o setor
+              // está abaixo da PRÓPRIA meta; se a meta já foi batida e falta
+              // apenas para o desafio, o número sai em âmbar, não em vermelho.
+              const bateuMeta = mt.totalVR.real >= mt.totalVR.orcado;
+              const cor = mt.total.gap>=0 ? 'var(--green)' : (bateuMeta ? 'var(--gold)' : 'var(--red)');
+              const tit = mt.total.gap>=0
+                ? 'Desafio batido'
+                : (bateuMeta
+                    ? `Meta do setor superada (${mt.totalVR.real} de ${mt.totalVR.orcado}); faltam ${Math.abs(mt.total.gap)} para o desafio de ${mt.total.orcado}`
+                    : `Abaixo da meta do setor e do desafio de ${mt.total.orcado}`);
+              return `<td class="num" style="color:${cor};" title="${tit}">${mt.total.gap>=0?'+':''}${mt.total.gap}</td>`;
+            })()}
           </tr></tfoot>
         </table>
-        <div class="card-meta" style="margin-top:10px;">💡 Última coluna do total mostra o gap absoluto (real − orçado), não %, igual na planilha de origem.</div>
+        <div class="card-meta" style="margin-top:10px;">💡 O <b style="color:var(--text);">TOTAL — Desafio</b> compara o realizado com a soma das duas metas de desafio (${mt.desafioVenda} + ${mt.desafioReingresso} = ${mt.total.orcado}), e não com o orçado de ${mt.totalVR.orcado} da linha acima. A última coluna é o gap absoluto (real − orçado), não %, igual na planilha de origem.${mt.total.gap<0 && mt.totalVR.real>=mt.totalVR.orcado ? ` Neste período a <b style="color:var(--green);">meta do setor foi superada</b> (${mt.totalVR.real} de ${mt.totalVR.orcado}) — o número em âmbar é o que falta para o desafio, não um déficit contra a meta.` : ''}</div>
       </div>
       <div class="card">
         <div class="card-label">Taxas (Adesão + Reingresso)</div>
