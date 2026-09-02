@@ -2175,22 +2175,27 @@ const REINGRESSO_HISTORICO = [
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
   {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
     campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
-  // Agosto/26 — parcial, ATUALIZADO EM 28/08 (Sec. Adm., informado pela gestora).
-  //   40 -> 55 reingressos · R$ 23.284,81 -> R$ 30.181,56 · ticket R$ 548,76
-  // META SUPERADA: 55 de 40 (137.5%); desafio 45 em 122.2%.
-  // Primeira rodada com a ABERTURA COMPLETA por campanha: as 5 campanhas somam
-  // exatamente 55, então a linha "Sem campanha vinculada" deixou de existir.
-  // CATEGORIAS: fechadas em 55. O reingresso que faltava era PATRIMONIAL — a
-  // gestora confirmou em 31/08, então Patrimonial foi de 12 para 13 e a linha
-  // "Categoria a informar" saiu. Confirmação verbal, sem planilha nova; se a
-  // próxima carga trouxer a abertura por escrito, conferir contra isto.
-  {mesKey:'ago2026', periodoTag:'Agosto/2026 (parcial · até 28/08)', total:55, valor:30181.56,
+  // Agosto/26 — MÊS FECHADO, atualizado em 02/09 (peça "Entradas de Reingresso,
+  //   01 a 31 de agosto" + correção do diretor).
+  //   55 -> 68 reingressos · R$ 30.181,56 -> R$ 37.329,06 · ticket R$ 548,96 · ~980 contatos
+  // META BATIDA: 68 de 40 (170%); desafio 45 em 151%.
+  // DIVERGÊNCIA: a peça declara 66 em três lugares (card, resumo geral e a soma
+  //   das campanhas 39+14+7+5+1). O diretor informou 68. Vale o 68; os 2 de
+  //   diferença entram como "Aguardando registro na campanha". Se o certo for
+  //   66, mudar aqui e a soma volta a fechar sem a linha extra.
+  // VALOR: R$ 37.329,06 é o "valor total geral arrecadado" da peça. Se esse número for
+  //   dos 66 e não dos 68, o ticket sai errado — confirmar com a Sec. Adm.
+  // CATEGORIAS: a peça não traz abertura por categoria. As cinco abaixo são as
+  //   apuradas até 28/08 e somam 55; os outros 13 entram como "Categoria a
+  //   informar". Pedir a abertura do mês fechado.
+  {mesKey:'ago2026', periodoTag:'Agosto/2026 (fechado)', total:68, valor:37329.06, contatos:980,
     campanhas:[
-      {nome:'Taxa reduzida', qtd:28, cor:'#06b6d4'},
+      {nome:'Taxa reduzida', qtd:39, cor:'#06b6d4'},
       {nome:'Lista de excluídos', qtd:14, cor:'#3d7bff'},
       {nome:'Aniversariantes de agosto', qtd:7, cor:'#00e5a0'},
       {nome:'Patrimonial (Benefícios)', qtd:5, cor:'#a855f7'},
       {nome:'Pesquisa de satisfação', qtd:1, cor:'#f2b705'},
+      {nome:'Aguardando registro na campanha', qtd:2, cor:'#4a4c68'},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:26, cor:'#3d7bff'},
@@ -2198,8 +2203,9 @@ const REINGRESSO_HISTORICO = [
       {nome:'Contribuinte Individual', qtd:9, cor:'#f2b705'},
       {nome:'Patrimonial Individual', qtd:4, cor:'#a855f7'},
       {nome:'Veterano Contribuinte', qtd:3, cor:'#fb923c'},
+      {nome:'Categoria a informar', qtd:13, cor:'#4a4c68'},
     ],
-    alerta: 'Agosto em andamento — <b>55 reingressos e R$ 30.181,56</b> até 28/08, contra 40 e R$ 23.284,81 em 24/08. <b style=\"color:var(--green);\">A meta do mês, de 40, foi superada: 137.5%</b>, e o desafio de 45 já está em 122.2%. <b>Esta rodada veio com a abertura completa por campanha</b>, que faltava nas anteriores: taxa reduzida responde por <b>28 dos 55</b> — mais da metade — à frente da lista de excluídos (14), aniversariantes de agosto (7), Patrimonial/Benefícios (5) e pesquisa de satisfação (1). Não há mais reingresso sem campanha vinculada. Por categoria, Contribuinte concentra 26 e Patrimonial 12. Ticket médio de R$ 548,76, ante R$ 582,12 em 24/08: o volume novo seguiu entrando com valor menor por reingresso, coerente com o peso da taxa reduzida. Por categoria, o mês fecha completo: Contribuinte 26, Patrimonial 13, Contribuinte Individual 9, Patrimonial Individual 4 e Veterano Contribuinte 3.'},
+    alerta: '<b style=\"color:var(--green);\">Agosto fechado — 68 reingressos e R$ 37.329,06</b>, contra 55 e R$ 30.181,56 na posição de 28/08. A meta de 40 foi batida com folga (170%) e o desafio de 45 chegou a 151%. Foram cerca de <b>980 contatos enviados</b> no mês. <b>Taxa reduzida sozinha responde por 39</b>, mais da metade do total, à frente da lista de excluídos (14), aniversariantes de agosto (7), Patrimonial/Benefícios (5) e pesquisa de satisfação (1). Ticket médio de R$ 548,96, ante R$ 548,76 em 28/08: o fechamento trouxe volume com valor menor por reingresso, coerente com o peso da taxa reduzida. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> a peça de fechamento declara 66 e o total informado é 68 — os 2 de diferença entram sem campanha vinculada; e a peça não traz a abertura por categoria, então 13 dos 68 aparecem como categoria a informar. As cinco categorias mostradas são as apuradas até 28/08.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -5131,10 +5137,10 @@ const VENDAS_EXTRA_MESES = {
       // META CORRIGIDA EM 17/08: a planilha declara orçado 42 e desafio 100 para
       // agosto (julho era 23 e 26). O painel estava com os números de julho —
       // a versão de 14/08 da planilha já traía 42/100 e passou batido.
-      vendas:{orcado:42, real:65}, reingressos:{orcado:40, real:55},
-      totalVR:{orcado:82, real:120}, desafioVenda:100, desafioReingresso:45,
-      total:{orcado:145, real:120, gap:-25},
-      taxaAdesao:37047.60, taxaReingresso:30181.56, taxaTotal:67229.16,
+      vendas:{orcado:42, real:65}, reingressos:{orcado:40, real:68},
+      totalVR:{orcado:82, real:133}, desafioVenda:100, desafioReingresso:45,
+      total:{orcado:145, real:133, gap:-12},
+      taxaAdesao:37047.60, taxaReingresso:37329.06, taxaTotal:74376.66,
     },
   },
 };
