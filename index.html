@@ -246,6 +246,67 @@
      celulares e que a bateria não cobria (ia de 480 direto para 768). */
   @media (max-width:680px){ .esp-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:9px; } }
   @media (max-width:460px){ .esp-grid{ grid-template-columns:1fr; } }
+  /* Cards do topo do Compliance. Medidos contra os KPIs do Fluxo de Caixa
+     (altura 165px, padding 26px, valor 29px) para ficarem no mesmo sistema
+     visual. Padding 22 em vez de 26 porque aqui são 6 cards e lá são 3 a 5. */
+  /* Camada 1: o TOTAL fica maior à esquerda e os 3 status agrupados à direita,
+     deixando claro que eles são a composição dele — e não seus irmãos. */
+  .comp-grid-status{
+    display:grid; gap:12px; margin-top:14px;
+    grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);
+  }
+  .comp-composicao{
+    display:grid; gap:12px; grid-template-columns:repeat(3, minmax(0,1fr));
+  }
+  /* Camada 2: dois cards largos, separados dos status por bloco próprio. */
+  .comp-grid-controle{
+    display:grid; gap:12px; margin-top:14px;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+  .comp-card.destaque{
+    background:rgba(61,123,255,.07); border-color:rgba(61,123,255,.35);
+  }
+  .comp-card.destaque .card-label{ font-size:11.5px; }
+  .comp-card{
+    cursor:pointer; border:1px solid var(--border); border-radius:13px;
+    padding:22px; min-height:150px; background:var(--card);
+    display:flex; flex-direction:column; align-items:flex-start;
+    transition:all .15s ease;
+  }
+  .comp-card:hover{ border-color:var(--blue); background:rgba(61,123,255,.06);
+    transform:translateY(-1px); }
+  .comp-card.active{ border-color:var(--blue); background:rgba(61,123,255,.15); }
+  .comp-card:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  /* O total desce para cima dos status em telas médias, e tudo vira 1 coluna
+     no celular — sem card órfão esticado em nenhuma faixa. */
+  @media (max-width:1180px){
+    .comp-grid-status{ grid-template-columns:1fr; }
+  }
+  @media (max-width:760px){
+    .comp-composicao{ grid-template-columns:repeat(3, minmax(0,1fr)); gap:9px; }
+    .comp-card{ padding:18px; }
+  }
+  @media (max-width:560px){
+    .comp-composicao{ grid-template-columns:1fr; }
+    .comp-grid-controle{ grid-template-columns:1fr; }
+    .comp-card{ min-height:0; padding:18px; }
+    .comp-card > div:first-child{ width:38px; height:38px; font-size:18px; }
+  }
+  .comp-acao{
+    cursor:pointer; border:1px solid var(--border); border-radius:11px;
+    padding:13px 14px; background:rgba(255,255,255,.02); transition:all .15s ease;
+    align-self:start;
+  }
+  .comp-acao:hover{ border-color:var(--blue); background:rgba(61,123,255,.05); }
+  .comp-acao.aberta{ border-color:var(--blue); background:rgba(61,123,255,.09); }
+  .comp-acao:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  .comp-mini{
+    cursor:pointer; border:1px solid var(--border); border-radius:11px;
+    padding:11px 12px; background:rgba(255,255,255,.02); transition:all .15s ease;
+  }
+  .comp-mini:hover{ border-color:var(--blue); background:rgba(61,123,255,.06); }
+  .comp-mini.active{ border-color:var(--blue); background:rgba(61,123,255,.12); }
+  .comp-mini:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
   .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; flex-wrap:wrap; }
   .rh-subtab-btn{
     background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:700;
@@ -592,6 +653,7 @@
   </div>
   <div class="nav" id="navList">
     <div class="nav-item" data-page="estrategia"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span> <span class="nav-text">Planejamento</span></div>
+    <div class="nav-item" data-page="compliance"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>Compliance</div>
     <div class="nav-item" data-page="institucional" style="background:linear-gradient(90deg, rgba(232,25,44,.12), transparent); border-left:3px solid var(--red);"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg></span> <span class="nav-text">Indicadores Institucionais</span></div>
     <div class="nav-item active" data-page="visaogeral"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span> <span class="nav-text">Visão Geral</span></div>
     <div class="nav-item" data-page="diagnostico"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span> <span class="nav-text">Diagnóstico</span></div>
@@ -1247,7 +1309,7 @@
     </div>
 
     <div class="page-section" id="page-rh">
-      <div class="section-title">Recursos Humanos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Jan/26 a Jun/26</span><div class="line"></div></div>
+      <div class="section-title">Recursos Humanos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Jan/26 a Ago/26</span><div class="line"></div></div>
       <div class="rh-subtabs">
         <button class="rh-subtab-btn active" id="subtabBtnRH" onclick="mudarSubAbaRH('rh')">👥 RH</button>
         <button class="rh-subtab-btn" id="subtabBtnDP" onclick="mudarSubAbaRH('dp')">📋 DP</button>
@@ -1288,6 +1350,12 @@
       <div id="espSubGeral" style="display:none;">
         <div id="esportesConteudo"></div>
       </div>
+    </div>
+
+    <div class="page-section" id="page-compliance">
+      <div class="section-title">Governança &amp; Compliance<div class="line"></div></div>
+      <div class="card-meta" style="margin:-6px 0 14px;">Implantação do Sistema de Gestão de Governança e Compliance — SOGIPA</div>
+      <div id="complianceConteudo"></div>
     </div>
 
     <div class="page-section" id="page-obras">
@@ -2246,7 +2314,7 @@ const NEGOCIACOES = [
   {mes:'Mai/26', valor:84982,  contatos:512},
   {mes:'Jun/26', valor:304596, contatos:614},
   {mes:'Jul/26', valor:402369, contatos:804},
-  {mes:'Ago/26', valor:362106, contatos:null},
+  {mes:'Ago/26', valor:375041, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -2271,7 +2339,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':592063};   // abertura do mês; não muda com o avanço da cobrança
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -2348,22 +2416,23 @@ const HE_HISTORICO_MENSAL = [
   {mes:'Mai/26', horas:1488.88, valor:56288.44, colaboradores:123, totalColab:245, qtdCC:36},
   {mes:'Jun/26', horas:1087.76, valor:42038.99, colaboradores:110, totalColab:241, qtdCC:38},
   {mes:'Jul/26', horas:1062.58, valor:44513.20, colaboradores:136, totalColab:248, qtdCC:37},
+  {mes:'Ago/26', horas:566.41, valor:22843.14, colaboradores:112, totalColab:275, qtdCC:41},
 ];
 
 // ═══════════════════════════════════════════════════════════
 // DADOS — RH x DP (planilha "proposta Cíntia")
 // Estrutura definida pela própria Gerente de RH: RH = pessoas/gestão, DP = operacional/custos
 // ═══════════════════════════════════════════════════════════
-const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26'];
+const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26'];
 
 const RH_INDICADORES = {
-  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248], meta:null, formato:'int'},
-  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43], meta:null, formato:'pct', invertido:true,
+  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247], meta:null, formato:'int'},
+  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47], meta:null, formato:'pct', invertido:true,
                 nota:'A elevação do turnover no período reflete a <b>adequação da força de trabalho</b> em curso, não uma perda espontânea de pessoal.'},
-  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12], meta:null, formato:'int'},
-  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5], meta:null, formato:'int', invertido:true},
-  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86], meta:null, formato:'pct', invertido:true},
-  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40], meta:null, formato:'int',
+  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13], meta:null, formato:'int'},
+  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14], meta:null, formato:'int', invertido:true},
+  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24], meta:null, formato:'pct', invertido:true},
+  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25], meta:null, formato:'int',
                 nota:'Pela base estratégica do clube, é um indicador de <b>tendência sempre a melhorar</b>. Ainda não há meta definida.'},
 };
 // Avisos de pendências removidos a pedido da diretoria (não haverá esses dados até a apresentação)
@@ -2379,21 +2448,21 @@ RH_INDICADORES.saldoLiquido = {
 
 // Séries do custo de folha — exibidas juntas num único card interativo
 const FOLHA_DADOS = {
-  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57]},
-  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04]},
-  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null]},   // jul: não vem nesta planilha
-  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65]},
+  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91]},
+  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92]},
+  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null]},   // jul: não vem nesta planilha
+  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83]},
 };
 
 const DP_INDICADORES = {
-  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
+  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
-  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16], meta:null, formato:'num', jornada:true},
-  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77], meta:null, formato:'num', invertido:true, jornada:true,
+  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38], meta:null, formato:'num', jornada:true},
+  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
-  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62], meta:null, formato:'num', invertido:true},
-  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20], meta:null, formato:'moeda', invertido:true, he:true},
-  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19], meta:null, formato:'moeda', invertido:true},
+  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33], meta:null, formato:'num', invertido:true},
+  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14], meta:null, formato:'moeda', invertido:true, he:true},
+  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06], meta:null, formato:'moeda', invertido:true},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
 };
@@ -2514,6 +2583,58 @@ const HE_POR_MES = {
       {nome:'Musculação Serviços', valor:2114.35, cor:'#06b6d4'},
       {nome:'Outros (32 setores)', valor:21428.11, cor:'#b0b0d0'},
     ],
+  },
+  ago2026: {
+    // Calculado dos 275 registros individuais da planilha "HE AGOSTO".
+    // Nenhum total digitado: resumo, ranking e donut saem da mesma base e
+    // fecham entre si (conferido na importação e na auditoria).
+    // Sem nomes de colaborador, como nos demais meses — a estrutura de HE do
+    // painel guarda só o agregado por centro de custo.
+    resumo: {"totalValor": 22843.14, "totalHoras": 566.41, "colaboradoresComHE": 112, "totalColaboradores": 275, "ccComHE": 41, "dataReferencia": "Agosto/2026"},
+    ccRanking: [
+      {"nome": "Manutenção", "valor": 3146.28, "qtd": 13, "horas": 92.32},
+      {"nome": "Volei Rendimento", "valor": 2624.78, "qtd": 5, "horas": 59.45},
+      {"nome": "Atletismo Rendimento", "valor": 2339.14, "qtd": 2, "horas": 41.27},
+      {"nome": "Judo Formação", "valor": 1689.27, "qtd": 2, "horas": 48.3},
+      {"nome": "Musculação Serviços", "valor": 1343.41, "qtd": 4, "horas": 30.8},
+      {"nome": "Projeto Criança Escol.", "valor": 1178.68, "qtd": 15, "horas": 27.79},
+      {"nome": "G.R.D. Rendimento", "valor": 1112.41, "qtd": 1, "horas": 21.9},
+      {"nome": "Controladoria", "valor": 1065.09, "qtd": 3, "horas": 34.61},
+      {"nome": "Tênis Rendimento", "valor": 1042.54, "qtd": 2, "horas": 23.02},
+      {"nome": "Coral", "valor": 1019.95, "qtd": 1, "horas": 3.28},
+      {"nome": "Judo Alto Rendimento", "valor": 775.12, "qtd": 1, "horas": 5.45},
+      {"nome": "G.R.D. Formação", "valor": 570.41, "qtd": 1, "horas": 16.09},
+      {"nome": "Basquete Rendimento", "valor": 541.42, "qtd": 1, "horas": 14.0},
+      {"nome": "Central de Eventos", "valor": 532.51, "qtd": 5, "horas": 21.19},
+      {"nome": "Sede Social Conserv", "valor": 532.35, "qtd": 5, "horas": 25.6},
+      {"nome": "Massoterapia", "valor": 419.6, "qtd": 1, "horas": 12.65},
+      {"nome": "Recursos Humanos", "valor": 397.71, "qtd": 2, "horas": 10.65},
+      {"nome": "Marketing", "valor": 362.38, "qtd": 2, "horas": 8.63},
+      {"nome": "Limpeza e Conservação", "valor": 345.83, "qtd": 13, "horas": 14.48},
+      {"nome": "Tênis Manutenção", "valor": 309.94, "qtd": 2, "horas": 15.93},
+      {"nome": "Yoga Serviços", "valor": 208.41, "qtd": 1, "horas": 3.73},
+      {"nome": "Judo Rendimento", "valor": 183.4, "qtd": 2, "horas": 3.3},
+      {"nome": "Gerência de Informática", "valor": 177.72, "qtd": 1, "horas": 1.5},
+      {"nome": "Recepção", "valor": 118.38, "qtd": 6, "horas": 4.87},
+      {"nome": "Basquete Formação", "valor": 117.54, "qtd": 1, "horas": 2.0},
+      {"nome": "Piscinas Manutenção", "valor": 115.0, "qtd": 3, "horas": 4.3},
+      {"nome": "Futebol Formação", "valor": 92.73, "qtd": 1, "horas": 1.94},
+      {"nome": "Biblioteca", "valor": 79.11, "qtd": 1, "horas": 4.15},
+      {"nome": "Secretaria Adm.", "valor": 72.06, "qtd": 1, "horas": 4.33},
+      {"nome": "Sec. Esportiva", "valor": 63.62, "qtd": 2, "horas": 2.87},
+      {"nome": "Gin Artística Alto Rendimento", "valor": 59.35, "qtd": 1, "horas": 0.77},
+      {"nome": "Athletic Trainning Serviços", "valor": 56.84, "qtd": 2, "horas": 1.73},
+      {"nome": "Diretoria", "valor": 41.23, "qtd": 1, "horas": 1.02},
+      {"nome": "Tênis de Mesa Formação", "valor": 35.25, "qtd": 1, "horas": 0.6},
+      {"nome": "Gerência Esportiva", "valor": 20.96, "qtd": 1, "horas": 0.28},
+      {"nome": "Levantamento de Pesos Formação", "valor": 18.76, "qtd": 1, "horas": 0.42},
+      {"nome": "Atletismo Formação", "valor": 17.39, "qtd": 1, "horas": 0.45},
+      {"nome": "Projetos Esportivos", "valor": 8.91, "qtd": 1, "horas": 0.5},
+      {"nome": "Conselho Deliberativo", "valor": 5.5, "qtd": 1, "horas": 0.18},
+      {"nome": "Gin Artística Rendimento", "valor": 1.16, "qtd": 1, "horas": 0.03},
+      {"nome": "Natação Serviços", "valor": 1.0, "qtd": 1, "horas": 0.03}
+    ],
+    donutSegments: [{"nome": "Manutenção", "valor": 3146.28, "cor": "#e8192c"}, {"nome": "Volei Rendimento", "valor": 2624.78, "cor": "#3d7bff"}, {"nome": "Atletismo Rendimento", "valor": 2339.14, "cor": "#a855f7"}, {"nome": "Judo Formação", "valor": 1689.27, "cor": "#f2b705"}, {"nome": "Musculação Serviços", "valor": 1343.41, "cor": "#06b6d4"}, {"nome": "Outros (36 setores)", "valor": 11700.26, "cor": "#b0b0d0"}],
   },
 };
 let HE_RESUMO = HE_POR_MES.jun2026.resumo;
@@ -3034,14 +3155,30 @@ const NEG_FAIXAS = [
       {fx:'FORA', idade:'4+ meses', ref:'≤ mar/26', abertura:148287, rec:21166,  ab:127121},
     ], selo:235437900 },
   { mes:'Ago/26', label:'Agosto/2026', fechado:false,
-    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'29/08/2026',
-    inicio:592063, base:592063, totRec:362106, totAb:229956,
+    fonte:'Período Agosto/26 (Cobrança)', importadoEm:'03/09/2026',
+    inicio:590002, base:590002, totRec:375041, totAb:214961,
     faixas:[
-      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:266062, rec:201380, ab:64682},
-      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:158365, rec:80761,  ab:77604},
-      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:62216,  rec:40360,  ab:21856},
-      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:105420, rec:39606,  ab:65814},
-    ], selo:177618800 },
+      {fx:'FX1',  idade:'1 mês',    ref:'jul/26',   abertura:264706, rec:219115, ab:45590},
+      {fx:'FX2',  idade:'2 meses',  ref:'jun/26',   abertura:157797, rec:81655,  ab:76146},
+      {fx:'FX3',  idade:'3 meses',  ref:'mai/26',   abertura:64387,  rec:40181,  ab:24206},
+      {fx:'FORA', idade:'4+ meses', ref:'≤ abr/26', abertura:103113, rec:34090,  ab:69023},
+    ], selo:177001000 },
+  // ── ATUALIZAÇÃO DE 03/09 ────────────────────────────────────────────────────
+  //          fechamento 29/08 -> 03/09       recuperado 29/08 -> 03/09
+  //   FX1     266.062 -> 264.706  (-1.356)    201.380 -> 219.115 (+17.735)
+  //   FX2     158.365 -> 157.797    (-568)     80.761 ->  81.655    (+894)
+  //   FX3      62.216 ->  64.387  (+2.171)     40.360 ->  40.181    (-179)
+  //   FORA    105.420 -> 103.113  (-2.307)     39.606 ->  34.090  (-5.516)
+  //   BASE    592.063 -> 590.002  (-2.061)    362.106 -> 375.041 (+12.935)
+  //   taxa do mês  61,2% -> 63,6%
+  // A RÉGUA NÃO MUDOU: as quatro aberturas ficaram próximas das de 29/08. Se a
+  // Cobrança tivesse avançado a régua (FX1 passando a ser ago/26), os valores
+  // seriam de outra ordem de grandeza. Segue sendo o período Ago/26, com
+  // posição mais recente — por isso as referências jul/jun/mai/≤abr continuam.
+  // Arredondamento: a soma das faixas dá fechamento 590.003 e aberto 214.965,
+  // contra 590.002 e 214.961 declarados. Valem os totais declarados, que fecham
+  // entre si. Mesmo critério das cargas anteriores.
+  //
   // ── ATUALIZAÇÃO DE 29/08 ────────────────────────────────────────────────────
   // A tabela veio com a coluna rotulada FECHAMENTO (antes INÍCIO) — é a mesma
   // coluna de abertura da faixa. Todas as quatro aberturas CAÍRAM:
@@ -3168,7 +3305,7 @@ function acenderFaixa(id){
 //   quebra por faixa ... jul-ago    retrato ............ jul
 // Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
 // rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
-const NEG_ATUALIZACAO = '29/08/2026';
+const NEG_ATUALIZACAO = '03/09/2026';
 const NEG_RETRATO = {
   'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
              inadTotal:931, atrasoTotal:602186}
@@ -4235,6 +4372,7 @@ const PAGE_TITLES = {
   institucional: {t:'Indicadores Institucionais', s:'Painel do Presidente · visão mensal para o Conselho'},
   diagnostico: {t:'Diagnóstico Gerencial', s:'Relatório gerencial para gestão da diretoria'},
   estrategia:  {t:'Planejamento Estratégico', s:'Mapa Estratégico SOGIPA · 2024–2026 (V11)'},
+  compliance:  {t:'Governança & Compliance', s:'Implantação do Sistema de Gestão — SOGIPA'},
   fluxocaixa:  {t:'Fluxo de Caixa', s:'Operacional · Investimento · Financiamento'},
   pagamentos:  {t:'Pagamentos', s:'Controle de pagamentos e fornecedores'},
   negociacao:  {t:'Negociação', s:'Recuperação de inadimplência'},
@@ -4272,6 +4410,585 @@ function abrirInstitucionalTelaCheia(){
   if(w){ w.document.write(decodeURIComponent(escape(atob(PRESIDENTE_B64)))); w.document.close(); }
 }
 
+
+// ═══════════════════════════════════════════════════════════
+// GOVERNANÇA & COMPLIANCE — Sistema de Gestão (SGC)
+// ═══════════════════════════════════════════════════════════
+// Fonte: relatório do quadro "SOGIPA — Sistema de Gestão de Governança e
+// Compliance", emitido em 01/09/2026 por Klyverson Moreno. Janela abr/2026 a mar/2029.
+// O relatório declara no cabeçalho: 22 cartões · 10 atrasados · 0 sem data —
+// e a listagem detalhada bate com esses três números.
+//
+// REGRAS DESTA BASE:
+//  · 'atrasado' é o que a FONTE declara. Não recalcular por data: se o painel
+//    comparasse o prazo com o dia de hoje, divergiria do documento oficial
+//    dependendo de quando fosse aberto.
+//  · Status, prioridade e datas entram exatamente como no relatório.
+//  · 'responsaveis' está vazio nos 22 porque a fonte traz "Sem responsáveis"
+//    em todos. Isso NÃO é falta de importação — é o estado real do plano, e
+//    aparece como ponto de atenção na tela.
+//  · Criticidade (CRÍTICO/ATENÇÃO/NORMAL) é DERIVADA na renderização, nunca
+//    gravada aqui. O dado original fica intacto.
+//  · Para atualizar: substituir COMPLIANCE_DATA e a data em COMPLIANCE_META.
+//    Todos os indicadores da aba são calculados por complianceResumo().
+const COMPLIANCE_META = {
+  emitidoEm:'01/09/2026',
+  janelaIni:'2026-04', janelaFim:'2029-03',
+  declarado:{cartoes:22, atrasados:10, semData:0},
+};
+const COMPLIANCE_DATA = [
+  {id:1, acao:'Designar e formalizar a função de compliance', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Alta', inicio:'01/04/2026', prazo:'10/04/2026', atrasado:true, responsaveis:[]},
+  {id:2, acao:'Emitir declaração formal de compromisso da alta direção (Email)', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Alta', inicio:'01/04/2026', prazo:'30/04/2026', atrasado:true, responsaveis:[]},
+  {id:3, acao:'Identificar o contexto interno e externo da organização', lista:'PLANO DE AÇÃO', status:'Concluída', prioridade:'Nenhuma', inicio:'01/04/2026', prazo:'30/04/2026', atrasado:false, responsaveis:[]},
+  {id:4, acao:'Realizar workshop de sensibilização da alta direção', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Alta', inicio:'01/04/2026', prazo:'30/06/2026', atrasado:true, responsaveis:[]},
+  {id:5, acao:'Desenvolver e aprovar a Código de Ética e Conduta (Políticas de Compliance)', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Alta', inicio:'01/05/2026', prazo:'30/07/2026', atrasado:true, responsaveis:[]},
+  {id:6, acao:'Criar e Executar plano de comunicação e engajamento das lideranças', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Média', inicio:'01/05/2026', prazo:'30/07/2026', atrasado:true, responsaveis:[]},
+  {id:7, acao:'Mapear os processos, identificar e inventariar as obrigações e riscos de compliance (Riscos Prioritários)', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Média', inicio:'01/05/2026', prazo:'31/08/2026', atrasado:true, responsaveis:[]},
+  {id:8, acao:'Apresentar diagnóstico à alta direção e aprovar próximos passos', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Média', inicio:'01/05/2026', prazo:'31/08/2026', atrasado:true, responsaveis:[]},
+  {id:9, acao:'Implementar canal de denúncias com proteção ao denunciante', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Alta', inicio:'01/05/2026', prazo:'31/08/2026', atrasado:true, responsaveis:[]},
+  {id:10, acao:'Implementar política de consequências e medidas disciplinares (PAD)', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Alta', inicio:'01/05/2026', prazo:'31/08/2026', atrasado:true, responsaveis:[]},
+  {id:11, acao:'Criação do Comitê de Ética e Orientações sobre Investigações Internas', lista:'PLANO DE AÇÃO', status:'Em progresso', prioridade:'Alta', inicio:'01/05/2026', prazo:'31/08/2026', atrasado:true, responsaveis:[]},
+  {id:12, acao:'Consolidar riscos e oportunidades identificados e planejar ações para tratamento dos riscos', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Média', inicio:'01/09/2026', prazo:'30/11/2026', atrasado:false, responsaveis:[]},
+  {id:13, acao:'Formalizar e consolidar o Plano do Sistema de Gestão de Compliance e validar e aprovar o plano junto à alta direção', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/12/2026', prazo:'31/01/2027', atrasado:false, responsaveis:[]},
+  {id:14, acao:'Criação e Implementação de Protocolo de Gestão de Crise', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/02/2027', prazo:'31/05/2027', atrasado:false, responsaveis:[]},
+  {id:15, acao:'Desenvolver e implementar controles operacionais de compliance', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/02/2027', prazo:'31/07/2027', atrasado:false, responsaveis:[]},
+  {id:16, acao:'Estabelecer processo de due diligence para terceiros', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/02/2027', prazo:'31/07/2027', atrasado:false, responsaveis:[]},
+  {id:17, acao:'Executar o plano de treinamentos em compliance', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/02/2027', prazo:'31/07/2027', atrasado:false, responsaveis:[]},
+  {id:18, acao:'Definir indicadores de desempenho (KPIs) do SGC', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/08/2027', prazo:'31/03/2028', atrasado:false, responsaveis:[]},
+  {id:19, acao:'Realizar o monitoramento contínuo do SGC', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/08/2027', prazo:'31/03/2028', atrasado:false, responsaveis:[]},
+  {id:20, acao:'Realizar auditorias internas e avaliar o cumprimento das obrigações de compliance', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/08/2027', prazo:'31/03/2028', atrasado:false, responsaveis:[]},
+  {id:21, acao:'Tratar não conformidades e implementar ações corretivas', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'01/08/2027', prazo:'31/03/2028', atrasado:false, responsaveis:[]},
+  {id:22, acao:'Conduzir análise crítica da alta direção (Management Review)', lista:'PLANO DE AÇÃO', status:'Pendente', prioridade:'Baixa', inicio:'10/08/2027', prazo:'31/03/2028', atrasado:false, responsaveis:[]}
+];
+
+// Resumo executivo — TODOS os números da aba saem daqui.
+function complianceResumo(){
+  const d = COMPLIANCE_DATA;
+  const cont = (f)=>d.filter(f).length;
+  const crit = d.filter(x=>x.atrasado && x.prioridade==='Alta');
+  const aten = d.filter(x=>x.atrasado && x.prioridade==='Média');
+  // "alta direção" só quando está EXPLÍCITO no texto do cartão — nada inferido
+  const altaDir = d.filter(x=>/alta dire[çc][ãa]o/i.test(x.acao));
+  const futuros = d.filter(x=>!x.atrasado && x.status!=='Concluída');
+  const porPrazo = {};
+  futuros.forEach(x=>{ (porPrazo[x.prazo] = porPrazo[x.prazo] || []).push(x); });
+  const marcos = Object.keys(porPrazo)
+    .sort((a,b)=>complianceISO(a).localeCompare(complianceISO(b)))
+    .map(p=>({prazo:p, itens:porPrazo[p]}));
+  return {
+    total: d.length,
+    concluidas:  cont(x=>x.status==='Concluída'),
+    andamento:   cont(x=>x.status==='Em progresso'),
+    pendentes:   cont(x=>x.status==='Pendente'),
+    atrasadas:   cont(x=>x.atrasado),
+    alta:        cont(x=>x.prioridade==='Alta'),
+    media:       cont(x=>x.prioridade==='Média'),
+    baixa:       cont(x=>x.prioridade==='Baixa'),
+    nenhuma:     cont(x=>x.prioridade==='Nenhuma'),
+    semResp:     cont(x=>!x.responsaveis || x.responsaveis.length===0),
+    criticas: crit, atencao: aten, altaDirecao: altaDir, marcos: marcos,
+  };
+}
+function complianceISO(br){ return br.slice(6)+'-'+br.slice(3,5)+'-'+br.slice(0,2); }
+function complianceCritic(x){
+  if(x.atrasado && x.prioridade==='Alta')  return {t:'CRÍTICO', c:'#e8192c'};
+  if(x.atrasado)                           return {t:'ATENÇÃO', c:'#f2b705'};
+  if(x.status==='Concluída')               return {t:'CONCLUÍDA', c:'#00e5a0'};
+  return {t:'NORMAL', c:'#b0b0d0'};
+}
+function complianceTrim(br){
+  const m = +br.slice(3,5), a = br.slice(8);
+  return 'T'+(Math.floor((m-1)/3)+1)+'/'+a;
+}
+// Rótulo de responsável. A base guarda responsaveis:[] porque é o que a fonte
+// traz ("Sem responsáveis"); aqui só se decide COMO isso aparece na tela.
+const COMPLIANCE_SEM_RESP = 'A definir';
+function complianceResp(x){
+  return (x.responsaveis && x.responsaveis.length)
+    ? x.responsaveis.join(', ') : COMPLIANCE_SEM_RESP;
+}
+// Dias de atraso SEMPRE contra a data de posição do relatório, nunca contra a
+// data do navegador — senão o número mudaria conforme o dia em que se abre o
+// painel e divergiria do documento oficial.
+// Só calcula para quem a FONTE declara atrasado: há ação com prazo vencido e
+// atrasado = Não (concluída dentro do escopo), e ela não pode contar atraso.
+function complianceDiasAtraso(x){
+  if(!x.atrasado) return null;
+  const dt = (br)=> new Date(+br.slice(6), +br.slice(3,5)-1, +br.slice(0,2));
+  return Math.round((dt(COMPLIANCE_META.emitidoEm) - dt(x.prazo)) / 86400000);
+}
+// Duração PREVISTA da ação (prazo − início). Não confundir com tempo parado:
+// a fonte não informa quando a ação deixou de ter movimentação.
+function complianceDuracao(x){
+  const dt = (br)=> new Date(+br.slice(6), +br.slice(3,5)-1, +br.slice(0,2));
+  return Math.round((dt(x.prazo) - dt(x.inicio)) / 86400000);
+}
+function complianceAtrasoTxt(x){
+  const d = complianceDiasAtraso(x);
+  return d === null ? '—' : (d === 1 ? '1 dia' : d + ' dias');
+}
+
+// ── Cards interativos ─────────────────────────────────────
+// Um único lugar define CADA recorte. O número do card e a lista do painel
+// saem daqui, então não há como o card dizer 10 e o detalhe abrir 9.
+const COMPLIANCE_FILTROS = {
+  total:      {rot:'Todas as Ações',        titulo:'Todas as Ações',            f:()=>true},
+  concluidas: {rot:'Concluídas',            titulo:'Ações Concluídas',          f:x=>x.status==='Concluída'},
+  andamento:  {rot:'Em Andamento',          titulo:'Ações em Andamento',        f:x=>x.status==='Em progresso'},
+  pendentes:  {rot:'Pendentes',             titulo:'Ações Pendentes',           f:x=>x.status==='Pendente'},
+  atrasadas:  {rot:'Atrasadas',             titulo:'Ações Atrasadas',           f:x=>x.atrasado},
+  adefinir:   {rot:'A Definir',             titulo:'Ações sem Responsável',     f:x=>!x.responsaveis || !x.responsaveis.length},
+};
+function complianceFiltro(k){
+  const d = COMPLIANCE_FILTROS[k] || COMPLIANCE_FILTROS.total;
+  return COMPLIANCE_DATA.filter(d.f);
+}
+// Ordem pedida: críticas, depois atenção, depois o resto. Dentro do mesmo
+// nível: prioridade maior, mais dias de atraso, prazo mais próximo.
+const COMPLIANCE_ORDEM_PRI = {'Alta':0, 'Média':1, 'Baixa':2, 'Nenhuma':3};
+function complianceNivel(x){
+  if(x.atrasado && x.prioridade==='Alta') return 0;   // crítico
+  if(x.atrasado)                          return 1;   // atenção
+  return 2;                                           // demais
+}
+function complianceOrdena(arr){
+  return arr.slice().sort((a,b)=>{
+    const n = complianceNivel(a) - complianceNivel(b);                 if(n) return n;
+    const p = (COMPLIANCE_ORDEM_PRI[a.prioridade] ?? 9)
+            - (COMPLIANCE_ORDEM_PRI[b.prioridade] ?? 9);               if(p) return p;
+    const da = complianceDiasAtraso(a) || 0, db = complianceDiasAtraso(b) || 0;
+    if(db !== da) return db - da;                                      // mais atraso primeiro
+    return complianceISO(a.prazo).localeCompare(complianceISO(b.prazo)); // prazo mais próximo
+  });
+}
+// Card ativo. Começa NULO: a aba abre enxuta e o detalhe só aparece quando o
+// Diretor clica num indicador. Abrir com as 22 ações fazia a página descer
+// várias telas antes de qualquer leitura.
+let COMPLIANCE_SEL = null;
+// Ação expandida no painel de detalhe. null = todas recolhidas.
+// Um por vez: abrir uma recolhe a anterior, para a lista não virar um paredão.
+let COMPLIANCE_EXP = null;
+function complianceExpandir(id){
+  COMPLIANCE_EXP = (COMPLIANCE_EXP === id) ? null : id;   // clicar de novo recolhe
+  renderCompliance();
+  if(COMPLIANCE_EXP !== null){
+    const c = document.querySelector('#complianceDetalhe [data-acao="'+id+'"]');
+    if(c) c.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+function complianceSelecionar(k){
+  // clicar de novo no card ativo volta para todas — some a informação nunca
+  COMPLIANCE_SEL = (k === COMPLIANCE_SEL) ? null : k;   // clicar de novo fecha
+  COMPLIANCE_EXP = null;              // muda o recorte, recolhe o que estava aberto
+  COMPLIANCE_PAINEL = null;           // e fecha o painel da faixa executiva
+  renderCompliance();
+  const p = document.getElementById('complianceDetalhe');
+  if(p) p.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+
+// Painel dos mini-cards da faixa executiva. null = nenhum aberto.
+// As listas de críticas / alta direção / próximo marco deixaram de ficar
+// abertas o tempo todo: agora só aparecem quando o Diretor pede.
+let COMPLIANCE_PAINEL = null;
+function compliancePainel(k){
+  COMPLIANCE_PAINEL = (COMPLIANCE_PAINEL === k) ? null : k;
+  COMPLIANCE_EXP = null;
+  renderCompliance();
+  if(COMPLIANCE_PAINEL){
+    const p = document.getElementById('complianceMini');
+    if(p) p.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+const COMPLIANCE_MINI = {
+  criticas: {tit:'Ações Críticas',
+             sub:'Atrasadas com prioridade alta — a fundação do sistema.',
+             f:()=>complianceResumo().criticas},
+  altadir:  {tit:'Ações que Envolvem a Alta Direção',
+             sub:'Somente as que citam a alta direção no próprio texto da ação.',
+             f:()=>complianceResumo().altaDirecao},
+  marco:    {tit:'Próximo Marco',
+             sub:'Ações com o prazo não vencido mais próximo.',
+             f:()=>{const m=complianceResumo().marcos; return m.length? m[0].itens : [];}},
+};
+function complianceMiniPainel(){
+  const k = COMPLIANCE_PAINEL;
+  if(!k || !COMPLIANCE_MINI[k]) return '';
+  const d = COMPLIANCE_MINI[k];
+  const itens = complianceOrdena(d.f());
+  return `
+    <div class="card" id="complianceMini">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-label">${d.tit}</div>
+          <div class="card-meta" style="margin-top:4px;">${itens.length}
+            ${itens.length===1?'ação':'ações'} · ${d.sub}</div>
+        </div>
+        <div onclick="compliancePainel('${k}')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter'){compliancePainel('${k}');}"
+             style="cursor:pointer; font-size:11px; font-weight:700; color:var(--blue);
+                    border:1px solid var(--border); border-radius:20px; padding:5px 13px;
+                    white-space:nowrap;">Recolher</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+                  gap:12px; margin-top:14px;">
+        ${itens.map(complianceCardAcao).join('')}
+      </div>
+    </div>`;
+}
+// Card de ação — um só, usado pelo painel dos KPIs e pelo dos mini-cards.
+function complianceCardAcao(x){
+  const CORP = {'Alta':'#e8192c','Média':'#f2b705','Baixa':'#3d7bff','Nenhuma':'#5a5c78'};
+  const c = complianceCritic(x);
+  const temResp = x.responsaveis && x.responsaveis.length;
+  const dias = complianceDiasAtraso(x);
+  const aberto = COMPLIANCE_EXP === x.id;
+  const linha = (rot,val,cor)=>`
+    <div style="display:flex; justify-content:space-between; gap:10px; padding:3px 0;">
+      <span class="card-meta" style="margin:0;">${rot}</span>
+      <span style="font-size:11.5px; font-weight:600; color:${cor||'var(--text)'};
+                   text-align:right;">${val}</span>
+    </div>`;
+  return `<div class="comp-acao${aberto?' aberta':''}" data-acao="${x.id}"
+               onclick="complianceExpandir(${x.id})" role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();complianceExpandir(${x.id});}"
+               title="${aberto?'Clique para recolher':'Clique para ver os detalhes'}"
+               style="border-left:3px solid ${c.c};">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <span style="font-size:10px; font-weight:800; color:${c.c}; border:1px solid ${c.c};
+                   border-radius:20px; padding:2px 9px; white-space:nowrap;">${c.t}</span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        ${dias!==null ? `<span style="font-size:11px; font-weight:800; color:var(--red);
+          white-space:nowrap;">${complianceAtrasoTxt(x)} de atraso</span>` : ''}
+        <span style="font-size:11px; color:var(--muted); display:inline-block;
+          ${aberto?'transform:rotate(180deg);':''}">▾</span>
+      </div>
+    </div>
+    <div style="font-size:12.5px; color:var(--text); line-height:1.45; margin:9px 0 10px;
+                font-weight:600;">${x.acao}</div>
+    <div style="border-top:1px solid var(--border); padding-top:8px;">
+      ${linha('Status', x.status)}
+      ${linha('Prioridade', x.prioridade, CORP[x.prioridade])}
+      ${linha('Prazo', x.prazo, x.atrasado?'var(--red)':null)}
+      ${aberto ? `
+        ${linha('Início', x.inicio)}
+        ${linha('Responsável', complianceResp(x), temResp?'var(--text)':'var(--gold)')}
+        ${linha('Situação', c.t, c.c)}
+        ${dias!==null ? linha('Dias de atraso', complianceAtrasoTxt(x), 'var(--red)') : ''}
+        ${linha('Prazo previsto', complianceDuracao(x) + ' dias')}
+        ${linha('Janela', complianceTrim(x.inicio) === complianceTrim(x.prazo)
+            ? complianceTrim(x.inicio)
+            : complianceTrim(x.inicio) + ' a ' + complianceTrim(x.prazo))}
+        ${linha('Origem', x.lista)}
+      ` : `<div class="card-meta" style="margin-top:6px; font-size:10px;
+             color:var(--blue);">clique para ver início, responsável e situação</div>`}
+    </div>
+  </div>`;
+}
+
+// Painel de detalhe do card selecionado. Consome COMPLIANCE_DATA direto,
+// sem array paralelo, e reusa complianceResp / complianceDiasAtraso /
+// complianceCritic sem alterá-las.
+function complianceDetalhe(){
+  const k = COMPLIANCE_SEL;
+  const def = COMPLIANCE_FILTROS[k] || COMPLIANCE_FILTROS.total;
+  const itens = complianceOrdena(complianceFiltro(k));
+  const n = itens.length;
+  const CORP = {'Alta':'#e8192c','Média':'#f2b705','Baixa':'#3d7bff','Nenhuma':'#5a5c78'};
+
+  const linha = (rot,val,cor)=>`
+    <div style="display:flex; justify-content:space-between; gap:10px; padding:3px 0;">
+      <span class="card-meta" style="margin:0;">${rot}</span>
+      <span style="font-size:11.5px; font-weight:600; color:${cor||'var(--text)'}; text-align:right;">${val}</span>
+    </div>`;
+
+  const corpo = !n
+    ? `<div class="card-meta" style="padding:14px 0;">Nenhuma ação neste recorte.</div>`
+    : `<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+                   gap:12px; margin-top:14px;">
+        ${itens.map(complianceCardAcao).join('')}
+      </div>`;
+
+  return `
+    <div class="card" id="complianceDetalhe">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;
+                  gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-label">Detalhe — ${def.titulo}</div>
+          <div class="card-meta" style="margin-top:4px;">${n} ${n===1?'ação encontrada':'ações encontradas'} ·
+            ordenadas por criticidade, prioridade e atraso</div>
+        </div>
+        ${k!=='total' ? `<div onclick="complianceSelecionar('total')" role="button" tabindex="0"
+            onkeydown="if(event.key==='Enter'){complianceSelecionar('total');}"
+            style="cursor:pointer; font-size:11px; font-weight:700; color:var(--blue);
+                   border:1px solid var(--border); border-radius:20px; padding:5px 13px;
+                   white-space:nowrap;">Ver todas</div>` : ''}
+      </div>
+      ${corpo}
+    </div>`;
+}
+// KPI sem clique, para os blocos que não filtram (Pontos de Atenção).
+function kpiEstatico(ic,cor,bg,lab,val,sub,vc){
+  return `
+    <div class="status-item" style="flex:1; min-width:150px;">
+      <div style="display:flex; align-items:center; gap:9px;">
+        <div style="width:34px;height:34px;border-radius:9px;background:${bg};display:flex;
+                    align-items:center;justify-content:center;font-size:16px;">${ic}</div>
+        <div style="min-width:0;">
+          <div class="card-label" style="margin:0;font-size:10.5px;">${lab}</div>
+          <div style="font-size:23px;font-weight:800;color:${vc||'var(--text)'};line-height:1.15;">${val}</div>
+          <div class="card-meta" style="margin:0;font-size:10px;">${sub}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── render da aba Compliance ──────────────────────────────
+function renderCompliance(){
+  const el = document.getElementById('complianceConteudo');
+  if(!el) return;
+  const r = complianceResumo();
+  const pctConcl = (r.concluidas / r.total * 100).toFixed(1).replace('.', ',');
+  const CORP = {'Alta':'#e8192c','Média':'#f2b705','Baixa':'#3d7bff','Nenhuma':'#5a5c78'};
+
+  // ── 1. KPIs interativos (aprovados na v261) ──────────────
+  const kpi = (chave,ic,cor,bg,lab,val,sub,vc,destaque)=>{
+    const ativo = COMPLIANCE_SEL === chave;
+    return `
+    <div class="comp-card${destaque?' destaque':''}${ativo?' active':''}" data-filtro="${chave}"
+         onclick="complianceSelecionar('${chave}')" role="button" tabindex="0"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();complianceSelecionar('${chave}');}"
+         title="Clique para ver as ações deste indicador">
+      <div style="width:44px;height:44px;border-radius:12px;background:${bg};display:flex;
+                  align-items:center;justify-content:center;font-size:21px;">${ic}</div>
+      <div class="card-label" style="margin:14px 0 0;font-size:11px;letter-spacing:.6px;">${lab}</div>
+      <div style="font-size:32px;font-weight:800;color:${vc||'var(--text)'};line-height:1.1;
+                  margin-top:6px;">${val}</div>
+      <div class="card-meta" style="margin:5px 0 0;font-size:10.5px;line-height:1.35;">${sub}</div>
+    </div>`;
+  };
+  const q = (k)=>complianceFiltro(k).length;
+
+  // Camada 1 = os 3 status, que fecham 22. Camada 2 = condições transversais.
+  // A separação é deliberada: atraso e falta de responsável NÃO somam com o
+  // status, e juntar tudo numa faixa só sugeria uma soma que não existe.
+  const barra = [
+    {n:r.concluidas, cor:'#00e5a0', rot:'Concluídas'},
+    {n:r.andamento,  cor:'#3d7bff', rot:'Em andamento'},
+    {n:r.pendentes,  cor:'#b0b0d0', rot:'Pendentes'},
+  ].map(f=>`<div title="${f.rot}: ${f.n} de ${r.total}"
+       style="width:${(f.n/r.total*100).toFixed(2)}%; background:${f.cor};"></div>`).join('');
+
+  const cards = `
+    <div class="card">
+      <div class="card-label">Situação do Plano — Composição das ${r.total} Ações</div>
+      <div class="card-meta" style="margin-top:4px;">Posição de ${COMPLIANCE_META.emitidoEm} ·
+        os três status fecham exatamente o total · clique para ver as ações.</div>
+
+      <div class="comp-grid-status">
+        ${kpi('total','📋','#3d7bff','rgba(61,123,255,.15)','Total do Plano',q('total'),
+              'ações no SGC', null, true)}
+        <div class="comp-composicao">
+          ${kpi('concluidas','✅','#00e5a0','rgba(0,229,160,.15)','Concluídas',q('concluidas'),
+                pctConcl+'% do plano','#00e5a0')}
+          ${kpi('andamento','🔄','#3d7bff','rgba(61,123,255,.15)','Em Andamento',q('andamento'),
+                'em progresso','#3d7bff')}
+          ${kpi('pendentes','⏳','#b0b0d0','rgba(176,176,208,.15)','Pendentes',q('pendentes'),
+                'não iniciadas')}
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div style="display:flex; height:10px; border-radius:5px; overflow:hidden;
+                    background:var(--border);">${barra}</div>
+        <div class="card-meta" style="margin-top:7px; font-size:10.5px;">
+          <b style="color:#00e5a0;">${r.concluidas}</b> +
+          <b style="color:#3d7bff;">${r.andamento}</b> +
+          <b style="color:#b0b0d0;">${r.pendentes}</b> =
+          <b style="color:var(--text);">${r.total} ações</b> — os status são exclusivos entre si
+          e cobrem todo o plano.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Pontos de Controle</div>
+      <div class="card-meta" style="margin-top:4px;">Condições que <b style="color:var(--text);">se
+        sobrepõem ao status</b>: uma ação atrasada continua sendo pendente ou em andamento.
+        Por isso não somam com os números acima.</div>
+      <div class="comp-grid-controle">
+        ${kpi('atrasadas','⚠️','#e8192c','rgba(232,25,44,.15)','Atrasadas',q('atrasadas'),
+              'de '+r.total+' com prazo vencido','#e8192c')}
+        ${kpi('adefinir','👤','#f2b705','rgba(242,183,5,.15)','Responsável a Definir',q('adefinir'),
+              'de '+r.total+' sem dono designado','#f2b705')}
+      </div>
+    </div>
+    ${COMPLIANCE_SEL ? complianceDetalhe() : ''}`;
+
+  // ── 2. faixa executiva: donut (A) + atenção (B) ──────────
+  // O donut usa SÓ status, que é mutuamente exclusivo e fecha em 22.
+  // Atrasadas NÃO entra como fatia: atraso se sobrepõe ao status (uma ação
+  // atrasada também é pendente ou em progresso) e a soma passaria do total.
+  const fatias = [
+    {rot:'Concluídas',   n:r.concluidas, cor:'#00e5a0'},
+    {rot:'Em andamento', n:r.andamento,  cor:'#3d7bff'},
+    {rot:'Pendentes',    n:r.pendentes,  cor:'#b0b0d0'},
+  ];
+  const R = 52, C = 2*Math.PI*R;
+  let acc = 0;
+  const anel = fatias.map(f=>{
+    const frac = f.n / r.total, dash = frac*C;
+    const seg = `<circle cx="70" cy="70" r="${R}" fill="none" stroke="${f.cor}" stroke-width="17"
+      stroke-dasharray="${dash.toFixed(2)} ${(C-dash).toFixed(2)}"
+      stroke-dashoffset="${(-acc*C).toFixed(2)}" transform="rotate(-90 70 70)"><title>${f.rot}: ${f.n}</title></circle>`;
+    acc += frac; return seg;
+  }).join('');
+
+  const blocoA = `
+    <div class="card" style="flex:1; min-width:270px;">
+      <div class="card-label">Situação do Plano</div>
+      <div style="display:flex; align-items:center; gap:18px; margin-top:14px; flex-wrap:wrap;">
+        <div style="position:relative; width:140px; height:140px; flex:none;">
+          <svg viewBox="0 0 140 140" style="width:140px;height:140px;">
+            <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--border)" stroke-width="17"/>
+            ${anel}
+          </svg>
+          <div style="position:absolute; inset:0; display:flex; flex-direction:column;
+                      align-items:center; justify-content:center; pointer-events:none;">
+            <div style="font-size:27px; font-weight:800; color:var(--text); line-height:1;">${r.total}</div>
+            <div class="card-meta" style="margin:2px 0 0; font-size:10px;">ações</div>
+          </div>
+        </div>
+        <div style="flex:1; min-width:150px;">
+          ${fatias.map(f=>`
+            <div style="display:flex; align-items:center; gap:8px; padding:4px 0;">
+              <span style="width:9px;height:9px;border-radius:2px;background:${f.cor};flex:none;"></span>
+              <span style="font-size:12px; color:var(--text); flex:1;">${f.rot}</span>
+              <span style="font-size:12.5px; font-weight:800; color:var(--text);">${f.n}</span>
+            </div>`).join('')}
+          <div style="border-top:1px solid var(--border); margin-top:9px; padding-top:9px;">
+            <div class="card-meta" style="margin:0;">${pctConcl}% — percentual de ações concluídas,
+              não de implantação do Compliance</div>
+            <div style="font-size:12px; font-weight:700; color:var(--red); margin-top:3px;">
+              ${r.atrasadas} ações atrasadas</div>
+            <div class="card-meta" style="margin:3px 0 0; font-size:10px;">
+              atraso não é fatia do gráfico: ele se sobrepõe ao status</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const proximo = r.marcos.length ? r.marcos[0] : null;
+  const mini = (chave,cor,lab,val,sub,acao)=>{
+    const ativo = COMPLIANCE_PAINEL === chave;
+    return `
+    <div class="comp-mini${ativo?' active':''}" data-mini="${chave}"
+         onclick="compliancePainel('${chave}')" role="button" tabindex="0"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();compliancePainel('${chave}');}"
+         style="border-left:3px solid ${cor};">
+      <div class="card-label" style="margin:0; font-size:10px;">${lab}</div>
+      <div style="font-size:${String(val).length>7?'15px':'21px'}; font-weight:800; color:${cor};
+                  line-height:1.2; margin:3px 0 2px;">${val}</div>
+      <div class="card-meta" style="margin:0; font-size:10px; line-height:1.35;">${sub}</div>
+      <div style="font-size:10.5px; font-weight:700; color:var(--blue); margin-top:7px;">
+        ${acao} ${ativo?'▴':'▾'}</div>
+    </div>`;
+  };
+
+  const blocoB = `
+    <div class="card" style="flex:1; min-width:270px;">
+      <div class="card-label">Atenção Executiva</div>
+      <div class="card-meta" style="margin-top:4px;">Clique para abrir as ações de cada recorte.</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+                  gap:10px; margin-top:12px;">
+        ${mini('criticas','#e8192c','Ações Críticas', r.criticas.length,
+               'atraso + prioridade alta','Ver ações')}
+        ${mini('altadir','#a855f7','Alta Direção', r.altaDirecao.length,
+               r.altaDirecao.filter(x=>x.atrasado).length+' atrasadas','Ver ações')}
+        ${mini('marco','#3d7bff','Próximo Marco', proximo? proximo.prazo : '—',
+               proximo? (proximo.itens[0].acao.length>46
+                 ? proximo.itens[0].acao.slice(0,44)+'…' : proximo.itens[0].acao) : 'sem marco futuro',
+               'Ver marco')}
+      </div>
+    </div>`;
+
+  const faixa = `
+    <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:stretch;">
+      ${blocoA}${blocoB}
+    </div>
+    ${complianceMiniPainel()}`;
+
+  // ── 3. leitura executiva enxuta ──────────────────────────
+  const critAtraso = r.criticas.concat(r.atencao).map(complianceDiasAtraso);
+  const leitura = `
+    <div class="card"><div class="card-label">Leitura Executiva</div>
+      <div style="margin-top:10px; line-height:1.75; font-size:13.5px; color:var(--text);">
+        <b style="color:var(--red);">${r.atrasadas} de ${r.total} ações estão atrasadas</b>, com vencimentos
+        de ${Math.min(...critAtraso)} a ${Math.max(...critAtraso)} dias.
+        <b style="color:var(--red);">${r.criticas.length} são críticas</b> — atraso somado a prioridade alta,
+        e nenhuma ação de prioridade alta está no prazo.<br>
+        <b style="color:var(--gold);">Nenhuma das ${r.total} ações tem responsável definido.</b>
+        ${proximo ? `Próximo marco em <b>${proximo.prazo}</b>, o que deixa
+        ${new Date(+proximo.prazo.slice(6), +proximo.prazo.slice(3,5)-1, +proximo.prazo.slice(0,2)) >
+          new Date(+COMPLIANCE_META.emitidoEm.slice(6), +COMPLIANCE_META.emitidoEm.slice(3,5)-1, 1)
+          ? 'a janela até lá' : 'pouco tempo'} para designar donos e recuperar o bloco vencido.` : ''}
+      </div>
+    </div>`;
+
+  // ── 4. cronograma ────────────────────────────────────────
+  const trims = [];
+  for(let a=2026; a<=2029; a++) for(let t=1; t<=4; t++){
+    if(a===2026 && t<2) continue;
+    if(a===2029 && t>1) continue;
+    trims.push('T'+t+'/'+String(a).slice(2));
+  }
+  const idxT = (br)=>trims.indexOf(complianceTrim(br));
+  const legenda = ['Alta','Média','Baixa','Nenhuma'].map(pr=>`
+    <span style="display:inline-flex; align-items:center; gap:5px; margin-right:14px;">
+      <span style="width:11px;height:8px;border-radius:2px;background:${CORP[pr]};"></span>
+      <span class="card-meta" style="margin:0;">${pr}</span></span>`).join('')
+    + `<span style="display:inline-flex; align-items:center; gap:5px;">
+        <span style="width:11px;height:8px;border-radius:2px;background:#5a5c78;
+          box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55);"></span>
+        <span class="card-meta" style="margin:0;">prazo vencido</span></span>`;
+
+  const gantt = `
+    <div class="card"><div class="card-label">Cronograma de Implantação</div>
+      <div class="card-meta" style="margin-top:5px;">Horizonte abr/2026 a mar/2029 · barra colorida
+        pela prioridade da ação.</div>
+      <div style="margin-top:10px; padding-bottom:4px;">${legenda}</div>
+      <div style="overflow-x:auto; margin-top:12px;">
+        <table style="width:100%; min-width:760px; border-collapse:collapse;">
+          <thead><tr>
+            <th style="text-align:left; font-size:10.5px; color:var(--muted); font-weight:700;
+                       padding:0 8px 8px 0; min-width:230px;">AÇÃO</th>
+            ${trims.map(t=>`<th style="font-size:9.5px; color:var(--muted); font-weight:700;
+              padding:0 2px 8px; text-align:center;">${t}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${COMPLIANCE_DATA.map(x=>{
+              const a = idxT(x.inicio), b = idxT(x.prazo);
+              return `<tr>
+                <td style="font-size:11.5px; color:var(--text); padding:5px 8px 5px 0; line-height:1.35;">
+                  ${x.acao.length>70 ? x.acao.slice(0,68)+'…' : x.acao}</td>
+                ${trims.map((t,i)=>{
+                  if(i<a || i>b) return '<td style="padding:5px 2px;"></td>';
+                  const cor = CORP[x.prioridade] || '#5a5c78';
+                  const brd = x.atrasado ? 'box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55);' : '';
+                  const r0 = i===a ? 'border-top-left-radius:4px;border-bottom-left-radius:4px;' : '';
+                  const r1 = i===b ? 'border-top-right-radius:4px;border-bottom-right-radius:4px;' : '';
+                  return `<td style="padding:5px 0;"><div title="${x.acao} · ${x.inicio} a ${x.prazo}"
+                    style="height:15px;background:${cor};${brd}${r0}${r1}"></div></td>`;
+                }).join('')}
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  el.innerHTML = cards + faixa + leitura + gantt;
+}
+
 const navItems = document.querySelectorAll('.nav-item');
 for(let i=0;i<navItems.length;i++){
   navItems[i].addEventListener('click', function(){
@@ -4286,10 +5003,12 @@ for(let i=0;i<navItems.length;i++){
     document.getElementById('pageBreadcrumbTitle').textContent = PAGE_TITLES[page].t;
     document.getElementById('pageBreadcrumbSub').textContent = PAGE_TITLES[page].s;
     // Abas sem filtro mensal (Planejamento e Institucional) ocultam a barra de período do Diretor
-    const semFiltro = (page==='institucional' || page==='estrategia');
+    // Compliance tem horizonte próprio (abr/26–mar/29), fora do filtro mensal
+    const semFiltro = (page==='institucional' || page==='estrategia' || page==='compliance');
     const fb = document.getElementById('filterbar');
     if(fb) fb.style.display = semFiltro ? 'none' : '';
     if(page==='institucional') carregarInstitucional();
+    if(page==='compliance') renderCompliance();
   });
 }
 
@@ -5204,6 +5923,7 @@ const COBERTURA_RH = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 
 // Vendas tem cobertura própria (Jan a Jul/26) — a planilha de ENTRADAS tem os 6 meses,
@@ -6111,11 +6831,11 @@ const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'recuperado em julho', esperado:402369, calc:()=>NEGOCIACOES[4].valor},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
-   oque:'recuperado em agosto', esperado:362106, calc:()=>NEGOCIACOES[5].valor},
+   oque:'recuperado em agosto', esperado:375041, calc:()=>NEGOCIACOES[5].valor},
   {aba:'Sec. Adm · Negociação', doc:'Fechamento Julho/26 (Cobrança)', ate:'jul/2026',
    oque:'inadimplência em aberto, abertura de julho', esperado:784793, calc:()=>NEG_ESTOQUE['Jul/26']},
   {aba:'Sec. Adm · Negociação', doc:'Período Agosto/26 (Cobrança)', ate:'ago/2026',
-   oque:'inadimplência em aberto, abertura de agosto', esperado:592063, calc:()=>NEG_ESTOQUE['Ago/26']},
+   oque:'inadimplência em aberto, abertura de agosto', esperado:590002, calc:()=>NEG_ESTOQUE['Ago/26']},
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'contatos enviados mar-jun', esperado:1498,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.contatos||0),0)},
