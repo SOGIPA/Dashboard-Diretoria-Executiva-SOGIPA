@@ -307,6 +307,99 @@
   .comp-mini:hover{ border-color:var(--blue); background:rgba(61,123,255,.06); }
   .comp-mini.active{ border-color:var(--blue); background:rgba(61,123,255,.12); }
   .comp-mini:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+
+  /* ══════════════════════════════════════════════════════════
+     RESPONSIVIDADE MOBILE (v271)
+     Tudo abaixo é só celular. O desktop não é tocado.
+     ══════════════════════════════════════════════════════════ */
+
+  /* Nome na legenda com barras: no desktop corta com reticências; no celular
+     aparece inteiro, porque lá o espaço é vertical e não horizontal. */
+  .leg-nome{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  @media (max-width:680px){
+    /* 1. DONUT + LEGENDA — o problema principal.
+       flex-wrap sozinho não resolvia: com flex:1 a legenda aceitava 82px de
+       largura e quebrava "Aniversariantes de agosto" palavra por palavra.
+       No celular a leitura é vertical: donut em cima, legenda inteira embaixo. */
+    .donut-wrap{
+      flex-direction:column !important;
+      align-items:stretch !important;
+      gap:14px !important;
+    }
+    .donut-wrap > .donut{ align-self:center; }
+    .donut-wrap > *:not(.donut){ width:100% !important; flex:none !important; min-width:0 !important; }
+
+    /* 2. Texto da legenda: quebra ENTRE palavras, nunca no meio. */
+    .legend-row{
+      display:grid !important;
+      grid-template-columns:12px minmax(0,1fr);
+      align-items:start;
+      gap:9px;
+      font-size:13.5px;
+      line-height:1.45;
+      padding:5px 0;
+      margin-top:0;
+      word-break:normal;
+      overflow-wrap:break-word;
+      hyphens:none;
+    }
+    .legend-row .dot{ margin-top:5px; }
+    .leg-nome{ white-space:normal !important; overflow:visible !important;
+               text-overflow:clip !important; word-break:normal; overflow-wrap:break-word; }
+
+    /* 3. Centro do donut: o subtítulo cabia mal em 90px. */
+    .donut{ width:180px; height:180px; }
+
+    /* 4. Nada de largura fixa segurando o conteúdo. */
+    .card, .status-item, .mini-stat{ min-width:0; }
+    .card *{ max-width:100%; }
+
+    /* 5. TABELA "Metas do Setor" → cards. Cada linha vira um bloco com o
+       rótulo antes do valor, em vez de sumir na rolagem horizontal. */
+    #vendasMetasConteudo table{ min-width:0 !important; }
+    #vendasMetasConteudo thead{ display:none; }
+    #vendasMetasConteudo table, #vendasMetasConteudo tbody,
+    #vendasMetasConteudo tfoot, #vendasMetasConteudo tr, #vendasMetasConteudo td{ display:block; width:100%; }
+    #vendasMetasConteudo tr{
+      border:1px solid var(--border); border-radius:11px;
+      padding:11px 13px; margin-bottom:10px; background:rgba(255,255,255,.02);
+    }
+    #vendasMetasConteudo td{
+      display:flex; justify-content:space-between; align-items:baseline;
+      gap:12px; padding:4px 0; text-align:right !important; border:none;
+    }
+    #vendasMetasConteudo td[data-lb]:before{
+      content:attr(data-lb); color:var(--muted); font-size:11px;
+      font-weight:600; text-align:left; letter-spacing:.4px; flex:none;
+    }
+    /* a primeira célula é o nome da meta: vira título do card */
+    #vendasMetasConteudo td[data-lb="Meta"]{
+      display:block; text-align:left !important; font-weight:800;
+      font-size:13.5px; padding-bottom:8px; margin-bottom:6px;
+      border-bottom:1px solid var(--border);
+    }
+    #vendasMetasConteudo td[data-lb="Meta"]:before{ display:none; }
+
+    /* 6. Toque confortável e leitura sem zoom. */
+    .legend-row, .mini-stat, .status-item{ font-size:13.5px; }
+    /* Gantt: 12 trimestres não cabem em 360px sem virar ilegível.
+       O scroll horizontal é a solução certa aqui — só precisa ser
+       anunciado, senão o usuário não sabe que há mais conteúdo. */
+    .gantt-dica{ display:block !important; }
+    .donut-core{ width:120px !important; height:120px !important; padding:8px !important; }
+    .donut-sub{ max-width:104px !important; }
+  }
+
+  @media (max-width:460px){
+    .donut{ width:164px; height:164px; }
+    /* No celular o miolo cresce de 106 para 124px: com 106px de espaço útil
+       'desligamentos' cabe em uma linha. O anel fica com 17px, ainda legível. */
+    .donut-core{ width:124px !important; height:124px !important; padding:9px !important; }
+    .donut-sub{ max-width:106px !important; font-size:10px !important; }
+    .legend-row{ font-size:13px; }
+  }
+
   .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; flex-wrap:wrap; }
   .rh-subtab-btn{
     background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:700;
@@ -2910,7 +3003,7 @@ function drawDonut(elId, segments, centerLabel, centerSub, opts){
         <div style="min-width:0;">
           <div style="display:flex; align-items:center; gap:7px; font-size:13px; color:var(--text);">
             <span class="dot" style="background:${s.cor}; flex-shrink:0;"></span>
-            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${s.nome}</span>
+            <span class="leg-nome">${s.nome}</span>
           </div>
           <div style="height:5px; background:#2a2c3d; border-radius:3px; margin-top:5px; overflow:hidden;">
             <div style="height:100%; width:${(s.valor/maxSeg*100).toFixed(1)}%; background:${s.cor}; border-radius:3px;"></div>
@@ -2926,9 +3019,9 @@ function drawDonut(elId, segments, centerLabel, centerSub, opts){
   }
   el.innerHTML = `<div class="donut">
       <div class="donut-ring" style="width:158px; height:158px; border-radius:50%; background:conic-gradient(${stops.join(',')}); display:flex; align-items:center; justify-content:center;">
-        <div style="width:106px; height:106px; border-radius:50%; background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6px; box-sizing:border-box;">
+        <div class="donut-core" style="width:106px; height:106px; border-radius:50%; background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6px; box-sizing:border-box;">
           <div style="font-size:22px; font-weight:900; line-height:1.1;">${centerLabel}</div>
-          <div style="font-size:11px; color:var(--muted); line-height:1.25; max-width:90px; overflow-wrap:break-word;">${centerSub||''}</div>
+          <div class="donut-sub" style="font-size:11px; color:var(--muted); line-height:1.25; max-width:96px; overflow-wrap:break-word; word-break:normal; hyphens:none;">${centerSub||''}</div>
         </div>
       </div>
     </div>
@@ -4984,7 +5077,8 @@ function renderCompliance(){
       <div class="card-meta" style="margin-top:5px;">Horizonte abr/2026 a mar/2029 · barra colorida
         pela prioridade da ação.</div>
       <div style="margin-top:10px; padding-bottom:4px;">${legenda}</div>
-      <div style="overflow-x:auto; margin-top:12px;">
+      <div class="card-meta gantt-dica" style="margin-top:8px; display:none;">↔ arraste na horizontal para percorrer os trimestres</div>
+      <div style="overflow-x:auto; margin-top:12px; -webkit-overflow-scrolling:touch;">
         <table style="width:100%; min-width:760px; border-collapse:collapse;">
           <thead><tr>
             <th style="text-align:left; font-size:10.5px; color:var(--muted); font-weight:700;
@@ -15385,11 +15479,13 @@ function pintarVendas(v, aviso){
 
 function renderMetasSetorHTML(mt){
   const pct = (real, orcado) => (real!=null && orcado) ? (real/orcado*100).toFixed(1).replace('.',',')+'%' : '—';
+  // data-label alimenta o layout de card no celular (ver @media 680px):
+  // no mobile cada linha vira um bloco e o rótulo aparece antes do valor.
   const linha = (label, orcado, real) => `<tr>
-    <td>${label}</td>
-    <td class="num">${orcado}</td>
-    <td class="num">${real!=null ? real : '<span class="muted">—</span>'}</td>
-    <td class="num">${pct(real, orcado)}</td>
+    <td data-lb="Meta">${label}</td>
+    <td class="num" data-lb="Orçado">${orcado}</td>
+    <td class="num" data-lb="Real">${real!=null ? real : '<span class="muted">—</span>'}</td>
+    <td class="num" data-lb="Atingimento">${pct(real, orcado)}</td>
   </tr>`;
   return `
     <div class="grid-2 reverse">
@@ -15405,9 +15501,9 @@ function renderMetasSetorHTML(mt){
             ${linha('Meta Desafio Reingressos', mt.desafioReingresso, null)}
           </tbody>
           <tfoot><tr style="font-weight:800; border-top:2px solid var(--border);">
-            <td>TOTAL — Desafio</td>
-            <td class="num">${mt.total.orcado}</td>
-            <td class="num">${mt.total.real}</td>
+            <td data-lb="Meta">TOTAL — Desafio</td>
+            <td class="num" data-lb="Orçado">${mt.total.orcado}</td>
+            <td class="num" data-lb="Real">${mt.total.real}</td>
             ${(()=>{
               // O gap compara o realizado contra o DESAFIO (${mt.desafioVenda} + ${mt.desafioReingresso}),
               // não contra a meta da coluna de cima. Vermelho só quando o setor
@@ -15420,7 +15516,7 @@ function renderMetasSetorHTML(mt){
                 : (bateuMeta
                     ? `Meta do setor superada (${mt.totalVR.real} de ${mt.totalVR.orcado}); faltam ${Math.abs(mt.total.gap)} para o desafio de ${mt.total.orcado}`
                     : `Abaixo da meta do setor e do desafio de ${mt.total.orcado}`);
-              return `<td class="num" style="color:${cor};" title="${tit}">${mt.total.gap>=0?'+':''}${mt.total.gap}</td>`;
+              return `<td class="num" data-lb="Gap" style="color:${cor};" title="${tit}">${mt.total.gap>=0?'+':''}${mt.total.gap}</td>`;
             })()}
           </tr></tfoot>
         </table>
