@@ -412,6 +412,13 @@
   .flx-neg.aberto{ background:rgba(232,25,44,.13); }
   .flx-neg:focus-visible{ outline:2px solid var(--blue); outline-offset:-2px; }
   .flx-seta{ font-size:9px; margin-left:5px; opacity:.75; }
+  /* Linha de mês previsto: texto um pouco mais suave que o realizado, para
+     dar a leitura passado → presente → futuro sem chamar mais atenção que
+     os fechamentos. O status e a tag é que carregam a distinção. */
+  .flx-prev td{ opacity:.82; }
+  .flx-prev td:first-child{ color:#a855f7; }
+  .flx-ic{ font-size:9px; color:#a855f7; opacity:.9; }
+
   @media (max-width:680px){
     /* blocos da análise empilham; nada de rolagem horizontal */
     .flx-grid{ grid-template-columns:1fr !important; gap:14px !important; }
@@ -1676,6 +1683,15 @@ const PROJECAO = [
   {d:'25/ago', mov:-51827, banco:-461899, indices:3112700},
   {d:'26/ago', mov:-52020, banco:-513919, indices:3112700},
   {d:'27/ago', mov:-52450, banco:-566369, indices:3112700},
+  // ── ATUALIZACAO DE 10/09 ───────────────────────────────────────────────────
+  // Fonte: Fluxo de Caixa Sogipa 2026, emitido em 10/09/2026 pela Controladoria.
+  // 79 datas, de 04/set a 30/dez, substituindo a serie a partir de 04/set.
+  // ENCADEIA com o painel: 03/set fechou em -598.871 e o movimento de 04/set
+  // (-513.367) leva a -1.112.238, exatamente o que a fonte declara. Diferente
+  // da carga de 08/09, nao houve revisao de dias ja fechados.
+  // Total Disponivel = 6.400.000 (limite) + indices + banco, conferido.
+  // Unica quebra: 12/nov, R$ 1 de arredondamento.
+  //
   // ── QUEBRA CONHECIDA E EXPLICADA (carga de 08/09) ──────────────────────────
   // 27/ago deixou -566.369; com o movimento de 28/ago (-135.628) daria -701.997,
   // mas o novo Resumo diz -602.730. Os últimos dias de agosto foram REVISADOS no
@@ -1688,85 +1704,85 @@ const PROJECAO = [
   {d:'01/set', mov:111046, banco:-434214, indices:3108707},
   {d:'02/set', mov:-90301, banco:-524515, indices:3108707},
   {d:'03/set', mov:-74356, banco:-598871, indices:3097391},
-  {d:'04/set', mov:-477050, banco:-1075921, indices:2697391},
-  {d:'08/set', mov:125350, banco:-950571, indices:2697391},
-  {d:'09/set', mov:-14300, banco:-964871, indices:2697391},
-  {d:'10/set', mov:26500, banco:-938371, indices:2648391},
-  {d:'11/set', mov:1216800, banco:278429, indices:2648391},
-  {d:'14/set', mov:221395, banco:499824, indices:2466391},
-  {d:'15/set', mov:30950, banco:530774, indices:2466391},
-  {d:'16/set', mov:-30050, banco:500724, indices:2466391},
-  {d:'17/set', mov:9950, banco:510674, indices:2466391},
-  {d:'18/set', mov:-1036600, banco:-525926, indices:2466391},
-  {d:'21/set', mov:49950, banco:-475976, indices:2466391},
-  {d:'22/set', mov:-10050, banco:-486026, indices:2466391},
-  {d:'23/set', mov:-30100, banco:-516126, indices:2466391},
-  {d:'24/set', mov:-26050, banco:-542176, indices:2466391},
-  {d:'25/set', mov:-115350, banco:-657526, indices:2466391},
-  {d:'28/set', mov:49950, banco:-607576, indices:2466391},
-  {d:'29/set', mov:-50, banco:-607626, indices:2425391},
-  {d:'30/set', mov:11500, banco:-596126, indices:2404391},
-  {d:'01/out', mov:18900, banco:-577226, indices:2404391},
-  {d:'02/out', mov:-6500, banco:-583726, indices:2404391},
-  {d:'05/out', mov:-39700, banco:-623426, indices:2404391},
-  {d:'06/out', mov:-383500, banco:-1006926, indices:2404391},
-  {d:'07/out', mov:125000, banco:-881926, indices:2404391},
-  {d:'08/out', mov:85000, banco:-796926, indices:2404391},
-  {d:'09/out', mov:-177300, banco:-974226, indices:2369724},
-  {d:'13/out', mov:-220450, banco:-1194676, indices:2369724},
-  {d:'14/out', mov:1330645, banco:135969, indices:2362658},
-  {d:'15/out', mov:151000, banco:286969, indices:2362658},
-  {d:'16/out', mov:-80000, banco:206969, indices:2362658},
-  {d:'19/out', mov:145000, banco:351969, indices:2362658},
-  {d:'20/out', mov:-1022600, banco:-670631, indices:2362658},
-  {d:'21/out', mov:20000, banco:-650631, indices:2362658},
-  {d:'22/out', mov:-15000, banco:-665631, indices:2362658},
-  {d:'23/out', mov:-45100, banco:-710731, indices:2362658},
-  {d:'26/out', mov:-9000, banco:-719731, indices:2362658},
-  {d:'27/out', mov:-109200, banco:-828931, indices:2362658},
-  {d:'28/out', mov:10000, banco:-818931, indices:2362658},
-  {d:'29/out', mov:0, banco:-818931, indices:2362658},
-  {d:'30/out', mov:19000, banco:-799931, indices:2341658},
-  {d:'03/nov', mov:64300, banco:-735631, indices:2341658},
-  {d:'04/nov', mov:103900, banco:-631731, indices:2341658},
-  {d:'05/nov', mov:-43500, banco:-675231, indices:2341658},
-  {d:'06/nov', mov:-425500, banco:-1100731, indices:2341658},
-  {d:'09/nov', mov:87700, banco:-1013031, indices:2306991},
-  {d:'10/nov', mov:-113500, banco:-1126531, indices:2257991},
-  {d:'11/nov', mov:1390000, banco:263469, indices:2257991},
-  {d:'12/nov', mov:177645, banco:441115, indices:2257991},
-  {d:'13/nov', mov:-196450, banco:244665, indices:2257991},
-  {d:'16/nov', mov:26000, banco:270665, indices:2257991},
-  {d:'17/nov', mov:-5000, banco:265665, indices:2257991},
-  {d:'18/nov', mov:75000, banco:340665, indices:2257991},
-  {d:'19/nov', mov:-1006600, banco:-665935, indices:2257991},
-  {d:'23/nov', mov:-30100, banco:-696035, indices:2257991},
-  {d:'24/nov', mov:-39000, banco:-735035, indices:2257991},
-  {d:'25/nov', mov:10000, banco:-725035, indices:2257991},
-  {d:'26/nov', mov:30000, banco:-695035, indices:2257991},
-  {d:'27/nov', mov:-40300, banco:-735335, indices:2257991},
-  {d:'30/nov', mov:-286000, banco:-1021335, indices:2236991},
-  {d:'01/dez', mov:31900, banco:-989435, indices:2236991},
-  {d:'02/dez', mov:2500, banco:-986935, indices:2236991},
-  {d:'03/dez', mov:-95700, banco:-1082635, indices:2236991},
-  {d:'04/dez', mov:-375500, banco:-1458135, indices:2236991},
-  {d:'07/dez', mov:170000, banco:-1288135, indices:2236991},
-  {d:'08/dez', mov:95000, banco:-1193135, indices:2236991},
-  {d:'09/dez', mov:-47300, banco:-1240435, indices:2236991},
-  {d:'10/dez', mov:-52500, banco:-1292935, indices:2236991},
-  {d:'11/dez', mov:992550, banco:-300385, indices:2236991},
-  {d:'14/dez', mov:235000, banco:-65385, indices:2229925},
-  {d:'15/dez', mov:36000, banco:-29385, indices:2229925},
-  {d:'16/dez', mov:-5000, banco:-34385, indices:2229925},
-  {d:'17/dez', mov:-11000, banco:-45385, indices:2229925},
-  {d:'18/dez', mov:-1305600, banco:-1350985, indices:2229925},
-  {d:'21/dez', mov:70000, banco:-1280985, indices:2229925},
-  {d:'22/dez', mov:0, banco:-1280985, indices:2229925},
-  {d:'23/dez', mov:-19100, banco:-1300085, indices:2229925},
-  {d:'24/dez', mov:-119000, banco:-1419085, indices:2229925},
-  {d:'28/dez', mov:-54200, banco:-1473285, indices:2229925},
-  {d:'29/dez', mov:25000, banco:-1448285, indices:2229925},
-  {d:'30/dez', mov:24000, banco:-1424285, indices:2229925},
+  {d:'04/set', mov:-513367, banco:-1112238, indices:2697517},
+  {d:'08/set', mov:95030, banco:-1017208, indices:2697517},
+  {d:'09/set', mov:-18300, banco:-1035508, indices:2697517},
+  {d:'10/set', mov:13800, banco:-1021708, indices:2658517},
+  {d:'11/set', mov:1253800, banco:232092, indices:2658517},
+  {d:'14/set', mov:193695, banco:425787, indices:2476517},
+  {d:'15/set', mov:60950, banco:486737, indices:2476517},
+  {d:'16/set', mov:-30050, banco:456687, indices:2476517},
+  {d:'17/set', mov:9950, banco:466637, indices:2476517},
+  {d:'18/set', mov:-1036600, banco:-569963, indices:2476517},
+  {d:'21/set', mov:49950, banco:-520013, indices:2476517},
+  {d:'22/set', mov:-29050, banco:-549063, indices:2476517},
+  {d:'23/set', mov:-30100, banco:-579163, indices:2476517},
+  {d:'24/set', mov:-26050, banco:-605213, indices:2476517},
+  {d:'25/set', mov:-115350, banco:-720563, indices:2476517},
+  {d:'28/set', mov:49950, banco:-670613, indices:2476517},
+  {d:'29/set', mov:7950, banco:-662663, indices:2435517},
+  {d:'30/set', mov:11500, banco:-651163, indices:2414517},
+  {d:'01/out', mov:18900, banco:-632263, indices:2414517},
+  {d:'02/out', mov:-6500, banco:-638763, indices:2414517},
+  {d:'05/out', mov:-39700, banco:-678463, indices:2414517},
+  {d:'06/out', mov:-383500, banco:-1061963, indices:2414517},
+  {d:'07/out', mov:125000, banco:-936963, indices:2414517},
+  {d:'08/out', mov:85000, banco:-851963, indices:2414517},
+  {d:'09/out', mov:-177300, banco:-1029263, indices:2379851},
+  {d:'13/out', mov:-220450, banco:-1249713, indices:2379851},
+  {d:'14/out', mov:1330645, banco:80932, indices:2372785},
+  {d:'15/out', mov:151000, banco:231932, indices:2372785},
+  {d:'16/out', mov:-80000, banco:151932, indices:2372785},
+  {d:'19/out', mov:145000, banco:296932, indices:2372785},
+  {d:'20/out', mov:-1022600, banco:-725668, indices:2372785},
+  {d:'21/out', mov:20000, banco:-705668, indices:2372785},
+  {d:'22/out', mov:-15000, banco:-720668, indices:2372785},
+  {d:'23/out', mov:-45100, banco:-765768, indices:2372785},
+  {d:'26/out', mov:-9000, banco:-774768, indices:2372785},
+  {d:'27/out', mov:-109200, banco:-883968, indices:2372785},
+  {d:'28/out', mov:10000, banco:-873968, indices:2372785},
+  {d:'29/out', mov:0, banco:-873968, indices:2372785},
+  {d:'30/out', mov:19000, banco:-854968, indices:2351785},
+  {d:'03/nov', mov:64300, banco:-790668, indices:2351785},
+  {d:'04/nov', mov:103900, banco:-686768, indices:2351785},
+  {d:'05/nov', mov:-43500, banco:-730268, indices:2351785},
+  {d:'06/nov', mov:-425500, banco:-1155768, indices:2351785},
+  {d:'09/nov', mov:87700, banco:-1068068, indices:2317118},
+  {d:'10/nov', mov:-113500, banco:-1181568, indices:2268118},
+  {d:'11/nov', mov:1390000, banco:208432, indices:2268118},
+  {d:'12/nov', mov:177645, banco:386078, indices:2268118},
+  {d:'13/nov', mov:-196450, banco:189628, indices:2268118},
+  {d:'16/nov', mov:26000, banco:215628, indices:2268118},
+  {d:'17/nov', mov:-5000, banco:210628, indices:2268118},
+  {d:'18/nov', mov:75000, banco:285628, indices:2268118},
+  {d:'19/nov', mov:-1006600, banco:-720972, indices:2268118},
+  {d:'23/nov', mov:-30100, banco:-751072, indices:2268118},
+  {d:'24/nov', mov:-39000, banco:-790072, indices:2268118},
+  {d:'25/nov', mov:10000, banco:-780072, indices:2268118},
+  {d:'26/nov', mov:30000, banco:-750072, indices:2268118},
+  {d:'27/nov', mov:-40300, banco:-790372, indices:2268118},
+  {d:'30/nov', mov:-286000, banco:-1076372, indices:2247118},
+  {d:'01/dez', mov:31900, banco:-1044472, indices:2247118},
+  {d:'02/dez', mov:2500, banco:-1041972, indices:2247118},
+  {d:'03/dez', mov:-95700, banco:-1137672, indices:2247118},
+  {d:'04/dez', mov:-375500, banco:-1513172, indices:2247118},
+  {d:'07/dez', mov:170000, banco:-1343172, indices:2247118},
+  {d:'08/dez', mov:95000, banco:-1248172, indices:2247118},
+  {d:'09/dez', mov:-47300, banco:-1295472, indices:2247118},
+  {d:'10/dez', mov:-52500, banco:-1347972, indices:2247118},
+  {d:'11/dez', mov:992550, banco:-355422, indices:2247118},
+  {d:'14/dez', mov:235000, banco:-120422, indices:2240052},
+  {d:'15/dez', mov:36000, banco:-84422, indices:2240052},
+  {d:'16/dez', mov:-5000, banco:-89422, indices:2240052},
+  {d:'17/dez', mov:-11000, banco:-100422, indices:2240052},
+  {d:'18/dez', mov:-1305600, banco:-1406022, indices:2240052},
+  {d:'21/dez', mov:70000, banco:-1336022, indices:2240052},
+  {d:'22/dez', mov:0, banco:-1336022, indices:2240052},
+  {d:'23/dez', mov:-19100, banco:-1355122, indices:2240052},
+  {d:'24/dez', mov:-119000, banco:-1474122, indices:2240052},
+  {d:'28/dez', mov:-54200, banco:-1528322, indices:2240052},
+  {d:'29/dez', mov:25000, banco:-1503322, indices:2240052},
+  {d:'30/dez', mov:24000, banco:-1479322, indices:2240052},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -1776,17 +1792,18 @@ const LIMITE_CREDITO_TOTAL = 6400000;
 // Conecta com "Fundo Índices Construtivos" e "Compromissos Futuros" já mostrados em Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 const OBRAS_FUNDO = {
-  dataReferencia: '31/07/2026',
+  dataReferencia: '31/08/2026',
   // Acompanhamento dos Índices Construtivos (mar-jul/26). Fonte: Relatório de Acompanhamento
   // + Dashboard Executivo, base 31/07/2026.
   // Fórmula do fundo: Saldo Final = Saldo Inicial + Entradas − Investimentos do período (saldo rola mês a mês).
-  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07'],
+  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07','31/08'],
   acompanhamento: [
     {label:'31/03', investidoAcum:294665.52, saldo:297163.42, obrasAtivas:1},
     {label:'30/04', investidoAcum:362444.42, saldo:228719.00, obrasAtivas:2},
     {label:'31/05', investidoAcum:448151.50, saldo:949373.74, obrasAtivas:4},
     {label:'30/06', investidoAcum:550614.82, saldo:1666587.37, obrasAtivas:7},
-    {label:'31/07', investidoAcum:850235.78, saldo:2199758.39, obrasAtivas:10}
+    {label:'31/07', investidoAcum:850235.78, saldo:2199758.39, obrasAtivas:10},
+    {label:'31/08', investidoAcum:899504.76, saldo:2996605.86, obrasAtivas:12}
   ],
   fluxoMensal: [
     {mes:'Fev/26', saldoIni:0.00, entradas:453789.70, investimentos:0.00, saldoFim:453789.70},
@@ -1794,7 +1811,8 @@ const OBRAS_FUNDO = {
     {mes:'Abr/26', saldoIni:297163.42, entradas:0.00, investimentos:68444.42, saldoFim:228719.00},
     {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:85707.08, saldoFim:949373.74},
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:102463.32, saldoFim:1666587.37},
-    {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:299620.96, saldoFim:2199758.39}
+    {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:299620.96, saldoFim:2199758.39},
+    {mes:'Ago/26', saldoIni:2199758.39, entradas:846116.45, investimentos:49268.98, saldoFim:2996605.86}
   ],
   obrasNoTempo: [
     {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52], entrou:'31/03', total:341665.52},
@@ -1808,9 +1826,15 @@ const OBRAS_FUNDO = {
     {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48], entrou:'31/07', total:38144.48},
     {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00], entrou:'31/07', total:17900.00}
   ],
-  totalRecebido: 3049994.17,
-  totalInvestido: 850235.78,
-  saldoDisponivel: 2199758.39,
+  totalRecebido: 3896110.62,
+  totalInvestido: 899504.76,
+  // Regime de COMPETÊNCIA. Não confundir com o saldo do fluxo de caixa abaixo:
+  // a diferença são investimentos parcelados já reconhecidos, sem desembolso.
+  saldoDisponivel: 2996605.86,
+  saldoFluxoCaixa: 3108707.00,
+  diferencaConciliacao: 112101.14,
+  notaConciliacao: 'Saldo no Fluxo de Caixa em 31/08/2026: R$ 3.108.707,00. A diferença de R$ 112.101,14 em relação ao saldo por competência (R$ 2.996.605,86) refere-se a investimentos parcelados já reconhecidos pelo regime de competência, cujo desembolso financeiro ocorrerá conforme o cronograma de pagamento.',
+  pctAplicado: 23.1,   // recursos aplicados sobre o total recebido, conforme a fonte
   // ── Posição patrimonial (fonte: Dashboard Executivo Índices Construtivos, 31/07/2026) ──
   areaTotal: 118156.09,
   areaComissao: 5907.80,
@@ -1819,7 +1843,7 @@ const OBRAS_FUNDO = {
   areaDisponivel: 96815.86,
   potencialTotal: 96360000,
   aReceber: 845000.00,
-  saldoProjetado: 3044758.39,   // saldo atual + a receber, sem considerar novas saídas
+  saldoProjetado: 3841605.86,   // saldo por competência + a receber   // saldo atual + a receber, sem considerar novas saídas
   contabilizadoVendas: 13003904,
   pctEndividamento: 76.5,
   pctInvestimentos: 23.5,
@@ -1846,17 +1870,26 @@ const OBRAS_FUNDO = {
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:-102463.32,saldoFim:1666587.37},
     {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:-299620.96, saldoFim:2199758.39},
   ],
+  // Valores por obra. O PDF publica arredondado ao milhar; onde o painel já
+  // tinha o valor exato e ele bate com o arredondado, o exato foi mantido.
+  // Alterados pela fonte: Salão Panorâmico e Academia dos Atletas.
+  // Novos: Impermeabilização Laje Infinity e Reservatório Restaurante Tênis.
+  // A soma dá R$ 898431.70 contra o total oficial de R$ 899504.76: faltam R$ 1073.06,
+  // que são os centavos das 4 obras que a fonte não publica. O total oficial
+  // prevalece; a diferença não foi distribuída para não inventar valor.
   projetos: [
-    {nome:'Reforma Aquecedor das Piscinas', valor:341665.52, cor:'#e8192c'},
-    {nome:'Reforma Salão Panorâmico', valor:163600.08, cor:'#3d7bff'},
-    {nome:'Reforma Sanitários - 3º Andar', valor:89999.70, cor:'#00e5a0'},
-    {nome:'Reforma Quadras Recreativas', valor:84447.00, cor:'#a855f7'},
-    {nome:'Reforma Telhado', valor:78000.00, cor:'#f2b705'},
-    {nome:'Plano Diretor', valor:38144.48, cor:'#f472b6'},
-    {nome:'Reforma Academia dos Atletas', valor:20204.00, cor:'#06b6d4'},
-    {nome:'Reforma Vestiários', valor:17900.00, cor:'#8b8fa8'},
-    {nome:'Projeto Área de Convivência', valor:9000.00, cor:'#fb923c'},
-    {nome:'Reforma Tubulações das Piscinas', valor:7275.00, cor:'#b0b0d0'},
+    {nome:'Reforma Aquecedor das Piscinas', valor:341665.52},
+    {nome:'Reforma Salão Panorâmico', valor:170000.00},
+    {nome:'Reforma Sanitários - 3º Andar', valor:89999.70},
+    {nome:'Reforma Quadras Recreativas', valor:84447.00},
+    {nome:'Reforma Telhado', valor:78000.00},
+    {nome:'Plano Diretor', valor:38144.48},
+    {nome:'Reforma Academia dos Atletas', valor:24000.00},
+    {nome:'Impermeabilização - Laje Infinity', valor:23000.00},
+    {nome:'Reforma Vestiários', valor:17900.00},
+    {nome:'Reservatório - Restaurante Tênis', valor:15000.00},
+    {nome:'Projeto Área de Convivência', valor:9000.00},
+    {nome:'Reforma Tubulações das Piscinas', valor:7275.00},
   ],
 };
 
@@ -4352,7 +4385,7 @@ drawDonut('pagDonutFaixa', [
 // PALCO INTERATIVO — Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 let CURRENT_MES_KEY = 'jul2026';
-const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" do período completo (06/fev). O Resumo de Necessidades de 08/09/26 cobre 28/ago a 30/dez e tem mínimo de R$ 7.156.640,36 (28/dez) — acima deste piso, que segue vindo de fevereiro.
+const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" do período completo (06/fev). O Fluxo de Caixa de 10/09/26 cobre 04/set a 30/dez e tem mínimo de R$ 7.111.729,59 (28/dez) — acima deste piso, que segue vindo de fevereiro.
 
 const VIEWS = {
   operacional: {
@@ -5621,6 +5654,30 @@ function mesKeyParaRetencao(de, ate){
 // DADOS — VENDAS (Jan a Jul/26) · fonte: Dashboard de Vendas da Gerência Comercial
 // Corte: vendas até 2026-07-23 · funil até 2026-07-23
 // ═══════════════════════════════════════════════════════════
+// ── REGISTRO DE CORRECAO DE FONTE ─────────────────────────────────────────
+// AGOSTO/2026 · carga de 08/09 (ENTRADAS_REALIZADAS_V6 (4), MD5 f1cf280f)
+//   Valor publicado anteriormente ..... R$ 37.047,60
+//   Valor validado na nova planilha ... R$ 28.655,50
+//   Diferença ......................... -R$ 8.392,10 (-22,7%)
+//   Quantidade ........................ permanece em 65 vendas
+//   Ticket ............................ R$ 569,96 -> R$ 440,85
+//   Motivo: atualização conforme nova planilha oficial de Vendas, auditada no
+//   menor nível. Linha incompleta/duplicada excluída do realizado.
+//
+//   A planilha declara 66 no topo. A linha 20 (Nº 13, mesma pessoa da linha 21)
+//   tem só nome e campanha — sem valor, data, consultora, categoria ou
+//   matrícula — e a planilha não tem coluna de status que permitisse marcá-la
+//   como pendente. Fora do realizado: não altera o valor (vale zero) e, se
+//   entrasse, o card diria 66 com as três quebras em 65.
+//
+// SETEMBRO/2026 — AGUARDANDO BASE CORRIGIDA. Não importado. Foram identificados
+//   deslocamento de colunas (consultora no campo de categoria e categoria no
+//   campo de canal de venda), cinco registros com datas de agosto e um registro
+//   com data inconsistente de 2029. Não corrigido por inferência.
+//
+// JULHO/2026 — preservado. A planilha traz 32 vendas e R$ 20.262,25, idêntico
+//   ao que já estava publicado.
+// ──────────────────────────────────────────────────────────────────────────
 const VENDAS_EXTRA_MESES = {
   jan2026: {
     periodoTag:'Janeiro/2026',
@@ -5958,40 +6015,38 @@ const VENDAS_EXTRA_MESES = {
     // planilha", com valor ZERO, para as quebras somarem 48 como o card.
     // Duplicata conhecida: PAULO GRISOLIA SASSO aparece em duas linhas com a
     // mesma matrícula (1104035) — mantido porque a planilha declara 48.
-    periodoTag:'Agosto/2026 (parcial · até 28/08)',
-    associacoesNovas:'65', valorArrecadado:'R$ 37.047,60', ticketMedio:'R$ 569,96',
+    periodoTag:'Agosto/2026 (fechado)',
+    associacoesNovas:'65', valorArrecadado:'R$ 28.655,50', ticketMedio:'R$ 440,85',
     campanhas:[
-      {nome:'Promo Aniversário', qtd:36, cor:'#f2b705'},
-      {nome:'Visita', qtd:13, cor:'#00e5a0'},
-      {nome:'Amigo Indica', qtd:3, cor:'#fb923c'},
+      {nome:'Promo Aniversário', qtd:40, cor:'#f2b705'},
+      {nome:'Visita', qtd:12, cor:'#00e5a0'},
       {nome:'Convênio OAB', qtd:2, cor:'#06b6d4'},
       {nome:'Convênio', qtd:2, cor:'#a855f7'},
+      {nome:'Amigo Indica', qtd:2, cor:'#fb923c'},
       {nome:'Promo o Melhor das Férias', qtd:1, cor:'#3d7bff'},
       {nome:'Captação Usuário de Escola', qtd:1, cor:'#b0b0d0'},
       {nome:'Festa', qtd:1, cor:'#f472b6'},
       {nome:'Dependente', qtd:1, cor:'#22d3ee'},
       {nome:'WhatsApp', qtd:1, cor:'#84cc16'},
       {nome:'Indicação', qtd:1, cor:'#e879f9'},
-      {nome:'Aguardando registro na planilha', qtd:3, cor:'#4a4c68'},
+      {nome:'Teen', qtd:1, cor:'#5a5c78'},
     ],
     consultores:[
-      {nome:'Helena', qtd:30, valor:18249.77},
-      {nome:'Nicole', qtd:25, valor:14517.57},
-      {nome:'Claudia', qtd:5, valor:3433.26},
-      {nome:'Sabrina', qtd:2, valor:847.00},
-      {nome:'Aguardando registro na planilha', qtd:3, valor:0},
+      {nome:'Helena', qtd:34, valor:14428.50},
+      {nome:'Nicole', qtd:25, valor:11598.00},
+      {nome:'Claudia', qtd:4, valor:1862.00},
+      {nome:'Sabrina', qtd:2, valor:767.00},
     ],
     categorias:[
-      {nome:'Contribuinte', qtd:51},
-      {nome:'Contribuinte Teen', qtd:4},
+      {nome:'Contribuinte', qtd:46},
+      {nome:'Contribuinte Individual', qtd:6},
+      {nome:'Contribuinte Teen', qtd:5},
+      {nome:'Contribuinte Universitário', qtd:3},
       {nome:'Contribuinte Sênior', qtd:2},
-      {nome:'Contribuinte Universitário', qtd:2},
+      {nome:'Convênio OAB', qtd:2},
       {nome:'Sênior', qtd:1},
-      {nome:'Contribuinte Individual', qtd:1},
-      {nome:'Convênio OAB', qtd:1},
-      {nome:'Aguardando registro na planilha', qtd:3},
     ],
-    alerta: '<b>🤝 O setor de Vendas fechou parceria com a Secretária de Cultura.</b> É um ganho importante para o setor e para o clube, e abre um canal novo de captação.<br><br>Mês em andamento — <b>65 associações novas até 28/08</b>, somando <b>R$ 37.047,60</b>, exatamente a Taxa de Adesão declarada na planilha. <b style=\"color:var(--green);\">O mês fechou 155% da meta de 42</b> e chegou a 65% do desafio de 100. Há ainda <b>4 vendas em efetivação</b> (R$ 2.004,00 — Nicole 2, Helena 2), no bloco próprio abaixo. A <b>campanha de aniversário responde por 36 vendas</b> e as visitas chegaram a 13. <b>Helena fecha com 30 vendas e R$ 18.249,77</b> e <b>Nicole com 25 e R$ 14.517,57</b> — as duas somam 55 das 65. Ticket médio de R$ 569,96, ante R$ 614,59 em 24/08: o volume novo entrou com valor menor por venda. Somando os 40 reingressos, <b>vendas + reingressos chegam a 105</b> contra 82 orçados, e a R$ 60.332,41 de taxa total.',
+    alerta: '<b>🤝 O setor de Vendas fechou parceria com a Secretária de Cultura.</b> É um ganho importante para o setor e para o clube, e abre um canal novo de captação.<br><br><b>Mês fechado</b> — <b>65 associações novas</b> somando <b>R$ 28.655,50</b>, conforme a planilha oficial de Vendas auditada registro a registro. <b style=\"color:var(--green);\">155% da meta de 42</b> e 65% do desafio de 100. <b>Helena fecha com 34 vendas e R$ 14.428,50</b> e <b>Nicole com 25 e R$ 11.598,00</b> — as duas somam 59 das 65. A <b>campanha de aniversário responde por 40 vendas</b> e as visitas por 12. Ticket médio de <b>R$ 440,85</b>. Somando os 68 reingressos, <b>vendas + reingressos chegam a 133</b> contra 82 orçados, e a R$ 65.984,56 de taxa total. <b style=\"color:var(--gold);\">O valor foi corrigido de R$ 37.047,60 para R$ 28.655,50</b> na carga de 08/09: a planilha revisou os valores de adesão registro a registro. A quantidade não mudou.',
     metas:{
       // Meta de reingresso de agosto = 40 e desafio = 45, informados pela
       // Sec. Adm. TOTAL da tabela = desafioVenda + desafioReingresso (26+45).
@@ -6002,7 +6057,7 @@ const VENDAS_EXTRA_MESES = {
       vendas:{orcado:42, real:65}, reingressos:{orcado:40, real:68},
       totalVR:{orcado:82, real:133}, desafioVenda:100, desafioReingresso:45,
       total:{orcado:145, real:133, gap:-12},
-      taxaAdesao:37047.60, taxaReingresso:37329.06, taxaTotal:74376.66,
+      taxaAdesao:28655.50, taxaReingresso:37329.06, taxaTotal:65984.56,
     },
   },
 };
@@ -6812,14 +6867,14 @@ const DADOS_MES = {
     obras: [
       {data:'04/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:379776.92},
       {data:'04/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
-      {data:'10/09/2026', fornecedor:'Broilo', projeto:'Instalação Caldeira', valor:49000.00},
+      {data:'10/09/2026', fornecedor:'Broilo', projeto:'Instalação Caldeira', valor:39000.00},
       {data:'14/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
       {data:'29/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
       {data:'30/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'30/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
     ],
-    obrasTotal: 735403.25,
+    obrasTotal: 725403.25,
     caixaLivre: -545.3, fundoObras: 3108.7, resultadoOper: -423.0, saldoTotal: 2563.4,
     caixaLivrePct: -21.3, fundoObrasPct: 121.3, negativo: true,
     receitaReal: 3392.3, despesaReal: 3815.3,
@@ -6859,21 +6914,24 @@ const DADOS_MES = {
     obras: [
       {data:'04/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:379776.92},
       {data:'04/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
-      {data:'10/09/2026', fornecedor:'Broilo', projeto:'Instalação Caldeira', valor:49000.00},
+      {data:'10/09/2026', fornecedor:'Broilo', projeto:'Instalação Caldeira', valor:39000.00},
       {data:'14/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
       {data:'29/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
       {data:'30/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'30/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
     ],
-    obrasTotal: 735403.25,
-    caixaLivre: -598.9, fundoObras: 3097.4, resultadoOper: -50.9, saldoTotal: 2498.5,
-    caixaLivrePct: -24.0, fundoObrasPct: 124.0, negativo: true,
+    obrasTotal: 725403.25,
+    // Posicao de caixa atualizada pelo Fluxo de Caixa de 10/09. O resumo de
+    // receitas e despesas por categoria continua na posicao de 03/09, que e a
+    // ultima disponivel — o documento de 10/09 traz so a movimentacao diaria.
+    caixaLivre: -1021.7, fundoObras: 2658.5, resultadoOper: -50.9, saldoTotal: 1636.8,
+    caixaLivrePct: -62.4, fundoObrasPct: 162.4, negativo: true,
     receitaReal: 322.6, despesaReal: 376.2,
     resultadoLiquido: -755.2,
-    dataReferencia: '03/09/2026',
+    dataReferencia: '10/09/2026',
     fechado: false,
-    ptoAtencao: '<b>Mês em andamento — posição de 03/09.</b> Apenas três dias corridos: o realizado é de R$ 322,6 mil de receita contra R$ 376,2 mil de despesa. O caixa operacional livre está em <b>-R$ 598,9 mil</b> e, com o fundo Índices Construtivos de R$ 3.097,4 mil, o saldo em banco é de R$ 2.498,5 mil. <b style=\"color:var(--gold);\">A tendência da Controladoria para o mês fechado é de -R$ 50,9 mil na operação</b> — bem melhor que os -R$ 423,0 mil de agosto — mas o <b style=\"color:var(--red);\">resultado líquido projetado é de -R$ 755,2 mil</b>, porque a conta de Índices Construtivos inverte o sinal: em agosto entraram R$ 786,2 mil e em setembro saem R$ 704,3 mil para pagar obras. São <b>R$ 693,3 mil em compromissos só em setembro</b>, dos R$ 735,4 mil totais. O saldo projetado para 30/09 cai para R$ 1.808,3 mil, contra os R$ 2.563,4 mil que fecharam agosto.',
+    ptoAtencao: '<b>Mês em andamento — posição de 10/09.</b> O caixa operacional livre está em <b style=\"color:var(--red);\">-R$ 1.021,7 mil</b>, contra -R$ 598,9 mil na posição de 03/09: o pagamento de R$ 513,4 mil em 04/09, boa parte dele obras, puxou o caixa para baixo antes das entradas do dia 11. Com o fundo Índices Construtivos de R$ 2.658,5 mil, o saldo em banco é de <b>R$ 1.636,8 mil</b>. <b style=\"color:var(--green);\">A recuperação está projetada para 11/09</b>, com entrada de R$ 1.253,8 mil que devolve o caixa ao positivo (R$ 232,1 mil). O saldo projetado para 30/09 é de R$ 1.763,4 mil. São <b>R$ 683,3 mil em compromissos de obras só em setembro</b>, dos R$ 725,4 mil totais. <b style=\"color:var(--gold);\">O detalhamento de receitas e despesas por categoria continua na posição de 03/09</b> — o documento de 10/09 traz apenas a movimentação diária de caixa.',
   },
 };
 
@@ -7038,16 +7096,16 @@ const TOTAIS_ASSINADOS = [
   {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SETEMBRO', ate:'03/09/2026',
    oque:'total despesas tendência', esperado:3554.5,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.tendencia.despesa},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo de Necessidades', ate:'03/09/2026',
-   oque:'saldo banco + índices em 03/09 (R$ mil)', esperado:2498.5,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Fluxo de Caixa Sogipa 2026', ate:'10/09/2026',
+   oque:'saldo banco + índices em 10/09 (R$ mil)', esperado:1636.8,
    calc:()=>DADOS_MES.set2026.saldoTotal},
   {aba:'Esportes', doc:'ORÇADO 2026 - importar para o painel', ate:'dez/2026',
    oque:'orçado do ano, 31 modalidades', esperado:4834547.97,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.od.reduce((a,b)=>a+b,0)+m.orr.reduce((a,b)=>a+b,0),0)},
   {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 · importar 19', ate:'19/08/2026',
-   oque:'soma das vendas por consultor = valor arrecadado', esperado:37047.60,
+   oque:'soma das vendas por consultor = valor arrecadado', esperado:28655.50,
    calc:()=>VENDAS_EXTRA_MESES.ago2026.consultores.reduce((t,c)=>t+c.valor,0)},
-  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (1) · Agosto-2026', ate:'28/08/2026',
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (4) · Agosto-2026', ate:'31/08/2026',
    oque:'soma das vendas por campanha = associações novas', esperado:65,
    calc:()=>VENDAS_EXTRA_MESES.ago2026.campanhas.reduce((t,c)=>t+c.qtd,0)},
   {aba:'Esportes', doc:'REALIZADO 2025 (mesma pasta)', ate:'dez/2025',
@@ -14690,7 +14748,7 @@ function renderObras(){
         </tr></tfoot>
       </table>
       </div>
-      <div class="card-meta" style="margin-top:12px;">💡 O total de Investimentos aparece negativo (-${fmtBRL0(o.totalInvestido)}) porque é dinheiro que <b style="color:var(--text);">saiu</b> do fundo para pagar obras — isso reduz o saldo disponível, por isso está marcado em vermelho. O saldo final de cada mês já considera esse efeito.</div>
+      <div class="card-meta" style="margin-top:12px;">💡 O total de Investimentos aparece negativo (-${fmtBRL0(o.totalInvestido)}) porque é dinheiro que <b style="color:var(--text);">saiu</b> do fundo para pagar obras — isso reduz o saldo disponível, por isso está marcado em vermelho. O saldo final de cada mês já considera esse efeito. <br><br>💡 <b>Competência x fluxo de caixa:</b> ${o.notaConciliacao}</div>
     </div>
 
     <div class="grid-2 reverse" style="margin-top:20px;">
@@ -15783,7 +15841,185 @@ function drawFunilVendasDiario(elId, dias){
 // FLUXO_ANALISE guarda a narrativa JÁ VALIDADA de um fechamento. Se um período
 // tiver registro aqui, ele prevalece e não é recalculado por importação nova —
 // é o que preserva o contexto histórico. Vazio = tudo derivado da base.
-const FLUXO_ANALISE = {};
+// ── Meses com PREVISÃO oficial, ainda não fechados ───────────────────────
+// Receita, despesa e resultado vêm da tabela do "Resumo Executivo do Fluxo de
+// Caixa" da Controladoria (base 10/09). Caixa livre e fundo NÃO são digitados:
+// saem do último dia de cada mês na PROJECAO, que já está no painel.
+// Campo sem fonte fica null e a tabela mostra "—". Zero seria mentira: zero é
+// valor conhecido, traço é dado indisponível.
+//
+// Estes meses NÃO estão em DADOS_MES de propósito. É o que garante que
+// projeção não entre em total, média, acumulado ou comparativo de realizado.
+// Quando o mês for importado em DADOS_MES, a linha vira fechamento sozinha.
+const FLUXO_PREVISAO = {
+  out2026: {label:'Outubro/2026',   ultimoDia:'30/out', receita:3588, despesa:3792, resultadoOper:-204},
+  nov2026: {label:'Novembro/2026',  ultimoDia:'30/nov', receita:3402, despesa:3623, resultadoOper:-221},
+  dez2026: {label:'Dezembro/2026',  ultimoDia:'30/dez', receita:3613, despesa:4016, resultadoOper:-403},
+};
+// Monta a linha de previsão derivando caixa e fundo da PROJECAO.
+function flxPrevisao(k){
+  const p = FLUXO_PREVISAO[k];
+  if(!p) return null;
+  const dia = PROJECAO.find(x => x.d === p.ultimoDia);
+  const caixa = dia ? +(dia.banco / 1000).toFixed(1) : null;
+  const fundo = dia ? +(dia.indices / 1000).toFixed(1) : null;
+  const saldo = (caixa != null && fundo != null) ? +(caixa + fundo).toFixed(1) : null;
+  return {label:p.label, previsao:true, fechado:false,
+          caixaLivre:caixa, fundoObras:fundo, saldoTotal:saldo,
+          receitaReal:p.receita, despesaReal:p.despesa, resultadoOper:p.resultadoOper};
+}
+// Acessor único: mês fechado/em andamento vem de DADOS_MES; mês futuro, da
+// previsão. Quem consome a tabela não precisa saber de onde veio.
+function flxMes(k){ return DADOS_MES[k] || flxPrevisao(k); }
+function flxChavesTabela(){ return Object.keys(DADOS_MES).concat(
+  Object.keys(FLUXO_PREVISAO).filter(k => !DADOS_MES[k])); }
+const FLUXO_ANALISE = {
+  // ═══════════════════════════════════════════════════════════════════════
+  // ANÁLISES OFICIAIS DA CONTROLADORIA
+  // Fonte: "Resumo Executivo do Fluxo de Caixa — Julho a dezembro de 2026",
+  // base 10/09/2026. Texto reorganizado para leitura executiva; o significado
+  // é o da fonte. Estas análises TÊM PRECEDÊNCIA sobre o mecanismo automático
+  // e não são reescritas por importação nova (só por versão oficial posterior).
+  //
+  // Valores conferidos contra o painel: as diferenças são de arredondamento
+  // (o documento arredonda para o milhar). O card mostra o valor exato do
+  // painel; o documento é a fonte da explicação.
+  // ═══════════════════════════════════════════════════════════════════════
+  jul2026: {
+    resultadoOper: {
+      oficial:true, titulo:'Início da insuficiência de caixa',
+      principal:'Julho é o mês em que a insuficiência de caixa começa. O déficit operacional '
+              + 'de R$ 309 mil veio da pressão combinada de três frentes de despesa, sem '
+              + 'contrapartida equivalente na receita.',
+      fatores:[{txt:'Pessoal', v:null, sobe:true, nota:'uma das três frentes de pressão'},
+               {txt:'Fornecedores', v:null, sobe:true, nota:'uma das três frentes de pressão'},
+               {txt:'Despesas de funcionamento', v:null, sobe:true, nota:'uma das três frentes de pressão'}],
+      contexto:'Primeiro mês negativo depois de quatro fechamentos positivos.',
+      atencao:'A insuficiência iniciada em julho é carregada para os meses seguintes.'},
+    caixaLivre: {
+      oficial:true, titulo:'Insuficiência transferida para agosto',
+      principal:'O saldo bancário encerrou julho negativo em R$ 122 mil. Não é só efeito do '
+              + 'resultado do mês: o calendário de recebimentos e pagamentos mantém o caixa '
+              + 'próprio negativo por parte relevante do mês.',
+      fatores:[{txt:'Receitas concentradas entre os dias 10 e 14', v:null, sobe:false, nota:'entram depois dos principais pagamentos'},
+               {txt:'Folha paga no 5º dia útil', v:null, sobe:true, nota:'sai antes do ingresso das receitas'},
+               {txt:'Adiantamentos, encargos e impostos perto do dia 20', v:null, sobe:true, nota:'segunda onda de pagamentos'}],
+      contexto:'A insuficiência é transferida para agosto e amplia a necessidade de capital de giro.',
+      atencao:'Recursos dos Índices Construtivos são vinculados e não substituem geração operacional de caixa.'},
+  },
+  ago2026: {
+    resultadoOper: {
+      oficial:true, titulo:'Maior déficit operacional do período',
+      principal:'Agosto tem o maior déficit operacional do período analisado. Além das despesas '
+              + 'recorrentes com pessoal e funcionamento, dois itens extraordinários pesaram no mês.',
+      fatores:[{txt:'Rescisões', v:181.0, sobe:true, nota:'item extraordinário do mês'},
+               {txt:'Eventos', v:288.0, sobe:true, nota:'item extraordinário do mês'},
+               {txt:'Pessoal e funcionamento', v:null, sobe:true, nota:'despesas recorrentes'}],
+      contexto:'Terceiro mês consecutivo de resultado operacional negativo.',
+      atencao:'O déficit de agosto é o ponto mais alto da série: serve de referência para medir a recuperação.'},
+    caixaLivre: {
+      oficial:true, titulo:'Saldo bancário no pior nível da série',
+      principal:'O saldo bancário encerrou agosto negativo em R$ 545 mil, acumulando a '
+              + 'insuficiência vinda de julho com o déficit do próprio mês.',
+      fatores:[{txt:'Insuficiência herdada de julho', v:-122.0, sobe:false, nota:'saldo bancário de encerramento anterior'},
+               {txt:'Déficit operacional de agosto', v:-423.0, sobe:false, nota:'resultado do mês'},
+               {txt:'Fundo Índices Construtivos', v:3108.7, sobe:true, nota:'recurso vinculado, não disponível para a operação', ctx:true}],
+      contexto:'A necessidade de capital de giro cresce mês a mês desde julho.',
+      atencao:'Recursos dos Índices Construtivos são vinculados e não substituem geração operacional de caixa.'},
+  },
+  set2026: {
+    resultadoOper: {
+      oficial:true, parcial:true, titulo:'Recuperação parcial da operação',
+      principal:'Posição parcial em 10/09, não comparável aos fechamentos mensais. '
+              + '<b>Previsão da Controladoria para o mês fechado:</b> crescimento das receitas e '
+              + 'redução de rescisões e eventos derrubam o déficit para R$ 106 mil, contra os '
+              + 'R$ 423 mil de agosto.',
+      fatores:[{txt:'Receitas em crescimento', v:null, sobe:false, nota:'previsto pela Controladoria'},
+               {txt:'Redução de rescisões', v:null, sobe:false, nota:'previsto pela Controladoria'},
+               {txt:'Redução de eventos', v:null, sobe:false, nota:'previsto pela Controladoria'}],
+      contexto:'Previsão de melhora relevante contra agosto, mas o mês segue deficitário.',
+      atencao:'A melhora não elimina a necessidade acumulada de caixa.'},
+    caixaLivre: {
+      oficial:true, parcial:true, titulo:'Necessidade acumulada permanece',
+      principal:'Posição parcial em 10/09. <b>Previsão da Controladoria:</b> o saldo bancário '
+              + 'encerra setembro negativo em R$ 651 mil. A recuperação da operação reduz o '
+              + 'déficit do mês, mas não devolve o caixa ao positivo.',
+      fatores:[{txt:'Necessidade herdada de agosto', v:-545.0, sobe:false, nota:'saldo bancário de encerramento anterior'},
+               {txt:'Descasamento entre recebimentos e pagamentos', v:null, sobe:true, nota:'receitas entram depois da folha'},
+               {txt:'Fundo Índices Construtivos', v:2658.5, sobe:true, nota:'recurso vinculado, não disponível para a operação', ctx:true}],
+      contexto:'Terceiro fechamento seguido com saldo bancário negativo, se confirmada a previsão.',
+      atencao:'Recursos dos Índices Construtivos são vinculados e não substituem geração operacional de caixa.'},
+  },
+  // ── Meses ainda não importados em DADOS_MES ──────────────────────────────
+  // As análises abaixo já estão gravadas e passam a aparecer sozinhas assim
+  // que outubro, novembro e dezembro entrarem no Histórico de Fechamentos.
+  // Hoje esses meses existem apenas na PROJECAO diária, sem linha na tabela.
+  out2026: {
+    resultadoOper: {
+      oficial:true, projecao:true, titulo:'Impacto dos eventos',
+      principal:'Projeção da Controladoria: as receitas crescem, mas o aumento dos desembolsos '
+              + 'com eventos para R$ 410 mil mantém o resultado negativo em R$ 204 mil. O '
+              + 'crescimento da receita não foi suficiente para compensar o aumento das saídas.',
+      fatores:[{txt:'Eventos', v:410.0, sobe:true, nota:'desembolso projetado no mês'},
+               {txt:'Receitas em crescimento', v:null, sobe:false, nota:'insuficiente para compensar'}],
+      contexto:'Piora contra a previsão de setembro, apesar da receita maior.',
+      atencao:'Condicionar gastos com eventos ao orçamento e à geração financeira esperada.'},
+    caixaLivre: {
+      oficial:true, projecao:true, titulo:'Saldo bancário segue em deterioração',
+      principal:'Projeção da Controladoria: o saldo bancário encerra outubro negativo em '
+              + 'R$ 855 mil, ampliando a necessidade acumulada.',
+      fatores:[{txt:'Necessidade herdada de setembro', v:-651.0, sobe:false, nota:'saldo bancário previsto anterior'},
+               {txt:'Déficit operacional de outubro', v:-204.0, sobe:false, nota:'resultado projetado'}],
+      contexto:'Quarto mês seguido de saldo bancário negativo na projeção.',
+      atencao:'Reprogramar vencimentos para depois do período de maior arrecadação.'},
+  },
+  nov2026: {
+    resultadoOper: {
+      oficial:true, projecao:true, titulo:'Impacto da primeira parcela do 13º',
+      principal:'Projeção da Controladoria: o mês combina <b>menor receita com maior pressão de '
+              + 'pessoal</b>. Mesmo com desembolso menor em eventos, o déficit chega a R$ 221 mil.',
+      fatores:[{txt:'Primeira parcela do 13º salário', v:null, sobe:true, nota:'principal pressão de pessoal'},
+               {txt:'Redução das receitas', v:null, sobe:true, nota:'segunda frente do resultado'},
+               {txt:'Eventos', v:null, sobe:false, nota:'desembolso menor que em outubro'}],
+      contexto:'Déficit piora contra outubro apesar da queda no desembolso com eventos.',
+      atencao:'A combinação de menor receita com maior folha se repete em dezembro, com peso maior.'},
+    caixaLivre: {
+      oficial:true, projecao:true, titulo:'Necessidade ultrapassa R$ 1 milhão',
+      principal:'Projeção da Controladoria: o saldo bancário encerra novembro negativo em '
+              + 'R$ 1,076 milhão — a necessidade acumulada passa da marca de R$ 1 milhão.',
+      fatores:[{txt:'Necessidade herdada de outubro', v:-855.0, sobe:false, nota:'saldo bancário previsto anterior'},
+               {txt:'Déficit operacional de novembro', v:-221.0, sobe:false, nota:'resultado projetado'}],
+      contexto:'Quinto mês seguido de saldo bancário negativo na projeção.',
+      atencao:'Aumento da dependência de crédito bancário e dos custos financeiros.'},
+  },
+  dez2026: {
+    resultadoOper: {
+      oficial:true, projecao:true, titulo:'Maior concentração de obrigações',
+      principal:'Projeção da Controladoria: dezembro concentra a maior pressão de obrigações do '
+              + 'período. As despesas chegam a R$ 4,016 milhões e o déficit alcança R$ 403 mil.',
+      fatores:[{txt:'Segunda parcela do 13º salário', v:null, sobe:true, nota:'obrigação concentrada no mês'},
+               {txt:'Encargos da folha e do 13º', v:null, sobe:true, nota:'obrigação concentrada no mês'},
+               {txt:'Impostos mensais', v:null, sobe:true, nota:'obrigação concentrada no mês'},
+               {txt:'Férias projetadas', v:null, sobe:true, nota:'obrigação concentrada no mês'}],
+      contexto:'Maior despesa mensal da série projetada: R$ 4,016 milhões.',
+      atencao:'A concentração de obrigações amplia a necessidade de capital de giro no fechamento do ano.'},
+    caixaLivre: {
+      oficial:true, projecao:true, titulo:'Necessidade acumulada no pico do ano',
+      principal:'Projeção da Controladoria: o saldo bancário encerra o ano negativo em '
+              + 'R$ 1,479 milhão. <b>Sem ajustes operacionais e financeiros, a necessidade '
+              + 'acumulada pode alcançar cerca de R$ 1,5 milhão negativo ao final de dezembro.</b>',
+      fatores:[{txt:'Necessidade herdada de novembro', v:-1076.0, sobe:false, nota:'saldo bancário previsto anterior'},
+               {txt:'Déficit operacional de dezembro', v:-403.0, sobe:false, nota:'resultado projetado'}],
+      contexto:'A operação projeta déficit em todos os meses de julho a dezembro.',
+      atencao:'Risco de aumento da dependência de crédito bancário e dos custos financeiros.'},
+  },
+};
+// Contexto estrutural do fluxo, da Controladoria. Aparece uma única vez, no
+// rodapé da análise, e não é repetido em cada bloco.
+const FLUXO_CONTEXTO_GERAL = 'Contexto estrutural: as principais receitas entram entre os dias '
+  + '10 e 14, enquanto a folha é paga no 5º dia útil e adiantamentos, encargos e impostos se '
+  + 'concentram perto do dia 20. Esse calendário mantém o caixa próprio negativo por parte '
+  + 'relevante do mês, mesmo depois do ingresso das receitas.';
 
 // Categorias renomeadas ao longo do ano. Sem isto, o comparativo entre jun e
 // jul acusaria "Taxas IPTU" como categoria extinta e "Taxas e Impostos" como
@@ -15804,6 +16040,8 @@ const flxMil = v => Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:1,
 const flxNum = v => (v<0?'-':'') + 'R$ ' + flxMil(v) + ' mil';
 const flxDelta = v => (v>=0?'+':'−') + 'R$ ' + flxMil(v) + ' mil';
 
+// A recorrência só olha meses REALIZADOS: contar projeção como "mês negativo"
+// inflaria a sequência com algo que ainda não aconteceu.
 function flxChaves(){ return Object.keys(DADOS_MES); }
 function flxAnterior(k){
   const ks = flxChaves(), i = ks.indexOf(k);
@@ -15835,11 +16073,21 @@ function flxVariacoes(k, kAnt, lista){
 }
 
 function flxAnalise(k, ind){
-  const m = DADOS_MES[k], cfg = FLUXO_INDICADORES[ind];
+  const m = flxMes(k), cfg = FLUXO_INDICADORES[ind];
   const valor = m[cfg.campo];
   const gravada = (FLUXO_ANALISE[k] || {})[ind];
-  if(gravada) return Object.assign({valor, rot:cfg.rot, label:m.label, gravada:true}, gravada);
+  // Precedência: existindo análise oficial para o período, ela vale e o
+  // mecanismo automático não roda. O valor exibido continua sendo o do painel.
+  if(gravada) return Object.assign({valor, rot:cfg.rot, label:m.label}, gravada);
 
+  // ── mês previsto sem análise gravada: não há o que decompor ──
+  if(m.previsao){
+    return {valor, rot:cfg.rot, label:m.label, previsao:true,
+      principal:'Projeção da Controladoria. Não há análise gravada para este período.',
+      fatores:[], recorrencia:null, confianca:'DADOS INSUFICIENTES',
+      confiancaTxt:'Mês ainda não realizado.',
+      atencao:'Reavaliar no fechamento do mês.', cego:null};
+  }
   // ── período em andamento: sem diagnóstico definitivo ──
   if(!m.fechado){
     return {valor, rot:cfg.rot, label:m.label, parcial:true,
@@ -15976,27 +16224,35 @@ function flxLinhaDetalhe(k, ind, ncols){
       <div class="card-label" style="margin:0 0 5px; font-size:10px;">${rot}</div>
       <div style="font-size:12.5px; line-height:1.6; color:${cor||'var(--text)'};">${corpo}</div>
     </div>`;
+  // Fator sem valor: a Controladoria cita a frente de pressão sem quantificar.
+  // Mostrar "R$ 0,0 mil" ali seria inventar número que a fonte não deu.
   const fatores = !a.fatores || !a.fatores.length ? '' : a.fatores.map(f=>`
     <div style="display:flex; align-items:baseline; gap:8px; padding:3px 0;">
       <span style="color:${f.ctx?'var(--muted)':(f.sobe?'var(--red)':'var(--gold)')}; font-weight:800;
                    font-size:12px; flex:none;">${f.ctx?'•':(f.sobe?'↑':'↓')}</span>
       <span style="font-size:12.5px; color:var(--text); flex:1; min-width:0;">${f.txt}
         <span class="card-meta" style="display:block; margin:1px 0 0;">${f.nota}</span></span>
-      <b style="font-size:12.5px; white-space:nowrap;
-                color:${f.ctx?'var(--muted)':(f.sobe?'var(--red)':'var(--gold)')};">${flxDelta(f.v)}</b>
+      ${f.v!=null ? `<b style="font-size:12.5px; white-space:nowrap;
+        color:${f.ctx?'var(--muted)':(f.sobe?'var(--red)':'var(--gold)')};">${flxDelta(f.v)}</b>` : ''}
     </div>`).join('');
+  const tags = `
+    ${a.parcial ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Período parcial</span>` : ''}
+    ${a.projecao
+      ? `<span class="tag" style="background:#a855f722; color:#a855f7;">Projeção · Controladoria</span>`
+      : (a.oficial ? `<span class="tag" style="background:#3d7bff22; color:#3d7bff;">Análise oficial · Controladoria</span>` : '')}`;
   return `<tr id="flxDet"><td colspan="${ncols}" style="padding:0; border:none;">
     <div style="border-left:3px solid var(--red); background:rgba(255,255,255,.025);
                 border-radius:0 11px 11px 0; padding:16px 18px; margin:2px 0 10px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline;
                   gap:12px; flex-wrap:wrap;">
-        <div>
+        <div style="min-width:0;">
           <div class="card-label" style="margin:0;">${a.label} · ${a.rot}</div>
           <div style="font-size:22px; font-weight:800; color:var(--red); margin-top:3px;">${flxNum(a.valor)}</div>
+          ${a.titulo ? `<div style="font-size:13px; font-weight:700; color:var(--gold);
+            margin-top:4px;">${a.titulo}</div>` : ''}
         </div>
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          ${a.parcial ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Período parcial</span>` : ''}
-          ${a.gravada ? `<span class="tag" style="background:#3d7bff22; color:#3d7bff;">Análise do fechamento</span>` : ''}
+          ${tags}
           <span onclick="flxToggle('${k}','${ind}')" role="button" tabindex="0"
                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flxToggle('${k}','${ind}');}"
                 style="cursor:pointer; font-size:11px; font-weight:700; color:var(--blue);
@@ -16005,52 +16261,58 @@ function flxLinhaDetalhe(k, ind, ncols){
       </div>
       <div class="flx-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
                   gap:18px; margin-top:14px;">
-        ${bloco('Principal explicação', a.principal)}
+        ${bloco('Leitura executiva', a.principal)}
         ${fatores ? bloco('Principais fatores', fatores) : ''}
-        ${a.recorrencia ? bloco('Comportamento', a.recorrencia.txt,
-            a.recorrencia.cor==='red'?'var(--red)':'var(--gold)') : ''}
-        ${bloco('Nível de confiança',
-            `<b style="color:${CB[a.confianca]||'var(--muted)'};">${a.confianca}</b><br>
-             <span class="card-meta" style="margin:3px 0 0; display:block;">${a.confiancaTxt}</span>`)}
+        ${bloco('Contexto', a.contexto || (a.recorrencia ? a.recorrencia.txt : ''),
+            a.recorrencia && a.recorrencia.cor==='red' ? 'var(--red)' : 'var(--gold)')}
         ${bloco('Ponto de atenção', a.atencao, 'var(--gold)')}
-        ${a.cego ? bloco('Ponto cego', a.cego, 'var(--muted)') : ''}
+        ${!a.oficial ? bloco('Nível de confiança',
+            `<b style="color:${CB[a.confianca]||'var(--muted)'};">${a.confianca}</b><br>
+             <span class="card-meta" style="margin:3px 0 0; display:block;">${a.confiancaTxt}</span>`) : ''}
+        ${!a.oficial && a.cego ? bloco('Ponto cego', a.cego, 'var(--muted)') : ''}
       </div>
+      ${a.oficial ? `<div class="card-meta" style="margin-top:14px; padding-top:11px;
+        border-top:1px solid var(--border); font-size:10.5px; line-height:1.55;">
+        ${FLUXO_CONTEXTO_GERAL}</div>` : ''}
     </div></td></tr>`;
 }
 
 function renderHistoricoFechamentos(){
   const el = document.getElementById('tabelaHistoricoFechamentos');
   if(!el) return;
-  const keys = Object.keys(DADOS_MES);
+  // Meses realizados + meses só previstos, nessa ordem cronológica.
+  const keys = flxChavesTabela();
+  // "—" quando não há dado. Zero seria valor conhecido; traço é indisponível.
+  const n1 = (v)=> v==null ? '<span class="muted">—</span>' : v.toFixed(1).replace('.',',');
   el.innerHTML = keys.map((k,i)=>{
-    const m = DADOS_MES[k];
-    const isUltimo = !m.fechado;
-    const status = isUltimo
-      ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Em andamento (até ${m.dataReferencia})</span>`
-      : `<span class="tag" style="background:#00e5a022; color:#00e5a0;">Fechado</span>`;
-    // Célula de indicador: se o valor for crítico (negativo), vira clicável e
-    // abre a análise logo abaixo da linha. Se não for, segue igual a antes —
-    // gestão por exceção: mês normal não ganha nada.
+    const m = flxMes(k);
+    if(!m) return '';
+    const status = m.previsao
+      ? `<span class="tag" style="background:#a855f722; color:#a855f7;">Previsão</span>`
+      : (!m.fechado
+        ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Em andamento (até ${m.dataReferencia})</span>`
+        : `<span class="tag" style="background:#00e5a022; color:#00e5a0;">Fechado</span>`);
     const cel = (ind)=>{
       const v = m[FLUXO_INDICADORES[ind].campo];
+      if(v == null) return `<td class="num"><span class="muted">—</span></td>`;
       const num = v.toFixed(1).replace('.',',');
       if(!FLUXO_INDICADORES[ind].critico(v)) return `<td class="num">${num}</td>`;
       const aberto = FLUXO_ABERTO === (k + '|' + ind);
       return `<td class="num flx-neg${aberto?' aberto':''}"
         onclick="flxToggle('${k}','${ind}')" role="button" tabindex="0"
-        aria-expanded="${aberto}" aria-label="${FLUXO_INDICADORES[ind].rot} de ${m.label}: ${num}. Abrir análise."
+        aria-expanded="${aberto}" aria-label="${FLUXO_INDICADORES[ind].rot} de ${m.label}: ${num}${m.previsao?' (previsão)':''}. Abrir análise."
         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flxToggle('${k}','${ind}');}"
-        title="Clique para ver por que ficou negativo">${num}<span class="flx-seta">${aberto?'▴':'▾'}</span></td>`;
+        title="${m.previsao?'Projeção da Controladoria — clique para ver':'Clique para ver por que ficou negativo'}">${num}<span class="flx-seta">${aberto?'▴':'▾'}</span></td>`;
     };
     const abertoAqui = FLUXO_ABERTO && FLUXO_ABERTO.split('|')[0] === k;
     const indAberto = abertoAqui ? FLUXO_ABERTO.split('|')[1] : null;
-    return `<tr>
-      <td>${m.label}</td>
-      <td class="num">${m.saldoTotal.toFixed(1).replace('.',',')}</td>
+    return `<tr class="${m.previsao?'flx-prev':''}">
+      <td>${m.label}${m.previsao?' <span class="flx-ic" title="Projeção da Controladoria">◇</span>':''}</td>
+      <td class="num">${n1(m.saldoTotal)}</td>
       ${cel('caixaLivre')}
-      <td class="num">${m.fundoObras.toFixed(1).replace('.',',')}</td>
-      <td class="num">${m.receitaReal.toFixed(1).replace('.',',')}</td>
-      <td class="num">${m.despesaReal.toFixed(1).replace('.',',')}</td>
+      <td class="num">${n1(m.fundoObras)}</td>
+      <td class="num">${n1(m.receitaReal)}</td>
+      <td class="num">${n1(m.despesaReal)}</td>
       ${cel('resultadoOper')}
       <td>${status}</td>
     </tr>${abertoAqui ? flxLinhaDetalhe(k, indAberto, 8) : ''}`;
