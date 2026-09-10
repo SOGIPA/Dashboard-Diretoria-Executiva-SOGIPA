@@ -400,6 +400,23 @@
     .legend-row{ font-size:13px; }
   }
 
+
+  /* Números negativos clicáveis no Histórico de Fechamentos. Continuam
+     vermelhos; o que muda é a pista de que há algo por trás. */
+  .flx-neg{
+    color:var(--red) !important; cursor:pointer; position:relative;
+    border-bottom:1px dotted rgba(232,25,44,.45);
+    transition:background .15s ease;
+  }
+  .flx-neg:hover{ background:rgba(232,25,44,.09); }
+  .flx-neg.aberto{ background:rgba(232,25,44,.13); }
+  .flx-neg:focus-visible{ outline:2px solid var(--blue); outline-offset:-2px; }
+  .flx-seta{ font-size:9px; margin-left:5px; opacity:.75; }
+  @media (max-width:680px){
+    /* blocos da análise empilham; nada de rolagem horizontal */
+    .flx-grid{ grid-template-columns:1fr !important; gap:14px !important; }
+  }
+
   .rh-subtabs{ display:flex; gap:10px; margin:16px 0 20px; flex-wrap:wrap; }
   .rh-subtab-btn{
     background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:700;
@@ -15750,6 +15767,257 @@ function drawFunilVendasDiario(elId, dias){
   </div>`;
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════
+// ANÁLISE EXPLICÁVEL DOS NEGATIVOS — Financeiro › Fluxo de Caixa
+// ═══════════════════════════════════════════════════════════════════════
+// Regra permanente: sempre que um fechamento novo entrar em DADOS_MES, os
+// valores negativos de Caixa Livre e Resultado Operacional viram clicáveis e
+// a análise é montada sozinha. Nenhum texto precisa ser digitado.
+//
+// O QUE SUSTENTA A ANÁLISE: os 9 meses têm as mesmas categorias de despesa e
+// receita com valor realizado, e a soma delas fecha com o total declarado.
+// Isso permite decompor a variação com evidência. Onde não permitir, o texto
+// diz explicitamente que não permite — nunca inventa causa.
+//
+// FLUXO_ANALISE guarda a narrativa JÁ VALIDADA de um fechamento. Se um período
+// tiver registro aqui, ele prevalece e não é recalculado por importação nova —
+// é o que preserva o contexto histórico. Vazio = tudo derivado da base.
+const FLUXO_ANALISE = {};
+
+// Categorias renomeadas ao longo do ano. Sem isto, o comparativo entre jun e
+// jul acusaria "Taxas IPTU" como categoria extinta e "Taxas e Impostos" como
+// nova — duas causas falsas para a mesma linha.
+const FLUXO_CAT_ALIAS = { 'Taxas IPTU': 'Taxas e Impostos' };
+function flxCat(n){ return FLUXO_CAT_ALIAS[n] || n; }
+
+// Indicadores que podem abrir análise. Estrutura aberta: para incluir outro
+// indicador no futuro basta acrescentar uma entrada aqui.
+const FLUXO_INDICADORES = {
+  resultadoOper: {rot:'Resultado Operacional', campo:'resultadoOper',
+                  critico:v=>v < 0, un:'R$ %s mil'},
+  caixaLivre:    {rot:'Caixa Livre',           campo:'caixaLivre',
+                  critico:v=>v < 0, un:'R$ %s mil'},
+};
+
+const flxMil = v => Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1});
+const flxNum = v => (v<0?'-':'') + 'R$ ' + flxMil(v) + ' mil';
+const flxDelta = v => (v>=0?'+':'−') + 'R$ ' + flxMil(v) + ' mil';
+
+function flxChaves(){ return Object.keys(DADOS_MES); }
+function flxAnterior(k){
+  const ks = flxChaves(), i = ks.indexOf(k);
+  for(let j=i-1; j>=0; j--) if(DADOS_MES[ks[j]].fechado) return ks[j];
+  return null;
+}
+// Recorrência lida da própria série, nunca afirmada sem os dados sustentarem.
+function flxRecorrencia(k, campo){
+  const ks = flxChaves(), i = ks.indexOf(k);
+  let seq = 0;
+  for(let j=i; j>=0; j--){ if(DADOS_MES[ks[j]][campo] < 0) seq++; else break; }
+  const antes = [];
+  for(let j=i-seq; j>=0 && antes.length<3; j--) antes.push(DADOS_MES[ks[j]][campo] >= 0);
+  if(seq <= 1) return antes.length && antes.every(Boolean)
+      ? {txt:'Primeiro mês negativo depois de ' + antes.length + ' fechamentos positivos.', cor:'gold'}
+      : {txt:'Primeiro mês negativo da série disponível.', cor:'gold'};
+  if(seq === 2) return {txt:'Segundo mês consecutivo negativo.', cor:'red'};
+  return {txt:seq + 'º mês consecutivo negativo.', cor:'red'};
+}
+// Variação por categoria contra o mês anterior fechado.
+function flxVariacoes(k, kAnt, lista){
+  const a = DADOS_MES[kAnt][lista], b = DADOS_MES[k][lista];
+  const mapa = {};
+  a.forEach(x => mapa[flxCat(x.nome)] = {nome:flxCat(x.nome), ant:x.real||0, atu:0});
+  b.forEach(x => { const n = flxCat(x.nome);
+    if(!mapa[n]) mapa[n] = {nome:n, ant:0, atu:0}; mapa[n].atu = x.real||0; });
+  return Object.values(mapa).map(x => ({...x, d:+(x.atu-x.ant).toFixed(1)}))
+                            .filter(x => Math.abs(x.d) >= 0.05);
+}
+
+function flxAnalise(k, ind){
+  const m = DADOS_MES[k], cfg = FLUXO_INDICADORES[ind];
+  const valor = m[cfg.campo];
+  const gravada = (FLUXO_ANALISE[k] || {})[ind];
+  if(gravada) return Object.assign({valor, rot:cfg.rot, label:m.label, gravada:true}, gravada);
+
+  // ── período em andamento: sem diagnóstico definitivo ──
+  if(!m.fechado){
+    return {valor, rot:cfg.rot, label:m.label, parcial:true,
+      principal:'Resultado parcial até ' + m.dataReferencia + '. Não comparável diretamente aos '
+              + 'fechamentos mensais anteriores, que somam o mês inteiro.',
+      fatores:[], recorrencia:null,
+      confianca:'DADOS INSUFICIENTES',
+      confiancaTxt:'Período aberto: poucos dias de movimentação. Qualquer comparação com meses '
+                 + 'completos leva a conclusão errada.',
+      atencao:'Reavaliar no fechamento do mês.',
+      cego:'A decomposição por categoria só terá sentido quando o período fechar.'};
+  }
+
+  const kAnt = flxAnterior(k);
+  const rec = flxRecorrencia(k, cfg.campo);
+
+  // ── CAIXA LIVRE: análise própria, não herda a do operacional ──
+  if(ind === 'caixaLivre'){
+    const fat = [];
+    let principal, conf = 'ALTA CONFIANÇA', confTxt, cego = null;
+    if(kAnt){
+      const mA = DADOS_MES[kAnt];
+      const dCaixa = +(m.caixaLivre - mA.caixaLivre).toFixed(1);
+      const dFundo = +(m.fundoObras - mA.fundoObras).toFixed(1);
+      const dSaldo = +(m.saldoTotal - mA.saldoTotal).toFixed(1);
+      if(dFundo !== 0) fat.push({txt:'Fundo Índices Construtivos', v:dFundo, sobe:dFundo>0,
+        nota:dFundo>0 ? 'recursos direcionados ao fundo saem do caixa livre' : 'fundo devolveu recursos'});
+      if(m.resultadoOper < 0) fat.push({txt:'Resultado operacional do mês', v:m.resultadoOper, sobe:false,
+        nota:'a operação consumiu caixa'});
+      fat.push({txt:'Saldo total em banco', v:dSaldo, sobe:dSaldo>0, nota:'variação do saldo consolidado', ctx:true});
+      const pesoFundo = Math.abs(dFundo), pesoOper = Math.abs(m.resultadoOper);
+      if(pesoFundo > pesoOper * 1.3)
+        principal = 'O caixa livre está negativo principalmente por destinação ao Fundo Índices '
+          + 'Construtivos, que cresceu ' + flxDelta(dFundo) + ' no mês. O saldo total em banco é de '
+          + flxNum(m.saldoTotal) + ', mas ' + flxNum(m.fundoObras) + ' estão comprometidos com obras '
+          + 'e não ficam disponíveis para a operação.';
+      else if(pesoOper > pesoFundo * 1.3)
+        principal = 'O caixa livre negativo acompanha o resultado operacional de ' + flxNum(m.resultadoOper)
+          + ': a operação consumiu caixa no período. O fundo de obras variou ' + flxDelta(dFundo) + '.';
+      else
+        principal = 'O caixa livre negativo combina dois efeitos de peso parecido: o resultado '
+          + 'operacional de ' + flxNum(m.resultadoOper) + ' e a variação de ' + flxDelta(dFundo)
+          + ' no Fundo Índices Construtivos.';
+      confTxt = 'Saldo, caixa livre e fundo vêm do mesmo fechamento e fecham entre si '
+              + '(' + flxNum(m.caixaLivre) + ' + ' + flxNum(m.fundoObras) + ' = ' + flxNum(m.saldoTotal) + ').';
+      cego = 'A base traz o saldo do fundo, não o extrato de cada movimentação. Para atribuir a '
+           + 'variação a compromissos específicos seria preciso a movimentação da conta no período.';
+    } else {
+      principal = 'Primeiro período da série: não há fechamento anterior para comparar.';
+      conf = 'DADOS INSUFICIENTES';
+      confTxt = 'Sem mês anterior, não é possível decompor a variação.';
+    }
+    return {valor, rot:cfg.rot, label:m.label, principal, fatores:fat, recorrencia:rec,
+            confianca:conf, confiancaTxt:confTxt,
+            atencao: m.fundoObras > Math.abs(m.caixaLivre)
+              ? 'O fundo de obras cobre o caixa livre negativo, mas é recurso vinculado — não substitui geração operacional.'
+              : 'Caixa livre negativo sem cobertura equivalente no fundo: acompanhar de perto.',
+            cego};
+  }
+
+  // ── RESULTADO OPERACIONAL ──
+  if(!kAnt){
+    return {valor, rot:cfg.rot, label:m.label,
+      principal:'Primeiro período da série: não há fechamento anterior para decompor a variação.',
+      fatores:[], recorrencia:rec, confianca:'DADOS INSUFICIENTES',
+      confiancaTxt:'Sem mês anterior comparável.',
+      atencao:'Acompanhar no próximo fechamento.',
+      cego:'A comparação passa a ser possível a partir do segundo fechamento.'};
+  }
+  const mA = DADOS_MES[kAnt];
+  const dRec = +(m.receitaReal - mA.receitaReal).toFixed(1);
+  const dDesp = +(m.despesaReal - mA.despesaReal).toFixed(1);
+  const varD = flxVariacoes(k, kAnt, 'despesas').filter(x=>x.d>0).sort((a,b)=>b.d-a.d);
+  const varR = flxVariacoes(k, kAnt, 'receitas').filter(x=>x.d<0).sort((a,b)=>a.d-b.d);
+  const fat = [];
+  varD.slice(0,3).forEach(x=>fat.push({txt:x.nome, v:x.d, sobe:true, nota:'despesa acima de ' + mA.label}));
+  varR.slice(0,2).forEach(x=>fat.push({txt:x.nome, v:x.d, sobe:false, nota:'receita abaixo de ' + mA.label}));
+
+  // Pareto: quantas categorias explicam a maior parte do aumento de despesa
+  const totalAlta = varD.reduce((s,x)=>s+x.d,0);
+  let acc = 0, nPareto = 0;
+  for(const x of varD){ acc += x.d; nPareto++; if(acc >= totalAlta*0.7) break; }
+  const pctPareto = totalAlta > 0 ? Math.round(acc/totalAlta*100) : 0;
+
+  let principal;
+  if(dDesp > 0 && dRec < 0)
+    principal = 'O resultado piorou por dois lados: a despesa subiu ' + flxDelta(dDesp)
+      + ' e a receita caiu ' + flxDelta(dRec) + ' contra ' + mA.label + '.';
+  else if(dDesp > 0)
+    principal = 'A pressão veio da despesa, que subiu ' + flxDelta(dDesp) + ' contra ' + mA.label
+      + ', enquanto a receita ' + (dRec>=0 ? 'cresceu ' + flxDelta(dRec) : 'ficou estável') + '.';
+  else if(dRec < 0)
+    principal = 'A despesa recuou ' + flxDelta(dDesp) + ', mas a receita caiu mais: ' + flxDelta(dRec)
+      + ' contra ' + mA.label + '.';
+  else
+    principal = 'Receita e despesa recuaram contra ' + mA.label + ', e o resultado seguiu negativo '
+      + 'porque a despesa continua acima da receita no período.';
+  if(nPareto && totalAlta > 0)
+    principal += ' ' + (nPareto===1 ? 'Uma categoria responde' : nPareto + ' categorias respondem')
+      + ' por ' + pctPareto + '% do aumento das despesas.';
+
+  const sd = +m.despesas.reduce((s,x)=>s+(x.real||0),0).toFixed(1);
+  const fecha = Math.abs(sd - m.despesaReal) <= 0.6;
+  return {valor, rot:cfg.rot, label:m.label, principal, fatores:fat, recorrencia:rec,
+    confianca: fecha && fat.length ? 'ALTA CONFIANÇA' : (fat.length ? 'MÉDIA CONFIANÇA' : 'DADOS INSUFICIENTES'),
+    confiancaTxt: fecha && fat.length
+      ? 'As categorias de despesa somam ' + flxMil(sd) + ' e fecham com o total '
+        + 'declarado do mês, então a decomposição acima é o próprio dado, não estimativa.'
+      : 'A base não permite decompor a variação com segurança neste período.',
+    atencao: rec.cor === 'red'
+      ? 'Resultado negativo recorrente: a tendência precisa entrar no acompanhamento do próximo fechamento.'
+      : 'Acompanhar se o movimento se repete no próximo fechamento.',
+    cego: 'A base traz o total por categoria, não o lançamento individual. Para saber o que dentro de '
+        + (varD.length ? '"' + varD[0].nome + '"' : 'cada categoria')
+        + ' puxou o valor, seria preciso o detalhamento de lançamentos do período.'};
+}
+
+let FLUXO_ABERTO = null;
+function flxToggle(k, ind){
+  const id = k + '|' + ind;
+  FLUXO_ABERTO = (FLUXO_ABERTO === id) ? null : id;   // uma análise por vez
+  renderHistoricoFechamentos();
+  if(FLUXO_ABERTO){
+    const tr = document.getElementById('flxDet');
+    if(tr) tr.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+function flxLinhaDetalhe(k, ind, ncols){
+  const a = flxAnalise(k, ind);
+  const CB = {'ALTA CONFIANÇA':'#00e5a0','MÉDIA CONFIANÇA':'#f2b705',
+              'BAIXA CONFIANÇA':'#f2b705','DADOS INSUFICIENTES':'#b0b0d0'};
+  const bloco = (rot, corpo, cor) => !corpo ? '' : `
+    <div style="min-width:0;">
+      <div class="card-label" style="margin:0 0 5px; font-size:10px;">${rot}</div>
+      <div style="font-size:12.5px; line-height:1.6; color:${cor||'var(--text)'};">${corpo}</div>
+    </div>`;
+  const fatores = !a.fatores || !a.fatores.length ? '' : a.fatores.map(f=>`
+    <div style="display:flex; align-items:baseline; gap:8px; padding:3px 0;">
+      <span style="color:${f.ctx?'var(--muted)':(f.sobe?'var(--red)':'var(--gold)')}; font-weight:800;
+                   font-size:12px; flex:none;">${f.ctx?'•':(f.sobe?'↑':'↓')}</span>
+      <span style="font-size:12.5px; color:var(--text); flex:1; min-width:0;">${f.txt}
+        <span class="card-meta" style="display:block; margin:1px 0 0;">${f.nota}</span></span>
+      <b style="font-size:12.5px; white-space:nowrap;
+                color:${f.ctx?'var(--muted)':(f.sobe?'var(--red)':'var(--gold)')};">${flxDelta(f.v)}</b>
+    </div>`).join('');
+  return `<tr id="flxDet"><td colspan="${ncols}" style="padding:0; border:none;">
+    <div style="border-left:3px solid var(--red); background:rgba(255,255,255,.025);
+                border-radius:0 11px 11px 0; padding:16px 18px; margin:2px 0 10px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;
+                  gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-label" style="margin:0;">${a.label} · ${a.rot}</div>
+          <div style="font-size:22px; font-weight:800; color:var(--red); margin-top:3px;">${flxNum(a.valor)}</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          ${a.parcial ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Período parcial</span>` : ''}
+          ${a.gravada ? `<span class="tag" style="background:#3d7bff22; color:#3d7bff;">Análise do fechamento</span>` : ''}
+          <span onclick="flxToggle('${k}','${ind}')" role="button" tabindex="0"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flxToggle('${k}','${ind}');}"
+                style="cursor:pointer; font-size:11px; font-weight:700; color:var(--blue);
+                       border:1px solid var(--border); border-radius:20px; padding:4px 12px;">Recolher ▴</span>
+        </div>
+      </div>
+      <div class="flx-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+                  gap:18px; margin-top:14px;">
+        ${bloco('Principal explicação', a.principal)}
+        ${fatores ? bloco('Principais fatores', fatores) : ''}
+        ${a.recorrencia ? bloco('Comportamento', a.recorrencia.txt,
+            a.recorrencia.cor==='red'?'var(--red)':'var(--gold)') : ''}
+        ${bloco('Nível de confiança',
+            `<b style="color:${CB[a.confianca]||'var(--muted)'};">${a.confianca}</b><br>
+             <span class="card-meta" style="margin:3px 0 0; display:block;">${a.confiancaTxt}</span>`)}
+        ${bloco('Ponto de atenção', a.atencao, 'var(--gold)')}
+        ${a.cego ? bloco('Ponto cego', a.cego, 'var(--muted)') : ''}
+      </div>
+    </div></td></tr>`;
+}
+
 function renderHistoricoFechamentos(){
   const el = document.getElementById('tabelaHistoricoFechamentos');
   if(!el) return;
@@ -15760,16 +16028,32 @@ function renderHistoricoFechamentos(){
     const status = isUltimo
       ? `<span class="tag" style="background:#ffd32a22; color:#ffd32a;">Em andamento (até ${m.dataReferencia})</span>`
       : `<span class="tag" style="background:#00e5a022; color:#00e5a0;">Fechado</span>`;
+    // Célula de indicador: se o valor for crítico (negativo), vira clicável e
+    // abre a análise logo abaixo da linha. Se não for, segue igual a antes —
+    // gestão por exceção: mês normal não ganha nada.
+    const cel = (ind)=>{
+      const v = m[FLUXO_INDICADORES[ind].campo];
+      const num = v.toFixed(1).replace('.',',');
+      if(!FLUXO_INDICADORES[ind].critico(v)) return `<td class="num">${num}</td>`;
+      const aberto = FLUXO_ABERTO === (k + '|' + ind);
+      return `<td class="num flx-neg${aberto?' aberto':''}"
+        onclick="flxToggle('${k}','${ind}')" role="button" tabindex="0"
+        aria-expanded="${aberto}" aria-label="${FLUXO_INDICADORES[ind].rot} de ${m.label}: ${num}. Abrir análise."
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flxToggle('${k}','${ind}');}"
+        title="Clique para ver por que ficou negativo">${num}<span class="flx-seta">${aberto?'▴':'▾'}</span></td>`;
+    };
+    const abertoAqui = FLUXO_ABERTO && FLUXO_ABERTO.split('|')[0] === k;
+    const indAberto = abertoAqui ? FLUXO_ABERTO.split('|')[1] : null;
     return `<tr>
       <td>${m.label}</td>
       <td class="num">${m.saldoTotal.toFixed(1).replace('.',',')}</td>
-      <td class="num" ${m.caixaLivre<0?'style="color:var(--red);"':''}>${m.caixaLivre.toFixed(1).replace('.',',')}</td>
+      ${cel('caixaLivre')}
       <td class="num">${m.fundoObras.toFixed(1).replace('.',',')}</td>
       <td class="num">${m.receitaReal.toFixed(1).replace('.',',')}</td>
       <td class="num">${m.despesaReal.toFixed(1).replace('.',',')}</td>
-      <td class="num" ${m.resultadoOper<0?'style="color:var(--red);"':''}>${m.resultadoOper.toFixed(1).replace('.',',')}</td>
+      ${cel('resultadoOper')}
       <td>${status}</td>
-    </tr>`;
+    </tr>${abertoAqui ? flxLinhaDetalhe(k, indAberto, 8) : ''}`;
   }).join('');
 }
 
