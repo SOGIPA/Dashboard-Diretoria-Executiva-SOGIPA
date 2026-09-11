@@ -12485,8 +12485,16 @@ function renderManifestacoes(mesesSel){
       (resto ? `<div class="card-meta" style="margin-top:8px;">+ ${dados.length-lim} outros somando ${resto}.</div>` : '');
   };
 
-  const ordem = ['jan2026','fev2026','mar2026','abr2026','mai2026','jun2026'];
-  const rot = {jan2026:'Jan',fev2026:'Fev',mar2026:'Mar',abr2026:'Abr',mai2026:'Mai',jun2026:'Jun'};
+  // Evolução mensal gerada da COBERTURA_MANIFESTACOES, não de lista fixa.
+  // A lista anterior parava em junho e deixava jul/ago fora do gráfico mesmo
+  // com os dados na base. Assim setembro entra sozinho na próxima carga.
+  const ABREV = {jan:'Jan',fev:'Fev',mar:'Mar',abr:'Abr',mai:'Mai',jun:'Jun',
+                 jul:'Jul',ago:'Ago',set:'Set',out:'Out',nov:'Nov',dez:'Dez'};
+  const ordem = (typeof COBERTURA_MANIFESTACOES !== 'undefined')
+    ? Object.keys(COBERTURA_MANIFESTACOES)
+    : [...new Set(MANIFESTACOES.map(m=>m.mes))];
+  const rot = {};
+  ordem.forEach(k => rot[k] = (ABREV[k.slice(0,3)] || k));
   const porMes = ordem.map(k=>({rotulo:rot[k],
     recl: ms.filter(m=>m.mes===k && m.tipo==='Reclamação').length,
     outros: ms.filter(m=>m.mes===k && m.tipo!=='Reclamação').length}));
@@ -12637,11 +12645,11 @@ function renderSatisfacaoPeriodo(mesesSat){
     lista = [u]; fallback = getSatisfacaoMes(u.key).label;
   }
   const s = agregarSatisfacao(lista);
-  if(!s){ el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Sem dados de satisfação no período selecionado.</b> A CRA tem registros de Janeiro a Junho/2026.</div></div>`; return; }
+  if(!s){ el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Sem dados de satisfação no período selecionado.</b> A CRA tem registros de ${textoCobertura(COBERTURA_MANIFESTACOES)}.</div></div>`; return; }
 
   let aviso = '';
   if(fallback){
-    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Sem manifestações no intervalo selecionado — exibindo o último mês disponível (<b>${fallback}</b>). A CRA tem registros de <b>Janeiro a Junho/2026</b>.</div></div>`;
+    aviso = `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>Sem manifestações no intervalo selecionado — exibindo o último mês disponível (<b>${fallback}</b>). A CRA tem registros de <b>${textoCobertura(COBERTURA_MANIFESTACOES)}</b>.</div></div>`;
   } else if(s._agregado){
     aviso = `<div class="alert-box" style="border-color:var(--blue);"><span>🧮</span><div>Somando <b>${s._agregado} meses</b> do período. Manifestações, tipos, gerências e assuntos estão <b>somados</b>; o <b>SLA</b> (prazo de resposta) é a taxa média do período.</div></div>`;
   }
