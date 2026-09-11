@@ -13387,24 +13387,22 @@ const DESLIGAMENTOS_MESES = {
 
   },
   set2026: {
-    periodoTag:'Setembro/2026 (parcial · abertura)',
-    kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'10', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'0', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'10', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'10', sub:'todos em 01/09', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'nenhum no período', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'com data futura marcada', valorCor:'#fb923c'},
-    ],
-    categorias:[{nome:'Contribuinte', qtd:5, cor:'#3d7bff'},{nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'},{nome:'Patrimonial', qtd:1, cor:'#00e5a0'},{nome:'Veterano Contribuinte', qtd:1, cor:'#f2b705'},{nome:'Veterano', qtd:1, cor:'#06b6d4'}],
-    motivos:[{motivo:'Mudança', qtd:4, pct:40.00, cor:'#f2b705'},{motivo:'Viagem', qtd:3, pct:30.00, cor:'#fb923c'},{motivo:'Não utilização', qtd:1, pct:10.00, cor:'#3d7bff'},{motivo:'Saúde', qtd:1, pct:10.00, cor:'#a855f7'},{motivo:'Troca de Categoria', qtd:1, pct:10.00, cor:'#06b6d4'}],
-    totalDesligamentos:10,
-    ticketMedio:'R$ 508,28', dependentes:'1,6', residual:'0', residualLabel:'Residual Acumulado',
-    desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:0, nao:6},
-    quadroSocial:10,
-    negociacoesDesligados:'R$ 0,00',
-    analise:'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês recém-aberto</b> — posição 31/08, com todos os desligamentos datados de 01/09. <b>10 desligamentos</b>, com mudança à frente (4 de 10) e viagem logo atrás (3). Contribuinte responde por 5 das 10 saídas. Ticket médio de R$ 508,28 e 1,6 dependente por titular. Nenhum gerou taxa, e não houve retenção nem licença. <b style=\"color:var(--gold);\">A aba tem 12 linhas, mas duas — Elisabete Gabrielli e Caroline Damé — estão sem categoria e sem motivo</b>, então ficam fora da composição; o quadro-resumo da planilha também declara 10. Números provisórios: o mês acabou de abrir e a próxima carga é de quarta-feira.',
-
+    // Cards vêm do QUADRO-RESUMO da planilha (fluxo de solicitações do mês).
+    // Categorias, motivos, ticket e dependentes vêm dos REGISTROS INDIVIDUAIS.
+    // São universos diferentes e não devem ser somados: 7 solicitações novas
+    // (6 desligados + 1 retido) contra 22 registros no quadro social, que
+    // incluem 15 processos herdados de meses anteriores.
+    periodoTag: 'Setembro/2026 (em andamento)',
+    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "7", "sub": "novas no mês"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "7", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "6", "sub": "das 7 novas solicitações", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "1", "sub": "1 retenção", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "0", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
+    categorias: [{"nome": "Contribuinte", "qtd": 9, "cor": "#3d7bff"}, {"nome": "Patrimonial", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 3, "cor": "#a855f7"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#f2b705"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}, {"nome": "Contribuinte Universitário", "qtd": 1, "cor": "#06b6d4"}],
+    motivos: [{"motivo": "Mudança", "qtd": 8, "pct": 38.1, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 4, "pct": 19.05, "cor": "#00e5a0"}, {"motivo": "Não Utilização", "qtd": 3, "pct": 14.29, "cor": "#a855f7"}, {"motivo": "Viagem", "qtd": 3, "pct": 14.29, "cor": "#f2b705"}, {"motivo": "Saúde", "qtd": 1, "pct": 4.76, "cor": "#fb923c"}, {"motivo": "Troca de Categoria", "qtd": 1, "pct": 4.76, "cor": "#06b6d4"}],
+    totalDesligamentos: 21,
+    ticketMedio: 'R$ 569,14', dependentes: '1,5',
+    residual: 15, residualLabel: 'Residual Acumulado',
+    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:0, nao:21},
+    quadroSocial: 22,
+    negociacoesDesligados: 'R$ 0,00',
+    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento.</b> Setembro registra <b>7 novas solicitações</b> de desligamento, somadas a <b>15 residuais</b> de períodos anteriores — <b>22 no quadro social</b>. Das 7 novas, <b style=\"color:var(--red);\">6 resultaram em desligamento</b> e <b style=\"color:var(--green);\">1 em retenção</b>, sem programados. A aba traz <b>22 registros individuais</b> (21 desligamentos e 1 retenção), que alimentam a composição abaixo: <b>mudança lidera com 8 das 21</b> saídas, seguida de financeiro (4). Contribuinte responde por 9 das 21. Ticket médio de <b>R$ 569,14</b> e 1,5 dependente por titular. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do mês (7), enquanto os 22 do quadro social incluem os 15 processos herdados. São medidas diferentes e não devem ser somadas entre si.',
   },
 };
 
