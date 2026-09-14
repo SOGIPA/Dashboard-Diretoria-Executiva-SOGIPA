@@ -345,6 +345,19 @@
       hyphens:none;
     }
     .legend-row .dot{ margin-top:5px; }
+    /* CORREÇÃO DA CAUSA: o grid acima tem duas colunas e eu assumia que toda
+       legend-row tinha dois filhos. As que têm três (ponto + texto + <b> do
+       valor) jogavam o terceiro para a linha de baixo, na coluna de 12px — e
+       o valor quebrava caractere por caractere. Tudo que não é ponto vai para
+       a coluna 2, qualquer que seja a quantidade de filhos. */
+    .legend-row > *:not(.dot){ grid-column:2; }
+    .legend-row b{ white-space:nowrap; }
+
+    /* Composição do saldo em bloco vertical: nome → valor → qualificador. */
+    .comp-item{ display:block; padding:11px 0; }
+    .comp-nome{ font-size:13px; margin-bottom:3px; }
+    .comp-valor{ font-size:19px; display:block; margin:2px 0 1px; }
+    .comp-qual{ font-size:11.5px; display:block; }
     .leg-nome{ white-space:normal !important; overflow:visible !important;
                text-overflow:clip !important; word-break:normal; overflow-wrap:break-word; }
 
@@ -400,6 +413,20 @@
     .legend-row{ font-size:13px; }
   }
 
+
+  /* Composição do saldo: nome, valor e qualificador. No desktop cabe tudo na
+     mesma linha; no celular vira bloco vertical (ver media query). */
+  .comp-item{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    padding:8px 0; border-bottom:1px solid var(--border); min-width:0;
+  }
+  .comp-item:last-child{ border-bottom:none; }
+  .comp-nome{ display:flex; align-items:center; gap:8px; font-size:13px;
+              color:var(--text); flex:1; min-width:0; }
+  /* Valor monetário NUNCA quebra: é uma unidade de leitura. */
+  .comp-valor{ font-size:14px; font-weight:800; white-space:nowrap; flex:none; }
+  .comp-qual{ font-size:11px; color:var(--muted); flex:none; }
+  .comp-nota{ margin:0 0 10px; }
 
   /* Números negativos clicáveis no Histórico de Fechamentos. Continuam
      vermelhos; o que muda é a pista de que há algo por trás. */
@@ -17299,17 +17326,36 @@ function pintarComposicaoSaldo(prefixo, m){
   const lbl = document.getElementById(prefixo==='fc' ? 'fcCompLabel' : 'vgSaldoCompLabel');
   if(!bar) return;
   if(m.negativo){
-    bar.innerHTML = `<div style="width:100%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">Fundo Obras ~100% (caixa operacional negativo não aparece na barra)</div>`;
+    // A barra leva só o rótulo curto. A explicação da regra vai para uma nota
+    // abaixo: no celular ela não cabia dentro da barra e empurrava o layout.
+    bar.innerHTML = `<div style="width:100%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; padding:0 8px; text-align:center;">Fundo Obras ~100%</div>`;
     if(leg) leg.innerHTML = `
-      <div class="legend-row"><span class="dot" style="background:var(--red)"></span> Caixa Operacional Livre — <b style="color:var(--red)">-${fmtMil(Math.abs(m.caixaLivre))} (negativo)</b></div>
-      <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — ${fmtMil(m.fundoObras)}</div>`;
+      <div class="card-meta comp-nota">O caixa operacional está negativo e por isso não compõe a barra.</div>
+      <div class="comp-item">
+        <div class="comp-nome"><span class="dot" style="background:var(--red)"></span>Caixa Operacional Livre</div>
+        <div class="comp-valor" style="color:var(--red)">-${fmtMil(Math.abs(m.caixaLivre))}</div>
+        <div class="comp-qual" style="color:var(--red)">Negativo</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-nome"><span class="dot" style="background:var(--purple)"></span>Fundo Índices Construtivos</div>
+        <div class="comp-valor">${fmtMil(m.fundoObras)}</div>
+        <div class="comp-qual">Restrito a obras</div>
+      </div>`;
   } else {
     bar.innerHTML = `
       <div style="width:${m.caixaLivrePct}%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.caixaLivrePct.toFixed(1).replace('.',',')}%</div>
       <div style="width:${m.fundoObrasPct}%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${m.fundoObrasPct.toFixed(1).replace('.',',')}%</div>`;
     if(leg) leg.innerHTML = `
-      <div class="legend-row"><span class="dot" style="background:var(--blue)"></span> Caixa Operacional Livre — ${fmtMil(m.caixaLivre)}</div>
-      <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — ${fmtMil(m.fundoObras)}</div>`;
+      <div class="comp-item">
+        <div class="comp-nome"><span class="dot" style="background:var(--blue)"></span>Caixa Operacional Livre</div>
+        <div class="comp-valor" style="color:var(--blue)">${fmtMil(m.caixaLivre)}</div>
+        <div class="comp-qual">${m.caixaLivrePct}% do saldo</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-nome"><span class="dot" style="background:var(--purple)"></span>Fundo Índices Construtivos</div>
+        <div class="comp-valor">${fmtMil(m.fundoObras)}</div>
+        <div class="comp-qual">Restrito a obras · ${m.fundoObrasPct}% do saldo</div>
+      </div>`;
   }
   if(lbl && prefixo==='vgSaldo') lbl.textContent = `Composição do Saldo em Banco — ${m.label}`;
 }
