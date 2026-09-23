@@ -2625,7 +2625,7 @@ const NEGOCIACOES = [
   {mes:'Jun/26', valor:304596, contatos:614},
   {mes:'Jul/26', valor:402369, contatos:804},
   {mes:'Ago/26', valor:375041, contatos:null},
-  {mes:'Set/26', valor:147237, contatos:null},
+  {mes:'Set/26', valor:206723, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -2650,7 +2650,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':592851};   // abertura do mês; não muda com o avanço da cobrança
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':594338};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -3482,14 +3482,22 @@ const NEG_FAIXAS = [
   // critério do que compõe 'ATIVOS' ou reabertura de negociação — a imagem
   // não permite decidir. Confirmar com a Cobrança.
   { mes:'Set/26', label:'Setembro/2026', fechado:false,
-    fonte:'Período Setembro/26 (Cobrança)', importadoEm:'12/09/2026',
-    inicio:592851, base:592851, totRec:147237, totAb:445614,
+    fonte:'Período Setembro/26 (Cobrança)', importadoEm:'18/09/2026',
+    inicio:594338, base:594338, totRec:206723, totAb:387615,
     faixas:[
-      {fx:'FX1',   idade:'1 mês',     ref:'ago/26',     abertura:278639, rec:104062, ab:174576},
-      {fx:'FX2',   idade:'2 meses',   ref:'jul/26',     abertura:94565, rec:27077, ab:67487},
-      {fx:'FX3',   idade:'3 meses',   ref:'jun/26',     abertura:104709, rec:7419, ab:97290},
-      {fx:'FORA',  idade:'4+ meses',  ref:'≤ mai/26',   abertura:114939, rec:8678, ab:106261},
-    ], selo:177855200 },
+      {fx:'FX1',   idade:'1 mês',     ref:'ago/26',     abertura:278403, rec:149899, ab:128504},
+      {fx:'FX2',   idade:'2 meses',   ref:'jul/26',     abertura:95076, rec:35104, ab:59972},
+      {fx:'FX3',   idade:'3 meses',   ref:'jun/26',     abertura:105104, rec:11456, ab:93648},
+      {fx:'FORA',  idade:'4+ meses',  ref:'≤ mai/26',   abertura:115756, rec:10264, ab:105492},
+    ], selo:178301500 },
+  // ── ATUALIZAÇÃO DE 18/09 · SETEMBRO/26 ─────────────────────────────────────
+  // Quadro "ATIVOS (18/09/26)". ATUALIZAÇÃO da mesma competência, não mês novo:
+  // a régua segue FX1 ago/26 · FX2 jul/26 · FX3 jun/26 · FORA ≤ mai/26.
+  //   12/09 -> 18/09: recuperado 147.237 -> 206.723 (+59.486); em aberto
+  //   445.614 -> 387.615 (-57.999); taxa 24,8% -> 34,8%.
+  //   As 4 linhas fecham exatas; a soma das faixas dá R$ 1 a mais em
+  //   fechamento e aberto (arredondamento da fonte). Valem os totais.
+  //
   // ── ATUALIZAÇÃO DE 12/09 · SETEMBRO/26 ──────────────────────────────────────
   // Fonte: quadro "ATIVOS (12/09/26)", competência Setembro/26.
   // Mês NOVO, não revisão de agosto. A régua avança um mês: FX1 passa a ser a
@@ -3643,7 +3651,7 @@ function acenderFaixa(id){
 //   quebra por faixa ... jul-ago    retrato ............ jul
 // Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
 // rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
-const NEG_ATUALIZACAO = '12/09/2026';
+const NEG_ATUALIZACAO = '18/09/2026';
 const NEG_RETRATO = {
   'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
              inadTotal:931, atrasoTotal:602186}
