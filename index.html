@@ -15108,11 +15108,8 @@ function blocoOrcado(nome, chaves){
       <td style="padding:8px 10px;"><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:${nv.cor}; margin-right:7px;"></span>${nv.nome}</td>
       <td class="num" data-rot="Despesa" style="padding:8px 10px; color:#ff6b6b;">${fmtSinEspC(despN)}</td>
       <td class="num" data-rot="Receita" style="padding:8px 10px; color:#00e5a0;">${fmtSinEspC(recN)}</td>
-      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${realN>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(realN)}</td>
-      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(orcN)}</td>
-      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dif>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dif>0?'+':'')+fmtSinEspC(dif)}</td>
-      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(antN)}</td>
-      <td class="num" data-rot="Cobertura" style="padding:8px 10px; color:${rateio?'var(--yellow)':'var(--muted)'};">${rateio?'⚠ rateio':(cobre!=null?cobre.toFixed(0)+'%':'—')}</td>
+      <td class="num" data-rot="Resultado" style="padding:8px 10px; font-weight:800; color:${realN>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(realN)}</td>
+      <td class="num" data-rot="Orçado 2026" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(orcN)}</td>
     </tr>`;
   }).filter(Boolean).join('') : '';
 
@@ -15140,11 +15137,8 @@ function blocoOrcado(nome, chaves){
       <td style="padding:8px 10px;"><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:#f2b705; margin-right:7px;"></span>${rot} <span style="color:var(--muted); font-size:11.5px;">(sem quebra por natureza)</span></td>
       <td class="num" data-rot="Despesa" style="padding:8px 10px; color:var(--muted);">—</td>
       <td class="num" data-rot="Receita" style="padding:8px 10px; color:var(--muted);">—</td>
-      <td class="num" data-rot="Realizado" style="padding:8px 10px; font-weight:800; color:${rFora>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(rFora)}</td>
-      <td class="num" data-rot="Orçado" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(oFora)}</td>
-      <td class="num" data-rot="Diferença" style="padding:8px 10px; color:${dFora>=0?'#00e5a0':'#ff6b6b'}; font-weight:700;">${(dFora>0?'+':'')+fmtSinEspC(dFora)}</td>
-      <td class="num" data-rot="2025" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(aFora)}</td>
-      <td class="num" data-rot="Cobertura" style="padding:8px 10px; color:var(--muted);">—</td>
+      <td class="num" data-rot="Resultado" style="padding:8px 10px; font-weight:800; color:${rFora>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEspC(rFora)}</td>
+      <td class="num" data-rot="Orçado 2026" style="padding:8px 10px; color:var(--muted);">${fmtSinEspC(oFora)}</td>
     </tr>`;
   }
 
@@ -15199,28 +15193,22 @@ function blocoOrcado(nome, chaves){
         <table class="niveis-tab" style="font-size:13px;">
           <thead><tr>
             <th>Natureza</th><th class="num">Despesa</th><th class="num">Receita</th>
-            <th class="num">Realizado</th><th class="num">Orçado</th>
-            <th class="num">Diferença</th><th class="num">2025</th><th class="num">Cobertura</th>
+            <th class="num">Resultado</th><th class="num">Orçado 2026</th>
           </tr></thead>
           <tbody>${linhas}${linhaSemQuebra}</tbody>
           <tfoot><tr class="total-highlight">
             <td style="padding:11px 10px;">TOTAL</td>
             <td class="num" data-rot="Despesa" style="padding:11px 10px;">${fmtSinEspC(tDesp)}</td>
             <td class="num" data-rot="Receita" style="padding:11px 10px;">${fmtSinEspC(tRec)}</td>
-            <td class="num" data-rot="Realizado" style="padding:11px 10px;">${fmtSinEspC(tReal)}</td>
-            <td class="num" data-rot="Orçado" style="padding:11px 10px;">${fmtSinEspC(tOrc)}</td>
-            <td class="num" data-rot="Diferença" style="padding:11px 10px;">${(tReal-tOrc>0?'+':'')+fmtSinEspC(tReal-tOrc)}</td>
-            <td class="num" data-rot="2025" style="padding:11px 10px;">${fmtSinEspC(tAnt)}</td>
-            <td class="num" data-rot="Cobertura" style="padding:11px 10px;">${tDesp<0&&tRec>0?(tRec/Math.abs(tDesp)*100).toFixed(0)+'%':'—'}</td>
+            <td class="num" data-rot="Resultado" style="padding:11px 10px;">${fmtSinEspC(tReal)}</td>
+            <td class="num" data-rot="Orçado 2026" style="padding:11px 10px;">${fmtSinEspC(tOrc)}</td>
           </tr></tfoot>
         </table></div>
         <div style="font-size:11.5px; color:var(--muted); margin-top:7px;">
-          <b>Diferença</b> = realizado − orçado. Verde é melhor que a meta, e vale também para
-          quem dá prejuízo: perder menos do que o previsto conta como bom desempenho.
-          <b>Cobertura</b> = quanto da despesa da natureza é paga pela receita dela; o que falta
-          vem do resto do clube. Linhas em cinza claro estão zeradas em tudo — a modalidade não
-          tem atividade nem meta ali, e zero aqui é informação, não dado faltando.
-          ${temRateio ? '<br><span style="color:var(--yellow);">⚠ rateio</span> = a receita é muitas vezes maior que a despesa registrada nessa natureza, sinal de que o custo (em geral a folha dos professores) está lançado em outra. O resultado da modalidade continua correto; a divisão entre naturezas é que não reflete o esforço real.' : ''}
+          <b>Resultado</b> = despesa + receita da natureza. <b>Orçado 2026</b> é a meta do
+          período. Linhas em cinza claro estão zeradas em tudo — a modalidade não tem atividade
+          nem meta ali, e zero aqui é informação, não dado faltando.
+          ${temRateio ? '<br><span style="color:var(--yellow);">Atenção:</span> em alguma natureza desta modalidade a receita é muitas vezes maior que a despesa registrada, sinal de que o custo (em geral a folha dos professores) está lançado em outra. O resultado da modalidade continua correto; a divisão entre naturezas é que não reflete o esforço real.' : ''}
         </div>
       </div>`:''}
       ${avisoFora}
@@ -17293,6 +17281,94 @@ const agSemana = iso => ['dom','seg','ter','qua','qui','sex','sáb'][new Date(is
 // A Agenda não lê o filtro global: sua cobertura é própria e fixa na base.
 function agendaFiltrar(k){ AGENDA_GRUPO = (AGENDA_GRUPO === k) ? null : k; renderAgendaPagamentos(); }
 
+
+// ── Visão de Cobertura Financeira ────────────────────────────────────────
+// Compara RECEBIMENTOS PROJETADOS com PAGAMENTOS PREVISTOS no MESMO período.
+// Recebimentos vêm de FLUXO_PREVISAO (projeção mensal da Controladoria); não
+// existe abertura diária de entradas no painel, e PROJECAO.mov é líquido, logo
+// não serve para separar entrada de saída.
+// O período NÃO é uma lista fixa: percorre FLUXO_PREVISAO e um mês só entra
+// quando o total da agenda naquele mês bate com a despesa projetada pela
+// Controladoria — prova de que a agenda cobre o mês inteiro. Quando a
+// Controladoria estender a projeção (jan/27 em diante), o mês entra sozinho.
+// Setembro não entra por DOIS motivos: a agenda começa em 21/09 (R$ 540 mil
+// contra R$ 3,62 milhões de despesa prevista) E a receita dele está em
+// DADOS_MES como tendência do mês inteiro, não em FLUXO_PREVISAO. Misturar as
+// duas origens compararia períodos diferentes, que é justamente o que se quer
+// evitar aqui.
+// Nada aqui é somado ao Fluxo de Caixa: é leitura das bases que já existem.
+function agendaCobertura(base){
+  if(typeof FLUXO_PREVISAO === 'undefined') return null;
+  const MESES = {'01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho',
+                 '07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'};
+  const ABREV = {jan:'01',fev:'02',mar:'03',abr:'04',mai:'05',jun:'06',
+                 jul:'07',ago:'08',set:'09',out:'10',nov:'11',dez:'12'};
+  const pagMes = {};
+  base.forEach(x=>{ const m = x.data.slice(0,7); pagMes[m] = (pagMes[m]||0) + x.valor; });
+  const comp = [];
+  Object.keys(FLUXO_PREVISAO).forEach(k=>{
+    const p = FLUXO_PREVISAO[k];
+    const mm = ABREV[k.slice(0,3)], ano = '20' + k.slice(-2);
+    const chave = ano + '-' + mm;
+    const pago = pagMes[chave];
+    if(pago == null || p.receita == null || p.despesa == null) return;
+    // tolerância de R$ 1 mil: a previsão da Controladoria é arredondada ao milhar
+    if(Math.abs(pago - p.despesa*1000) > 1000) return;   // mês não coberto por inteiro
+    comp.push({chave, mm, ano, label: MESES[mm] + '/' + ano, rec: p.receita*1000, pag: pago});
+  });
+  if(!comp.length) return null;
+  comp.sort((a,b)=>a.chave.localeCompare(b.chave));
+  const rec = comp.reduce((a,x)=>a+x.rec, 0);
+  const pag = comp.reduce((a,x)=>a+x.pag, 0);
+  const totalBase = base.reduce((a,x)=>a+x.valor, 0);
+  const datas = base.map(x=>x.data).sort();
+  return {comp, rec, pag, saldo: rec-pag, cobertura: pag ? rec/pag*100 : null,
+          porReal: pag ? rec/pag : null, parcial: Math.abs(totalBase-pag) > 0.005,
+          foraPag: totalBase - pag, totalBase,
+          cobIni: datas[0], cobFim: datas[datas.length-1]};
+}
+
+function blocoCoberturaHTML(cob){
+  if(!cob) return '';
+  const vd = cob.saldo >= 0 ? 'var(--green)' : 'var(--red)';
+  const cc = cob.cobertura >= 100 ? 'var(--green)' : (cob.cobertura >= 90 ? 'var(--gold)' : 'var(--red)');
+  const per = cob.comp.length === 1 ? cob.comp[0].label
+            : cob.comp[0].label.split('/')[0] + ' a ' + cob.comp[cob.comp.length-1].label;
+  const c = (rot, val, sub, cor) => `
+    <div class="card ag-card"><div class="card-label">${rot}</div>
+      <div class="card-value" style="${cor?'color:'+cor+';':''}">${val}</div>
+      <div class="card-meta">${sub}</div></div>`;
+  // "Diferença projetada", não "saldo": o indicador é recebimentos menos
+  // pagamentos do período, não o saldo em banco.
+  const perBaixo = per.charAt(0).toLowerCase() + per.slice(1);
+  const agMil = v => 'R$ ' + (Math.abs(v)/1000).toLocaleString('pt-BR',
+                       {minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
+  // "entre outubro e dezembro": primeiro e último mês, em minúsculas e sem ano,
+  // que é como se fala. O rótulo do card mantém a forma completa com o ano.
+  const soMes = x => x.label.split('/')[0].toLowerCase();
+  const entre = cob.comp.length === 1 ? 'em ' + soMes(cob.comp[0])
+    : 'entre ' + soMes(cob.comp[0]) + ' e ' + soMes(cob.comp[cob.comp.length-1]);
+  const frase = 'Os recebimentos projetados cobrem <b style="color:'+cc+';">'
+    + cob.cobertura.toFixed(1).replace('.',',') + '%</b> dos pagamentos previstos '
+    + entre + ', resultando em uma diferença projetada de <b style="color:'
+    + vd + ';">' + agMil(cob.saldo) + '</b>' + (cob.saldo < 0 ? ' a descoberto' : ' a favor') + '.';
+  return `<div class="card">
+    <div class="card-label">Visão financeira projetada · ${per}</div>
+    <div class="ag-cards" style="margin:14px 0 0;">
+      ${c('Recebimentos projetados', agBRL(cob.rec), 'projeção da Controladoria', 'var(--green)')}
+      ${c('Pagamentos previstos', agBRL(cob.pag), 'agenda no mesmo período', 'var(--red)')}
+      ${c('Diferença projetada', (cob.saldo>=0?'':'−') + agBRL(Math.abs(cob.saldo)), 'recebimentos − pagamentos', vd)}
+      ${c('Cobertura', cob.cobertura.toFixed(1).replace('.',',') + '%', 'dos compromissos do período', cc)}
+    </div>
+    <div style="margin-top:14px; font-size:13.5px; line-height:1.6; color:var(--text);">${frase}</div>
+    ${cob.parcial ? `<div class="card-meta" style="margin-top:10px; padding-top:10px;
+      border-top:1px solid var(--border);">
+      <b style="color:var(--text);">Agenda completa:</b> ${agBRL(cob.totalBase)}
+      em pagamentos previstos entre ${agBR(cob.cobIni)} e ${agBR(cob.cobFim)}. A comparação acima
+      considera ${perBaixo} para manter recebimentos e pagamentos no mesmo período.</div>` : ''}
+  </div>`;
+}
+
 function renderAgendaPagamentos(){
   const el = document.getElementById('agendaPagamentos');
   if(!el) return;
@@ -17319,17 +17395,12 @@ function renderAgendaPagamentos(){
   const top5 = dias.map(d=>totDia(d)).sort((a,b)=>b-a).slice(0,5).reduce((a,v)=>a+v,0);
   const pctTop5 = total ? top5/total*100 : 0;
 
-  const card = (rot, val, sub, cor) => `
-    <div class="card ag-card"><div class="card-label">${rot}</div>
-      <div class="card-value" style="${cor?'color:'+cor+';':''}">${val}</div>
-      <div class="card-meta">${sub||''}</div></div>`;
-  const cards = `<div class="ag-cards">
-    ${card('Total a pagar', agBRL(total), noPer.length+' lançamentos previstos', 'var(--red)')}
-    ${card('Período', agBR(cobIni)+' a '+agBR(cobFim), 'cobertura própria da agenda · não segue o filtro global')}
-    ${card('Dias com pagamento', String(dias.length), 'média de '+agBRL(total/dias.length)+' por dia')}
-    ${card('Maior desembolso', agBRL(maior.v), agBR(maior.d)+' ('+agSemana(maior.d)+')', 'var(--gold)')}
-    ${card('Concentração', pctTop5.toFixed(1).replace('.',',')+'%', 'do total cai nos 5 dias de maior pressão')}
-  </div>`;
+  // A faixa de cards do topo (total, período, dias, maior desembolso e
+  // concentração) saiu daqui: competia com a leitura financeira principal, que
+  // agora abre a seção. Total, período e dias seguem visíveis na nota da Visão
+  // Financeira e no rodapé do gráfico; o maior desembolso foi para junto do
+  // gráfico, que é onde ele explica alguma coisa.
+  const cards = '';
 
   // gráfico de barras por dia (SVG). Os 5 maiores dias em destaque.
   const vmax = Math.max(...dias.map(totDia));
@@ -17346,8 +17417,13 @@ function renderAgendaPagamentos(){
   const marcos = dias.map((d,i)=>(i===0 || d.slice(5,7)!==dias[i-1].slice(5,7))
     ? `<text x="${(pad+i*bw).toFixed(1)}" y="${H-6}" font-size="10" fill="var(--muted)">${AG_MES[+d.slice(5,7)-1]}/${d.slice(2,4)}</text>` : '').join('');
   const grafico = `<div class="card"><div class="card-label">Necessidade de caixa por dia</div>
-    <div class="card-meta" style="margin-top:4px;">Total previsto para pagamento em cada dia.
-      Em vermelho, os 5 dias de maior pressão. Passe o mouse para ver o valor.</div>
+    <div class="card-meta" style="margin-top:4px;">Total previsto para pagamento em cada dia, de
+      ${agBR(cobIni)} a ${agBR(cobFim)} · ${dias.length} dias com pagamento.
+      Em vermelho, os 5 dias de maior pressão, que concentram
+      <b style="color:var(--text);">${pctTop5.toFixed(1).replace('.',',')}%</b> do total.
+      Maior desembolso em <b style="color:var(--gold);">${agBR(maior.d)}</b>
+      (${agSemana(maior.d)}): <b style="color:var(--gold);">${agBRL(maior.v)}</b>.
+      Passe o mouse para ver o valor de cada dia.</div>
     <div style="overflow-x:auto; margin-top:12px;"><svg viewBox="0 0 ${W} ${H}" style="width:100%; min-width:${Math.min(W,640)}px; height:${H}px;">
       <line x1="${pad}" y1="${H-22}" x2="${W-pad}" y2="${H-22}" stroke="var(--border)"/>${barras}${marcos}</svg></div></div>`;
 
@@ -17382,7 +17458,8 @@ function renderAgendaPagamentos(){
         <div class="ag-item ag-total"><div>Total do dia</div><div class="ag-item-val">${agBRL(sub)}</div></div>
       </details>`;}).join('')}</div></div>`;
 
-  el.innerHTML = cards + grafico + resumo + det;
+  const cobertura = blocoCoberturaHTML(agendaCobertura(base));
+  el.innerHTML = cards + cobertura + grafico + resumo + det;
 }
 
 let FLUXO_ABERTO = null;
