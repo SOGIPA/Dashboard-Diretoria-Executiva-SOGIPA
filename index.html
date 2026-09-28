@@ -1774,12 +1774,6 @@ const PROJECAO = [
   {d:'23/jul', mov:-24100, banco:57971, indices:2379379},
   {d:'24/jul', mov:-79000, banco:-21029, indices:2379379},
   {d:'27/jul', mov:20300, banco:-729, indices:2379379},
-  // ── EMENDA ── Daqui em diante: Resumo de Necessidades da Controladoria.
-  // 28 a 30/jul vieram da atualização de 03/08; 31/jul da de 06/08; de 12/ago em
-  // diante, da atualização de 17/08 (Resumo de Necessidades). Encadeia
-  // exatamente com o 11/ago: 904.393 + (-11.810) = 892.583. As séries encadeiam entre si (31/jul -122.282
-  // + mov -152.202 = -274.484, exato). Os dias 01–27/jul ainda são da versão
-  // anterior do relatório e não foram revisados — por isso 27→28/jul não fecha.
   {d:'28/jul', mov:38635, banco:-116161, indices:2322149},
   {d:'29/jul', mov:9043, banco:-107118, indices:2322149},
   {d:'30/jul', mov:15644, banco:-91474, indices:2322149},
@@ -1803,22 +1797,6 @@ const PROJECAO = [
   {d:'25/ago', mov:-51827, banco:-461899, indices:3112700},
   {d:'26/ago', mov:-52020, banco:-513919, indices:3112700},
   {d:'27/ago', mov:-52450, banco:-566369, indices:3112700},
-  // ── ATUALIZACAO DE 10/09 ───────────────────────────────────────────────────
-  // Fonte: Fluxo de Caixa Sogipa 2026, emitido em 10/09/2026 pela Controladoria.
-  // 79 datas, de 04/set a 30/dez, substituindo a serie a partir de 04/set.
-  // ENCADEIA com o painel: 03/set fechou em -598.871 e o movimento de 04/set
-  // (-513.367) leva a -1.112.238, exatamente o que a fonte declara. Diferente
-  // da carga de 08/09, nao houve revisao de dias ja fechados.
-  // Total Disponivel = 6.400.000 (limite) + indices + banco, conferido.
-  // Unica quebra: 12/nov, R$ 1 de arredondamento.
-  //
-  // ── QUEBRA CONHECIDA E EXPLICADA (carga de 08/09) ──────────────────────────
-  // 27/ago deixou -566.369; com o movimento de 28/ago (-135.628) daria -701.997,
-  // mas o novo Resumo diz -602.730. Os últimos dias de agosto foram REVISADOS no
-  // fechamento do mês: a posição de 25/08 era projeção e a de 31/08 é o apurado.
-  // Não é erro de importação — o validador acusa por comparar contra o dia
-  // anterior, que veio de outra régua. Mantido como está, para não reescrever
-  // dias já fechados sem documento que os sustente.
   {d:'28/ago', mov:-135628, banco:-602730, indices:3106524},
   {d:'31/ago', mov:57471, banco:-545260, indices:3108707},
   {d:'01/set', mov:111046, banco:-434214, indices:3108707},
@@ -1837,72 +1815,72 @@ const PROJECAO = [
   {d:'21/set', mov:49950, banco:-531231, indices:2647254},
   {d:'22/set', mov:-29050, banco:-560281, indices:2647254},
   {d:'23/set', mov:-30100, banco:-590381, indices:2647254},
-  {d:'24/set', mov:-26050, banco:-616431, indices:2647254},
-  {d:'25/set', mov:-115350, banco:-731781, indices:2647254},
-  {d:'28/set', mov:49950, banco:-681831, indices:2465254},
-  {d:'29/set', mov:7950, banco:-673881, indices:2424254},
-  {d:'30/set', mov:11500, banco:-662381, indices:2403254},
-  {d:'01/out', mov:18900, banco:-643481, indices:2403254},
-  {d:'02/out', mov:-6500, banco:-649981, indices:2403254},
-  {d:'05/out', mov:-39700, banco:-689681, indices:2403254},
-  {d:'06/out', mov:-383500, banco:-1073181, indices:2403254},
-  {d:'07/out', mov:125000, banco:-948181, indices:2403254},
-  {d:'08/out', mov:85000, banco:-863181, indices:2403254},
-  {d:'09/out', mov:-177300, banco:-1040481, indices:2403254},
-  {d:'13/out', mov:-220450, banco:-1260931, indices:2403254},
-  {d:'14/out', mov:1330645, banco:69714, indices:2403254},
-  {d:'15/out', mov:151000, banco:220714, indices:2403254},
-  {d:'16/out', mov:-80000, banco:140714, indices:2403254},
-  {d:'19/out', mov:145000, banco:285714, indices:2403254},
-  {d:'20/out', mov:-1022600, banco:-736886, indices:2258054},
-  {d:'21/out', mov:20000, banco:-716886, indices:2258054},
-  {d:'22/out', mov:-15000, banco:-731886, indices:2258054},
-  {d:'23/out', mov:-45100, banco:-776986, indices:2258054},
-  {d:'26/out', mov:-9000, banco:-785986, indices:2258054},
-  {d:'27/out', mov:-109200, banco:-895186, indices:2258054},
-  {d:'28/out', mov:10000, banco:-885186, indices:2258054},
-  {d:'29/out', mov:0, banco:-885186, indices:2212754},
-  {d:'30/out', mov:19000, banco:-866186, indices:2191754},
-  {d:'03/nov', mov:64300, banco:-801886, indices:2191754},
-  {d:'04/nov', mov:103900, banco:-697986, indices:2191754},
-  {d:'05/nov', mov:-43500, banco:-741486, indices:2191754},
-  {d:'06/nov', mov:-425500, banco:-1166986, indices:2191754},
-  {d:'09/nov', mov:87700, banco:-1079286, indices:2191754},
-  {d:'10/nov', mov:-113500, banco:-1192786, indices:2191754},
-  {d:'11/nov', mov:1425000, banco:232214, indices:2191754},
-  {d:'12/nov', mov:177645, banco:409859, indices:2191754},
-  {d:'13/nov', mov:-196450, banco:213409, indices:2191754},
-  {d:'16/nov', mov:26000, banco:239409, indices:2191754},
-  {d:'17/nov', mov:-5000, banco:234409, indices:2191754},
-  {d:'18/nov', mov:85000, banco:319409, indices:2191754},
-  {d:'19/nov', mov:-1006600, banco:-687191, indices:2191754},
-  {d:'23/nov', mov:-30100, banco:-717291, indices:2191754},
-  {d:'24/nov', mov:-39000, banco:-756291, indices:2191754},
-  {d:'25/nov', mov:10000, banco:-746291, indices:2191754},
-  {d:'26/nov', mov:30000, banco:-716291, indices:2191754},
-  {d:'27/nov', mov:-40300, banco:-756591, indices:2146454},
-  {d:'30/nov', mov:-286000, banco:-1042591, indices:2125454},
-  {d:'01/dez', mov:31900, banco:-1010691, indices:2125454},
-  {d:'02/dez', mov:2500, banco:-1008191, indices:2125454},
-  {d:'03/dez', mov:-95700, banco:-1103891, indices:2125454},
-  {d:'04/dez', mov:-375500, banco:-1479391, indices:2125454},
-  {d:'07/dez', mov:170000, banco:-1309391, indices:2125454},
-  {d:'08/dez', mov:95000, banco:-1214391, indices:2125454},
-  {d:'09/dez', mov:-47300, banco:-1261691, indices:2125454},
-  {d:'10/dez', mov:-52500, banco:-1314191, indices:1786654},
-  {d:'11/dez', mov:992550, banco:-321641, indices:1786654},
-  {d:'14/dez', mov:235000, banco:-86641, indices:1786654},
-  {d:'15/dez', mov:36000, banco:-50641, indices:1786654},
-  {d:'16/dez', mov:-5000, banco:-55641, indices:1786654},
-  {d:'17/dez', mov:-11000, banco:-66641, indices:1786654},
-  {d:'18/dez', mov:-1305600, banco:-1372241, indices:1786654},
-  {d:'21/dez', mov:70000, banco:-1302241, indices:1786654},
-  {d:'22/dez', mov:0, banco:-1302241, indices:1786654},
-  {d:'23/dez', mov:-19100, banco:-1321341, indices:1786654},
-  {d:'24/dez', mov:-119000, banco:-1440341, indices:1786654},
-  {d:'28/dez', mov:-54200, banco:-1494541, indices:1786654},
-  {d:'29/dez', mov:25000, banco:-1469541, indices:1741354},
-  {d:'30/dez', mov:24000, banco:-1445541, indices:1741354},
+  {d:'24/set', mov:-44971, banco:-606995, indices:2623226},
+  {d:'25/set', mov:-140850, banco:-747845, indices:2623226},
+  {d:'28/set', mov:-33050, banco:-780895, indices:2441226},
+  {d:'29/set', mov:9950, banco:-770945, indices:2400226},
+  {d:'30/set', mov:38500, banco:-732445, indices:2379226},
+  {d:'01/out', mov:12008, banco:-720437, indices:2379226},
+  {d:'02/out', mov:-8531, banco:-728968, indices:2379226},
+  {d:'05/out', mov:-39700, banco:-768668, indices:2379226},
+  {d:'06/out', mov:-383500, banco:-1152168, indices:2379226},
+  {d:'07/out', mov:125000, banco:-1027168, indices:2379226},
+  {d:'08/out', mov:85000, banco:-942168, indices:2379226},
+  {d:'09/out', mov:-167300, banco:-1109468, indices:2379226},
+  {d:'13/out', mov:-220450, banco:-1329918, indices:2379226},
+  {d:'14/out', mov:1330645, banco:728, indices:2379226},
+  {d:'15/out', mov:151000, banco:151728, indices:2379226},
+  {d:'16/out', mov:-80000, banco:71728, indices:2379226},
+  {d:'19/out', mov:145000, banco:216728, indices:2379226},
+  {d:'20/out', mov:-1022600, banco:-805872, indices:2234026},
+  {d:'21/out', mov:20000, banco:-785872, indices:2234026},
+  {d:'22/out', mov:-17494, banco:-803366, indices:2234026},
+  {d:'23/out', mov:-70090, banco:-873456, indices:2234026},
+  {d:'26/out', mov:-9000, banco:-882456, indices:2234026},
+  {d:'27/out', mov:-79200, banco:-961656, indices:2234026},
+  {d:'28/out', mov:10000, banco:-951656, indices:2234026},
+  {d:'29/out', mov:0, banco:-951656, indices:2188726},
+  {d:'30/out', mov:19000, banco:-932656, indices:2167726},
+  {d:'03/nov', mov:64300, banco:-868356, indices:2167726},
+  {d:'04/nov', mov:103900, banco:-764456, indices:2167726},
+  {d:'05/nov', mov:-43500, banco:-807956, indices:2167726},
+  {d:'06/nov', mov:-425500, banco:-1233456, indices:2167726},
+  {d:'09/nov', mov:87700, banco:-1145756, indices:2167726},
+  {d:'10/nov', mov:-113500, banco:-1259256, indices:2167726},
+  {d:'11/nov', mov:1425000, banco:165744, indices:2167726},
+  {d:'12/nov', mov:177645, banco:343390, indices:2167726},
+  {d:'13/nov', mov:-196450, banco:146940, indices:2167726},
+  {d:'16/nov', mov:26000, banco:172940, indices:2167726},
+  {d:'17/nov', mov:-5000, banco:167940, indices:2167726},
+  {d:'18/nov', mov:85000, banco:252940, indices:2167726},
+  {d:'19/nov', mov:-1006600, banco:-753660, indices:2167726},
+  {d:'23/nov', mov:-30100, banco:-783760, indices:2167726},
+  {d:'24/nov', mov:-39000, banco:-822760, indices:2167726},
+  {d:'25/nov', mov:10000, banco:-812760, indices:2167726},
+  {d:'26/nov', mov:30000, banco:-782760, indices:2167726},
+  {d:'27/nov', mov:-40300, banco:-823060, indices:2122426},
+  {d:'30/nov', mov:-286000, banco:-1109060, indices:2101426},
+  {d:'01/dez', mov:31900, banco:-1077160, indices:2101426},
+  {d:'02/dez', mov:2500, banco:-1074660, indices:2101426},
+  {d:'03/dez', mov:-95700, banco:-1170360, indices:2101426},
+  {d:'04/dez', mov:-375500, banco:-1545860, indices:2101426},
+  {d:'07/dez', mov:170000, banco:-1375860, indices:2101426},
+  {d:'08/dez', mov:95000, banco:-1280860, indices:2101426},
+  {d:'09/dez', mov:-47300, banco:-1328160, indices:2101426},
+  {d:'10/dez', mov:-52500, banco:-1380660, indices:1762626},
+  {d:'11/dez', mov:992550, banco:-388110, indices:1762626},
+  {d:'14/dez', mov:235000, banco:-153110, indices:1762626},
+  {d:'15/dez', mov:36000, banco:-117110, indices:1762626},
+  {d:'16/dez', mov:-5000, banco:-122110, indices:1762626},
+  {d:'17/dez', mov:-11000, banco:-133110, indices:1762626},
+  {d:'18/dez', mov:-1305600, banco:-1438710, indices:1762626},
+  {d:'21/dez', mov:70000, banco:-1368710, indices:1762626},
+  {d:'22/dez', mov:0, banco:-1368710, indices:1762626},
+  {d:'23/dez', mov:-19100, banco:-1387810, indices:1762626},
+  {d:'24/dez', mov:-119000, banco:-1506810, indices:1762626},
+  {d:'28/dez', mov:-54200, banco:-1561010, indices:1762626},
+  {d:'29/dez', mov:25000, banco:-1536010, indices:1717326},
+  {d:'30/dez', mov:24000, banco:-1512010, indices:1717326},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -5197,6 +5175,315 @@ function complianceProcessoCard(pr){
     </div>`;
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════
+// RELATÓRIO DE IMPLEMENTAÇÃO DO PROGRAMA DE COMPLIANCE — TRENJUS
+// ═══════════════════════════════════════════════════════════════════════
+// Fonte: "SOGIPA — Relatório de Implementação do Programa de Compliance",
+// TRENJUS, posição de 25/09/2026. 16 itens (1 a 15, com o 3.1).
+//
+// ESTE É UM SEGUNDO INSTRUMENTO, NÃO UMA ATUALIZAÇÃO DO PLANO SGC.
+//   COMPLIANCE_DATA  = plano "Sistema de Gestão de Governança e Compliance",
+//                      22 ações, horizonte abr/2026 a mar/2029, com prioridade,
+//                      data de início, prazo e marcação de atraso. É ele que
+//                      alimenta os cards, a criticidade e os marcos da aba.
+//   COMPLIANCE_IMPLANTACAO (aqui) = acompanhamento da FASE ATUAL pela
+//                      consultoria. Tem responsáveis, mas não tem prioridade,
+//                      data de início nem marcação de atraso.
+// Cruzamento conferido em 28/09: 12 dos 16 itens têm correspondência no plano
+// SGC, 4 são novos (reunião com o Presidente, software Teiia, instrumentos
+// normativos/Estatuto, manual de atribuições) e 9 ações do SGC não aparecem no
+// relatório — entre elas todo o horizonte de 2027/2028. Por isso as duas bases
+// convivem: substituir uma pela outra perderia informação nos dois sentidos.
+//
+// REGRAS:
+//  · statusFonte é o status DECLARADO, palavra por palavra. Nada inferido.
+//  · prazo é o que a fonte rotula como "Prazo:". Exceções que a própria fonte
+//    declara: item 4 usa 25/09/2026 porque o texto diz "Prazo concedido:
+//    25/09/2026"; itens 3.1 e 15 não têm prazo na célula e ficam com "—".
+//  · NADA de atraso é recalculado pela data em que o painel é aberto.
+//  · A categoria executiva é DERIVADA na renderização por complImplCategoria(),
+//    nunca gravada aqui — mesma regra da criticidade do plano SGC.
+const COMPLIANCE_IMPLANTACAO_META = {
+  fonte:'TRENJUS · Relatório de Implementação do Programa de Compliance',
+  emitidoEm:'25/09/2026',
+};
+const COMPLIANCE_IMPLANTACAO = [
+ {
+  "id": "1",
+  "acao": "Agendar reunião com o Presidente para tratar do Programa de Compliance",
+  "donos": [
+   "Marcos Fraga"
+  ],
+  "prazo": "17/09/2026",
+  "andamento": "",
+  "statusFonte": "Concluído",
+  "prazoStatusBruto": "17/09/2026 – Concluído"
+ },
+ {
+  "id": "2",
+  "acao": "Agendar reunião com o Presidente e David Teixeira para apresentar o software de Gestão Teiia",
+  "donos": [
+   "Klyverson Moreno",
+   "David Teixeira"
+  ],
+  "prazo": "17/09/2026",
+  "andamento": "",
+  "statusFonte": "Concluído",
+  "prazoStatusBruto": "17/09/2026 – Concluído"
+ },
+ {
+  "id": "3",
+  "acao": "Criar e Aprovar texto curto do Presidente anunciando o Programa de Compliance (envio por e-mail) e Vídeo",
+  "donos": [
+   "Klyverson Moreno",
+   "Marcelo Bervian",
+   "MKT"
+  ],
+  "prazo": "17/09/2026",
+  "andamento": "17/09/2026 – Aprovado em reunião; 21/09/2026 – E-mail perguntando a data de cumprimento enviado pela consultoria.",
+  "statusFonte": "Aguardando retorno do presidente",
+  "prazoStatusBruto": "Prazo: 17/09/2026 – Aprovado em reunião; 21/09/2026 – E-mail perguntando a data de cumprimento enviado pela consultoria. Status: Aguardando retorno do presidente."
+ },
+ {
+  "id": "3.1",
+  "acao": "Criar Plano de Comunicação (logo e periódicos)",
+  "donos": [
+   "Klyverson Moreno",
+   "MKT",
+   "Cíntia (RH)"
+  ],
+  "prazo": "—",
+  "andamento": "",
+  "statusFonte": "Aguardando conclusão do Item 3",
+  "prazoStatusBruto": "Prazo/Status: Aguardando conclusão do Item 3."
+ },
+ {
+  "id": "4",
+  "acao": "Manual do Colaborador/Código de Ética – Enviar minuta consolidada às gerências para considerações. Após enviar ao Presidente para encaminhamentos (envio a Diretoria e aprovação).",
+  "donos": [
+   "Klyverson Moreno",
+   "Cíntia (RH)",
+   "Gerências",
+   "Diretoria"
+  ],
+  "prazo": "25/09/2026",
+  "andamento": "21/09/2026 – E-mail enviado para todas as gerências para considerações finais. Prazo concedido: 25/09/2026.",
+  "statusFonte": "Aguardar retorno das gerências para envio ao Presidente e Diretoria",
+  "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail enviado para todas as gerências para considerações finais. Prazo concedido: 25/09/2026. Status: Aguardar retorno das gerências para envio ao Presidente e Diretoria."
+ },
+ {
+  "id": "5",
+  "acao": "Canal de Denúncias e Drive na Nuvem para registro centralizado das evidências.",
+  "donos": [
+   "Marcelo Bervian",
+   "David Teixeira"
+  ],
+  "prazo": "21/09/2026",
+  "andamento": "21/09/2026 – E-mail com proposta da Teiia reenviado.",
+  "statusFonte": "Aguardando retorno",
+  "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail com proposta da Teiia reenviado. Status: Aguardando retorno."
+ },
+ {
+  "id": "6",
+  "acao": "Mapeamento de Riscos Prioritários da Alta Direção - Reenviar de Template de Gestão de Riscos para a Diretoria (Presidências da Diretoria, Conselho Deliberativo e Conselho Fiscal, Conselhos Complementares?) e Definição de nova ponto focal da Diretoria (Sugestão: Presidente do Conselho – Maria Carolina?)",
+  "donos": [
+   "Marcelo Bervian"
+  ],
+  "prazo": "24/09/2026",
+  "andamento": "24/09/2026 – E-mail enviado ao presidente e David Teixeira com as templates e sugestão do Nome da Ponto Focal.",
+  "statusFonte": "Aguardando retorno do Presidente",
+  "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com as templates e sugestão do Nome da Ponto Focal. Status: Aguardando retorno do Presidente."
+ },
+ {
+  "id": "7",
+  "acao": "Comitê de Ética e Integridade dos Colaboradores e elaboração do Procedimento Administrativo Disciplinar – PAD, Fluxos (o que vai para Sindicância – Diretoria e o que vai para Comitê dos Colaboradores) e Investigações Internas.",
+  "donos": [
+   "Marcelo Bervian",
+   "David Teixeira"
+  ],
+  "prazo": "24/09/2026",
+  "andamento": "24/09/2026 – E-mail enviado ao presidente e David Teixeira com orientações sobre o convite e formalização dos membros do comitê de ética dos colaboradores. Avançaremos no PAD após constituição do comitê.",
+  "statusFonte": "Aguardando retorno",
+  "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com orientações sobre o convite e formalização dos membros do comitê de ética dos colaboradores. Avançaremos no PAD após constituição do comitê. Status: Aguardando retorno."
+ },
+ {
+  "id": "8",
+  "acao": "Reunião com a Comissão do Estatuto e Presidente do Conselho para inclusão de Texto de Governança e Compliance nos instrumentos normativos da SOGIPA. Criar e incluir texto no Estatuto/Regulamento Geral sobre as normas de Governança e Compliance junto com o Comitê de Estatuto.",
+  "donos": [
+   "Alexandre Daré",
+   "Marcos Fraga",
+   "Klyverson Moreno",
+   "Maria Carolina",
+   "Unamiara"
+  ],
+  "prazo": "18/09/2026",
+  "andamento": "18/09/2026 – Reunião realizada. 24/09/2026 – E-mail enviado ao Alexandre Daré solicitando que solicite as Atas de reunião com o novo texto do Estatuto para análise e colaboração da consultoria.",
+  "statusFonte": "Aguardando retorno",
+  "prazoStatusBruto": "Prazo: 18/09/2026 – Reunião realizada. 24/09/2026 – E-mail enviado ao Alexandre Daré solicitando que solicite as Atas de reunião com o novo texto do Estatuto para análise e colaboração da consultoria. Status: Aguardando retorno."
+ },
+ {
+  "id": "9",
+  "acao": "Formalização do Marcos Fraga como Compliance Officer da SOGIPA através de Portaria.",
+  "donos": [
+   "Marcelo Bervian",
+   "David Teixeira",
+   "Marcos Fraga"
+  ],
+  "prazo": "25/09/2026",
+  "andamento": "25/09/2026 – E-mail enviado ao presidente e David Teixeira e Marcos Fraga com modelo de Portaria e orientações.",
+  "statusFonte": "Aguardando retorno",
+  "prazoStatusBruto": "Prazo: 25/09/2026 – E-mail enviado ao presidente e David Teixeira e Marcos Fraga com modelo de Portaria e orientações. Status: Aguardando retorno."
+ },
+ {
+  "id": "10",
+  "acao": "Sensibilização da Alta Direção sobre o Programa de Compliance.",
+  "donos": [
+   "Marcelo Bervian",
+   "David Teixeira",
+   "Marcos Fraga",
+   "Klyverson Moreno"
+  ],
+  "prazo": "16/04/2026",
+  "andamento": "16/04/2026 foi mencionada a necessidade deste momento com a Diretoria.",
+  "statusFonte": "Não iniciado",
+  "prazoStatusBruto": "Prazo: 16/04/2026 foi mencionada a necessidade deste momento com a Diretoria. Status: Não iniciado."
+ },
+ {
+  "id": "11",
+  "acao": "Risco Prioritário 01 a ser tratado: Alçadas e limites de autonomia gerencial a ser construído junto com a Diretoria. Criar Grupo de Trabalho da Diretoria: mapear decisões, alçadas, fluxos formais de aprovação e autonomia gerencial.",
+  "donos": [
+   "Diretoria",
+   "Trendjus",
+   "Gerências"
+  ],
+  "prazo": "05/06/2026",
+  "andamento": "05/06/2026 ficou definido como prioridade pelo Presidente, que será o primeiro risco a ser tratado.",
+  "statusFonte": "Não iniciado",
+  "prazoStatusBruto": "Prazo: 05/06/2026 ficou definido como prioridade pelo Presidente, que será o primeiro risco a ser tratado. Status: Não iniciado."
+ },
+ {
+  "id": "12",
+  "acao": "Criar manual de atribuições, cartilha para novos diretores e política de transição entre gestões.",
+  "donos": [
+   "Diretoria",
+   "Trendjus"
+  ],
+  "prazo": "A definir",
+  "andamento": "",
+  "statusFonte": "Não iniciado",
+  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
+ },
+ {
+  "id": "13",
+  "acao": "Due diligence de terceiros",
+  "donos": [
+   "Gerências",
+   "Trendjus"
+  ],
+  "prazo": "A definir",
+  "andamento": "",
+  "statusFonte": "Não iniciado",
+  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
+ },
+ {
+  "id": "14",
+  "acao": "Protocolo de gestão de crises",
+  "donos": [
+   "Diretoria",
+   "Gerencias",
+   "Trendjus"
+  ],
+  "prazo": "A definir",
+  "andamento": "",
+  "statusFonte": "Não iniciado",
+  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
+ },
+ {
+  "id": "15",
+  "acao": "Monitoramento e Gestão de Evidências - Compliance Officer terceirizado",
+  "donos": [
+   "Trendjus"
+  ],
+  "prazo": "—",
+  "andamento": "",
+  "statusFonte": "Em andamento (contrato vigente)",
+  "prazoStatusBruto": "Em andamento (contrato vigente)"
+ }
+];
+
+// Mapeamento para o vocabulário executivo da aba, decidido pelo Diretor em
+// 28/09: "Aguardando retorno" conta como PENDENTE — a leitura conservadora,
+// em que só entra em andamento o que a fonte declara em andamento.
+// O status literal continua visível na tabela; este mapa é só para os totais.
+function complImplCategoria(x){
+  const s = (x.statusFonte||'').toLowerCase();
+  if(s.startsWith('concluíd'))   return 'Concluída';
+  if(s.startsWith('em andamento')) return 'Em progresso';
+  return 'Pendente';
+}
+function complImplResumo(){
+  const d = COMPLIANCE_IMPLANTACAO, c = f => d.filter(f).length;
+  return {total:d.length,
+          concluidas: c(x=>complImplCategoria(x)==='Concluída'),
+          andamento:  c(x=>complImplCategoria(x)==='Em progresso'),
+          pendentes:  c(x=>complImplCategoria(x)==='Pendente'),
+          aguardando: c(x=>/aguard/i.test(x.statusFonte)),
+          naoIniciado:c(x=>/^não iniciado/i.test(x.statusFonte))};
+}
+function complImplCor(x){
+  const s = (x.statusFonte||'').toLowerCase();
+  if(s.startsWith('concluíd'))     return '#00e5a0';
+  if(s.startsWith('em andamento')) return '#3d7bff';
+  if(s.startsWith('não iniciado')) return '#8b8fa8';
+  return '#f2b705';                       // aguardando algo
+}
+function complImplBloco(){
+  if(typeof COMPLIANCE_IMPLANTACAO === 'undefined') return '';
+  const r = complImplResumo();
+  const linhas = COMPLIANCE_IMPLANTACAO.map(x=>`
+    <tr>
+      <td style="white-space:nowrap; font-weight:700;">${x.id}</td>
+      <td>${x.acao}${x.andamento ? `<div class="card-meta" style="margin-top:4px;">${x.andamento}</div>` : ''}</td>
+      <td style="white-space:nowrap; font-size:12px;">${(x.donos||[]).join('<br>') || '<span class="muted">—</span>'}</td>
+      <td class="num" style="white-space:nowrap;">${x.prazo}</td>
+      <td><span style="display:inline-block; padding:2px 8px; border-radius:20px; font-size:11.5px;
+            font-weight:700; color:${complImplCor(x)}; border:1px solid ${complImplCor(x)}44;
+            background:${complImplCor(x)}18;">${x.statusFonte}</span></td>
+    </tr>`).join('');
+  return `
+    <div class="section-title" style="margin-top:26px;">Relatório de Implementação — Consultoria<div class="line"></div></div>
+    <div class="card full">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <div class="card-label">${COMPLIANCE_IMPLANTACAO_META.fonte}</div>
+        <div class="card-meta" style="margin:0;">Posição de ${COMPLIANCE_IMPLANTACAO_META.emitidoEm}</div>
+      </div>
+      <div class="card-meta" style="margin-top:6px;">
+        <b style="color:var(--text);">${r.total} itens</b> —
+        <b style="color:#00e5a0;">${r.concluidas} concluídos</b>,
+        <b style="color:#3d7bff;">${r.andamento} em andamento</b>,
+        <b style="color:#f2b705;">${r.aguardando} aguardando retorno</b> e
+        <b style="color:#8b8fa8;">${r.naoIniciado} não iniciados</b>.
+        Nos totais executivos da aba, <b>aguardando retorno conta como pendente</b>
+        (${r.pendentes} pendentes) — a ação já foi executada pela consultoria e
+        depende de resposta da SOGIPA.
+      </div>
+      <div style="overflow-x:auto;">
+      <table style="margin-top:12px;">
+        <thead><tr><th>#</th><th>Ação</th><th>Dono</th><th class="num">Prazo</th><th>Status declarado</th></tr></thead>
+        <tbody>${linhas}</tbody>
+      </table>
+      </div>
+      <div class="card-meta" style="margin-top:10px;">
+        💡 Este relatório é o acompanhamento da <b style="color:var(--text);">fase atual</b> feito pela
+        consultoria e <b>não substitui o plano do Sistema de Gestão</b> acima, que tem 22 ações e
+        horizonte até mar/2029. Os indicadores, a criticidade e os marcos da aba continuam saindo do
+        plano. Status e prazos aqui são os declarados pela fonte — nada é recalculado pela data de
+        abertura do painel.
+      </div>
+    </div>`;
+}
+
 // ── render da aba Compliance ──────────────────────────────
 function renderCompliance(){
   const el = document.getElementById('complianceConteudo');
@@ -5444,7 +5731,8 @@ function renderCompliance(){
   // Processos em acompanhamento: fora do plano de ação e dos indicadores.
   const processos = (typeof COMPLIANCE_PROCESSOS !== 'undefined')
     ? COMPLIANCE_PROCESSOS.map(complianceProcessoCard).join('') : '';
-  el.innerHTML = cards + faixa + processos + leitura + gantt;
+  const implantacao = (typeof complImplBloco === 'function') ? complImplBloco() : '';
+  el.innerHTML = cards + faixa + processos + implantacao + leitura + gantt;
 }
 
 const navItems = document.querySelectorAll('.nav-item');
@@ -7269,37 +7557,50 @@ const DADOS_MES = {
   },
   set2026: {
     label: 'Setembro/2026',
+    // ── POSICAO 24/09/2026 · Resumo Fluxo de Caixa SET2026 importar 28.09 ──
+    // Substitui integralmente a posicao de 10/09. Nada foi somado.
     despesas: [
-      {nome:'Pessoal de Apoio', prev:1490.5, tend:1573.1, real:678.6},
-      {nome:'Despesas de Funcionamento', prev:1112.9, tend:1100.9, real:461.9},
-      {nome:'Despesas Fixas', prev:330.0, tend:327.5, real:52.2},
-      {nome:'Esporte', prev:226.8, tend:224.2, real:73.8},
-      {nome:'Eventos', prev:192.1, tend:191.5, real:99.0},
-      {nome:'Taxas e Impostos', prev:110.0, tend:110.4, real:10.4},
-      {nome:'Imobilizado', prev:64.1, tend:64.0, real:27.8},
-      {nome:'Contingências (Indenizações)', prev:17.9, tend:17.9, real:4.9},
-      {nome:'Tarifas e Desp. Bancárias', prev:9.7, tend:9.7, real:2.1},
+      {nome:'Pessoal de Apoio', prev:1490.5, tend:1590.9, real:1526.4},
+      {nome:'Despesas de Funcionamento', prev:1112.9, tend:1108.6, real:967.6},
+      {nome:'Despesas Fixas', prev:330.0, tend:313.1, real:228.8},
+      {nome:'Esporte', prev:226.8, tend:220.0, real:174.0},
+      {nome:'Eventos', prev:188.1, tend:185.0, real:170.0},
+      {nome:'Taxas e Impostos', prev:110.0, tend:107.6, real:107.6},
+      {nome:'Imobilizado', prev:64.1, tend:66.7, real:49.7},
+      {nome:'Contingências (Indenizações)', prev:17.9, tend:14.6, real:13.6},
+      {nome:'Tarifas e Desp. Bancárias', prev:9.7, tend:9.6, real:5.9},
     ],
     receitas: [
-      {nome:'Boletos', prev:1525.0, tend:1524.2, real:599.2},
-      {nome:'Débito em Conta', prev:711.0, tend:711.0, real:0},
-      {nome:'Receitas Diversas', prev:626.0, tend:625.6, real:255.6},
-      {nome:'Cartões Crédito', prev:487.0, tend:487.8, real:256.8},
-      {nome:'Cartões Débito', prev:160.0, tend:153.4, real:66.4},
+      {nome:'Boletos', prev:1525.0, tend:1494.5, real:1449.5},
+      {nome:'Débito em Conta', prev:711.0, tend:703.2, real:703.2},
+      {nome:'Receitas Diversas', prev:626.0, tend:595.8, real:470.8},
+      {nome:'Cartões Crédito', prev:487.0, tend:487.1, real:427.1},
+      {nome:'Cartões Débito', prev:160.0, tend:148.3, real:131.3},
       {nome:'Cheque pré-datados', prev:0, tend:0, real:0},
-      {nome:'Rendimento Aplicação', prev:0, tend:0, real:0},
+      {nome:'Rendimento Aplicação', prev:0, tend:0.1, real:0.1},
       {nome:'Patrocínios', prev:0, tend:0, real:0},
     ],
+    // Totais como o documento DECLARA (mesma regra ja usada em agosto). Nas
+    // tres colunas de receita o declarado bate no centavo com a soma das
+    // linhas. Na despesa ha 0,1 de arredondamento da propria fonte: previsto
+    // declarado 3.549,9 contra 3.550,0 somando as linhas, e realizado 3.243,7
+    // contra 3.243,6. A tendencia (3.616,1) fecha exata.
     totaisReceitaDespesa: {
-      previsto:  {receita:3509.0, despesa:3553.9},
-      tendencia: {receita:3502.1, despesa:3619.2},
-      realizado: {receita:1178.1, despesa:1410.8},
+      previsto:  {receita:3509.0, despesa:3549.9},
+      tendencia: {receita:3429.0, despesa:3616.1},
+      realizado: {receita:3182.0, despesa:3243.7},
     },
+    // ── ATUALIZADO EM 28/09 · Resumo Necessidades, posicao 24/09/2026 ────
+    // SUBSTITUI a lista da posicao de 04/09 (14 linhas, R$ 1.356.924,35). Nao e
+    // soma: os pagamentos de 04/09, 09/09 e 15/09 sairam da tabela porque ja
+    // foram executados, e entrou o Espaco Infinity de 24/09.
+    // RECONCILIACAO: as 11 linhas somam R$ 920.637,58 e o documento declara
+    // TOTAL R$ 906.228,08 — diferenca de R$ 14.409,50, exatamente a linha de
+    // 24/09 (Espaco Infinity), que e o proprio dia da posicao. O documento
+    // anterior INCLUIA a linha do dia da posicao no seu total, entao a regra
+    // mudou de um documento para o outro. Aqui vale a LINHA, como sempre.
     obras: [
-      {data:'04/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:379776.92},
-      {data:'04/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
-      {data:'09/09/2026', fornecedor:'Lilia Pires Arquitetura', projeto:'Proj. Arquit. Salão Panorâmico', valor:11621.10},
-      {data:'15/09/2026', fornecedor:'Broilo', projeto:'Instalação Caldeira', valor:39000.00},
+      {data:'24/09/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Espaço Infinity', valor:14409.50},
       {data:'28/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
       {data:'29/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
       {data:'30/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
@@ -7311,16 +7612,29 @@ const DADOS_MES = {
       {data:'10/12/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:338800.00},
       {data:'29/12/2026', fornecedor:'MTX Parc 3/15', projeto:'Muscul. dos Atletas', valor:45300.00},
     ],
-    obrasTotal: 1356924.35,
-    // Posição de caixa de 10/09. Receitas e despesas também são desta posição
-    // — desta vez o documento mensal veio junto com o diário.
-    caixaLivre: -777.9, fundoObras: 2686.3, resultadoOper: -117.1, saldoTotal: 1908.3,
-    caixaLivrePct: -40.8, fundoObrasPct: 140.8, negativo: true,
-    receitaReal: 1178.1, despesaReal: 1410.8,
-    resultadoLiquido: -822.6,
-    dataReferencia: '10/09/2026',
+    obrasTotal: 920637.58,
+    // ── POSICAO UNICA: 24/09/2026 ─────────────────────────────────────────
+    // Fechada em 28/09 com os DOIS documentos da mesma data:
+    //   "Resumo Fluxo de Caixa SET2026 importar 28.09"  -> bloco mensal
+    //   "Resumo Necessidades - importar 28.9"           -> PROJECAO e obras
+    // As duas fontes fecham entre si: o diario traz, em 24/set, banco -606.995
+    // e indices 2.623.226 (soma 2.016.231) e o mensal declara SALDO FINAL
+    // BANCOS 2.016,2; em 30/set o diario da -732.445 + 2.379.226 = 1.646.781 e
+    // o mensal declara SALDO BANCO 30/09 = 1.646,8. Nao ha mistura de posicoes.
+    // SALDO FINAL BANCOS 24/09/2026 = 2.016,2 (declarado no documento).
+    // Confere com o diario de necessidades da MESMA posicao: em 24/set o banco
+    // disponivel e -606.995 e os indices construtivos 2.623.226 — soma
+    // 2.016.231. As duas fontes fecham entre si, o que confirma que o mensal e
+    // o diario estao na mesma data de referencia.
+    // Percentuais derivados do proprio saldo: -607,0/2.016,2 = -30,1% e
+    // 2.623,2/2.016,2 = 130,1% (somam 100%).
+    caixaLivre: -607.0, fundoObras: 2623.2, resultadoOper: -187.2, saldoTotal: 2016.2,
+    caixaLivrePct: -30.1, fundoObrasPct: 130.1, negativo: true,
+    receitaReal: 3182.0, despesaReal: 3243.7,
+    resultadoLiquido: -916.7,
+    dataReferencia: '24/09/2026',
     fechado: false,
-    ptoAtencao: '<b>Mês em andamento — posição de 10/09.</b> O realizado é de R$ 1.178,1 mil de receita contra R$ 1.410,8 mil de despesa, <b style=\"color:var(--red);\">-R$ 232,7 mil no acumulado do mês</b>. O caixa operacional livre está em -R$ 777,9 mil e, com o fundo Índices Construtivos de R$ 2.686,3 mil, o saldo em banco é de <b>R$ 1.908,3 mil</b>. <b style=\"color:var(--gold);\">A tendência para o mês fechado piorou:</b> de -R$ 50,9 mil na posição de 03/09 para <b>-R$ 117,1 mil</b>, puxada por Pessoal de Apoio, que subiu de R$ 1.493,8 para R$ 1.573,1 mil. <b style=\"color:var(--red);\">O resultado líquido projetado é de -R$ 822,6 mil</b>, porque saem R$ 705,5 mil pela conta de Índices Construtivos. O saldo projetado para 30/09 é de R$ 1.740,9 mil. <b style=\"color:var(--gold);\">Os compromissos de obras quase dobraram</b>, de R$ 725,4 mil para R$ 1.356,9 mil: entraram o Salão Panorâmico (R$ 484,0 mil em duas parcelas) e as três primeiras parcelas do MTX para a Musculação dos Atletas.',
+    ptoAtencao: '<b>Mês em andamento — posição de 24/09.</b> O realizado é de R$ 3.182,0 mil de receita contra R$ 3.243,7 mil de despesa, <b style=\"color:var(--red);\">-R$ 61,7 mil no acumulado do mês</b>. O caixa operacional livre está em -R$ 607,0 mil e, com o fundo Índices Construtivos de R$ 2.623,2 mil, o saldo em banco é de <b>R$ 2.016,2 mil</b> — R$ 107,9 mil acima da posição de 10/09. <b style=\"color:var(--gold);\">A tendência para o mês fechado piorou de novo:</b> de -R$ 117,1 mil em 10/09 para <b>-R$ 187,2 mil</b>. <b>A piora veio da receita, não da despesa:</b> a tendência de receita caiu R$ 73,1 mil (de R$ 3.502,1 para R$ 3.429,0 mil) enquanto a de despesa praticamente não se moveu (-R$ 3,1 mil). <b>Receitas Diversas (-R$ 29,8 mil) e Boletos (-R$ 29,7 mil) explicam 81% da queda</b> — vale confirmar com a Controladoria se é postergação de recebimento ou perda de receita. Do lado da despesa, Pessoal de Apoio subiu mais R$ 17,8 mil (para R$ 1.590,9 mil) e foi compensado por Despesas Fixas (-R$ 14,4 mil) e Eventos (-R$ 6,5 mil). <b style=\"color:var(--red);\">O resultado líquido projetado é de -R$ 916,7 mil</b>, porque saem R$ 729,5 mil pela conta de Índices Construtivos. O saldo projetado para 30/09 caiu de R$ 1.740,9 para <b>R$ 1.646,8 mil</b> — exatamente os R$ 94,1 mil de piora do resultado líquido, e o mesmo valor que a projeção diária traz para 30/set. <b style=\"color:var(--gold);\">Compromissos de obras em R$ 920,6 mil</b> (posição de 24/09): a lista caiu de R$ 1.356,9 mil porque os pagamentos de 04/09, 09/09 e 15/09 — R$ 450,7 mil — já foram executados e saíram da agenda; entrou o Espaço Infinity (R$ 14,4 mil, em 24/09). Seguem em aberto o Salão Panorâmico (R$ 484,0 mil em duas parcelas) e as três primeiras parcelas do MTX para a Musculação dos Atletas.',
   },
 };
 
@@ -7404,7 +7718,16 @@ const AUDITORIAS_IMPORT = [
       // errou); no histórico anterior a jul/26 é HERDADA — vem de versões antigas
       // do relatório da Controladoria, que omitiam dias. Fica listada como
       // pendência (window.__AUDIT_IMPORT.herdadas), sem mascarar falha nova.
-      const QUEBRAS_CONHECIDAS = ['28/jul'];   // emenda documentada entre versões
+      // Emendas documentadas entre versoes do relatorio. NAO e whitelist de
+      // erro: e o ponto em que uma projecao antiga da lugar a uma posicao real.
+      //   28/jul — emenda antiga, ja documentada.
+      //   24/set — carga de 28/09. A projecao de 04/09 levava 23/set a
+      //     -590.381; somando o movimento de 24/set (-44.971) daria -635.352,
+      //     mas o documento de 24/09 declara -606.995. Os R$ 28.357 de
+      //     diferenca sao o desvio acumulado da projecao antiga ate 23/09,
+      //     corrigido pela nova posicao. Os 66 dias importados encadeiam entre
+      //     si sem nenhuma quebra.
+      const QUEBRAS_CONHECIDAS = ['28/jul','24/set'];
       const MES_ORD = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
       const ordem = d => MES_ORD[d.split('/')[1]] || 0;
       _herdadas = [];
@@ -7479,15 +7802,30 @@ const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'contatos enviados mar-jun', esperado:1498,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.contatos||0),0)},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SETEMBRO', ate:'03/09/2026',
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
    oque:'total receitas previsto', esperado:3509.0,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.previsto.receita},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SETEMBRO', ate:'03/09/2026',
-   oque:'total despesas tendência', esperado:3619.2,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'total receitas tendência', esperado:3429.0,
+   calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.tendencia.receita},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'total receitas já realizado', esperado:3182.0,
+   calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.realizado.receita},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'total despesas tendência', esperado:3616.1,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.tendencia.despesa},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Fluxo de Caixa Sogipa 2026', ate:'10/09/2026',
-   oque:'saldo banco + índices em 10/09 (R$ mil)', esperado:1908.3,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'total despesas já realizado', esperado:3243.7,
+   calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.realizado.despesa},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'resultado líquido', esperado:-916.7,
+   calc:()=>DADOS_MES.set2026.resultadoLiquido},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+   oque:'saldo banco + índices em 24/09 (R$ mil)', esperado:2016.2,
    calc:()=>DADOS_MES.set2026.saldoTotal},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Necessidades · importar 28.9', ate:'24/09/2026',
+   oque:'saldo projetado 30/09 = banco + índices do diário (R$ mil)', esperado:1646.8,
+   calc:()=>{const p=PROJECAO.find(x=>x.d==='30/set'); return Math.round((p.banco+p.indices)/100)/10;}},
   {aba:'Esportes', doc:'ORÇADO 2026 - importar para o painel', ate:'dez/2026',
    oque:'orçado do ano, 31 modalidades', esperado:4834547.97,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.od.reduce((a,b)=>a+b,0)+m.orr.reduce((a,b)=>a+b,0),0)},
