@@ -2593,17 +2593,26 @@ const REINGRESSO_HISTORICO = [
       {nome:'Categoria a informar', qtd:13, cor:'#4a4c68'},
     ],
     alerta: '<b style=\"color:var(--green);\">Agosto fechado — 68 reingressos e R$ 37.329,06</b>, contra 55 e R$ 30.181,56 na posição de 28/08. A meta de 40 foi batida com folga (170%) e o desafio de 45 chegou a 151%. Foram cerca de <b>980 contatos enviados</b> no mês. <b>Taxa reduzida sozinha responde por 39</b>, mais da metade do total, à frente da lista de excluídos (14), aniversariantes de agosto (7), Patrimonial/Benefícios (5) e pesquisa de satisfação (1). Ticket médio de R$ 548,96, ante R$ 548,76 em 28/08: o fechamento trouxe volume com valor menor por reingresso, coerente com o peso da taxa reduzida. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> a peça de fechamento declara 66 e o total informado é 68 — os 2 de diferença entram sem campanha vinculada; e a peça não traz a abertura por categoria, então 13 dos 68 aparecem como categoria a informar. As cinco categorias mostradas são as apuradas até 28/08.'},
-  // Set/26 — EM ANDAMENTO, posição de 21/09/2026 (mensagem da gestora, 11:07).
-  // Só total e valor foram informados. Campanha e categoria ficam como
-  // "aguardando registro" para os gráficos fecharem sem inventar distribuição.
-  {mesKey:'set2026', periodoTag:'Setembro/2026 (até 21/09)', total:27, valor:17806.84, contatos:null,
+  // Set/26 — EM ANDAMENTO.
+  // ATUALIZADO EM 28/09: a Sec. Adm. informou 54 reingressos e R$ 30.881,49,
+  //   substituindo a posicao de 21/09 (27 e R$ 17.806,84).
+  //   A competencia nao veio escrita na informacao. Setembro e o UNICO mes
+  //   aberto da serie — jan a ago estao fechados e publicados, e 54/30.881,49
+  //   nao corresponde a nenhum deles. Por isso os numeros entram em setembro,
+  //   substituindo a posicao anterior, e NAO somando a ela.
+  //   Se a Sec. Adm. quis dizer outra competencia, e so trocar aqui: esta e a
+  //   unica base de reingresso do painel.
+  // Continua sem abertura por campanha e por categoria — ficam como
+  // "aguardando registro" para os graficos fecharem sem inventar distribuicao.
+  // ticketMedio NAO e digitado: sai de valor/total no forEach abaixo (R$ 571,88).
+  {mesKey:'set2026', periodoTag:'Setembro/2026 (até 28/09)', total:54, valor:30881.49, contatos:null,
     campanhas:[
-      {nome:'Aguardando registro na campanha', qtd:27, cor:'#4a4c68'},
+      {nome:'Aguardando registro na campanha', qtd:54, cor:'#4a4c68'},
     ],
     categorias:[
-      {nome:'Categoria a informar', qtd:27, cor:'#4a4c68'},
+      {nome:'Categoria a informar', qtd:54, cor:'#4a4c68'},
     ],
-    alerta: '<b style=\"color:var(--gold);\">Mês em andamento — posição de 21/09.</b> <b>27 reingressos somando R$ 17.806,84</b>, ticket médio de R$ 659,51. Agosto fechou com 68 e R$ 37.329,06. <b style=\"color:var(--gold);\">A abertura por campanha e por categoria ainda não foi informada</b> — os 27 aparecem como aguardando registro até chegar o detalhamento.'},
+    alerta: '<b style=\"color:var(--gold);\">Mês em andamento — posição de 28/09.</b> <b>54 reingressos somando R$ 30.881,49</b>, ticket médio de R$ 571,88. Na posição anterior, de 21/09, eram 27 e R$ 17.806,84 — <b>o mês dobrou de volume na última semana</b>. Agosto fechou com 68 e R$ 37.329,06, então setembro está em 79% do volume de agosto com o mês ainda aberto. O ticket caiu de R$ 659,51 para R$ 571,88, aproximando-se dos R$ 548,96 de agosto. <b style=\"color:var(--gold);\">A abertura por campanha e por categoria continua não informada</b> — os 54 aparecem como aguardando registro até chegar o detalhamento.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -6342,6 +6351,92 @@ const VENDAS_EXTRA_MESES = {
       taxaAdesao:28655.50, taxaReingresso:37329.06, taxaTotal:65984.56,
     },
   },
+  set2026: {
+    // ── IMPORTADO EM 28/09 (ENTRADAS_REALIZADAS_V6 (4)(1)) ─────────────────
+    // ATENCAO — MUDOU A FORMA DE MEDIR, NAO O NUMERO.
+    // A planilha passou a ter DUAS colunas de valor onde antes havia uma:
+    //     G "Adesao"             (conceito NOVO: a taxa de adesao cobrada)
+    //     H "Valor Contribuicao" (o que antes se chamava "Adesao")
+    // Conferencia linha a linha em AGOSTO, 66 linhas: a coluna H da planilha
+    // nova e IDENTICA a coluna G da planilha anterior em TODAS as linhas, e
+    // soma exatamente os R$ 28.655,50 ja publicados. Zero divergencias.
+    // Logo, a serie historica do painel = "Valor Contribuicao".
+    // Setembro entra com a coluna H: R$ 25.497,00 (a coluna "Adesao" nova
+    // somaria R$ 30.603,73 e NAO e comparavel com jan-ago).
+    // Agosto NAO foi alterado.
+    //
+    // CONTAGEM: 54 linhas com nome, que e exatamente o "REAL" declarado no topo
+    // da planilha. Zero matriculas duplicadas e zero nomes repetidos — o
+    // bloqueio de 17/09 (5 pares duplicados) foi resolvido na origem.
+    // 50 das 54 tem valor; as outras 4 sao cadastros incompletos de pessoas
+    // distintas (CARLOS BARROS, RICARDO BULHOES, ANDRE MARTINS FERNANDES e um
+    // agendamento "LUCIANA 30/09"). Todas as 4 tem consultora, por isso a
+    // quebra por consultor fecha em 54 sem linha de ajuste; categoria e canal
+    // faltam em 3 delas, que entram como "Aguardando registro na planilha"
+    // com valor ZERO — mesma convencao ja usada em agosto.
+    //
+    // NORMALIZACAO (so erro de digitacao evidente, nunca agrupamento novo):
+    //   DUI -> Duo | PLANI FAMILIAR -> Plano Familiar | TOIUR -> Tour
+    //   WATSS -> WhatsApp | OAB -> Convenio OAB (mesmo rotulo de agosto)
+    //   INDICACAO DO GUZZO -> Indicacao (mesmo rotulo de agosto)
+    // O vocabulario de CANAL mudou entre agosto e setembro (agosto falava em
+    // "Promo Aniversario"/"Visita", setembro em "Campanha"/"Tour"/"WhatsApp").
+    // Nao foram unificados: sao nomes de campanha diferentes, nao sinonimos.
+    //
+    // DUAS DATAS FORA DE SETEMBRO, preservadas como estao na fonte:
+    //   L11 LUCAS LUIS DA SILVA RODRIGUES -> 04/09/2029 (erro de digitacao)
+    //   L60 FABIO SOARES -> 08/07/2026, matricula de 7 digitos (1103940),
+    //       formato de associado antigo. Pode ser reingresso lancado em vendas.
+    // Nenhuma das duas muda a contagem: a competencia segue a aba da planilha.
+    periodoTag:'Setembro/2026 (até 26/09)',
+    associacoesNovas:'54', valorArrecadado:'R$ 25.497,00', ticketMedio:'R$ 472,17',
+    campanhas:[
+      {nome:'Campanha + Tour', qtd:14, cor:'#3d7bff'},
+      {nome:'Tour', qtd:11, cor:'#00e5a0'},
+      {nome:'Campanha', qtd:11, cor:'#f2b705'},
+      {nome:'WhatsApp', qtd:9, cor:'#84cc16'},
+      {nome:'Visita', qtd:3, cor:'#06b6d4'},
+      {nome:'Aguardando registro na planilha', qtd:3, cor:'#4a4c68'},
+      {nome:'GetNet', qtd:1, cor:'#a855f7'},
+      {nome:'Indicação', qtd:1, cor:'#e879f9'},
+      {nome:'Dependente', qtd:1, cor:'#22d3ee'},
+    ],
+    consultores:[
+      {nome:'Helena', qtd:27, valor:12553.00},
+      {nome:'Nicole', qtd:27, valor:12944.00},
+    ],
+    categorias:[
+      {nome:'Contribuinte Familiar', qtd:26},
+      {nome:'Duo', qtd:7},
+      {nome:'Contribuinte', qtd:5},
+      {nome:'Contribuinte Individual', qtd:3},
+      {nome:'Sênior', qtd:3},
+      {nome:'Plano Familiar', qtd:3},
+      {nome:'Aguardando registro na planilha', qtd:3},
+      {nome:'Universitário', qtd:2},
+      {nome:'Convênio OAB', qtd:1},
+      {nome:'Plano Single', qtd:1},
+    ],
+    alerta: '<b>Mês em andamento — posição de 26/09.</b> <b>54 associações novas</b> somando <b>R$ 25.497,00</b>, ticket médio de <b>R$ 472,17</b>. <b style=\"color:var(--green);\">A meta de 52 já foi superada (104%)</b> e o desafio de 60 está em 90% com o mês ainda aberto. <b>Helena e Nicole empatam em 27 vendas cada</b> — R$ 12.553,00 e R$ 12.944,00 —, e as duas respondem por 100% do mês: Claudia e Sabrina não registram vendas em setembro. O canal combinado <b>Campanha + Tour soma 14</b>, à frente de Tour (11) e Campanha (11); <b>Contribuinte Familiar concentra 26 das 54</b>. Somando os 54 reingressos da posição de 28/09, vendas + reingressos chegam a <b>108</b> e a R$ 56.378,49 de taxa total. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> 4 dos 54 registros ainda estão sem valor e sem detalhamento na planilha (entram como aguardando registro, com valor zero), e a <b>meta de reingresso de setembro ainda não foi informada</b> pela Secretaria Administrativa — por isso as linhas de reingresso e de total aparecem sem orçado. <b style=\"color:var(--gold);\">Mudança de medida:</b> a planilha passou a separar "Adesão" de "Valor Contribuição". A série do painel (inclusive os R$ 28.655,50 de agosto) é a de <b>Valor Contribuição</b> — conferida linha a linha nas 66 linhas de agosto, com zero divergências. A nova coluna "Adesão" somaria R$ 30.603,73 em setembro e R$ 30.127,50 em agosto, e não foi incorporada.',
+    metas:{
+      // orcado 52 e desafio 60 vem do topo da propria aba Setembro da planilha.
+      // A meta de REINGRESSO nunca veio na planilha — em jul/ago ela foi
+      // informada pela Sec. Adm. (32/40 e 40/45). Para setembro nao veio, entao
+      // fica null: o painel mostra "-" em vez de inventar um numero.
+      // ATENCAO: os campos de reingresso abaixo REPETEM o que esta em
+      // REINGRESSO_HISTORICO.set2026 — hoje nao ha derivacao automatica entre
+      // as duas estruturas. Ao atualizar o reingresso, mudar NOS DOIS lugares.
+      // 28/09: 27 -> 54 reingressos e R$ 17.806,84 -> R$ 30.881,49.
+      //   totalVR.real = 54 vendas + 54 reingressos = 108  (coincidencia: os
+      //   dois numeros deram 54; os valores sao diferentes, R$ 25.497,00 e
+      //   R$ 30.881,49, entao nao ha troca de um pelo outro)
+      //   taxaTotal    = 25.497,00 + 30.881,49 = 56.378,49
+      vendas:{orcado:52, real:54}, reingressos:{orcado:null, real:54},
+      totalVR:{orcado:null, real:108}, desafioVenda:60, desafioReingresso:null,
+      total:{orcado:60, real:108, gap:48},
+      taxaAdesao:25497.00, taxaReingresso:30881.49, taxaTotal:56378.49,
+    },
+  },
 };
 
 const VENDAS_FUNIL_DIARIO = [
@@ -6418,6 +6513,9 @@ const COBERTURA_VENDAS = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  // Setembro EM ANDAMENTO: fim = 26/09, ultima data de venda registrada na aba
+  // Setembro da planilha. Nao usar 30/09 — o mes ainda nao fechou.
+  set2026: {ini:'2026-09-01', fim:'2026-09-26'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
@@ -6438,8 +6536,9 @@ const COBERTURA_REINGRESSO = {
   // Agosto FECHADO (68 reingressos, posição de 02/09). A data-fim estava
   // parada em 21/08, de uma carga parcial antiga.
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
-  // Setembro em andamento: fim = 21/09, data da mensagem da gestora.
-  set2026: {ini:'2026-09-01', fim:'2026-09-21'},
+  // Setembro em andamento: fim = 28/09, data da informação da Sec. Adm. que
+  // trouxe os 54 reingressos (a posição anterior era de 21/09).
+  set2026: {ini:'2026-09-01', fim:'2026-09-28'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
@@ -7398,6 +7497,15 @@ const TOTAIS_ASSINADOS = [
   {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (4) · Agosto-2026', ate:'31/08/2026',
    oque:'soma das vendas por campanha = associações novas', esperado:65,
    calc:()=>VENDAS_EXTRA_MESES.ago2026.campanhas.reduce((t,c)=>t+c.qtd,0)},
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (4)(1) · Setembro-2026', ate:'26/09/2026',
+   oque:'soma das vendas por consultor = valor arrecadado (Valor Contribuição)', esperado:25497.00,
+   calc:()=>VENDAS_EXTRA_MESES.set2026.consultores.reduce((t,c)=>t+c.valor,0)},
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (4)(1) · Setembro-2026', ate:'26/09/2026',
+   oque:'soma das vendas por canal = associações novas', esperado:54,
+   calc:()=>VENDAS_EXTRA_MESES.set2026.campanhas.reduce((t,c)=>t+c.qtd,0)},
+  {aba:'Vendas', doc:'ENTRADAS_REALIZADAS_V6 (4)(1) · Setembro-2026', ate:'26/09/2026',
+   oque:'soma das vendas por categoria = associações novas', esperado:54,
+   calc:()=>VENDAS_EXTRA_MESES.set2026.categorias.reduce((t,c)=>t+c.qtd,0)},
   {aba:'Esportes', doc:'REALIZADO 2025 (mesma pasta)', ate:'dez/2025',
    oque:'realizado 2025, 31 modalidades', esperado:2424200.08,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.r25.reduce((a,b)=>a+b,0),0)},
@@ -7758,7 +7866,25 @@ function mudarSubAbaRet(qual){
 
 
 
-// Atualizado em 11/08 com a planilha revisada pela gestora do CRA.
+// ── RECARREGADO EM 28/09 · Retenção 2026.xlsx (aba "Retenção & licenças") ──
+// 35 -> 39 retencoes e 23 -> 25 licencas (64 linhas, exatamente o que o proprio
+// quadro lateral da planilha declara: Retencao 39, Licenca 25, total 64).
+// COMPETENCIA: mes = mes de INICIO do acordo (coluna INICIO), regra que ja
+//   vinha sendo usada — nao a data de registro da coluna A. Conferido: com a
+//   coluna A, 17 acordos trocariam de mes sem que nada tivesse mudado.
+// RECONCILIACAO linha a linha contra o quadro lateral da planilha:
+//   valor retido    100.717,50  = declarado 100.717,50  OK
+//   1o beneficio     13.991,00  = declarado 13.991,00   OK
+//   2o beneficio      2.571,00  x declarado  1.740,00   resumo DEFASADO
+//   negociado         7.511,96  x declarado  5.499,96   resumo DEFASADO
+//   As duas diferencas sao exatamente os registros mais novos, que o bloco de
+//   resumo da planilha ainda nao incorporou (yoga 525 + academia 306 = 831;
+//   e o parcelamento 12x de R$ 2.012,00). Vale a LINHA, regra ja adotada aqui.
+// T.V.G. e L.D.D. deixaram de ser "aguardando dados da Cobranca" e ganharam
+//   competencia (ago/26). Entraram D.M.C.W. (ago), A.B.E. e M.C.M.M. (set) e
+//   F.X.V. (sem data de inicio). Nas licencas entrou C.M.W. (jun) e tres sem
+//   data; sairam R.L. e R.N., que nao constam mais na planilha.
+// (histórico) Atualizado em 11/08 com a planilha revisada pela gestora do CRA.
 // 25 acordos (eram 23): entraram C.B.T. e A.D.R., ambos de julho, R$ 3.006 cada.
 // Reconciliado contra o quadro-resumo da própria planilha: 25 retenções, 23
 // licenças, 48 no total, valor retido R$ 66.565,50 e negociado R$ 5.499,96 —
@@ -7775,6 +7901,22 @@ function mudarSubAbaRet(qual){
 // 'sucesso' = associado permaneceu. 'beneficioUsado' = usufruiu do beneficio.
 const RETENCAO_CRA = [
  {
+  "nome": "M.P.A.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "mai2026",
+  "inicio": "01/05/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3m Academia"
+  ],
+  "vBeneficio": 420.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
   "nome": "A.P.A.",
   "cat": "Contribuinte",
   "perm": "7 meses",
@@ -7785,19 +7927,21 @@ const RETENCAO_CRA = [
    "1 Mensalidade"
   ],
   "vBeneficio": 501.0,
-  "negociacao": "Parcelamento 10x",
+  "negociacao": "parcelamento 10x",
   "vNegociacao": 1169.0,
   "sucesso": true,
   "beneficioUsado": true
  },
  {
-  "nome": "B.G.",
-  "cat": "Patrimonial Individual",
+  "nome": "J.D.A.S.",
+  "cat": "Veterano",
   "perm": "6 meses",
-  "mes": "mai2026",
-  "inicio": "01/05/2026",
-  "valor": 2154.0,
-  "beneficios": [],
+  "mes": "mar2026",
+  "inicio": "01/03/2026",
+  "valor": 1452.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
@@ -7805,16 +7949,48 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "B.C.A.",
-  "cat": "Contribuinte",
+  "nome": "J.C.P.",
+  "cat": "Patrimonial",
   "perm": "6 meses",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
+  "mes": "mar2026",
+  "inicio": "01/03/2026",
   "valor": 3006.0,
   "beneficios": [
    "3m Natação"
   ],
   "vBeneficio": 765.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "M.B.O.V.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "mai2026",
+  "inicio": "01/05/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3m Academia"
+  ],
+  "vBeneficio": 420.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "J.B.M.",
+  "cat": "Patrimonial",
+  "perm": "6 meses",
+  "mes": "mar2026",
+  "inicio": "01/03/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3m Vôlei"
+  ],
+  "vBeneficio": 570.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
@@ -7837,33 +8013,42 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "C.J.J.",
-  "cat": "Contribuinte Individual",
-  "perm": "12 meses",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "valor": 4308.0,
-  "beneficios": [
-   "6m De Academia",
-   "Fitness"
-  ],
-  "vBeneficio": 1740.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
+  "nome": "J.C.F.C.S.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "abr2026",
+  "inicio": "01/04/2026",
+  "valor": 3006.0,
+  "beneficios": [],
+  "vBeneficio": 0.0,
+  "negociacao": "parcelamento 10x",
+  "vNegociacao": 2239.0,
   "sucesso": true,
   "beneficioUsado": true
  },
  {
-  "nome": "D.K.B.",
+  "nome": "L.A.K.",
   "cat": "Contribuinte",
-  "perm": "10 meses",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "valor": 5010.0,
-  "beneficios": [
-   "Isenção Babá"
-  ],
-  "vBeneficio": 1670.0,
+  "perm": "6 meses",
+  "mes": "mai2026",
+  "inicio": "01/05/2026",
+  "valor": 3006.0,
+  "beneficios": [],
+  "vBeneficio": 0.0,
+  "negociacao": "parcelamento 12x",
+  "vNegociacao": 2091.96,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "B.G.",
+  "cat": "Patrimonial Individual",
+  "perm": "6 meses",
+  "mes": "mai2026",
+  "inicio": "01/05/2026",
+  "valor": 2154.0,
+  "beneficios": [],
+  "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
@@ -7886,28 +8071,12 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "E.L.S.",
-  "cat": "Contribuinte Individual",
-  "perm": "6 meses",
-  "mes": "ago2026",
-  "inicio": "01/08/2026",
-  "valor": 2154.0,
-  "beneficios": [
-   "Troca De Categoria"
-  ],
-  "vBeneficio": 0.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "F.B.S.",
-  "cat": "Contribuinte Individual",
+  "nome": "R.C.C.",
+  "cat": "Senior",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
-  "valor": 2154.0,
+  "valor": 1596.0,
   "beneficios": [
    "Troca De Categoria",
    "3m Academia"
@@ -7935,48 +8104,50 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "J.D.A.S.",
-  "cat": "Veterano",
+  "nome": "C.J.J.",
+  "cat": "Contribuinte Individual",
+  "perm": "12 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 4308.0,
+  "beneficios": [
+   "6m De Academia",
+   "Fitness"
+  ],
+  "vBeneficio": 1740.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "F.B.S.",
+  "cat": "Contribuinte Individual",
   "perm": "6 meses",
-  "mes": "mar2026",
-  "inicio": "01/03/2026",
-  "valor": 1452.0,
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "valor": 2154.0,
+  "beneficios": [
+   "Troca De Categoria",
+   "3m Academia"
+  ],
+  "vBeneficio": 420.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "L.F.M.S.",
+  "cat": "Universitário",
+  "perm": "6 meses",
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "valor": 1503.0,
   "beneficios": [
    "Troca De Categoria"
   ],
   "vBeneficio": 0.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "J.B.M.",
-  "cat": "Patrimonial",
-  "perm": "6 meses",
-  "mes": "mar2026",
-  "inicio": "01/03/2026",
-  "valor": 3006.0,
-  "beneficios": [
-   "3m Vôlei"
-  ],
-  "vBeneficio": 570.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "J.C.P.",
-  "cat": "Patrimonial",
-  "perm": "6 meses",
-  "mes": "mar2026",
-  "inicio": "01/03/2026",
-  "valor": 3006.0,
-  "beneficios": [
-   "3m Natação"
-  ],
-  "vBeneficio": 765.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
@@ -7999,124 +8170,14 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "J.C.F.C.S.",
-  "cat": "Contribuinte",
-  "perm": "6 meses",
-  "mes": "abr2026",
-  "inicio": "01/04/2026",
-  "valor": 3006.0,
-  "beneficios": [],
-  "vBeneficio": 0.0,
-  "negociacao": "Parcelamento 10x",
-  "vNegociacao": 2239.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "J.M.O.",
+  "nome": "E.L.S.",
   "cat": "Contribuinte Individual",
-  "perm": "6 meses",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "valor": 2154.0,
-  "beneficios": [
-   "Troca Titularidade",
-   "Yoga"
-  ],
-  "vBeneficio": 525.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "L.A.K.",
-  "cat": "Contribuinte",
-  "perm": "6 meses",
-  "mes": "mai2026",
-  "inicio": "01/05/2026",
-  "valor": 3006.0,
-  "beneficios": [],
-  "vBeneficio": 0.0,
-  "negociacao": "Parcelamento 12x",
-  "vNegociacao": 2091.96,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "L.F.M.S.",
-  "cat": "Universitário",
-  "perm": "6 meses",
-  "mes": "jun2026",
-  "inicio": "01/06/2026",
-  "valor": 1503.0,
-  "beneficios": [
-   "Troca De Categoria"
-  ],
-  "vBeneficio": 0.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "M.P.A.",
-  "cat": "Contribuinte",
-  "perm": "6 meses",
-  "mes": "mai2026",
-  "inicio": "01/05/2026",
-  "valor": 3006.0,
-  "beneficios": [
-   "3m Academia"
-  ],
-  "vBeneficio": 420.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "M.B.O.V.",
-  "cat": "Contribuinte",
-  "perm": "6 meses",
-  "mes": "mai2026",
-  "inicio": "01/05/2026",
-  "valor": 3006.0,
-  "beneficios": [
-   "3m Academia"
-  ],
-  "vBeneficio": 420.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "R.C.C.",
-  "cat": "Sênior",
-  "perm": "6 meses",
-  "mes": "jun2026",
-  "inicio": "01/06/2026",
-  "valor": 1596.0,
-  "beneficios": [
-   "Troca De Categoria",
-   "3m Academia"
-  ],
-  "vBeneficio": 420.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
-  "nome": "R.R.F.",
-  "cat": "Contribuinte",
   "perm": "6 meses",
   "mes": "ago2026",
   "inicio": "01/08/2026",
-  "valor": 1503.0,
+  "valor": 2154.0,
   "beneficios": [
-   "Isenção Dependentes"
+   "Troca De Categoria"
   ],
   "vBeneficio": 0.0,
   "negociacao": null,
@@ -8141,22 +8202,6 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "C.B.T.",
-  "cat": "Patrimonial",
-  "perm": "6 meses",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "valor": 3006.0,
-  "beneficios": [
-   "6m Academia"
-  ],
-  "vBeneficio": 840.0,
-  "negociacao": null,
-  "vNegociacao": 0.0,
-  "sucesso": true,
-  "beneficioUsado": true
- },
- {
   "nome": "A.R.",
   "cat": "Patrimonial",
   "perm": "6 meses",
@@ -8173,18 +8218,67 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "R.M.P.",
-  "cat": "Patrimonial",
-  "perm": "12 meses",
+  "nome": "B.C.A.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3m Natação"
+  ],
+  "vBeneficio": 765.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "J.M.O.",
+  "cat": "Contribuinte Individual",
+  "perm": "6 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 2154.0,
+  "beneficios": [
+   "Troca Titularidade",
+   "Yoga"
+  ],
+  "vBeneficio": 525.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "R.R.F.",
+  "cat": "Contribuinte",
+  "perm": "6 meses",
   "mes": "ago2026",
   "inicio": "01/08/2026",
-  "valor": 6012.0,
+  "valor": 1503.0,
   "beneficios": [
-   "Isenção Dependente"
+   "Isenção Dependentes"
   ],
-  "vBeneficio": 334.0,
-  "negociacao": "Parcelamento 12x",
-  "vNegociacao": 2012.0,
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "C.B.T.",
+  "cat": "Patrimonial",
+  "perm": "6 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "6m Academia"
+  ],
+  "vBeneficio": 840.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
   "sucesso": true,
   "beneficioUsado": true
  },
@@ -8212,11 +8306,27 @@ const RETENCAO_CRA = [
   "inicio": "01/08/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Ginástica"
+   "3m Ginastica"
   ],
   "vBeneficio": 519.0,
   "negociacao": null,
   "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "R.M.P.",
+  "cat": "Patrimonial",
+  "perm": "12 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 6012.0,
+  "beneficios": [
+   "Isenção Dependente"
+  ],
+  "vBeneficio": 334.0,
+  "negociacao": "parcelamento 12x",
+  "vNegociacao": 2012.0,
   "sucesso": true,
   "beneficioUsado": true
  },
@@ -8228,10 +8338,26 @@ const RETENCAO_CRA = [
   "inicio": "01/08/2026",
   "valor": 3006.0,
   "beneficios": [
-   "3M Ginástica",
-   "3M Academia"
+   "3m Ginastica",
+   "3m Academia"
   ],
   "vBeneficio": 825.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "D.K.B.",
+  "cat": "Contribuinte",
+  "perm": "10 meses",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "valor": 5010.0,
+  "beneficios": [
+   "Isenção Babá"
+  ],
+  "vBeneficio": 1670.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
@@ -8245,7 +8371,7 @@ const RETENCAO_CRA = [
   "inicio": "01/08/2026",
   "valor": 4308.0,
   "beneficios": [
-   "3M Academia"
+   "6m Academia"
   ],
   "vBeneficio": 840.0,
   "negociacao": null,
@@ -8255,7 +8381,7 @@ const RETENCAO_CRA = [
  },
  {
   "nome": "U.K.",
-  "cat": "Contribuinte Sênior",
+  "cat": "Contribuinte Senior",
   "perm": "6 meses",
   "mes": "ago2026",
   "inicio": "01/08/2026",
@@ -8280,7 +8406,7 @@ const RETENCAO_CRA = [
    "Isenção Dependente"
   ],
   "vBeneficio": 1002.0,
-  "negociacao": "Isenção do dependente até dezembro como acompanhante em atividade",
+  "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
   "beneficioUsado": true
@@ -8296,29 +8422,93 @@ const RETENCAO_CRA = [
    "Troca De Categoria"
   ],
   "vBeneficio": 0.0,
-  "negociacao": "Troca de plano para Contribuinte Individual",
+  "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
   "beneficioUsado": true
  },
-{
+ {
   "nome": "T.V.G.",
-  "cat": "",
-  "perm": "aguardando dados da Cobrança",
-  "mes": null,
-  "inicio": null,
-  "valor": 0.0,
-  "beneficios": [],
-  "vBeneficio": 0.0,
+  "cat": "Contribuinte",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 3006.0,
+  "beneficios": [
+   "3m Academia"
+  ],
+  "vBeneficio": 840.0,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
-  "beneficioUsado": false
+  "beneficioUsado": true
  },
-{
+ {
   "nome": "L.D.D.",
+  "cat": "Patrimonial Individual",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 2154.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "D.M.C.W.",
+  "cat": "Senior",
+  "perm": "6 meses",
+  "mes": "ago2026",
+  "inicio": "01/08/2026",
+  "valor": 1596.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "A.B.E.",
+  "cat": "Senior",
+  "perm": "6 meses",
+  "mes": "set2026",
+  "inicio": "26/09/2026",
+  "valor": 0.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "M.C.M.M.",
+  "cat": "Senior",
+  "perm": "6 meses",
+  "mes": "set2026",
+  "inicio": "01/09/2026",
+  "valor": 0.0,
+  "beneficios": [],
+  "vBeneficio": 0.0,
+  "negociacao": null,
+  "vNegociacao": 0.0,
+  "sucesso": true,
+  "beneficioUsado": true
+ },
+ {
+  "nome": "F.X.V.",
   "cat": "",
-  "perm": "aguardando dados da Cobrança",
+  "perm": "",
   "mes": null,
   "inicio": null,
   "valor": 0.0,
@@ -8327,47 +8517,12 @@ const RETENCAO_CRA = [
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
-  "beneficioUsado": false
+  "beneficioUsado": true
  }
 ]
 // 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
 // vazia. A planilha revisada tem só uma. Bate com o resumo (23).
 const LICENCAS_CRA = [
- {
-  "nome": "A.M.C.",
-  "cat": "Patrimonial",
-  "mes": "abr2026",
-  "inicio": "10/04/2026",
-  "fim": "10/06/2026"
- },
- {
-  "nome": "B.C.M.",
-  "cat": "Contribuinte Individual",
-  "mes": "jul2026",
-  "inicio": "02/07/2026",
-  "fim": "30/09/2026"
- },
- {
-  "nome": "C.M.",
-  "cat": "Contribuinte Individual",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "fim": "31/12/2026"
- },
- {
-  "nome": "E.R.A.",
-  "cat": "Contribuinte Individual",
-  "mes": "mai2026",
-  "inicio": "21/05/2026",
-  "fim": "31/12/2026"
- },
- {
-  "nome": "G.M.S.",
-  "cat": "Patrimonial Individual",
-  "mes": "jun2026",
-  "inicio": "01/06/2026",
-  "fim": "31/12/2026"
- },
  {
   "nome": "H.A.C.F.",
   "cat": "Contribuinte",
@@ -8376,32 +8531,25 @@ const LICENCAS_CRA = [
   "fim": "30/11/2026"
  },
  {
-  "nome": "J.A.P.",
+  "nome": "M.T.L.V.O.",
+  "cat": "Contribuinte",
+  "mes": "mai2026",
+  "inicio": "25/05/2026",
+  "fim": null
+ },
+ {
+  "nome": "A.M.C.",
+  "cat": "Patrimonial",
+  "mes": "abr2026",
+  "inicio": "10/04/2026",
+  "fim": "10/06/2026"
+ },
+ {
+  "nome": "S.A.",
   "cat": "Contribuinte",
   "mes": "abr2026",
-  "inicio": "30/04/2026",
-  "fim": "31/12/2026"
- },
- {
-  "nome": "L.G.S.",
-  "cat": "Contribuinte",
-  "mes": "jul2026",
-  "inicio": "28/07/2026",
-  "fim": "01/12/2026"
- },
- {
-  "nome": "L.T.S.",
-  "cat": "Contribuinte Individual",
-  "mes": "jun2026",
-  "inicio": "26/06/2026",
-  "fim": "01/07/2030"
- },
- {
-  "nome": "L.T.L.",
-  "cat": "Contribuinte Derivado",
-  "mes": "jul2026",
-  "inicio": "15/07/2026",
-  "fim": "31/03/2027"
+  "inicio": "29/04/2026",
+  "fim": "28/02/2027"
  },
  {
   "nome": "L.W.S.",
@@ -8411,66 +8559,10 @@ const LICENCAS_CRA = [
   "fim": "15/05/2027"
  },
  {
-  "nome": "M.M.",
-  "cat": "Patrimonial Individual",
-  "mes": "jul2026",
-  "inicio": "01/07/2026",
-  "fim": "31/12/2026"
- },
- {
-  "nome": "M.P.",
-  "cat": "Contribuinte Universitario",
-  "mes": null,
-  "inicio": null,
-  "fim": null
- },
- {
-  "nome": "M.P.S.",
+  "nome": "V.P.M.",
   "cat": "Patrimonial",
-  "mes": "jul2026",
-  "inicio": "30/07/2026",
-  "fim": "01/12/2026"
- },
- {
-  "nome": "M.T.L.V.O.",
-  "cat": "Contribuinte",
   "mes": "mai2026",
-  "inicio": "25/05/2026",
-  "fim": "31/10/206"
- },
- {
-  "nome": "M.S.G.",
-  "cat": "Patrimonial",
-  "mes": "jun2026",
-  "inicio": "01/06/2026",
-  "fim": "31/12/2026"
- },
- {
-  "nome": "N.T.B.M.",
-  "cat": "Contribuinte",
-  "mes": "jun2026",
-  "inicio": "01/06/2026",
-  "fim": "01/06/2030"
- },
- {
-  "nome": "R.L.",
-  "cat": "Patrimonial",
-  "mes": null,
-  "inicio": null,
-  "fim": null
- },
- {
-  "nome": "R.N.",
-  "cat": "Contribuinte",
-  "mes": null,
-  "inicio": null,
-  "fim": null
- },
- {
-  "nome": "S.A.",
-  "cat": "Contribuinte",
-  "mes": "abr2026",
-  "inicio": "29/04/2026",
+  "inicio": "16/05/2026",
   "fim": "28/02/2027"
  },
  {
@@ -8481,6 +8573,69 @@ const LICENCAS_CRA = [
   "fim": "01/06/2030"
  },
  {
+  "nome": "E.R.A.",
+  "cat": "Contribuinte Individual",
+  "mes": "mai2026",
+  "inicio": "21/05/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "N.T.B.M.",
+  "cat": "Contribuinte",
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "fim": "01/06/2030"
+ },
+ {
+  "nome": "G.M.S.",
+  "cat": "Patrimonial Individual",
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "M.S.G.",
+  "cat": "Patrimonial",
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "C.M.W.",
+  "cat": "Contribuinte",
+  "mes": "jun2026",
+  "inicio": "01/06/2026",
+  "fim": "01/08/2026"
+ },
+ {
+  "nome": "C.M.",
+  "cat": "Contribuinte Individual",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "M.M.",
+  "cat": "Patrimonial Individual",
+  "mes": "jul2026",
+  "inicio": "01/07/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "L.T.S.",
+  "cat": "Contribuinte Individual",
+  "mes": "jun2026",
+  "inicio": "26/06/2026",
+  "fim": "01/07/2030"
+ },
+ {
+  "nome": "B.C.M.",
+  "cat": "Contribuinte Individual",
+  "mes": "jul2026",
+  "inicio": "02/07/2026",
+  "fim": "30/09/2026"
+ },
+ {
   "nome": "T.F.",
   "cat": "Contribuinte",
   "mes": "jul2026",
@@ -8488,11 +8643,60 @@ const LICENCAS_CRA = [
   "fim": "31/12/2026"
  },
  {
-  "nome": "V.P.M.",
+  "nome": "L.T.L.",
+  "cat": "Contribuinte Derivado",
+  "mes": "jul2026",
+  "inicio": "15/07/2026",
+  "fim": "31/03/2027"
+ },
+ {
+  "nome": "L.G.S.",
+  "cat": "Contribuinte",
+  "mes": "jul2026",
+  "inicio": "28/07/2026",
+  "fim": "01/12/2026"
+ },
+ {
+  "nome": "M.P.S.",
   "cat": "Patrimonial",
-  "mes": "mai2026",
-  "inicio": "16/05/2026",
-  "fim": "28/02/2027"
+  "mes": "jul2026",
+  "inicio": "30/07/2026",
+  "fim": "01/12/2026"
+ },
+ {
+  "nome": "M.S.V.",
+  "cat": "Patrimonial",
+  "mes": null,
+  "inicio": null,
+  "fim": null
+ },
+ {
+  "nome": "M.B.S.",
+  "cat": "Contribuinte",
+  "mes": null,
+  "inicio": null,
+  "fim": null
+ },
+ {
+  "nome": "E.D.M.",
+  "cat": "Patrimonial Individual",
+  "mes": null,
+  "inicio": null,
+  "fim": null
+ },
+ {
+  "nome": "J.A.P.",
+  "cat": "Contribuinte",
+  "mes": "abr2026",
+  "inicio": "30/04/2026",
+  "fim": "31/12/2026"
+ },
+ {
+  "nome": "M.P.",
+  "cat": "Patrimonial",
+  "mes": null,
+  "inicio": null,
+  "fim": null
  }
 ]
 
@@ -8502,12 +8706,16 @@ const LICENCAS_CRA = [
 // Fonte: planilha "Retenção 2026" (aba Retenção & licenças), uma linha por caso.
 // Nomes reduzidos a iniciais por LGPD. Filtro considera o MÊS DE INÍCIO do acordo.
 const COBERTURA_RETENCAO_CRA = {
+  // 28/09: entrou set2026 — a planilha de Retencao passou a ter acordos com
+  // inicio em setembro. As LICENCAS seguem cobrindo so abr a jul/26, entao o
+  // card de licencas pode zerar num periodo em que o de retencoes tem numero.
   mar2026: {ini:'2026-03-01', fim:'2026-03-31'},
   abr2026: {ini:'2026-04-01', fim:'2026-04-30'},
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
 };
 const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','#e8192c','#b0b0d0','#5a5c78','#22d3ee','#f472b6','#facc15','#8b8fa8'];
 
@@ -8921,25 +9129,31 @@ function renderRetencaoCRA(mesesSel){
   preencherHistoricoRetencao();
 }
 
-// Recalculado da planilha Ocorrencias_2026 (MD5 f0333941) na carga de 10/09.
-// 98 registros, jan a ago. Nomes em iniciais, como ja era a politica da aba.
-// 'Ocorrencia interna' sem acento na fonte foi normalizada para
-// 'Ocorrência Interna' — mesma categoria, so grafia.
+// ── RECARREGADO EM 28/09 · Ocorrências 2026.xlsx (MD5 c5a6b0e0) ───────────
+// 98 -> 118 registros, jan a ago/2026. O arquivo e BYTE A BYTE o mesmo que ja
+// havia sido enviado em 24/09 e ficara retido aguardando confirmacao (o painel
+// tinha 98, vindos de um arquivo anterior, MD5 f0333941). A confirmacao veio
+// na carga de 28/09, entao os 118 entram.
+// Regras herdadas da carga de 10/09, conferidas por engenharia reversa contra
+// os 98 registros antigos (98/98 casaram por abertura+fechamento+local+assunto):
+//   nome  -> iniciais LGPD, particulas fora (Lucas de Paula da Silva -> L.P.S.)
+//   prazo -> vem da COLUNA "Prazo" DA PLANILHA (null quando vazia)
+//   prazoCorridos -> fechamento menos abertura, em dias corridos
+//   'Ocorrencia interna' -> 'Ocorrência Interna' (so grafia, mesma categoria)
+//
+// SOBRE O CAMPO "prazo": o valor gravado aqui vem da planilha (dias corridos),
+//   mas NAO e o que aparece na tela. No fim do arquivo, recalcularPrazos()
+//   sobrescreve r.prazo com diasUteisD1(abertura, fechamento) — dias uteis,
+//   comecando no dia seguinte, sem fim de semana, descontando feriados e
+//   contando meio expediente como 0,5. E por isso que o card mostra "dias
+//   uteis" e o numero e menor que o da coluna Prazo. O dado bruto da planilha
+//   fica preservado em prazoCorridos.
+// 28/09: os registros SEM data de fechamento passam a entrar com prazo null.
+//   Antes herdavam o numero da coluna Prazo e, como recalcularPrazos() nao
+//   tem o que recalcular sem fechamento, esse numero sobrevivia em dias
+//   corridos no meio de uma media de dias uteis — e ainda era contado como
+//   "fechada" no rodape do card.
 const OCORRENCIAS = [
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "A.M.B.L.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Procedimentos Internos",
-  "mes": "jan2026",
-  "abertura": "07/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 31,
-  "prazoCorridos": 31,
-  "ressarc": false,
-  "valor": 0.0
- },
  {
   "tipo": "Ocorrência Administrativa",
   "nome": "L.P.S.",
@@ -8963,38 +9177,10 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "28/01/2026",
   "fechamento": "29/01/2026",
-  "prazo": null,
+  "prazo": 1,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Sindicância",
-  "nome": "F.S.P.",
-  "ger": "Diretoria",
-  "local": "Ginásio 9",
-  "assunto": "Comportamento de Associado",
-  "mes": "jan2026",
-  "abertura": "30/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 8,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Sindicância",
-  "nome": "F.S.P.",
-  "ger": "Diretoria",
-  "local": "Tênis de Mesa",
-  "assunto": "Comportamento de Associado",
-  "mes": "jan2026",
-  "abertura": "30/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 8,
-  "ressarc": false,
-  "valor": 1950.0
  },
  {
   "tipo": "Ocorrência Administrativa",
@@ -9033,7 +9219,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": true,
   "valor": 0.0
@@ -9047,7 +9233,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9061,7 +9247,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9089,7 +9275,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9103,7 +9289,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9117,7 +9303,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9131,7 +9317,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9145,94 +9331,10 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": null,
+  "prazo": 5,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 1000.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "R.B.",
-  "ger": "Gerência Operações",
-  "local": "Atletismo",
-  "assunto": "Comportamento de Associado",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "05/03/2026",
-  "prazo": null,
-  "prazoCorridos": 5,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "P.R.S.V.",
-  "ger": "Gerência Operações",
-  "local": "Ginásio 3",
-  "assunto": "Dano Material",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "05/03/2026",
-  "prazo": null,
-  "prazoCorridos": 5,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "A.S.D.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Comportamento de Associado",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "05/03/2026",
-  "prazo": null,
-  "prazoCorridos": 5,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "J.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Controle de Acesso",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 61,
-  "prazoCorridos": 61,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "R.A.L.",
-  "ger": "Gerência Operações",
-  "local": "Salões",
-  "assunto": "Comportamento de Associado",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "05/03/2026",
-  "prazo": null,
-  "prazoCorridos": 5,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "R.A.L.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Comportamento de Associado",
-  "mes": "fev2026",
-  "abertura": "28/02/2026",
-  "fechamento": "05/03/2026",
-  "prazo": null,
-  "prazoCorridos": 5,
-  "ressarc": false,
-  "valor": 156.95
  },
  {
   "tipo": "Ocorrência Administrativa",
@@ -9250,7 +9352,7 @@ const OCORRENCIAS = [
  },
  {
   "tipo": "Ocorrência Administrativa",
-  "nome": "D.L.D.S.",
+  "nome": "D.L.S.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
   "assunto": "Dano Material",
@@ -9306,7 +9408,7 @@ const OCORRENCIAS = [
  },
  {
   "tipo": "Ocorrência Administrativa",
-  "nome": "P.L.O.",
+  "nome": "P.L.B.O.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
   "assunto": "Comportamento de Associado",
@@ -9334,7 +9436,7 @@ const OCORRENCIAS = [
  },
  {
   "tipo": "Ocorrência Administrativa",
-  "nome": "O.A.P.",
+  "nome": "O.A.V.N.P.",
   "ger": "Gerência Operações",
   "local": "Economatos",
   "assunto": "Dano Material",
@@ -9361,20 +9463,6 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
-  "nome": "M.M.J.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Segurança",
-  "mes": "abr2026",
-  "abertura": "12/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 18,
-  "prazoCorridos": 18,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
   "tipo": "Ocorrência Administrativa",
   "nome": "A.G.",
   "ger": "Gerência Operações",
@@ -9383,7 +9471,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "20/04/2026",
-  "prazo": null,
+  "prazo": 1,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -9397,7 +9485,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "16/06/2026",
-  "prazo": null,
+  "prazo": 48,
   "prazoCorridos": 48,
   "ressarc": false,
   "valor": 0.0
@@ -9613,48 +9701,6 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
-  "nome": "K.C.S.O.",
-  "ger": "Gerência Operações",
-  "local": "Refúgio",
-  "assunto": "Dano Material",
-  "mes": "mai2026",
-  "abertura": "15/05/2026",
-  "fechamento": "16/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "P.R.S.D.S.(.",
-  "ger": "Gerência Operações",
-  "local": "Judo",
-  "assunto": "Comunicação",
-  "mes": "mai2026",
-  "abertura": "15/05/2026",
-  "fechamento": "01/06/2026",
-  "prazo": 17,
-  "prazoCorridos": 17,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "P.R.S.D.S.(.",
-  "ger": "Gerência Operações",
-  "local": "GINÁSTICA ARTISTICA",
-  "assunto": "Comunicação",
-  "mes": "mai2026",
-  "abertura": "15/05/2026",
-  "fechamento": "01/06/2026",
-  "prazo": 17,
-  "prazoCorridos": 17,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
   "tipo": "Ocorrência Administrativa",
   "nome": "A.M.I.",
   "ger": "Gerência Operações",
@@ -9674,20 +9720,6 @@ const OCORRENCIAS = [
   "ger": "Gerência Operações",
   "local": "Ginásio 1",
   "assunto": "Dano Material",
-  "mes": "mai2026",
-  "abertura": "18/05/2026",
-  "fechamento": "14/07/2026",
-  "prazo": 57,
-  "prazoCorridos": 57,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "L.B.R.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Procedimentos Internos",
   "mes": "mai2026",
   "abertura": "18/05/2026",
   "fechamento": "14/07/2026",
@@ -9753,20 +9785,6 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
-  "nome": "F.R.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Praça pequena",
-  "assunto": "Comportamento de Associado",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "14/07/2026",
-  "prazo": 49,
-  "prazoCorridos": 49,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
   "tipo": "Ocorrência Administrativa",
   "nome": "V.B.",
   "ger": "Gerência Operações",
@@ -9781,56 +9799,14 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
-  "nome": "V.S.A.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Controle de Acesso",
-  "mes": "jun2026",
-  "abertura": "03/06/2026",
-  "fechamento": "03/06/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "J.R.D.G.H.",
-  "ger": "Gerência Operações",
-  "local": "Judo",
-  "assunto": "Segurança",
-  "mes": "jun2026",
-  "abertura": "11/06/2026",
-  "fechamento": "16/07/2026",
-  "prazo": null,
-  "prazoCorridos": 35,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
   "tipo": "Ocorrência Administrativa",
-  "nome": "A.G.B.D.S.",
+  "nome": "A.G.B.S.",
   "ger": "Gerência Operações",
   "local": "Judo",
   "assunto": "Extraviada",
   "mes": "jun2026",
   "abertura": "13/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "V.F.D.",
-  "ger": "Gerência Operações",
-  "local": "Refeitório",
-  "assunto": "Dano Material",
-  "mes": "jun2026",
-  "abertura": "16/06/2026",
-  "fechamento": "16/06/2026",
   "prazo": 0,
   "prazoCorridos": 0,
   "ressarc": false,
@@ -9873,7 +9849,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "19/06/2026",
   "fechamento": "25/06/2026",
-  "prazo": null,
+  "prazo": 6,
   "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
@@ -9901,7 +9877,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "26/06/2026",
   "fechamento": "23/07/2026",
-  "prazo": null,
+  "prazo": 27,
   "prazoCorridos": 27,
   "ressarc": false,
   "valor": 0.0
@@ -9936,7 +9912,7 @@ const OCORRENCIAS = [
  },
  {
   "tipo": "Ocorrência Administrativa",
-  "nome": "I.D.D.S.",
+  "nome": "I.D.S.",
   "ger": "Gerência Operações",
   "local": "Praça grande",
   "assunto": "Dano Material",
@@ -9950,7 +9926,7 @@ const OCORRENCIAS = [
  },
  {
   "tipo": "Ocorrência Administrativa",
-  "nome": "M.L.C.",
+  "nome": "M.L.T.R.C.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
   "assunto": "Outros",
@@ -10041,62 +10017,6 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "30/07/2026",
   "fechamento": "30/07/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "N.F.S.",
-  "ger": "Gerência Operações",
-  "local": "Atletismo",
-  "assunto": "Dano Material",
-  "mes": "jul2026",
-  "abertura": "31/07/2026",
-  "fechamento": "31/07/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "A.S.D.S.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Comportamento de Terceirizado",
-  "mes": "ago2026",
-  "abertura": "17/08/2026",
-  "fechamento": "17/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "I.A.R.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Comportamento de Terceirizado",
-  "mes": "ago2026",
-  "abertura": "24/08/2026",
-  "fechamento": "28/08/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "ressarc": false,
-  "valor": 0.0
- },
- {
-  "tipo": "Ocorrência Interna",
-  "nome": "J.R.S.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Dano Material",
-  "mes": "ago2026",
-  "abertura": "27/08/2026",
-  "fechamento": "27/08/2026",
   "prazo": 0,
   "prazoCorridos": 0,
   "ressarc": false,
@@ -10297,6 +10217,594 @@ const OCORRENCIAS = [
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "L.S.M.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Comportamento de Associado",
+  "mes": "mai2026",
+  "abertura": "15/05/2026",
+  "fechamento": "30/06/2026",
+  "prazo": 46,
+  "prazoCorridos": 46,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "M.G.A.M.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Dano Material",
+  "mes": "jun2026",
+  "abertura": "11/06/2026",
+  "fechamento": "30/06/2026",
+  "prazo": 19,
+  "prazoCorridos": 19,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "C.C.L.",
+  "ger": "Gerência Operações",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "07/07/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 37,
+  "prazoCorridos": 37,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "A.S.V.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Segurança",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 31,
+  "prazoCorridos": 31,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "G.G.A.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 31,
+  "prazoCorridos": 31,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "D.L.A.Y.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Comportamento de Funcionário",
+  "mes": "jul2026",
+  "abertura": "18/07/2026",
+  "fechamento": "18/08/2026",
+  "prazo": 31,
+  "prazoCorridos": 31,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "G.S.O.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Comportamento de Funcionário",
+  "mes": "jul2026",
+  "abertura": "18/07/2026",
+  "fechamento": "19/08/2026",
+  "prazo": 32,
+  "prazoCorridos": 32,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "L.A.S.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "25/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 6,
+  "prazoCorridos": 6,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "M.A.D.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "28/07/2026",
+  "fechamento": "29/07/2026",
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "G.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Extraviada",
+  "mes": "jul2026",
+  "abertura": "29/07/2026",
+  "fechamento": "29/07/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "A.M.B.L.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Procedimentos Internos",
+  "mes": "jan2026",
+  "abertura": "07/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 31,
+  "prazoCorridos": 31,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "R.A.B.",
+  "ger": "Gerência Operações",
+  "local": "Atletismo",
+  "assunto": "Comportamento de Associado",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "05/03/2026",
+  "prazo": 5,
+  "prazoCorridos": 5,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "P.R.S.V.",
+  "ger": "Gerência Operações",
+  "local": "Ginásio 3",
+  "assunto": "Dano Material",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "05/03/2026",
+  "prazo": 5,
+  "prazoCorridos": 5,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "A.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Comportamento de Associado",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "05/03/2026",
+  "prazo": 5,
+  "prazoCorridos": 5,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "J.S.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Controle de Acesso",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 61,
+  "prazoCorridos": 61,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "R.A.L.",
+  "ger": "Gerência Operações",
+  "local": "Salões",
+  "assunto": "Comportamento de Associado",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "05/03/2026",
+  "prazo": 5,
+  "prazoCorridos": 5,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "R.A.L.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Comportamento de Associado",
+  "mes": "fev2026",
+  "abertura": "28/02/2026",
+  "fechamento": "05/03/2026",
+  "prazo": 5,
+  "prazoCorridos": 5,
+  "ressarc": false,
+  "valor": 156.95
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "M.M.J.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Segurança",
+  "mes": "abr2026",
+  "abertura": "12/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 18,
+  "prazoCorridos": 18,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "K.C.S.O.",
+  "ger": "Gerência Operações",
+  "local": "Refúgio",
+  "assunto": "Dano Material",
+  "mes": "mai2026",
+  "abertura": "15/05/2026",
+  "fechamento": "16/05/2026",
+  "prazo": 1,
+  "prazoCorridos": 1,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "P.R.S.S.(.",
+  "ger": "Gerência Operações",
+  "local": "Judo",
+  "assunto": "Comunicação",
+  "mes": "mai2026",
+  "abertura": "15/05/2026",
+  "fechamento": "01/06/2026",
+  "prazo": 17,
+  "prazoCorridos": 17,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "P.R.S.S.(.",
+  "ger": "Gerência Operações",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Comunicação",
+  "mes": "mai2026",
+  "abertura": "15/05/2026",
+  "fechamento": "01/06/2026",
+  "prazo": 17,
+  "prazoCorridos": 17,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "L.B.R.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Procedimentos Internos",
+  "mes": "mai2026",
+  "abertura": "18/05/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 57,
+  "prazoCorridos": 57,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "V.S.A.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Controle de Acesso",
+  "mes": "jun2026",
+  "abertura": "03/06/2026",
+  "fechamento": "03/06/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "J.R.D.G.H.",
+  "ger": "Gerência Operações",
+  "local": "Judo",
+  "assunto": "Segurança",
+  "mes": "jun2026",
+  "abertura": "11/06/2026",
+  "fechamento": "16/07/2026",
+  "prazo": 35,
+  "prazoCorridos": 35,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "V.F.D.",
+  "ger": "Gerência Operações",
+  "local": "Refeitório",
+  "assunto": "Dano Material",
+  "mes": "jun2026",
+  "abertura": "16/06/2026",
+  "fechamento": "16/06/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "N.F.S.",
+  "ger": "Gerência Operações",
+  "local": "Atletismo",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "31/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "A.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Comportamento de Terceirizado",
+  "mes": "ago2026",
+  "abertura": "17/08/2026",
+  "fechamento": "17/08/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "I.A.R.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Comportamento de Terceirizado",
+  "mes": "ago2026",
+  "abertura": "24/08/2026",
+  "fechamento": "28/08/2026",
+  "prazo": 4,
+  "prazoCorridos": 4,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "J.R.S.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Dano Material",
+  "mes": "ago2026",
+  "abertura": "27/08/2026",
+  "fechamento": "27/08/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "I.D.V.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Comportamento de Associado",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 12,
+  "prazoCorridos": 12,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "P.S.C.",
+  "ger": "Gerência Recursos Humanos",
+  "local": "Sem Local",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "13/07/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "A.K.S.",
+  "ger": "Gerência Recursos Humanos",
+  "local": "Sem Local",
+  "assunto": "Dano Material",
+  "mes": "jul2026",
+  "abertura": "14/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Interna",
+  "nome": "M.V.F.F.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Estacionamento",
+  "assunto": "Comportamento de Terceirizado",
+  "mes": "ago2026",
+  "abertura": "11/08/2026",
+  "fechamento": null,
+  "prazo": null,
+  "prazoCorridos": null,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "F.S.P.",
+  "ger": "Diretoria",
+  "local": "Ginásio 9",
+  "assunto": "Comportamento de Associado",
+  "mes": "jan2026",
+  "abertura": "30/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8,
+  "prazoCorridos": 8,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "F.S.P.",
+  "ger": "Diretoria",
+  "local": "Tênis de Mesa",
+  "assunto": "Comportamento de Associado",
+  "mes": "jan2026",
+  "abertura": "30/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8,
+  "prazoCorridos": 8,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "H.R.P.",
+  "ger": "Diretoria",
+  "local": "Sede Social",
+  "assunto": "Comportamento de Associado",
+  "mes": "abr2026",
+  "abertura": "27/04/2026",
+  "fechamento": "10/09/2026",
+  "prazo": 136,
+  "prazoCorridos": 136,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "E.Z.",
+  "ger": "Diretoria",
+  "local": "Economatos",
+  "assunto": "Comportamento de Associado",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 73,
+  "prazoCorridos": 73,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "F.R.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Praça pequena",
+  "assunto": "Comportamento de Associado",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 49,
+  "prazoCorridos": 49,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "J.P.R.E.",
+  "ger": "Diretoria",
+  "local": "Tênis",
+  "assunto": "Comportamento de Associado",
+  "mes": "jul2026",
+  "abertura": "15/07/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 70,
+  "prazoCorridos": 70,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "L.G.F.F.",
+  "ger": "Diretoria",
+  "local": "Sem Local",
+  "assunto": "Sem Assunto",
+  "mes": "jul2026",
+  "abertura": "22/07/2026",
+  "fechamento": null,
+  "prazo": null,
+  "prazoCorridos": null,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "E.S.D.",
+  "ger": "Diretoria",
+  "local": "Ginásio 1",
+  "assunto": "Comportamento de Associado",
+  "mes": "ago2026",
+  "abertura": "06/08/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 63,
+  "prazoCorridos": 48,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "C.C.S.",
+  "ger": "Diretoria",
+  "local": "Sem Local",
+  "assunto": "Sem Assunto",
+  "mes": "ago2026",
+  "abertura": "13/08/2026",
+  "fechamento": null,
+  "prazo": null,
+  "prazoCorridos": null,
+  "ressarc": false,
+  "valor": 0.0
  }
 ];
 
@@ -10367,9 +10875,16 @@ function renderOcorrencias(mesesSel){
       (resto ? `<div class="card-meta" style="margin-top:8px;">+ ${dados.length-lim} outros locais somando ${resto} ocorrências.</div>` : '');
   };
 
-  const ordem = ['jan2026','fev2026','mar2026','abr2026','mai2026','jun2026'];
-  const rot = {jan2026:'Jan',fev2026:'Fev',mar2026:'Mar',abr2026:'Abr',mai2026:'Mai',jun2026:'Jun'};
-  const porMes = ordem.map(k=>({rotulo:rot[k], qtd: ocs.filter(o=>o.mes===k).length}));
+  // 28/09: a lista de meses era FIXA e parava em junho — com a base indo ate
+  // agosto, o grafico escondia dois meses inteiros. Agora sai da COBERTURA,
+  // igual ao que ja se fez no grafico de manifestacoes. Nenhum calculo mudou.
+  const ROT3 = {jan:'Jan',fev:'Fev',mar:'Mar',abr:'Abr',mai:'Mai',jun:'Jun',
+                jul:'Jul',ago:'Ago',set:'Set',out:'Out',nov:'Nov',dez:'Dez'};
+  const ordem = (typeof COBERTURA_OCORRENCIAS !== 'undefined')
+    ? Object.keys(COBERTURA_OCORRENCIAS)
+    : ['jan2026','fev2026','mar2026','abr2026','mai2026','jun2026'];
+  const porMes = ordem.map(k=>({rotulo: ROT3[String(k).slice(0,3)] || k,
+                                qtd: ocs.filter(o=>o.mes===k).length}));
   const maxMes = Math.max.apply(null, porMes.map(m=>m.qtd)) || 1;
   const evolucao = porMes.map(m=>`
     <div style="flex:1; min-width:0; text-align:center;">
@@ -13451,7 +13966,10 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   const agregado = (mesesRet && mesesRet.length > 1) ? agregarRetencao(mesesRet) : null;
   const r = agregado || (mesKeyRet ? getRetencaoMes(mesKeyRet) : null);   // fonte única: DESLIGAMENTOS_MESES
   if(!r){
-    document.getElementById('desligamentoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos os fechamentos de Janeiro a Agosto/2026 (agosto parcial). Selecione um intervalo dentro desse período.</div></div>`;
+    // 28/09: a frase trazia "Janeiro a Agosto/2026 (agosto parcial)" cravada e
+    // envelheceu assim que setembro entrou. Passa a sair de textoCobertura(),
+    // igual ao resto da CRA — nenhuma lista de meses fixa na interface.
+    document.getElementById('desligamentoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos os fechamentos de ${textoCobertura(COBERTURA_RETENCAO)}. Selecione um intervalo dentro desse período.</div></div>`;
     return;
   }
   // Aviso quando o filtro não corresponde exatamente ao mês exibido
@@ -13929,23 +14447,32 @@ const DESLIGAMENTOS_MESES = {
 
   },
   mai2026: {
+    // ── CORRIGIDO EM 28/09 · Desligamento 2026.xlsx ───────────────────────
+    // O painel estava com 93/43/85, numeros que NAO vem desta planilha nem da
+    // versao anterior dela: as DUAS dizem 91 solicitacoes, 41 deste mes e 83
+    // desligados, e as 83 linhas individuais confirmam o 83. As quebras do
+    // painel tambem nao fechavam entre si (categorias somavam 85 e motivos 87).
+    // Categorias e motivos abaixo foram recalculados das 83 linhas e agora
+    // somam 83 cada. Ticket (R$ 551,55), dependentes (1,9) e modalidade
+    // (16/67) ja batiam com as linhas e nao mudaram — o que confirma que so os
+    // numeros de manchete estavam defasados.
     periodoTag:'Maio/2026',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'93', sub:'no período'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'91', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'42', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'43', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'85', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'41', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'83', sub:'com data de desligamento', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'8', sub:'2 retenções + 6 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:42, cor:'#3d7bff'},{nome:'Patrimonial', qtd:23, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:11, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#f2b705'},{nome:'Veterano Contribuinte', qtd:2, cor:'#06b6d4'},{nome:'Contribuinte Universitário', qtd:2, cor:'#fb923c'},{nome:'Patrimonial Individual', qtd:1, cor:'#e8192c'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#b0b0d0'}],
-    motivos:[{motivo:'Não utilização', qtd:30, pct:34.48, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:27.59, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:17.24, cor:'#a855f7'},{motivo:'Sem motivo', qtd:9, pct:10.34, cor:'#f2b705'},{motivo:'Licença', qtd:6, pct:6.90, cor:'#06b6d4'},{motivo:'Transferência', qtd:1, pct:1.15, cor:'#fb923c'},{motivo:'Saúde', qtd:1, pct:1.15, cor:'#e8192c'},{motivo:'Desemprego', qtd:1, pct:1.15, cor:'#b0b0d0'}],
-    totalDesligamentos:85,
+    categorias:[{nome:'Contribuinte', qtd:41, cor:'#3d7bff'},{nome:'Patrimonial', qtd:22, cor:'#00e5a0'},{nome:'Contribuinte Individual', qtd:11, cor:'#a855f7'},{nome:'Contribuinte Derivado', qtd:3, cor:'#f2b705'},{nome:'Veterano Contribuinte', qtd:2, cor:'#06b6d4'},{nome:'Contribuinte Universitário', qtd:2, cor:'#fb923c'},{nome:'Contribuinte Individual Derivado', qtd:1, cor:'#e8192c'},{nome:'Patrimonial Individual', qtd:1, cor:'#b0b0d0'}],
+    motivos:[{motivo:'Não utilização', qtd:30, pct:36.14, cor:'#3d7bff'},{motivo:'Financeiro', qtd:24, pct:28.92, cor:'#00e5a0'},{motivo:'Mudança', qtd:15, pct:18.07, cor:'#a855f7'},{motivo:'Sem motivo', qtd:10, pct:12.05, cor:'#f2b705'},{motivo:'Saúde', qtd:1, pct:1.20, cor:'#06b6d4'},{motivo:'Separação', qtd:1, pct:1.20, cor:'#fb923c'},{motivo:'Desemprego', qtd:1, pct:1.20, cor:'#e8192c'},{motivo:'Transferência', qtd:1, pct:1.20, cor:'#b0b0d0'}],
+    totalDesligamentos:83,
     ticketMedio:'R$ 551,55', dependentes:'1,9', residual:'42', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 0,00', taxaQtd:0, modalidadeTaxa:{sim:16, nao:67},
-    quadroSocial:91,
+    quadroSocial:89,
     negociacoesDesligados:'R$ 0,00',
-    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês. <b>93 solicitações</b>, com 85 desligamentos e <b>8 retidos</b> (2 retenções + 6 licenças). O volume cai pela metade em relação a abril, mas segue alto. Não utilização (30) e financeiro (24) concentram 64% dos motivos. Contribuinte responde por 42 das saídas e Patrimonial por 23. Ticket médio de R$ 551,55 e 2,0 dependentes por titular. Isenção de modalidade ofertada a 16 dos 85. O quadro social registrou <b>91 desligamentos</b>, 6 a mais que os 85 do CRA.',
+    analise:'Fonte: planilha Desligamento 2026 — números conferidos contra o quadro-resumo da própria aba do mês e contra as 83 linhas individuais. <b>91 solicitações</b>, com 83 desligamentos e <b>8 retidos</b>. O volume cai pela metade em relação a abril, mas segue alto. Não utilização (30) e financeiro (24) concentram <b>65% dos motivos</b>. Contribuinte responde por 41 das saídas e Patrimonial por 22. Ticket médio de R$ 551,55 e 1,9 dependente por titular. Isenção de modalidade ofertada a 16 dos 83. O quadro social registrou <b>89 desligamentos</b>, 6 a mais que os 83 do CRA. <b style=\"color:var(--gold);\">Corrigido em 28/09:</b> o painel exibia 93 solicitações, 43 deste mês e 85 desligamentos — números que não constam nesta planilha nem na versão anterior dela, e que faziam as quebras por categoria (85) e por motivo (87) deixarem de fechar entre si.',
 
   },
   jun2026: {
@@ -14003,7 +14530,10 @@ const DESLIGAMENTOS_MESES = {
     totalDesligamentos:37,
     ticketMedio:'R$ 598,23', dependentes:'1,8', residual:'16', residualLabel:'Residual Acumulado',
     desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:7, nao:21},
-    quadroSocial:49,
+    // 28/09: quadroSocial corrigido de 49 para 50 — e o valor da celula
+    // "Total de Desligamentos do Quadro social" da propria aba de Agosto, igual
+    // nas duas versoes da planilha. O resto do mes nao mudou.
+    quadroSocial:50,
     negociacoesDesligados:'R$ 0,00', negociacoesRetencoes:28,
     analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Mês em andamento</b> — posição 24/08. <b>60 solicitações</b>, com 37 desligamentos, 13 retidos (10 retenções + 3 licenças) e <b style=\"color:var(--gold);\">10 já programados</b> — pedidos com data futura marcada, que ainda não saíram do quadro. Houve 28 negociações com os retidos. <b>Financeiro é o motivo dominante (14 de 37, 37,8%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 37 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura nesta aba. <b style=\"color:var(--green);\">O quadro-resumo agora fecha em todos os pontos</b> e as 10 retenções declaradas aqui batem com as 10 da planilha de Retenção — as duas fontes convergiram.',
 
@@ -14013,17 +14543,29 @@ const DESLIGAMENTOS_MESES = {
     // Categorias, motivos, ticket e dependentes vêm dos REGISTROS INDIVIDUAIS.
     // Carga de 21/09: o mês evoluiu muito desde a posição de 31/08 (7 -> 31
     // solicitações, 6 -> 24 desligados). São universos diferentes e não se somam.
-    periodoTag: 'Setembro/2026 (até 21/09)',
-    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "31", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "8", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "24", "sub": "efetivados no período", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "2", "sub": "associados mantidos", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "5", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
-    categorias: [{"nome": "Contribuinte", "qtd": 11, "cor": "#3d7bff"}, {"nome": "Patrimonial", "qtd": 6, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 3, "cor": "#a855f7"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#f2b705"}, {"nome": "Contribuinte Universitario", "qtd": 1, "cor": "#fb923c"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#06b6d4"}],
-    motivos: [{"motivo": "Mudança", "qtd": 8, "pct": 33.33, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 5, "pct": 20.83, "cor": "#00e5a0"}, {"motivo": "Não Utilização", "qtd": 5, "pct": 20.83, "cor": "#a855f7"}, {"motivo": "Viagem", "qtd": 3, "pct": 12.5, "cor": "#f2b705"}, {"motivo": "Insatisfação", "qtd": 1, "pct": 4.17, "cor": "#fb923c"}, {"motivo": "Saúde", "qtd": 1, "pct": 4.17, "cor": "#06b6d4"}, {"motivo": "Troca de Categoria", "qtd": 1, "pct": 4.17, "cor": "#e8192c"}],
+    // ── RECARGA DE 28/09 ───────────────────────────────────────────────────
+    // Setembro e o UNICO mes que mudou na planilha nova (jan-ago tem registros
+    // e quadro-resumo byte a byte iguais aos da versao anterior):
+    //   solicitacoes 31 -> 39 | retidos 2 -> 4 | programados 5 -> 11
+    //   desligados segue 24, residuais 15, deste mes 8.
+    // Os registros individuais cairam de 26 para 25: as duas linhas que eram
+    // retencao/licenca sairam da lista e H.A.C.F. voltou como desligamento
+    // efetivo em 23/09. As 25 linhas agora sao todas desligamento.
+    periodoTag: 'Setembro/2026 (até 28/09)',
+    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "39", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "8", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "24", "sub": "efetivados no período", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "4", "sub": "associados mantidos", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "11", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
+    // Recalculados das 25 linhas. "Contribuinte Universitário" e "Não
+    // utilização"/"Troca de categoria" passam a usar a MESMA grafia dos outros
+    // meses — sem isso a agregacao de varios meses criava duas entradas para a
+    // mesma categoria.
+    categorias: [{"nome": "Contribuinte", "qtd": 12, "cor": "#3d7bff"}, {"nome": "Patrimonial", "qtd": 6, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 3, "cor": "#a855f7"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#f2b705"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#06b6d4"}, {"nome": "Contribuinte Universitário", "qtd": 1, "cor": "#fb923c"}],
+    motivos: [{"motivo": "Mudança", "qtd": 9, "pct": 36.00, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 20.00, "cor": "#00e5a0"}, {"motivo": "Financeiro", "qtd": 5, "pct": 20.00, "cor": "#a855f7"}, {"motivo": "Viagem", "qtd": 3, "pct": 12.00, "cor": "#f2b705"}, {"motivo": "Saúde", "qtd": 1, "pct": 4.00, "cor": "#06b6d4"}, {"motivo": "Troca de categoria", "qtd": 1, "pct": 4.00, "cor": "#fb923c"}, {"motivo": "Insatisfação", "qtd": 1, "pct": 4.00, "cor": "#e8192c"}],
     totalDesligamentos: 24,
-    ticketMedio: 'R$ 603,42', dependentes: '1,8',
+    ticketMedio: 'R$ 602,66', dependentes: '1,8',
     residual: 15, residualLabel: 'Residual Acumulado',
-    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:17},
+    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:18},
     quadroSocial: 26,
     negociacoesDesligados: 'R$ 0,00',
-    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 21/09.</b> São <b>31 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">24 resultaram em desligamento</b>, <b style=\"color:var(--green);\">2 em retenção</b> e 5 ficaram programadas. O quadro social contabiliza <b>26</b> no período. A aba traz <b>26 registros individuais</b> (24 desligamentos, 1 retenção e 1 licença), que alimentam a composição abaixo: <b>mudança lidera com 8 das 24</b> saídas, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 11 das 24. Ticket médio de <b>R$ 603,42</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (31), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">24 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados continuam em 24, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo declara 24 desligados e a aba lista 25 linhas — uma de diferença, mesma assimetria já presente em abril e agosto.',
   },
 };
 
@@ -15418,7 +15960,11 @@ function avaliarModalidade(nome, chaves){
 const ORC_CORES = {bom:'#00e5a0', atencao:'#f2b705', ruim:'#ff6b6b'};
 const ORC_SETAS = {bom:'▲', atencao:'▬', ruim:'▼'};
 
-// ── Bloco Orçado × Realizado × 2025 do detalhe da modalidade ────────────────
+// ── Bloco Orçado × Realizado do detalhe da modalidade ───────────────────────
+// 28/09: saiu o "× 2025" do TÍTULO a pedido da Vice-Presidência. O comparativo
+// histórico continua inteiro — o card "Mesmo período 2025" segue existindo e
+// calculando normalmente; o que mudou foi só o rótulo do bloco, porque o
+// histórico já está identificado no próprio card. Nenhuma base foi removida.
 // Mostra TODAS as naturezas, inclusive as zeradas: zero orçado é informação
 // (a modalidade não tem meta naquele nível), não dado faltando.
 function blocoOrcado(nome, chaves){
@@ -15428,7 +15974,7 @@ function blocoOrcado(nome, chaves){
   if(!o){
     return `<div style="margin-top:18px; border-top:1px solid var(--border); padding-top:16px;">
       <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;">Orçado × Realizado</div>
-      <div class="card-meta" style="margin-top:8px;">Esta modalidade não consta na planilha de orçamento de 2026, então não há meta nem base de 2025 para comparar.</div>
+      <div class="card-meta" style="margin-top:8px;">Esta modalidade não consta na planilha de orçamento de 2026, então não há meta nem base histórica para comparar.</div>
     </div>`;
   }
   if(!av) return '';
@@ -15559,7 +16105,7 @@ function blocoOrcado(nome, chaves){
   return `
     <div style="margin-top:18px; border-top:1px solid var(--border); padding-top:16px;">
       <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;">Orçado × Realizado × 2025</div>
+        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;">Orçado × Realizado</div>
         <div style="font-size:12px; color:var(--muted);">${av.meses.map(k=>ROT_MES_ESP[k]||k).join(', ')}/26</div>
       </div>
       <div style="display:flex; gap:11px; flex-wrap:wrap; margin-top:11px;">
@@ -15573,9 +16119,8 @@ function blocoOrcado(nome, chaves){
         ${cartao('Praticantes (média/mês)', String(mediaInsc), 'var(--text)', `${insc} inscrições somadas no período`)}
       </div>
       <div style="font-size:11.5px; color:var(--muted); margin-top:7px;">
-        A contagem de praticantes vem igual nas duas abas da planilha (orçado e 2025),
-        nas 31 modalidades — ou seja, não há meta de inscrições separada do histórico.
-        Por isso aparece um número só, sem comparação.
+        A contagem de praticantes não possui meta específica para comparação.
+        Por isso, o indicador apresenta apenas o realizado do período.
       </div>`:''}
       ${linhas?`
       <div style="margin-top:18px;">
@@ -17005,12 +17550,23 @@ function renderMetasSetorHTML(mt){
   const pct = (real, orcado) => (real!=null && orcado) ? (real/orcado*100).toFixed(1).replace('.',',')+'%' : '—';
   // data-label alimenta o layout de card no celular (ver @media 680px):
   // no mobile cada linha vira um bloco e o rótulo aparece antes do valor.
+  // 28/09: orçado ausente passa a sair como "—" em vez de 0 ou "null".
+  // Isso só acontece quando a meta daquele período não foi informada pela
+  // origem (caso da meta de reingresso de setembro). Para todos os meses já
+  // publicados o orçado existe e é > 0, então o HTML gerado é idêntico ao
+  // anterior — a guarda não altera nenhum período validado.
+  const semOrc = v => (v==null || v===0);
+  const cel = v => semOrc(v) ? '<span class="muted">—</span>' : v;
   const linha = (label, orcado, real) => `<tr>
     <td data-lb="Meta">${label}</td>
-    <td class="num" data-lb="Orçado">${orcado}</td>
+    <td class="num" data-lb="Orçado">${cel(orcado)}</td>
     <td class="num" data-lb="Real">${real!=null ? real : '<span class="muted">—</span>'}</td>
     <td class="num" data-lb="Atingimento">${pct(real, orcado)}</td>
   </tr>`;
+  // O gap do TOTAL só faz sentido quando os DOIS desafios existem no período.
+  // Faltando um deles, comparar o realizado (vendas + reingressos) contra um
+  // desafio que cobre só vendas produziria um "desafio batido" falso.
+  const totalIncompleto = semOrc(mt.desafioVenda) || semOrc(mt.desafioReingresso);
   return `
     <div class="grid-2 reverse">
       <div class="card">
@@ -17026,9 +17582,10 @@ function renderMetasSetorHTML(mt){
           </tbody>
           <tfoot><tr style="font-weight:800; border-top:2px solid var(--border);">
             <td data-lb="Meta">TOTAL — Desafio</td>
-            <td class="num" data-lb="Orçado">${mt.total.orcado}</td>
+            <td class="num" data-lb="Orçado">${totalIncompleto ? '<span class="muted">—</span>' : mt.total.orcado}</td>
             <td class="num" data-lb="Real">${mt.total.real}</td>
             ${(()=>{
+              if(totalIncompleto) return `<td class="num" data-lb="Gap" title="Uma das metas de desafio do período não foi informada pela origem — o gap não pode ser calculado."><span class="muted">—</span></td>`;
               // O gap compara o realizado contra o DESAFIO (${mt.desafioVenda} + ${mt.desafioReingresso}),
               // não contra a meta da coluna de cima. Vermelho só quando o setor
               // está abaixo da PRÓPRIA meta; se a meta já foi batida e falta
@@ -17044,7 +17601,7 @@ function renderMetasSetorHTML(mt){
             })()}
           </tr></tfoot>
         </table>
-        <div class="card-meta" style="margin-top:10px;">💡 O <b style="color:var(--text);">TOTAL — Desafio</b> compara o realizado com a soma das duas metas de desafio (${mt.desafioVenda} + ${mt.desafioReingresso} = ${mt.total.orcado}), e não com o orçado de ${mt.totalVR.orcado} da linha acima. A última coluna é o gap absoluto (real − orçado), não %, igual na planilha de origem.${mt.total.gap<0 && mt.totalVR.real>=mt.totalVR.orcado ? ` Neste período a <b style="color:var(--green);">meta do setor foi superada</b> (${mt.totalVR.real} de ${mt.totalVR.orcado}) — o número em âmbar é o que falta para o desafio, não um déficit contra a meta.` : ''}</div>
+        <div class="card-meta" style="margin-top:10px;">${totalIncompleto ? `⚠️ <b style="color:var(--gold);">Metas parcialmente informadas neste período.</b> O que está com "—" não foi enviado pela origem — o painel não estima meta. As linhas com orçado seguem comparando normalmente.` : `💡 O <b style="color:var(--text);">TOTAL — Desafio</b> compara o realizado com a soma das duas metas de desafio (${mt.desafioVenda} + ${mt.desafioReingresso} = ${mt.total.orcado}), e não com o orçado de ${mt.totalVR.orcado} da linha acima.`} A última coluna é o gap absoluto (real − orçado), não %, igual na planilha de origem.${mt.total.gap<0 && mt.totalVR.real>=mt.totalVR.orcado ? ` Neste período a <b style="color:var(--green);">meta do setor foi superada</b> (${mt.totalVR.real} de ${mt.totalVR.orcado}) — o número em âmbar é o que falta para o desafio, não um déficit contra a meta.` : ''}</div>
       </div>
       <div class="card">
         <div class="card-label">Taxas (Adesão + Reingresso)</div>
