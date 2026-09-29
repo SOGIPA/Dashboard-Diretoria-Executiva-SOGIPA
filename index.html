@@ -1966,11 +1966,16 @@ const OBRAS_FUNDO = {
   areaVendida: 15432.43,
   areaDisponivel: 96815.86,
   potencialTotal: 96364034,
-  // A RECEBER: o relatório de setembro NÃO traz esse campo e o mês não teve
-  // nenhuma entrada. Valor preservado da carga anterior — precisa de validação
-  // da Controladoria antes de ser considerado atual.
-  aReceber: 845000.00,
-  saldoProjetado: 3429131.21,   // saldo por competência + a receber
+  // A RECEBER: ZERO na posição de 29/09/2026. Confirmado pelo Resumo Executivo
+  // de Obras de 29/09 e pela conta corrente do mês: setembro não registrou
+  // nenhuma entrada no fundo (R$ 0,00), só R$ 412.474,65 de investimento.
+  // Os R$ 845 mil que constavam aqui vinham de uma posição anterior e foram
+  // eliminados a pedido da Diretoria em 29/09 — não é preservação de histórico,
+  // é valor que deixou de existir nesta posição.
+  aReceber: 0.00,
+  // Sem valor a receber, o saldo projetado é o próprio saldo por competência.
+  // Identidade oficial: 3.896.110,62 − 1.311.979,41 = 2.584.131,21.
+  saldoProjetado: 2584131.21,
   contabilizadoVendas: 13850020,
   pctEndividamento: 71.9,
   pctInvestimentos: 28.1,
@@ -17069,7 +17074,7 @@ function renderObras(){
             ${ob.serie.map(v=>`<td class="num ${v>0?'':'muted'}">${v>0?fmtBRL0(v):'—'}</td>`).join('')}
             <td class="num" style="font-weight:700;">${fmtBRL0(ob.total)}</td></tr>`).join('')}
           <tr class="total-highlight" style="font-weight:800;">
-            <td colspan="2" style="color:var(--red);">TOTAL INVESTIDO</td>
+            <td colspan="2" style="color:var(--red);">TOTAL INVESTIDO (ACUMULADO)</td>
             ${o.acompanhamento.map(a=>`<td class="num" style="color:var(--red);">${fmtBRL0(a.investidoAcum)}</td>`).join('')}
             <td class="num" style="color:var(--red);">${fmtBRL0(o.totalInvestido)}</td></tr>
           <tr style="color:var(--muted); font-size:12px;">
@@ -17138,8 +17143,21 @@ function renderObras(){
   drawObrasEvolucao('obrasChartEvolucao');
   const totalOrigens = o.origens.reduce((s,x)=>s+x.valor,0);
   drawDonut('obrasDonutOrigem', o.origens, fmtMilReais(totalOrigens), 'recebidos');
+  // ── CORRIGIDO EM 29/09 ────────────────────────────────────────────────
+  // OBRAS_FUNDO.projetos guarda só {nome, valor} — a fonte não traz cor. O
+  // drawDonut monta o conic-gradient a partir de s.cor, então com cor
+  // undefined o CSS inteiro do gradiente era inválido e o anel simplesmente
+  // não desenhava (o background do .donut-ring saía "none"). Valor central e
+  // legenda apareciam, o que fazia o bloco parecer só "incompleto".
+  // A cor é atribuída AQUI, na renderização, sobre uma cópia — a base fica
+  // intacta e nenhum valor financeiro é tocado. Se um dia a fonte trouxer cor
+  // própria, p.cor prevalece.
+  const CORES_OBRAS = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c',
+                       '#e8192c','#8b5cf6','#14b8a6','#f97316','#84cc16','#ec4899',
+                       '#0ea5e9','#eab308','#6366f1'];
   const totalProjetos = o.projetos.reduce((s,x)=>s+x.valor,0);
-  drawDonut('obrasDonutProjetos', o.projetos, fmtMilReais(totalProjetos), 'investidos');
+  const projetosCor = o.projetos.map((p,i)=>Object.assign({}, p, {cor: p.cor || CORES_OBRAS[i % CORES_OBRAS.length]}));
+  drawDonut('obrasDonutProjetos', projetosCor, fmtMilReais(totalProjetos), 'investidos');
   renderSimpleBars('obrasRankingProjetos', o.projetos.map(p=>({nome:p.nome, valor:p.valor, display:fmtBRL0(p.valor), cor:p.cor})));
 }
 
