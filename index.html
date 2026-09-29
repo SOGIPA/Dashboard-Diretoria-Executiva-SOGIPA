@@ -1890,19 +1890,27 @@ const LIMITE_CREDITO_TOTAL = 6400000;
 // Conecta com "Fundo Índices Construtivos" e "Compromissos Futuros" já mostrados em Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 const OBRAS_FUNDO = {
-  dataReferencia: '31/08/2026',
-  // Acompanhamento dos Índices Construtivos (mar-jul/26). Fonte: Relatório de Acompanhamento
-  // + Dashboard Executivo, base 31/07/2026.
-  // Fórmula do fundo: Saldo Final = Saldo Inicial + Entradas − Investimentos do período (saldo rola mês a mês).
-  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07','31/08'],
+  // ── POSIÇÃO 29/09/2026 ────────────────────────────────────────────────────
+  // Fonte: "Relatório Índices Construtivos — Setembro 2026" (Dashboard
+  // Executivo + Conta Corrente + Área e Comercialização), Controladoria SOGIPA,
+  // base 29/09/2026. Substitui integralmente a posição de 31/08.
+  // A fonte fecha sozinha: as 15 linhas de "Investimentos por obra" somam
+  // R$ 1.311.979,41, exatamente o TOTAL declarado. Na carga anterior faltavam
+  // R$ 1.073,06 de centavos que o relatório de agosto não publicava — agora
+  // publica, e a diferença deixou de existir.
+  dataReferencia: '29/09/2026',
+  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07','31/08','29/09'],
   acompanhamento: [
     {label:'31/03', investidoAcum:294665.52, saldo:297163.42, obrasAtivas:1},
     {label:'30/04', investidoAcum:362444.42, saldo:228719.00, obrasAtivas:2},
     {label:'31/05', investidoAcum:448151.50, saldo:949373.74, obrasAtivas:4},
     {label:'30/06', investidoAcum:550614.82, saldo:1666587.37, obrasAtivas:7},
     {label:'31/07', investidoAcum:850235.78, saldo:2199758.39, obrasAtivas:10},
-    {label:'31/08', investidoAcum:899504.76, saldo:2996605.86, obrasAtivas:12}
+    {label:'31/08', investidoAcum:899504.76, saldo:2996605.86, obrasAtivas:12},
+    {label:'29/09', investidoAcum:1311979.41, saldo:2584131.21, obrasAtivas:15}
   ],
+  // Conta Corrente Mensal, copiada da fonte. Setembro é o primeiro mês SEM
+  // entrada: R$ 0,00 recebido e R$ 412.474,65 investido, o que derruba o saldo.
   fluxoMensal: [
     {mes:'Fev/26', saldoIni:0.00, entradas:453789.70, investimentos:0.00, saldoFim:453789.70},
     {mes:'Mar/26', saldoIni:453789.70, entradas:137373.72, investimentos:294000.00, saldoFim:297163.42},
@@ -1910,48 +1918,69 @@ const OBRAS_FUNDO = {
     {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:85707.08, saldoFim:949373.74},
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:102463.32, saldoFim:1666587.37},
     {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:299620.96, saldoFim:2199758.39},
-    {mes:'Ago/26', saldoIni:2199758.39, entradas:846116.45, investimentos:49268.98, saldoFim:2996605.86}
+    {mes:'Ago/26', saldoIni:2199758.39, entradas:846116.45, investimentos:49268.98, saldoFim:2996605.86},
+    {mes:'Set/26', saldoIni:2996605.86, entradas:0.00, investimentos:412474.65, saldoFim:2584131.21}
   ],
+  // Investimento ACUMULADO por obra em cada posição. As colunas 31/03 a 31/07
+  // vêm dos relatórios anteriores; 31/08 vem da lista de obras daquele mês
+  // (que o relatório publicava arredondada ao milhar em 4 obras, por isso a
+  // coluna soma R$ 898.431,70 contra os R$ 899.504,76 oficiais — R$ 1.073,06
+  // de centavos não publicados, já documentados na carga de agosto); 29/09 vem
+  // desta fonte, com centavos, e soma exatamente R$ 1.311.979,41.
+  // ANTES desta carga a coluna 31/08 existia no rótulo mas TODAS as séries
+  // tinham só 5 pontos — a coluna renderizava zerada na tela.
   obrasNoTempo: [
-    {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52], entrou:'31/03', total:341665.52},
-    {nome:'Quadras Recreativas', cor:'#3d7bff', serie:[0.00,52174.42,84447.00,84447.00,84447.00], entrou:'30/04', total:84447.00},
-    {nome:'Sanitários', cor:'#00e5a0', serie:[0.00,0.00,34954.50,80039.70,89999.70], entrou:'31/05', total:89999.70},
-    {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
-    {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08], entrou:'30/06', total:163600.08},
-    {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00], entrou:'30/06', total:20204.00},
-    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,7275.00], entrou:'30/06', total:7275.00},
-    {nome:'Telhado', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00], entrou:'31/07', total:78000.00},
-    {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48], entrou:'31/07', total:38144.48},
-    {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00], entrou:'31/07', total:17900.00}
+    {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52,341665.52,341665.52], entrou:'31/03', total:341665.52},
+    {nome:'Quadras Recreativas', cor:'#3d7bff', serie:[0.00,52174.42,84447.00,84447.00,84447.00,84447.00,84447.00], entrou:'30/04', total:84447.00},
+    {nome:'Sanitários', cor:'#00e5a0', serie:[0.00,0.00,34954.50,80039.70,89999.70,89999.70,89999.70], entrou:'31/05', total:89999.70},
+    {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
+    {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08,170000.00,177158.04], entrou:'30/06', total:177158.04},
+    {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00,24000.00,28704.00], entrou:'30/06', total:28704.00},
+    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,7275.00,7275.00,7275.00], entrou:'30/06', total:7275.00},
+    {nome:'Telhado Tênis', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00,78000.00,78000.00], entrou:'31/07', total:78000.00},
+    {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48,38144.48,38144.48], entrou:'31/07', total:38144.48},
+    {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00,17900.00,17900.00], entrou:'31/07', total:17900.00},
+    {nome:'Laje Infinity', cor:'#84cc16', serie:[0.00,0.00,0.00,0.00,0.00,23000.00,23000.00], entrou:'31/08', total:23000.00},
+    {nome:'Reservatório Rest. Tênis', cor:'#facc15', serie:[0.00,0.00,0.00,0.00,0.00,15000.00,15240.00], entrou:'31/08', total:15240.00},
+    {nome:'Telhado Sede Leopoldina', cor:'#e879f9', serie:[0.00,0.00,0.00,0.00,0.00,0.00,379776.92], entrou:'29/09', total:379776.92},
+    {nome:'Quadras Esportivas', cor:'#5a5c78', serie:[0.00,0.00,0.00,0.00,0.00,0.00,21034.45], entrou:'29/09', total:21034.45},
+    {nome:'Aquecimento Piscinas', cor:'#b0b0d0', serie:[0.00,0.00,0.00,0.00,0.00,0.00,634.30], entrou:'29/09', total:634.30}
   ],
   totalRecebido: 3896110.62,
-  totalInvestido: 899504.76,
-  // Regime de COMPETÊNCIA. Não confundir com o saldo do fluxo de caixa abaixo:
+  totalInvestido: 1311979.41,
+  // Regime de COMPETÊNCIA. Não confundir com o saldo do fluxo de caixa:
   // a diferença são investimentos parcelados já reconhecidos, sem desembolso.
-  saldoDisponivel: 2996605.86,
-  saldoFluxoCaixa: 3108707.00,
-  diferencaConciliacao: 112101.14,
-  notaConciliacao: 'Saldo no Fluxo de Caixa em 31/08/2026: R$ 3.108.707,00. A diferença de R$ 112.101,14 em relação ao saldo por competência (R$ 2.996.605,86) refere-se a investimentos parcelados já reconhecidos pelo regime de competência, cujo desembolso financeiro ocorrerá conforme o cronograma de pagamento.',
-  pctAplicado: 23.1,   // recursos aplicados sobre o total recebido, conforme a fonte
-  // ── Posição patrimonial (fonte: Dashboard Executivo Índices Construtivos, 31/07/2026) ──
+  saldoDisponivel: 2584131.21,
+  // Campos de conciliação: não aparecem na tela, servem de registro. O fluxo de
+  // caixa mais recente é de 24/09 (R$ 2.623.226) e este relatório é de 29/09,
+  // então a diferença de R$ 39.094,79 mistura o efeito do regime de competência
+  // com 5 dias de defasagem entre os dois documentos. NÃO é conciliação fechada.
+  saldoFluxoCaixa: 2623226.00,
+  diferencaConciliacao: 39094.79,
+  notaConciliacao: 'Saldo do fundo no Fluxo de Caixa em 24/09/2026: R$ 2.623.226,00, contra R$ 2.584.131,21 por competência em 29/09/2026. A diferença de R$ 39.094,79 não é conciliação fechada: os dois documentos têm datas-base diferentes (24/09 e 29/09) e ainda há investimentos parcelados reconhecidos por competência cujo desembolso segue o cronograma de pagamento.',
+  pctAplicado: 33.7,   // declarado pela fonte; 1.311.979,41 / 3.896.110,62 = 33,67%
+  // ── Posição patrimonial (mesma fonte, página "Área e Comercialização") ──
   areaTotal: 118156.09,
   areaComissao: 5907.80,
   areaLiquida: 112248.29,
   areaVendida: 15432.43,
   areaDisponivel: 96815.86,
-  potencialTotal: 96360000,
+  potencialTotal: 96364034,
+  // A RECEBER: o relatório de setembro NÃO traz esse campo e o mês não teve
+  // nenhuma entrada. Valor preservado da carga anterior — precisa de validação
+  // da Controladoria antes de ser considerado atual.
   aReceber: 845000.00,
-  saldoProjetado: 3841605.86,   // saldo por competência + a receber   // saldo atual + a receber, sem considerar novas saídas
-  contabilizadoVendas: 13003904,
-  pctEndividamento: 76.5,
-  pctInvestimentos: 23.5,
+  saldoProjetado: 3429131.21,   // saldo por competência + a receber
+  contabilizadoVendas: 13850020,
+  pctEndividamento: 71.9,
+  pctInvestimentos: 28.1,
   pagamentoEndividamento: 9950000,
   // Nomes de pessoa física abreviados por LGPD (MG), empresas mantidas
   empreendimentos: [
     {nome:'Orbis Participações',   area:4867.04, valor:4350389, cor:'#3d7bff'},
     {nome:'Phoenix Participações', area:4867.04, valor:4350389, cor:'#00e5a0'},
     {nome:'Fibra Participações',   area:1500.00, valor:1344294, cor:'#06b6d4'},
-    {nome:'MG',                    area:4198.35, valor:2958831, cor:'#a855f7'},
+    {nome:'MG',                    area:4198.35, valor:3804947, cor:'#a855f7'},
   ],
   origens: [
     {nome:'Saldo Inicial (pós quitação de dívida)', valor:453789.70, cor:'#3d7bff'},
@@ -1959,6 +1988,7 @@ const OBRAS_FUNDO = {
     {nome:'MG — Maio', valor:806361.82, cor:'#a855f7'},
     {nome:'MG — Junho', valor:819676.95, cor:'#f2b705'},
     {nome:'MG — Julho', valor:832791.98, cor:'#06b6d4'},
+    {nome:'MG — Agosto', valor:846116.45, cor:'#fb923c'},
   ],
   evolucaoMensal: [
     {mes:'Fev/26', saldoIni:0,         entradas:453789.70, investimentos:0,        saldoFim:453789.70},
@@ -1967,27 +1997,27 @@ const OBRAS_FUNDO = {
     {mes:'Mai/26', saldoIni:228719.00, entradas:806361.82, investimentos:-85707.08,saldoFim:949373.74},
     {mes:'Jun/26', saldoIni:949373.74, entradas:819676.95, investimentos:-102463.32,saldoFim:1666587.37},
     {mes:'Jul/26', saldoIni:1666587.37, entradas:832791.98, investimentos:-299620.96, saldoFim:2199758.39},
+    {mes:'Ago/26', saldoIni:2199758.39, entradas:846116.45, investimentos:-49268.98, saldoFim:2996605.86},
+    {mes:'Set/26', saldoIni:2996605.86, entradas:0,         investimentos:-412474.65, saldoFim:2584131.21},
   ],
-  // Valores por obra. O PDF publica arredondado ao milhar; onde o painel já
-  // tinha o valor exato e ele bate com o arredondado, o exato foi mantido.
-  // Alterados pela fonte: Salão Panorâmico e Academia dos Atletas.
-  // Novos: Impermeabilização Laje Infinity e Reservatório Restaurante Tênis.
-  // A soma dá R$ 898431.70 contra o total oficial de R$ 899504.76: faltam R$ 1073.06,
-  // que são os centavos das 4 obras que a fonte não publica. O total oficial
-  // prevalece; a diferença não foi distribuída para não inventar valor.
+  // Investimentos por obra, na ordem e com os valores exatos da fonte.
+  // As 15 linhas somam R$ 1.311.979,41 — o TOTAL declarado, sem diferença.
   projetos: [
+    {nome:'Reforma Telhado - Sede Leopoldina', valor:379776.92},
     {nome:'Reforma Aquecedor das Piscinas', valor:341665.52},
-    {nome:'Reforma Salão Panorâmico', valor:170000.00},
+    {nome:'Reforma Salão Panorâmico', valor:177158.04},
     {nome:'Reforma Sanitários - 3º Andar', valor:89999.70},
     {nome:'Reforma Quadras Recreativas', valor:84447.00},
-    {nome:'Reforma Telhado', valor:78000.00},
+    {nome:'Reforma Telhado - Tênis', valor:78000.00},
     {nome:'Plano Diretor', valor:38144.48},
-    {nome:'Reforma Academia dos Atletas', valor:24000.00},
+    {nome:'Reforma Academia dos Atletas', valor:28704.00},
     {nome:'Impermeabilização - Laje Infinity', valor:23000.00},
+    {nome:'Reforma Quadras Esportivas', valor:21034.45},
     {nome:'Reforma Vestiários', valor:17900.00},
-    {nome:'Reservatório - Restaurante Tênis', valor:15000.00},
+    {nome:'Reforma Reservatório - Restaurante Tênis', valor:15240.00},
     {nome:'Projeto Área de Convivência', valor:9000.00},
     {nome:'Reforma Tubulações das Piscinas', valor:7275.00},
+    {nome:'Aquecimento Piscinas', valor:634.30},
   ],
 };
 
