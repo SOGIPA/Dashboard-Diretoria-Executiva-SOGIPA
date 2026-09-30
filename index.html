@@ -1556,6 +1556,7 @@
       </div>
       <div id="rhSubDP" style="display:none;">
         <div id="dpIndicadoresConteudo"></div>
+        <div id="terceirosGerencial"></div>
         <div id="heBloco" style="display:none;">
           <div class="section-title" style="margin-top:24px;">Horas Extras <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Junho/2026</span><div class="line"></div>
             <button onclick="document.getElementById('heBloco').style.display='none'" style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer; margin-left:10px;">✕</button>
@@ -2807,6 +2808,17 @@ const FOLHA_DADOS = {
   desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83]},
 };
 
+// ── Custo com Terceiros · série comparativa de 2025 ────────────────────────
+// Fonte oficial: planilha "Custo Terceiros - importar para o painel.xlsx"
+// (Gerência de RH). A série de 2026 NÃO é redeclarada aqui: ela é a mesma de
+// DP_INDICADORES.custoTerceiros.valores, alinhada a MESES_RH. 2025 entra apenas
+// como base de comparação mês a mês (12 meses fechados).
+// Total 2025 declarado na planilha: 1.954.183,34 — conferido em conferirTotaisAssinados().
+const TERCEIROS_2025 = [170884.69,153388.04,182543.73,152587.10,145377.29,128723.02,
+                        106730.57,132291.62,147785.66,220028.98,186502.26,227340.38];
+const TERCEIROS_2025_MESES = ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25',
+                              'Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'];
+
 const DP_INDICADORES = {
   infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
@@ -2815,7 +2827,8 @@ const DP_INDICADORES = {
                      nota:'Quanto menor, melhor.'},
   atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33], meta:null, formato:'num', invertido:true},
   horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14], meta:null, formato:'moeda', invertido:true, he:true},
-  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06], meta:null, formato:'moeda', invertido:true},
+  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06], meta:null, formato:'moeda', invertido:true,
+                     valores2025:TERCEIROS_2025, gerencial:'terceiros'},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
 };
@@ -7054,6 +7067,9 @@ function aplicarFiltroMes(){
   const mIni = +document.getElementById('mesIni').value, aIni = +document.getElementById('anoIni').value;
   const mFim = +document.getElementById('mesFim').value, aFim = +document.getElementById('anoFim').value;
   if(aIni*12+mIni > aFim*12+mFim){ alert('O mês/ano de início não pode ser depois do mês/ano de fim.'); return; }
+  // intervalo cru pedido no filtro (antes de qualquer interseção com cobertura):
+  // é o que permite avisar quando o período pedido passa do fim de uma base.
+  window._filtroRange = {mIni:mIni, aIni:aIni, mFim:mFim, aFim:aFim};
 
   const de  = ymd(aIni, mIni, 1);
   const ate = ymd(aFim, mFim, ultimoDiaDoMes(aFim, mFim));
@@ -7823,6 +7839,15 @@ if(typeof window !== 'undefined') window.addEventListener('load', ()=>{ try{ val
 // Regra ao importar: o número vem da planilha COMO ESTÁ, com centavos. Nunca
 // arredondar na importação — arredondamento é só de exibição.
 const TOTAIS_ASSINADOS = [
+  {aba:'RH · DP · Custo Terceiros', doc:'Custo Terceiros - importar para o painel.xlsx (Gerência RH)', ate:'ago/2026',
+   oque:'acumulado jan-ago/2026', esperado:967229.28,
+   calc:()=>DP_INDICADORES.custoTerceiros.valores.slice(0,8).reduce((t,v)=>t+v,0)},
+  {aba:'RH · DP · Custo Terceiros', doc:'Custo Terceiros - importar para o painel.xlsx (Gerência RH)', ate:'ago/2026',
+   oque:'acumulado jan-ago/2025', esperado:1172526.06,
+   calc:()=>TERCEIROS_2025.slice(0,8).reduce((t,v)=>t+v,0)},
+  {aba:'RH · DP · Custo Terceiros', doc:'Custo Terceiros - importar para o painel.xlsx (Gerência RH)', ate:'dez/2025',
+   oque:'total do ano de 2025', esperado:1954183.34,
+   calc:()=>TERCEIROS_2025.reduce((t,v)=>t+v,0)},
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'valor recuperado mar-jun', esperado:460277,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.valor||0),0)},
@@ -17304,6 +17329,8 @@ function mudarSubAbaRH(tab){
   document.getElementById('rhSubDP').style.display = tab==='dp' ? 'block' : 'none';
   document.getElementById('subtabBtnRH').classList.toggle('active', tab==='rh');
   document.getElementById('subtabBtnDP').classList.toggle('active', tab==='dp');
+  // o SVG comparativo mede o container: só dá para dimensionar quando o DP aparece
+  if(tab==='dp') setTimeout(terceirosRedesenhar, 20);
   setTimeout(ajustarTextoKPI, 30);
 }
 
@@ -17477,6 +17504,407 @@ function drawIndicadorBarChart(elId, ind){
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block; width:${W}px; height:auto;">
     ${gridLine}${bars}${labels}
   </svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CUSTO COM TERCEIROS — VISÃO GERENCIAL (subaba DP)
+// ═══════════════════════════════════════════════════════════════════════════
+// FONTE ÚNICA: DP_INDICADORES.custoTerceiros
+//   .valores      → 2026, alinhado a MESES_RH (mesma série que alimenta o card)
+//   .valores2025  → TERCEIROS_2025, base comparativa (12 meses)
+// Nenhum número desta seção é escrito à mão: cards, gráfico e texto derivam da
+// base + RH_PERIODO_IDX (filtro global). Mês sem dado em 2026 NUNCA vira zero.
+
+// Paleta da comparação — validada para daltonismo sobre o fundo #13151d
+// (ΔE protan 23,7 / tritan 24,7; normal 25,9; contraste >= 3:1).
+const TERCEIROS_COR = { a2025:'#7480d4', a2026:'#d9762e' };
+
+// 'Ago/26' → 2026*12+8. Deriva do próprio rótulo de MESES_RH: nada de mês fixo.
+function terceirosMesAbs(rot){
+  const ab = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  if(!rot) return null;
+  const p = rot.toLowerCase().split('/');
+  const m = ab.indexOf(p[0].slice(0,3)) + 1;
+  if(!m) return null;
+  const a = p[1] ? (p[1].length <= 2 ? 2000 + parseInt(p[1],10) : parseInt(p[1],10)) : null;
+  return a ? a*12 + m : null;
+}
+
+function terceirosResumo(){
+  const ind = DP_INDICADORES.custoTerceiros;
+  const v26 = ind.valores, v25 = ind.valores2025 || [];
+  // meses do período filtrado que existem na série de 2026
+  const noPeriodo = RH_PERIODO_IDX.filter(i => i >= 0 && i < v26.length).slice().sort((a,b)=>a-b);
+  const comDado   = noPeriodo.filter(i => v26[i] != null);   // 2026 informado
+  const semDado   = noPeriodo.filter(i => v26[i] == null);   // no período, mas sem dado
+  if(!comDado.length) return null;
+
+  const soma26 = comDado.reduce((s,i)=>s+v26[i], 0);
+  const media  = soma26 / comDado.length;
+
+  // 2025 comparado EXATAMENTE nos mesmos meses que 2026 tem dado
+  const pares  = comDado.filter(i => v25[i] != null);
+  const soma25 = pares.reduce((s,i)=>s+v25[i], 0);
+  const paresIncompletos = pares.length !== comDado.length;
+  const soma26Pares = pares.reduce((s,i)=>s+v26[i], 0);       // base idêntica à de 2025
+  const varPct = (pares.length && soma25) ? (soma26Pares/soma25 - 1)*100 : null;
+  const varAbs = pares.length ? (soma26Pares - soma25) : null;
+
+  // maior e menor mês de 2026 dentro do período
+  const ordenado = comDado.slice().sort((a,b)=> v26[a]-v26[b]);
+  const iMenor = ordenado[0], iMaior = ordenado[ordenado.length-1];
+
+  // último mês disponível no período + comparativos
+  const iUlt = comDado[comDado.length-1];
+  const iAnt = (iUlt > 0 && v26[iUlt-1] != null) ? iUlt-1 : null;   // mês anterior do calendário
+  const varUltMes = iAnt != null ? (v26[iUlt]/v26[iAnt] - 1)*100 : null;
+  const varUltAno = v25[iUlt] != null ? (v26[iUlt]/v25[iUlt] - 1)*100 : null;
+
+  // tendência: inclinação por mínimos quadrados, normalizada pela média (%/mês)
+  let tendPct = null;
+  if(comDado.length >= 3){
+    const n = comDado.length;
+    const mx = comDado.reduce((s,i)=>s+i,0)/n;
+    const my = soma26/n;
+    let num = 0, den = 0;
+    comDado.forEach(i=>{ num += (i-mx)*(v26[i]-my); den += (i-mx)*(i-mx); });
+    if(den) tendPct = ((num/den) / my) * 100;   // variação média por mês, em %
+  }
+
+  // cobertura da base de 2026 (derivada, não escrita à mão)
+  const idxComDadoTodos = v26.map((v,i)=>v!=null?i:null).filter(i=>i!=null);
+  const ultRot = idxComDadoTodos.length ? MESES_RH[idxComDadoTodos[idxComDadoTodos.length-1]] : null;
+  // o período PEDIDO no filtro passou do fim da base? (nunca vira zero: só avisa)
+  const fr = (typeof window !== 'undefined') ? window._filtroRange : null;
+  const baseAbs = terceirosMesAbs(ultRot);
+  const pedidoAbs = fr ? fr.aFim*12 + fr.mFim : null;
+  const passouDaBase = !!(baseAbs && pedidoAbs && pedidoAbs > baseAbs);
+
+  return {
+    ind, v26, v25, noPeriodo, comDado, semDado, pares, paresIncompletos,
+    soma26, soma25, soma26Pares, media, varPct, varAbs,
+    iMenor, iMaior, iUlt, iAnt, varUltMes, varUltAno, tendPct,
+    baseUltimoMes: ultRot,
+    baseQtdMeses: idxComDadoTodos.length,
+    passouDaBase: passouDaBase,
+  };
+}
+
+// Custo: queda é positiva, alta pede atenção. Não repinta o card existente.
+function terceirosCorCusto(pct){
+  if(pct == null || Math.abs(pct) < 0.05) return 'var(--muted)';
+  return pct < 0 ? 'var(--green)' : 'var(--red)';
+}
+function terceirosPct(pct, casas){
+  if(pct == null) return '—';
+  const c = casas == null ? 1 : casas;
+  return (pct>0?'+':pct<0?'−':'') + Math.abs(pct).toFixed(c).replace('.',',') + '%';
+}
+// magnitude sem sinal — para frases em que a palavra já diz a direção
+// ("redução de 17,5%"); usar terceirosPct() aí produziria "redução de +17,5%".
+function terceirosPctMag(pct, casas){
+  if(pct == null) return '—';
+  return Math.abs(pct).toFixed(casas == null ? 1 : casas).replace('.',',') + '%';
+}
+function terceirosSeta(pct){
+  if(pct == null || Math.abs(pct) < 0.05) return '→';
+  return pct > 0 ? '▲' : '▼';
+}
+
+function terceirosCards(r){
+  const rotPeriodo = r.comDado.length === 1
+      ? MESES_RH[r.comDado[0]]
+      : MESES_RH[r.comDado[0]] + ' a ' + MESES_RH[r.comDado[r.comDado.length-1]];
+  const mesesTxt = r.comDado.length + (r.comDado.length===1 ? ' mês informado' : ' meses informados');
+
+  // CARD 1 — acumulado de 2026 no período
+  const c1 = `
+    <div class="kpi-spark-card" title="Valor exato: ${fmtBRL(r.soma26)}">
+      <div class="kpi-spark-label">Custo Acumulado</div>
+      <div class="kpi-spark-value" style="color:${TERCEIROS_COR.a2026};">${fmtMilReais(r.soma26)}</div>
+      <div class="kpi-spark-delta"><span class="muted">${rotPeriodo} · ${mesesTxt}</span></div>
+    </div>`;
+
+  // CARD 2 — média mensal dos meses efetivamente disponíveis
+  const c2 = `
+    <div class="kpi-spark-card" title="Valor exato: ${fmtBRL(r.media)}">
+      <div class="kpi-spark-label">Média Mensal</div>
+      <div class="kpi-spark-value" style="color:${TERCEIROS_COR.a2026};">${fmtMilReais(r.media)}</div>
+      <div class="kpi-spark-delta"><span class="muted">acumulado ÷ ${r.comDado.length} ${r.comDado.length===1?'mês':'meses'} com dado</span></div>
+    </div>`;
+
+  // CARD 3 — 2026 x 2025 nos MESMOS meses
+  const rotPares = r.pares.length
+      ? (r.pares.length === 1 ? TERCEIROS_2025_MESES[r.pares[0]]
+         : TERCEIROS_2025_MESES[r.pares[0]] + ' a ' + TERCEIROS_2025_MESES[r.pares[r.pares.length-1]])
+      : null;
+  const c3 = `
+    <div class="kpi-spark-card"${r.varAbs!=null?` title="2026: ${fmtBRL(r.soma26Pares)} · 2025: ${fmtBRL(r.soma25)} · diferença: ${fmtBRL(r.varAbs)}"`:''}>
+      <div class="kpi-spark-label">Variação × 2025</div>
+      <div class="kpi-spark-value" style="color:${terceirosCorCusto(r.varPct)};">${r.varPct!=null? terceirosSeta(r.varPct)+' '+terceirosPct(r.varPct) : '—'}</div>
+      <div class="kpi-spark-delta">${r.varPct!=null
+          ? `<span style="color:${terceirosCorCusto(r.varPct)};">${r.varAbs<0?'−':'+'}${fmtMilReais(Math.abs(r.varAbs)).replace('R$ ','R$ ')}</span> <span class="muted">vs ${rotPares}</span>`
+          : '<span class="muted">sem base de 2025 nesses meses</span>'}</div>
+    </div>`;
+
+  // CARD 4 — último mês disponível
+  const c4 = `
+    <div class="kpi-spark-card" title="Valor exato: ${fmtBRL(r.v26[r.iUlt])}">
+      <div class="kpi-spark-label">Último Mês Disponível</div>
+      <div class="kpi-spark-value" style="color:${TERCEIROS_COR.a2026};">${fmtMilReais(r.v26[r.iUlt])}</div>
+      <div class="kpi-spark-delta">
+        <span style="color:var(--text);">${MESES_RH[r.iUlt]}</span>
+        ${r.varUltMes!=null ? ` · <span style="color:${terceirosCorCusto(r.varUltMes)};">${terceirosSeta(r.varUltMes)} ${terceirosPct(r.varUltMes)} vs ${MESES_RH[r.iAnt]}</span>` : ''}
+      </div>
+      ${r.varUltAno!=null ? `<div style="font-size:11.5px; margin-top:4px; color:${terceirosCorCusto(r.varUltAno)};">${terceirosSeta(r.varUltAno)} ${terceirosPct(r.varUltAno)} vs ${TERCEIROS_2025_MESES[r.iUlt]}</div>` : ''}
+    </div>`;
+
+  return `<div class="kpi-spark-grid" style="margin-bottom:14px;">${c1}${c2}${c3}${c4}</div>`;
+}
+
+// Colunas agrupadas 2025 × 2026. Largura acompanha o container: o texto fica
+// em px reais em qualquer tela, sem rolagem horizontal.
+function drawTerceirosComparativo(elId){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  const r = terceirosResumo();
+  if(!r){ el.innerHTML = '<div class="muted" style="padding:20px 0; font-size:13px;">Nenhum mês de 2026 com dado no período selecionado.</div>'; return; }
+
+  const larg = el.clientWidth || (el.parentElement && el.parentElement.clientWidth) || 760;
+  const W = Math.max(280, Math.min(1200, Math.round(larg)));
+  el.dataset.larg = String(W);   // largura já desenhada: evita redesenho em loop
+  const estreito = W < 470;
+  const H = estreito ? 236 : 292;
+  const padL = estreito ? 8 : 12, padR = estreito ? 8 : 12;
+  const padT = estreito ? 24 : 34, padB = estreito ? 34 : 38;
+
+  const meses = r.noPeriodo;                       // eixo = meses do período filtrado
+  const vals  = meses.map(i=>[r.v26[i], r.v25[i]]).reduce((a,p)=>a.concat(p),[]).filter(v=>v!=null);
+  const pico  = Math.max.apply(null, vals) || 1;
+  // topo em passo "redondo" (25/50/100 mil...) para a escala ser fácil de ler
+  const bruto = pico * 1.12 / 3;
+  const mag   = Math.pow(10, Math.floor(Math.log10(bruto)));
+  const passo = [1,1.5,2,2.5,3,4,5,6,7.5,8,10].map(m=>m*mag).find(s=>s>=bruto) || 10*mag;
+  const maxV  = passo * 3;
+  const plotH = H - padT - padB;
+  const y  = v => padT + (1 - v/maxV) * plotH;
+  const y0 = padT + plotH;
+  const gw = (W - padL - padR) / meses.length;     // largura do grupo
+  // duas colunas + 2px de respiro entre elas (exigência de separação de marcas)
+  const GAP = 2;
+  const bw = Math.max(5, Math.min(estreito ? 13 : 26, (gw * (estreito ? 0.78 : 0.62) - GAP) / 2));
+
+  // grade recuada: 3 linhas horizontais + base
+  let grade = '';
+  for(let k=1; k<=3; k++){
+    const gv = passo * k, gy = y(gv);
+    grade += `<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${(W-padR).toFixed(1)}" y2="${gy.toFixed(1)}" stroke="#40415a" stroke-width="1" stroke-dasharray="3 5" opacity=".55"/>`;
+    if(!estreito) grade += `<text x="${padL+2}" y="${(gy-5).toFixed(1)}" fill="#6f7290" font-size="10">${(gv/1000).toLocaleString('pt-BR',{maximumFractionDigits:0})} mil</text>`;
+  }
+  grade += `<line x1="${padL}" y1="${y0.toFixed(1)}" x2="${(W-padR).toFixed(1)}" y2="${y0.toFixed(1)}" stroke="#40415a" stroke-width="1.2"/>`;
+
+  // rótulos diretos apenas nos meses que a leitura executiva cita
+  const destacar = new Set([r.iMaior, r.iMenor, r.iUlt]);
+  let barras = '', rotulos = '';
+  meses.forEach((i, k)=>{
+    const cxG   = padL + k*gw + gw/2;
+    const x2025 = cxG - GAP/2 - bw;
+    const x2026 = cxG + GAP/2;
+    const nomeMes = MESES_RH[i] ? MESES_RH[i].split('/')[0] : TERCEIROS_2025_MESES[i].split('/')[0];
+    rotulos += `<text x="${cxG.toFixed(1)}" y="${(H-padB+17).toFixed(1)}" text-anchor="middle" fill="#b0b0d0" font-size="${estreito?9.5:11.5}" font-weight="600">${nomeMes}</text>`;
+
+    // 2025
+    if(r.v25[i] != null){
+      const yt = y(r.v25[i]), hh = Math.max(y0-yt, 2);
+      barras += `<rect x="${x2025.toFixed(1)}" y="${yt.toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}" fill="${TERCEIROS_COR.a2025}" rx="3"><title>${TERCEIROS_2025_MESES[i]}: ${fmtBRL(r.v25[i])}</title></rect>`;
+    }
+    // 2026 — sem dado NÃO desenha barra: fica o contorno tracejado e o aviso
+    if(r.v26[i] != null){
+      const yt = y(r.v26[i]), hh = Math.max(y0-yt, 2);
+      barras += `<rect x="${x2026.toFixed(1)}" y="${yt.toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}" fill="${TERCEIROS_COR.a2026}" rx="3"><title>${MESES_RH[i]}: ${fmtBRL(r.v26[i])}</title></rect>`;
+      const mostra = destacar.has(i) && (!estreito || i===r.iUlt);
+      if(mostra)
+        rotulos += `<text x="${(x2026+bw/2).toFixed(1)}" y="${(yt-6).toFixed(1)}" text-anchor="middle" fill="${TERCEIROS_COR.a2026}" font-size="${estreito?10:11.5}" font-weight="800">${(r.v26[i]/1000).toFixed(0)}</text>`;
+    } else {
+      const alturaVazia = Math.min(plotH*0.16, 30);
+      barras += `<rect x="${x2026.toFixed(1)}" y="${(y0-alturaVazia).toFixed(1)}" width="${bw.toFixed(1)}" height="${alturaVazia.toFixed(1)}" fill="none" stroke="#5c6370" stroke-width="1" stroke-dasharray="2 3" rx="3"><title>${MESES_RH[i]||''}: sem dado informado</title></rect>`;
+      rotulos += `<text x="${(x2026+bw/2).toFixed(1)}" y="${(y0-alturaVazia-5).toFixed(1)}" text-anchor="middle" fill="#5c6370" font-size="${estreito?8.5:10}">s/d</text>`;
+    }
+  });
+
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img"
+      aria-label="Custo com terceiros por mês, 2025 comparado a 2026"
+      style="display:block; width:100%; height:auto; max-width:100%;">
+    ${grade}${barras}${rotulos}
+  </svg>`;
+}
+
+function terceirosAnalise(r){
+  const P = [];
+  const rotIni = MESES_RH[r.comDado[0]], rotFim = MESES_RH[r.iUlt];
+  const um = r.comDado.length === 1;
+
+  // 1 — total do período e comparação com 2025
+  if(um){
+    P.push(`Em <b>${rotFim}</b> o custo com terceiros foi de <b>${fmtMilReais(r.v26[r.iUlt])}</b>.`);
+  } else {
+    P.push(`De <b>${rotIni}</b> a <b>${rotFim}</b>, o custo com terceiros soma <b>${fmtMilReais(r.soma26)}</b> em ${r.comDado.length} meses informados.`);
+  }
+  if(r.varPct != null){
+    const palavra = r.varPct < 0 ? 'redução' : (r.varPct > 0 ? 'aumento' : 'estabilidade');
+    const frase = palavra === 'estabilidade'
+        ? `<b style="color:var(--muted);">estabilidade</b>`
+        : `uma <b style="color:${terceirosCorCusto(r.varPct)};">${palavra} de ${terceirosPctMag(r.varPct)}</b>`;
+    P.push(`Frente aos <b>mesmos meses de 2025</b> (${fmtMilReais(r.soma25)}), é ${frase}${r.varAbs!=null && palavra!=='estabilidade' ?` — diferença de <b>${fmtMilReais(Math.abs(r.varAbs))}</b>`:''}.`);
+  } else {
+    P.push(`Não há base de 2025 para os meses selecionados, portanto a comparação anual não é possível neste período.`);
+  }
+
+  // 2 — média, maior e menor mês
+  if(!um){
+    P.push(`A média mensal do período é <b>${fmtMilReais(r.media)}</b>. O mês mais caro é <b>${MESES_RH[r.iMaior]}</b> (${fmtMilReais(r.v26[r.iMaior])}) e o mais barato, <b>${MESES_RH[r.iMenor]}</b> (${fmtMilReais(r.v26[r.iMenor])}).`);
+  }
+
+  // 3 — tendência
+  if(r.tendPct != null){
+    // direção pela inclinação de todo o período (robusta); magnitude pelo
+    // primeiro contra o último mês (sem ambiguidade de leitura).
+    const estavel = Math.abs(r.tendPct) < 1.5;
+    const t = estavel ? 'relativamente estável' : (r.tendPct < 0 ? 'em queda' : 'em alta');
+    const cor = estavel ? 'var(--muted)' : terceirosCorCusto(r.tendPct);
+    const iPri = r.comDado[0];
+    const pontaAponta = (!estavel && r.v26[iPri])
+        ? ` — de ${fmtMilReais(r.v26[iPri])} em ${MESES_RH[iPri]} para ${fmtMilReais(r.v26[r.iUlt])} em ${MESES_RH[r.iUlt]} (${terceirosPct((r.v26[r.iUlt]/r.v26[iPri]-1)*100)})`
+        : '';
+    P.push(`Ao longo dos meses selecionados a série está <b style="color:${cor};">${t}</b>${pontaAponta}.`);
+  } else if(!um){
+    P.push(`Com ${r.comDado.length} meses no período não há série suficiente para afirmar tendência.`);
+  }
+
+  // 4 — comportamento do último mês
+  const ult = [];
+  if(r.varUltMes != null)
+    ult.push(`<b style="color:${terceirosCorCusto(r.varUltMes)};">${r.varUltMes<0?'queda':'aumento'} de ${terceirosPctMag(r.varUltMes)}</b> em relação a ${MESES_RH[r.iAnt]}`);
+  if(r.varUltAno != null)
+    ult.push(`<b style="color:${terceirosCorCusto(r.varUltAno)};">${terceirosPctMag(r.varUltAno)} ${r.varUltAno<0?'abaixo':'acima'}</b> de ${TERCEIROS_2025_MESES[r.iUlt]} (${fmtMilReais(r.v25[r.iUlt])})`);
+  if(ult.length)
+    P.push(`<b>${rotFim}</b> registrou ${fmtMilReais(r.v26[r.iUlt])}: ${ult.join(', e permanece ')}.`);
+
+  // 5 — limite da base: o que ela NÃO responde
+  P.push(`<span class="muted">A planilha de origem traz apenas o valor mensal consolidado — não há fornecedor, contrato, setor ou centro de custo. Por isso os números acima descrevem <b>o que</b> variou, não <b>por que</b> variou.</span>`);
+
+  return P.map(p=>`<div style="margin-bottom:7px;">${p}</div>`).join('');
+}
+
+function terceirosBloco(){
+  const r = terceirosResumo();
+  const tag = `<span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">${r ? rhPeriodoLabel() : 'sem dado no período'}</span>`;
+  const titulo = `<div class="section-title" style="margin-top:26px;">Custo com Terceiros — Visão Gerencial ${tag}<div class="line"></div></div>`;
+
+  if(!r){
+    return titulo + `<div class="alert-box"><span>🕓</span><div>Nenhum mês de 2026 com custo de terceiros informado dentro do período selecionado.</div></div>`;
+  }
+
+  // legenda — identidade nunca fica só na cor: nome do ano junto do marcador
+  const legenda = `
+    <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin:2px 0 12px; font-size:12px; font-weight:700;">
+      <span style="display:inline-flex; align-items:center; gap:6px; color:var(--muted);">
+        <span style="width:11px; height:11px; border-radius:3px; background:${TERCEIROS_COR.a2025}; display:inline-block;"></span>2025</span>
+      <span style="display:inline-flex; align-items:center; gap:6px; color:var(--muted);">
+        <span style="width:11px; height:11px; border-radius:3px; background:${TERCEIROS_COR.a2026}; display:inline-block;"></span>2026</span>
+      ${r.semDado.length ? `<span style="display:inline-flex; align-items:center; gap:6px; color:#5c6370;">
+        <span style="width:11px; height:11px; border-radius:3px; border:1px dashed #5c6370; display:inline-block;"></span>sem dado</span>` : ''}
+    </div>`;
+
+  // nota de cobertura — derivada da base, nunca escrita à mão
+  let notaBase = `<span class="muted">Base 2026: ${r.baseQtdMeses} ${r.baseQtdMeses===1?'mês':'meses'} informado${r.baseQtdMeses===1?'':'s'}, até ${r.baseUltimoMes}. Valores em R$ mil nos rótulos; valor exato no toque/hover de cada coluna.</span>`;
+  if(r.passouDaBase || r.semDado.length){
+    notaBase = `<span style="color:var(--gold);">Dados de 2026 disponíveis até ${r.baseUltimoMes}.</span> ` + notaBase;
+  }
+
+  // dados do gráfico — recolhido, para conferência (não é ranking nem detalhamento)
+  const linhas = r.noPeriodo.map(i=>{
+    const a = r.v25[i], b = r.v26[i];
+    const dif = (a!=null && b!=null) ? (b/a-1)*100 : null;
+    return `<tr><td>${(MESES_RH[i]||TERCEIROS_2025_MESES[i]).split('/')[0]}</td>
+      <td class="num">${a!=null?fmtBRL(a):'—'}</td>
+      <td class="num">${b!=null?fmtBRL(b):'<span class="muted">sem dado</span>'}</td>
+      <td class="num" style="color:${dif!=null?terceirosCorCusto(dif):'var(--muted)'};">${dif!=null?terceirosPct(dif):'—'}</td></tr>`;
+  }).join('');
+  const totalPares = r.pares.length ? `<tr style="font-weight:800; border-top:1px solid var(--border);">
+      <td>Total</td><td class="num">${fmtBRL(r.soma25)}</td><td class="num">${fmtBRL(r.soma26Pares)}</td>
+      <td class="num" style="color:${terceirosCorCusto(r.varPct)};">${terceirosPct(r.varPct)}</td></tr>` : '';
+  const tabela = `
+    <details style="margin-top:12px;">
+      <summary style="cursor:pointer; font-size:12px; font-weight:700; color:var(--muted);">ver os números do gráfico</summary>
+      <div style="overflow-x:auto; margin-top:8px;">
+        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+          <thead><tr style="color:var(--muted); text-align:left;">
+            <th style="padding:4px 6px;">Mês</th>
+            <th style="padding:4px 6px; text-align:right;">2025</th>
+            <th style="padding:4px 6px; text-align:right;">2026</th>
+            <th style="padding:4px 6px; text-align:right;">Var.</th></tr></thead>
+          <tbody>${linhas}${totalPares}</tbody>
+        </table>
+      </div>
+    </details>`;
+
+  const painelGrafico = `
+    <div class="kpi-spark-card" style="padding:16px 16px 14px;">
+      <div class="kpi-spark-label" style="margin-bottom:8px;">Evolução do Custo com Terceiros — 2025 × 2026</div>
+      ${legenda}
+      <div id="terceirosGrafico"></div>
+      <div style="font-size:11.5px; margin-top:8px; line-height:1.5;">${notaBase}</div>
+      ${tabela}
+    </div>`;
+
+  const analise = `
+    <div class="alert-box" style="border-color:${TERCEIROS_COR.a2026}; margin-top:14px; align-items:flex-start;"><span>🧭</span>
+      <div><b style="text-transform:uppercase; letter-spacing:.3px; font-size:12px;">Análise — Custo com Terceiros</b>
+        <div style="margin-top:8px; line-height:1.55;">${terceirosAnalise(r)}</div>
+      </div>
+    </div>`;
+
+  return titulo + terceirosCards(r) + painelGrafico + analise;
+}
+
+function renderTerceirosGerencial(){
+  const el = document.getElementById('terceirosGerencial');
+  if(!el) return;
+  el.innerHTML = terceirosBloco();
+  drawTerceirosComparativo('terceirosGrafico');
+  terceirosObservar();
+}
+
+// A subaba DP nasce oculta e a aba RH também: enquanto estiverem escondidas o
+// container mede 0 e o SVG sairia na largura de reserva. O observador redesenha
+// no instante em que o bloco ganha largura de verdade — cobre navegação entre
+// abas, troca de subaba, giro do celular e recolhimento do menu.
+let _terceirosResizeT = null;
+function terceirosRedesenhar(){
+  const el = document.getElementById('terceirosGrafico');
+  if(!el) return;
+  const larg = Math.round(el.clientWidth || 0);
+  if(!larg) return;                                    // continua oculto: não desenha
+  if(Math.abs(larg - (+el.dataset.larg || 0)) < 1) return;   // já está nessa largura
+  try{ drawTerceirosComparativo('terceirosGrafico'); }catch(e){}
+}
+if(typeof window !== 'undefined'){
+  window.addEventListener('resize', ()=>{
+    clearTimeout(_terceirosResizeT);
+    _terceirosResizeT = setTimeout(terceirosRedesenhar, 140);
+  });
+  if(typeof ResizeObserver !== 'undefined'){
+    window.__terceirosRO = new ResizeObserver(()=>{
+      clearTimeout(_terceirosResizeT);
+      _terceirosResizeT = setTimeout(terceirosRedesenhar, 60);
+    });
+  }
+}
+// (re)liga o observador ao container — chamado a cada render do bloco
+function terceirosObservar(){
+  const el = document.getElementById('terceirosGrafico');
+  if(el && window.__terceirosRO){ try{ window.__terceirosRO.disconnect(); window.__terceirosRO.observe(el); }catch(e){} }
 }
 
 function abrirDetalheIndicador(grupo, chave){
@@ -17800,6 +18228,7 @@ function renderRH(mesKey){
   // Indicadores RH e DP respondem ao filtro de período (soma/média/foto)
   renderIndicadoresGrid('rhIndicadoresConteudo', RH_INDICADORES, RH_PENDENTES, 'rh');
   renderIndicadoresGrid('dpIndicadoresConteudo', DP_INDICADORES, DP_PENDENTES, 'dp');
+  renderTerceirosGerencial();
   document.getElementById('tabelaHistoricoRH').innerHTML = HE_HISTORICO_MENSAL.map((h,i)=>`
     <tr>
       <td>${h.mes}</td>
@@ -19213,6 +19642,7 @@ drawPagamentosSemanal('pagChartSemanal');
 renderObras();
 renderIndicadoresGrid('rhIndicadoresConteudo', RH_INDICADORES, RH_PENDENTES, 'rh');
 renderIndicadoresGrid('dpIndicadoresConteudo', DP_INDICADORES, DP_PENDENTES, 'dp');
+renderTerceirosGerencial();
 popularFiltroMesInicial();
 
 // ═══════════════════════════════════════════════════════════
