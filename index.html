@@ -20285,7 +20285,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v128</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v129</div>
     </div>
   </div>
 </header>
@@ -20296,7 +20296,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v128</div>
+">SOGIPA · PAINEL 01 · v129</div>
 
 <main>
 
@@ -20417,7 +20417,7 @@ header {
     <div class="section-title">Quadro Social</div>
 
     <!-- ═══════ 3 CAIXAS EM LINHA ═══════ -->
-    <div class="kpi-row-4" id="kpiRowQS" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="kpi-row-4" id="kpiRowQS" style="grid-template-columns: repeat(5, 1fr);">
       <div class="kpi-card qs-entradas" id="cardEntradas" onclick="selectCardQS('entradas')">
         <div class="kpi-card-title">Entradas<span class="strat-code v" title="V3 · Satisfazer e Reter">V3</span><span class="strat-code c" title="C1 · Potencializar Relacionamento">C1</span></div>
         <div class="kpi-card-value" id="valEntradas">—</div>
@@ -20437,6 +20437,11 @@ header {
         <div class="kpi-card-title">Sócios Ativos - Titular<span class="strat-code v" title="V3 · Satisfazer e Reter">V3</span></div>
         <div class="kpi-card-value" id="valSocios">—</div>
         <div class="kpi-arrows" id="arrSocios"></div>
+      </div>
+      <div class="kpi-card qs-socios" id="cardSociosIsentos" style="cursor:default;">
+        <div class="kpi-card-title">Sócios Ativos + Isentos<span class="strat-code v" title="V3 · Satisfazer e Reter">V3</span></div>
+        <div class="kpi-card-value" id="valSociosIsentos">—</div>
+        <div class="kpi-arrows" id="subSociosIsentos"></div>
       </div>
     </div>
 
@@ -21138,7 +21143,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v128 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v129 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -21475,6 +21480,17 @@ const QS = {
 };
 
 // ═══════════════════════════════════════════════════════════
+//  ISENTOS — Sócios titulares isentos por competência (fonte oficial mês a mês).
+//  Só preencher meses com dado oficial. Ausência ≠ zero (card mostra "não disponível").
+//  Total do card "Sócios Ativos + Isentos" = QS.titReal + ISENTOS (calculado).
+// ═══════════════════════════════════════════════════════════
+const ISENTOS = {
+  2026: {
+    8: 399   // Ago/26: 3.573 ativos + 399 isentos = 3.972
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
 //  FREQ — Composição de Frequentadores (Planilha Ticket Médio, campo "Qtde")
 //  Categorias: F (Familiar), I (Individual), G (Vitalício), U (Usuário Não Sócio), C (Convênios)
 //  Cada categoria: q = quantidade total, t = titulares, d = dependentes
@@ -21778,8 +21794,8 @@ function renderQS() {
   const meses = getMesesQS(mesIni, anoIni, mesFim, anoFim);
 
   if (meses.length === 0) {
-    ['valEntradas','valSaidas','valSocios','valRetencao'].forEach(id => document.getElementById(id).textContent = '—');
-    ['arrEntradas','arrSaidas','arrSocios','arrRetencao'].forEach(id => document.getElementById(id).innerHTML = '');
+    ['valEntradas','valSaidas','valSocios','valRetencao','valSociosIsentos'].forEach(id => document.getElementById(id).textContent = '—');
+    ['arrEntradas','arrSaidas','arrSocios','arrRetencao','subSociosIsentos'].forEach(id => document.getElementById(id).innerHTML = '');
     showEmptyChartQS();
     showEmptyChartFreq();
     document.getElementById('rankingFreqSection').style.display = 'none';
@@ -21820,6 +21836,26 @@ function renderQS() {
   document.getElementById('arrSocios').innerHTML =
     arrowHTMLqs(s.titReal, s.titOrc, true, 'vs. Orçado') +
     (s.titRealAnt !== null ? arrowHTMLqs(s.titReal, s.titRealAnt, true, 'vs. Ano anterior') : '');
+
+  // Sócios Ativos + Isentos (estoque: usa o ÚLTIMO mês do período)
+  // Total é SEMPRE calculado (ativos + isentos), nunca digitado.
+  // Sem fonte de isentos p/ a competência → não inventar total (mostra "não disponível").
+  const isentosLast = (ISENTOS[last.ano] && ISENTOS[last.ano][last.mes] != null)
+    ? ISENTOS[last.ano][last.mes] : null;
+  const elValTot = document.getElementById('valSociosIsentos');
+  const elSubTot = document.getElementById('subSociosIsentos');
+  if (isentosLast !== null) {
+    const totalSI = s.titReal + isentosLast;
+    elValTot.textContent = fmtInt(totalSI);
+    elSubTot.innerHTML =
+      '<div class="kpi-arrow-row" style="color:rgba(255,255,255,.92); font-weight:600;">'
+      + fmtInt(s.titReal) + ' ativos + ' + fmtInt(isentosLast) + ' isentos</div>';
+  } else {
+    elValTot.textContent = fmtInt(s.titReal);
+    elSubTot.innerHTML =
+      '<div class="kpi-arrow-row" style="color:rgba(255,255,255,.70); font-weight:500; font-style:italic;">'
+      + fmtInt(s.titReal) + ' ativos · isentos não disponível</div>';
+  }
 
   renderPizzaQS(s, meses);
   renderPizzaFreq(meses);
@@ -23358,7 +23394,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v128');
+  html = html.split('{{VERSAO}}').join('v129');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
@@ -23647,6 +23683,7 @@ render();
 
 </body>
 </html>
+
 </script>
 </body>
 </html>
