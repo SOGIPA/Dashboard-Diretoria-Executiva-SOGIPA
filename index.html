@@ -20285,7 +20285,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v129</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v130</div>
     </div>
   </div>
 </header>
@@ -20296,7 +20296,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v129</div>
+">SOGIPA · PAINEL 01 · v130</div>
 
 <main>
 
@@ -21143,7 +21143,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v129 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v130 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -21486,7 +21486,9 @@ const QS = {
 // ═══════════════════════════════════════════════════════════
 const ISENTOS = {
   2026: {
-    8: 399   // Ago/26: 3.573 ativos + 399 isentos = 3.972
+    6: 488,  // Jun/26: 3.540 ativos + 488 isentos = 4.028
+    7: 487,  // Jul/26: 3.524 ativos + 487 isentos = 4.011
+    8: 489   // Ago/26: 3.573 ativos + 489 isentos = 4.062
   }
 };
 
@@ -23394,7 +23396,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v129');
+  html = html.split('{{VERSAO}}').join('v130');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
