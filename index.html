@@ -9351,6 +9351,36 @@ function renderVGVendasResumo(v){
 // vazio e a tela caía no histórico (Licenças aparecia 0). Agora quem volta
 // para a Retenção reencontra exatamente o período que já estava selecionado,
 // sem precisar clicar em APLICAR de novo.
+// ═══════════════════════════════════════════════════════════════════════════
+// FONTE ÚNICA dos desligamentos usados pela CRA.
+// Card "Desligados", "% Taxa de Retenção" e as análises passam todos por aqui:
+// um número só, derivado de DESLIGAMENTOS_MESES. Quando um mês for atualizado,
+// a taxa acompanha sozinha — nada de total acumulado escrito à mão.
+//
+// O que estava errado: a Taxa somava apenas os meses de COBERTURA_RETENCAO_CRA
+// (mar a set, quando o acompanhamento de RETENÇÃO começou), e por isso deixava
+// de fora janeiro (48) e fevereiro (67) — meses que tiveram desligamento mas
+// nenhuma retenção. O denominador vinha 413 em vez dos 528 de jan a set.
+// Desligamento e retenção têm coberturas diferentes: o denominador tem de
+// seguir os meses do FILTRO que têm desligamento, não os que têm retenção.
+function desligamentosNosMeses(keys){
+  const M = (typeof DESLIGAMENTOS_MESES !== 'undefined') ? DESLIGAMENTOS_MESES : {};
+  const ks = (keys && keys.length) ? keys : Object.keys(M);
+  return ks.reduce((t,k)=>{
+    const d = M[k];
+    return t + (d && typeof d.totalDesligamentos === 'number' ? d.totalDesligamentos : 0);
+  }, 0);
+}
+// Meses do filtro global que TÊM desligamento (cobertura própria do desligamento,
+// jan a out). Sem filtro, devolve todos os meses da base.
+function mesesDesligamentoAtuais(){
+  try{
+    if(typeof mesesEmIntervalo !== 'function' || typeof COBERTURA_RETENCAO === 'undefined') return [];
+    const g = id => +document.getElementById(id).value;
+    return mesesEmIntervalo(g('mesIni'), g('anoIni'), g('mesFim'), g('anoFim'), COBERTURA_RETENCAO).map(x=>x.key);
+  }catch(e){ return []; }
+}
+
 function mesesRetencaoAtuais(){
   try{
     if(typeof mesesEmIntervalo !== 'function' || typeof COBERTURA_RETENCAO_CRA === 'undefined') return [];
@@ -9414,11 +9444,10 @@ function renderRetencaoCRA(mesesSel){
   // Desligamento (campo totalDesligamentos, idêntico ao KPI "Desligados").
   // Nenhuma base nova, nenhum valor fixo: soma os meses do recorte, exatamente
   // como agregarRetencao() já faz.
-  const mesesTaxa = keys.length ? keys : Object.keys(COBERTURA_RETENCAO_CRA);
-  const nDeslig = mesesTaxa.reduce((t,k)=>{
-    const d = (typeof getRetencaoMes === 'function') ? getRetencaoMes(k) : null;
-    return t + (d && d.totalDesligamentos ? d.totalDesligamentos : 0);
-  }, 0);
+  // Meses do filtro que têm desligamento — não os que têm retenção. Com filtro
+  // ativo manda o recorte; sem filtro, a base inteira. Tudo por desligamentosNosMeses().
+  const mesesTaxa = filtroAtivo0 ? mesesDesligamentoAtuais() : Object.keys(DESLIGAMENTOS_MESES);
+  const nDeslig = desligamentosNosMeses(mesesTaxa);
   const baseTaxa = nRet + nDeslig;
   // Denominador zero devolve 0%, nunca NaN/Infinity.
   const taxaRet = baseTaxa > 0 ? (nRet / baseTaxa * 100) : 0;
@@ -15234,7 +15263,13 @@ function agregarRetencao(mesesRet){
       {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:String(novas), sub:'novas solicitações no período'},
       {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:String(deslig), sub:'total de desligamentos', valorCor:'#e8192c'},
       {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:String(retidos), sub:'associados retidos', valorCor:'#00e5a0'},
-      {icone:'👥', cor:'#a855f7', bg:'rgba(168,85,247,.15)', label:'Quadro Social', valor:String(ult.quadroSocial||'—'), sub:`ativos ao final (${nomeMes(mesesRet[mesesRet.length-1].key)})`, valorCor:'#a855f7'},
+      // 01/10/2026: este card dizia "Quadro Social · ativos ao final". Estava errado.
+      // O campo quadroSocial é a contagem de DESLIGAMENTOS feita pelo sistema do
+      // Quadro Social — uma segunda medição do mesmo evento, para conferir contra o
+      // número do CRA. As análises de todos os meses dizem isso com todas as letras
+      // ("o quadro social registrou 46 desligamentos, 2 a menos que os 48 do CRA").
+      // Nunca representou o total de sócios ativos da SOGIPA.
+      {icone:'👥', cor:'#a855f7', bg:'rgba(168,85,247,.15)', label:'Deslig. pelo Quadro Social', valor:String(ult.quadroSocial||'—'), sub:`contagem do sistema em ${nomeMes(mesesRet[mesesRet.length-1].key)} · confere com o CRA`, valorCor:'#a855f7'},
     ],
     categorias, motivos,
     totalDesligamentos: deslig,
