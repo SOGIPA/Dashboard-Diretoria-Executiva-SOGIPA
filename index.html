@@ -15335,14 +15335,21 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   }
   const avisoHtml = aviso ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>${aviso}</div></div>` : '';
   // a tag de período do cabeçalho agora pertence à sub-aba Retenção (CRA)
-  const kpisHtml = r.kpis.map(k=>`
+  // 01/10/2026: cards ocultados da interface a pedido da gestora do CRA.
+  // Só a camada de apresentação: os KPIs continuam em r.kpis e nos blocos
+  // mensais, e quem usa esses números por dentro (análises, mini-stats da
+  // Visão Geral, quadroSocial, totalDesligamentos) segue lendo normalmente.
+  // O filtro é por rótulo, então vale para os meses e para o agregado.
+  const KPIS_DESLIG_OCULTOS = ['Deste Mês', 'Quadro Social', 'Deslig. pelo Quadro Social'];
+  const kpisVisiveis = r.kpis.filter(k => KPIS_DESLIG_OCULTOS.indexOf(k.label) < 0);
+  const kpisHtml = kpisVisiveis.map(k=>`
     <div class="kpi-icon-card">
       <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:${k.bg}; color:${k.cor};">${k.icone}</div><div class="label">${k.label}</div></div>
       <div class="kpi-icon-info"><div class="value"${k.valorCor?` style="color:${k.valorCor}"`:''}>${k.valor}</div><div class="delta muted">${k.sub}</div></div>
     </div>`).join('');
   const el = document.getElementById('desligamentoConteudo');   // Plano de Trabalho migrou para a sub-aba Desligamento
   el.innerHTML = avisoHtml + `
-    <div class="kpi-row-icons cols-${r.kpis.length}">${kpisHtml}</div>
+    <div class="kpi-row-icons cols-${kpisVisiveis.length}">${kpisHtml}</div>
     <div class="section-title">Relatório de Desempenho — Central de Relacionamento (${r.periodoTag})<div class="line"></div></div>
     <div class="grid-2 reverse">
       <div class="card"><div class="card-label">Distribuição por Categoria (Desligamentos)</div><div id="retencaoDonutCategoria" class="donut-wrap"></div></div>
@@ -15360,8 +15367,11 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
           r.taxaQtd!=null ? `cobrada de ${r.taxaQtd} desligado${r.taxaQtd===1?'':'s'} no período` : 'valor de taxa cobrada') : ''}
       ${r.modalidadeTaxa ? cardKpi('🎁 Modalidade Ofertada', r.modalidadeTaxa.sim,
           `isenção oferecida na retenção · ${r.modalidadeTaxa.nao} sem oferta`) : ''}
+      ${/* 01/10/2026: card ocultado a pedido da gestora. r.quadroSocial continua
+            na base e disponível para quem precisar — só não é mais renderizado.
       ${r.quadroSocial ? cardKpi('👥 Deslig. do Quadro Social', r.quadroSocial,
           'total no período, incluindo dependentes e isentos') : ''}
+         */''}
     </div>
     <div class="card full"><div class="card-label">Análise</div><div class="card-meta" style="font-size:13px; line-height:1.7;">${r.analise}</div></div>
 
@@ -15916,7 +15926,7 @@ const DESLIGAMENTOS_MESES = {
     desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:18},
     quadroSocial: 26,
     negociacoesDesligados: 'R$ 0,00',
-    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. \"Deste Mês\" também foi corrigido de 8 para <b>10</b> pela mesma validação.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
     periodoTag:'Outubro/2026 (parcial · posição de 01/10)',
