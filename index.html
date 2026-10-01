@@ -2185,6 +2185,7 @@ const COBERTURA_SATISFACAO = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -2789,16 +2790,19 @@ const HE_HISTORICO_MENSAL = [
 // DADOS — RH x DP (planilha "proposta Cíntia")
 // Estrutura definida pela própria Gerente de RH: RH = pessoas/gestão, DP = operacional/custos
 // ═══════════════════════════════════════════════════════════
-const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26'];
+// Set/26 entrou com o fechamento de Terceiros. Os demais indicadores do RH/DP
+// ainda não têm setembro: ficam com null nessa posição — "sem dado", nunca zero.
+// As regras de agregação já descartam null, então nenhum valor histórico muda.
+const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26'];
 
 const RH_INDICADORES = {
-  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247], meta:null, formato:'int'},
-  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47], meta:null, formato:'pct', invertido:true,
+  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247, null], meta:null, formato:'int'},
+  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47, null], meta:null, formato:'pct', invertido:true,
                 nota:'A elevação do turnover no período reflete a <b>adequação da força de trabalho</b> em curso, não uma perda espontânea de pessoal.'},
-  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13], meta:null, formato:'int'},
-  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14], meta:null, formato:'int', invertido:true},
-  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24], meta:null, formato:'pct', invertido:true},
-  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25], meta:null, formato:'int',
+  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13, null], meta:null, formato:'int'},
+  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14, null], meta:null, formato:'int', invertido:true},
+  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24, null], meta:null, formato:'pct', invertido:true},
+  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25, null], meta:null, formato:'int',
                 nota:'Pela base estratégica do clube, é um indicador de <b>tendência sempre a melhorar</b>. Ainda não há meta definida.'},
 };
 // Avisos de pendências removidos a pedido da diretoria (não haverá esses dados até a apresentação)
@@ -2814,10 +2818,10 @@ RH_INDICADORES.saldoLiquido = {
 
 // Séries do custo de folha — exibidas juntas num único card interativo
 const FOLHA_DADOS = {
-  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91]},
-  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92]},
-  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null]},   // jul: não vem nesta planilha
-  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83]},
+  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91, null]},
+  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92, null]},
+  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null, null]},   // jul: não vem nesta planilha
+  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83, null]},
 };
 
 // ── Custo com Terceiros · série comparativa de 2025 ────────────────────────
@@ -2832,14 +2836,14 @@ const TERCEIROS_2025_MESES = ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/
                               'Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'];
 
 const DP_INDICADORES = {
-  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
+  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84, null], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
-  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38], meta:null, formato:'num', jornada:true},
-  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15], meta:null, formato:'num', invertido:true, jornada:true,
+  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38, null], meta:null, formato:'num', jornada:true},
+  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15, null], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
-  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33], meta:null, formato:'num', invertido:true},
-  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14], meta:null, formato:'moeda', invertido:true, he:true},
-  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06], meta:null, formato:'moeda', invertido:true,
+  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33, null], meta:null, formato:'num', invertido:true},
+  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14, null], meta:null, formato:'moeda', invertido:true, he:true},
+  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06, 53230.60], meta:null, formato:'moeda', invertido:true,
                      valores2025:TERCEIROS_2025, gerencial:'terceiros'},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
@@ -6318,6 +6322,7 @@ const COBERTURA_RETENCAO = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 function mesKeyParaRetencao(de, ate){
   for(const mesKey in COBERTURA_RETENCAO){
@@ -6886,6 +6891,7 @@ const COBERTURA_RH = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
 };
 
 // Vendas tem cobertura própria (Jan a Jul/26) — a planilha de ENTRADAS tem os 6 meses,
@@ -8351,7 +8357,7 @@ function mudarSubAbaRet(qual){
     if(botao)  botao.classList.toggle('active', sub.id === alvo);
   });
   window._subAbaRet = alvo;
-  if(alvo === 'ret'){ if(typeof renderRetencaoCRA === 'function') renderRetencaoCRA(); }
+  if(alvo === 'ret'){ if(typeof renderRetencaoCRA === 'function') renderRetencaoCRA(mesesRetencaoAtuais()); }
   else craAtualizarTag();
   setTimeout(ajustarTextoKPI, 30);
 }
@@ -8631,7 +8637,7 @@ const RETENCAO_CRA = [
  },
  {
   "nome": "L.F.M.S.",
-  "cat": "Universitário",
+  "cat": "Univertsitário",
   "perm": "6 meses",
   "mes": "jun2026",
   "inicio": "01/06/2026",
@@ -8972,8 +8978,8 @@ const RETENCAO_CRA = [
   "cat": "Senior",
   "perm": "6 meses",
   "mes": "set2026",
-  "inicio": "26/09/2026",
-  "valor": 0.0,
+  "inicio": "01/09/2026",
+  "valor": 1596.0,
   "beneficios": [
    "Troca De Categoria"
   ],
@@ -8989,8 +8995,10 @@ const RETENCAO_CRA = [
   "perm": "6 meses",
   "mes": "set2026",
   "inicio": "01/09/2026",
-  "valor": 0.0,
-  "beneficios": [],
+  "valor": 1596.0,
+  "beneficios": [
+   "Troca De Categoria"
+  ],
   "vBeneficio": 0.0,
   "negociacao": null,
   "vNegociacao": 0.0,
@@ -8998,14 +9006,14 @@ const RETENCAO_CRA = [
   "beneficioUsado": true
  },
  {
-  "nome": "F.X.V.",
-  "cat": "",
-  "perm": "",
+  "nome": "A.C.C.",
+  "cat": "Contribuinte Individual",
+  "perm": "—",
   "mes": null,
   "inicio": null,
   "valor": 0.0,
   "beneficios": [],
-  "vBeneficio": 0.0,
+  "vBeneficio": 0.9726027397260274,
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
@@ -9015,13 +9023,6 @@ const RETENCAO_CRA = [
 // 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
 // vazia. A planilha revisada tem só uma. Bate com o resumo (23).
 const LICENCAS_CRA = [
- {
-  "nome": "H.A.C.F.",
-  "cat": "Contribuinte",
-  "mes": "abr2026",
-  "inicio": "27/04/2026",
-  "fim": "30/11/2026"
- },
  {
   "nome": "M.T.L.V.O.",
   "cat": "Contribuinte",
@@ -9189,6 +9190,13 @@ const LICENCAS_CRA = [
   "mes": null,
   "inicio": null,
   "fim": null
+ },
+ {
+  "nome": "H.A.C.F.",
+  "cat": "Contribuinte",
+  "mes": "abr2026",
+  "inicio": "27/04/2026",
+  "fim": "30/11/2026"
  }
 ]
 
@@ -9335,6 +9343,20 @@ function renderVGVendasResumo(v){
   }).join('');
 }
 
+// Meses do filtro global que a Retenção cobre, lidos direto dos selects.
+// Existe porque mudarSubAbaRet('ret') re-renderiza a sub-aba fora do fluxo do
+// APLICAR: antes chamava renderRetencaoCRA() sem argumento, o recorte vinha
+// vazio e a tela caía no histórico (Licenças aparecia 0). Agora quem volta
+// para a Retenção reencontra exatamente o período que já estava selecionado,
+// sem precisar clicar em APLICAR de novo.
+function mesesRetencaoAtuais(){
+  try{
+    if(typeof mesesEmIntervalo !== 'function' || typeof COBERTURA_RETENCAO_CRA === 'undefined') return [];
+    const g = id => +document.getElementById(id).value;
+    return mesesEmIntervalo(g('mesIni'), g('anoIni'), g('mesFim'), g('anoFim'), COBERTURA_RETENCAO_CRA);
+  }catch(e){ return []; }
+}
+
 function renderRetencaoCRA(mesesSel){
   const el = document.getElementById('retencaoConteudo');
   if(!el) return;
@@ -9354,7 +9376,10 @@ function renderRetencaoCRA(mesesSel){
   const cobertos = Object.keys(COBERTURA_RETENCAO_CRA);
   const periodoTotal = keys.length && cobertos.every(k=>keys.includes(k));
   const base = periodoTotal ? noPeriodo.concat(semData) : noPeriodo;
-  const casos = base.length ? base : RETENCAO_CRA;
+  // Com filtro ativo manda o recorte, mesmo quando ele é vazio. Antes havia um
+  // `base.length ? base : RETENCAO_CRA` que, num mês sem acordo (Outubro, por
+  // exemplo), devolvia os 39 casos históricos como se fossem daquele mês.
+  const casos = filtroAtivo0 ? base : RETENCAO_CRA;
 
   // ── CARDS DE TOTAIS (14/08) ────────────────────────────────────────────────
   // Três cards no topo, como nas outras sub-abas do CRA: o total geral e as duas
@@ -9370,6 +9395,14 @@ function renderRetencaoCRA(mesesSel){
   const licSemData   = LICENCAS_CRA.filter(l=>!l.mes);
   const licencas     = periodoTotal ? licNoPeriodo.concat(licSemData) : licNoPeriodo;
   const nRet = casos.length, nLic = licencas.length, nTot = nRet + nLic;
+
+  // Bloco "Taxa de Retenção / Receita Retida" ocultado da interface a pedido da
+  // gestora do CRA em 01/10/2026. Nada foi apagado: o donut, a taxa, a receita
+  // retida, 'salvos', 'casos', 'perdidos' e 'perdida' continuam calculados aqui
+  // e seguem alimentando os outros blocos da subaba (retorno por real investido,
+  // contratos perdidos, quadro-resumo). Para trazer o bloco de volta à tela,
+  // basta devolver esta flag para true — nenhuma outra alteração é necessária.
+  const MOSTRAR_DONUT_RETENCAO = false;
 
   // ── % TAXA DE RETENÇÃO (21/08) ─────────────────────────────────────────────
   // Fórmula: retenções / (retenções + desligamentos) × 100.
@@ -9422,7 +9455,39 @@ function renderRetencaoCRA(mesesSel){
 
   const filtroAtivo = filtroAtivo0;
   // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
-  const recorteVazio = filtroAtivo && !noPeriodo.length;
+  const recorteVazio = filtroAtivo && !casos.length && !licencas.length;
+
+  // Período sem nenhum acordo nem licença: a tela diz isso. Os cards marcam
+  // ausência com "—", não com 0 — não há fechamento oficial declarando zero,
+  // há apenas falta de registro no recorte.
+  if(recorteVazio){
+    const tagV = (!window._subAbaRet || window._subAbaRet === 'ret')
+                 ? document.getElementById('retencaoPeriodoTag') : null;
+    if(tagV) tagV.textContent = 'Sem acordo no período';
+    el.innerHTML = `
+    <div class="grid-3" style="margin-bottom:16px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      <div class="card"><div class="card-label">🤝 Total de Retenções</div>
+        <div class="card-value" style="color:var(--muted);">—</div>
+        <div class="card-meta">sem registro em ${rotuloPeriodo}</div></div>
+      <div class="card"><div class="card-label">🔄 Retenções</div>
+        <div class="card-value" style="color:var(--muted);">—</div>
+        <div class="card-meta">sem registro no período</div></div>
+      <div class="card"><div class="card-label">⏸️ Licenças</div>
+        <div class="card-value" style="color:var(--muted);">—</div>
+        <div class="card-meta">sem registro no período</div></div>
+      <div class="card"><div class="card-label">📊 % Taxa de Retenção</div>
+        <div class="card-value" style="color:var(--muted);">—</div>
+        <div class="card-meta">${nDeslig ? `sem retenção para medir · ${nDeslig} desligamento${nDeslig===1?'':'s'} no período` : 'sem base para calcular'}</div></div>
+    </div>
+    <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
+      <b>Nenhum acordo de retenção registrado no período selecionado.</b>
+      O acompanhamento de retenção da CRA cobre <b>${textoCobertura(COBERTURA_RETENCAO_CRA)}</b>,
+      pela <b>data de início do acordo</b>. Ausência de registro não é fechamento com zero:
+      pode ser período ainda não enviado pela gestora.
+      ${semData.length ? `Há também <b>${semData.length} registro${semData.length===1?'':'s'} sem data de início</b> na planilha, que só ${semData.length===1?'entra':'entram'} quando o filtro cobre todo o período apurado.` : ''}
+    </div></div>`;
+    return;
+  }
 
   const tag = (!window._subAbaRet || window._subAbaRet === 'ret')
               ? document.getElementById('retencaoPeriodoTag') : null;
@@ -9525,7 +9590,8 @@ function renderRetencaoCRA(mesesSel){
             : `Com o período restrito a alguns meses, ${semData.length===1?'fica':'ficam'} de fora — não há como saber a que mês ${semData.length===1?'pertence':'pertencem'}. Cobrindo o ano inteiro, o total é ${RETENCAO_CRA.length} acordos.`}
       </div></div>` : ''}
 
-    <div class="grid-2">
+    <div class="${MOSTRAR_DONUT_RETENCAO ? 'grid-2' : ''}"${MOSTRAR_DONUT_RETENCAO ? '' : ' style="margin-bottom:28px;"'}>
+      ${MOSTRAR_DONUT_RETENCAO ? `
       <div class="card" style="display:flex; align-items:center; gap:22px; flex-wrap:wrap;">
         ${donut}
         <div style="flex:1; min-width:150px;">
@@ -9552,7 +9618,7 @@ function renderRetencaoCRA(mesesSel){
               (${fmtBRL0(perdida)}). Aqui só contam os que ficaram.</div>` : ''}
           </div>
         </div>
-      </div>
+      </div>` : ''}
       <div class="card">
         <div class="card-label">Investimento na Retenção</div>
         <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); margin-top:12px;">
@@ -9655,7 +9721,7 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "19/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 19,
+  "prazo": 14.0,
   "prazoCorridos": 19,
   "ressarc": false,
   "valor": 0.0
@@ -9669,7 +9735,7 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "28/01/2026",
   "fechamento": "29/01/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -9683,7 +9749,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "07/02/2026",
   "fechamento": "28/04/2026",
-  "prazo": 80,
+  "prazo": 55.0,
   "prazoCorridos": 80,
   "ressarc": true,
   "valor": 0.0
@@ -9697,7 +9763,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "22/02/2026",
   "fechamento": "15/06/2026",
-  "prazo": 113,
+  "prazo": 78.0,
   "prazoCorridos": 113,
   "ressarc": false,
   "valor": 4131.32
@@ -9711,7 +9777,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": true,
   "valor": 0.0
@@ -9725,7 +9791,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9739,7 +9805,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9753,7 +9819,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 61,
+  "prazo": 42.0,
   "prazoCorridos": 61,
   "ressarc": false,
   "valor": 0.0
@@ -9767,7 +9833,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9781,7 +9847,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9795,7 +9861,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9809,7 +9875,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
@@ -9823,7 +9889,7 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 1000.0
@@ -9837,7 +9903,7 @@ const OCORRENCIAS = [
   "mes": "mar2026",
   "abertura": "05/03/2026",
   "fechamento": "30/04/2026",
-  "prazo": 56,
+  "prazo": 38.0,
   "prazoCorridos": 56,
   "ressarc": true,
   "valor": 0.0
@@ -9851,7 +9917,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9865,7 +9931,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9879,7 +9945,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9893,7 +9959,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9907,7 +9973,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9921,7 +9987,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": true,
   "valor": 1090.0
@@ -9935,7 +10001,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9949,7 +10015,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
@@ -9963,7 +10029,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "20/04/2026",
   "fechamento": "20/04/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -9977,7 +10043,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "16/06/2026",
-  "prazo": 48,
+  "prazo": 33.0,
   "prazoCorridos": 48,
   "ressarc": false,
   "valor": 0.0
@@ -9991,7 +10057,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 35.0,
   "prazoCorridos": 50,
   "ressarc": false,
   "valor": 0.0
@@ -10005,7 +10071,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 35.0,
   "prazoCorridos": 50,
   "ressarc": false,
   "valor": 0.0
@@ -10019,7 +10085,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "29/04/2026",
   "fechamento": "18/06/2026",
-  "prazo": 50,
+  "prazo": 35.0,
   "prazoCorridos": 50,
   "ressarc": true,
   "valor": 0.0
@@ -10033,7 +10099,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "14/05/2026",
   "fechamento": "14/05/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10047,7 +10113,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33.0,
   "prazoCorridos": 47,
   "ressarc": false,
   "valor": 0.0
@@ -10061,7 +10127,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 13,
+  "prazo": 9.0,
   "prazoCorridos": 13,
   "ressarc": false,
   "valor": 0.0
@@ -10075,7 +10141,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33.0,
   "prazoCorridos": 47,
   "ressarc": false,
   "valor": 0.0
@@ -10089,7 +10155,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33.0,
   "prazoCorridos": 47,
   "ressarc": false,
   "valor": 0.0
@@ -10103,7 +10169,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10117,7 +10183,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10131,7 +10197,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10145,7 +10211,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "29/05/2026",
-  "prazo": 14,
+  "prazo": 10.0,
   "prazoCorridos": 14,
   "ressarc": false,
   "valor": 0.0
@@ -10159,7 +10225,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 60,
+  "prazo": 42.0,
   "prazoCorridos": 60,
   "ressarc": false,
   "valor": 0.0
@@ -10173,7 +10239,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 47,
+  "prazo": 33.0,
   "prazoCorridos": 47,
   "ressarc": false,
   "valor": 0.0
@@ -10187,7 +10253,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10201,7 +10267,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "16/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 16,
+  "prazo": 11.0,
   "prazoCorridos": 16,
   "ressarc": false,
   "valor": 0.0
@@ -10215,7 +10281,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "18/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 57,
+  "prazo": 41.0,
   "prazoCorridos": 57,
   "ressarc": false,
   "valor": 0.0
@@ -10229,7 +10295,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "21/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 7,
+  "prazo": 5.0,
   "prazoCorridos": 7,
   "ressarc": false,
   "valor": 0.0
@@ -10243,7 +10309,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "25/05/2026",
   "fechamento": "01/07/2026",
-  "prazo": 37,
+  "prazo": 27.0,
   "prazoCorridos": 37,
   "ressarc": false,
   "valor": 0.0
@@ -10257,7 +10323,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 6,
+  "prazo": 4.0,
   "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
@@ -10271,7 +10337,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "26/05/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10285,7 +10351,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "29/05/2026",
   "fechamento": "29/05/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10299,7 +10365,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "13/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10313,7 +10379,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "18/06/2026",
   "fechamento": "14/07/2026",
-  "prazo": 26,
+  "prazo": 18.0,
   "prazoCorridos": 26,
   "ressarc": false,
   "valor": 0.0
@@ -10327,7 +10393,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "18/06/2026",
   "fechamento": "30/06/2026",
-  "prazo": 12,
+  "prazo": 8.0,
   "prazoCorridos": 12,
   "ressarc": false,
   "valor": 0.0
@@ -10341,7 +10407,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "19/06/2026",
   "fechamento": "25/06/2026",
-  "prazo": 6,
+  "prazo": 4.0,
   "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
@@ -10355,7 +10421,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "19/06/2026",
   "fechamento": "19/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10369,7 +10435,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "26/06/2026",
   "fechamento": "23/07/2026",
-  "prazo": 27,
+  "prazo": 19.0,
   "prazoCorridos": 27,
   "ressarc": false,
   "valor": 0.0
@@ -10383,7 +10449,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "01/07/2026",
-  "prazo": 2,
+  "prazo": 2.0,
   "prazoCorridos": 2,
   "ressarc": false,
   "valor": 0.0
@@ -10397,7 +10463,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "29/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10411,7 +10477,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "29/06/2026",
   "fechamento": "29/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10425,7 +10491,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "13/07/2026",
   "fechamento": "14/07/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10439,7 +10505,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "20/07/2026",
   "fechamento": "04/08/2026",
-  "prazo": 15,
+  "prazo": 11.0,
   "prazoCorridos": 15,
   "ressarc": false,
   "valor": 0.0
@@ -10453,7 +10519,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "20/07/2026",
   "fechamento": "20/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10467,7 +10533,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "20/07/2026",
   "fechamento": "20/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": true,
   "valor": 0.0
@@ -10481,7 +10547,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "24/07/2026",
   "fechamento": "31/07/2026",
-  "prazo": 7,
+  "prazo": 5.0,
   "prazoCorridos": 7,
   "ressarc": false,
   "valor": 2800.0
@@ -10495,7 +10561,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "28/07/2026",
   "fechamento": "29/07/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10509,7 +10575,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "30/07/2026",
   "fechamento": "30/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10523,7 +10589,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "05/08/2026",
   "fechamento": "05/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10537,7 +10603,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "12/08/2026",
   "fechamento": "13/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10551,7 +10617,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "12/08/2026",
   "fechamento": "13/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10565,7 +10631,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "21/08/2026",
   "fechamento": "24/08/2026",
-  "prazo": 3,
+  "prazo": 1.0,
   "prazoCorridos": 3,
   "ressarc": false,
   "valor": 0.0
@@ -10579,7 +10645,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "28/08/2026",
-  "prazo": 4,
+  "prazo": 4.0,
   "prazoCorridos": 4,
   "ressarc": false,
   "valor": 0.0
@@ -10593,7 +10659,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "28/08/2026",
-  "prazo": 4,
+  "prazo": 4.0,
   "prazoCorridos": 4,
   "ressarc": false,
   "valor": 0.0
@@ -10607,7 +10673,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "24/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10621,7 +10687,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "25/08/2026",
   "fechamento": "25/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10635,7 +10701,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "25/08/2026",
   "fechamento": "25/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10649,7 +10715,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "25/08/2026",
   "fechamento": "01/09/2026",
-  "prazo": 7,
+  "prazo": 5.0,
   "prazoCorridos": 7,
   "ressarc": true,
   "valor": 1990.97
@@ -10663,7 +10729,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "25/08/2026",
   "fechamento": "09/09/2026",
-  "prazo": 15,
+  "prazo": 10.0,
   "prazoCorridos": 15,
   "ressarc": false,
   "valor": 0.0
@@ -10677,7 +10743,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "26/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10691,7 +10757,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "01/09/2026",
-  "prazo": 6,
+  "prazo": 4.0,
   "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
@@ -10705,7 +10771,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "27/08/2026",
   "fechamento": "27/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
@@ -10719,7 +10785,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "30/06/2026",
-  "prazo": 46,
+  "prazo": 32.0,
   "prazoCorridos": 46,
   "ressarc": false,
   "valor": 0.0
@@ -10733,7 +10799,7 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "11/06/2026",
   "fechamento": "30/06/2026",
-  "prazo": 19,
+  "prazo": 13.0,
   "prazoCorridos": 19,
   "ressarc": false,
   "valor": 0.0
@@ -10747,7 +10813,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "07/07/2026",
   "fechamento": "13/08/2026",
-  "prazo": 37,
+  "prazo": 27.0,
   "prazoCorridos": 37,
   "ressarc": false,
   "valor": 0.0
@@ -10761,7 +10827,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "13/07/2026",
   "fechamento": "13/08/2026",
-  "prazo": 31,
+  "prazo": 23.0,
   "prazoCorridos": 31,
   "ressarc": false,
   "valor": 0.0
@@ -10775,7 +10841,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "13/07/2026",
   "fechamento": "13/08/2026",
-  "prazo": 31,
+  "prazo": 23.0,
   "prazoCorridos": 31,
   "ressarc": false,
   "valor": 0.0
@@ -10789,7 +10855,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "18/07/2026",
   "fechamento": "18/08/2026",
-  "prazo": 31,
+  "prazo": 22.0,
   "prazoCorridos": 31,
   "ressarc": false,
   "valor": 0.0
@@ -10803,7 +10869,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "18/07/2026",
   "fechamento": "19/08/2026",
-  "prazo": 32,
+  "prazo": 23.0,
   "prazoCorridos": 32,
   "ressarc": false,
   "valor": 0.0
@@ -10817,7 +10883,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "25/07/2026",
   "fechamento": "31/07/2026",
-  "prazo": 6,
+  "prazo": 5.0,
   "prazoCorridos": 6,
   "ressarc": false,
   "valor": 0.0
@@ -10831,7 +10897,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "28/07/2026",
   "fechamento": "29/07/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
@@ -10845,13 +10911,13 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "29/07/2026",
   "fechamento": "29/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "A.M.B.L.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -10859,13 +10925,13 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "07/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 31,
+  "prazo": 22.0,
   "prazoCorridos": 31,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "R.A.B.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -10873,13 +10939,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "P.R.S.V.",
   "ger": "Gerência Operações",
   "local": "Ginásio 3",
@@ -10887,13 +10953,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "A.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10901,13 +10967,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "J.S.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -10915,13 +10981,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "30/04/2026",
-  "prazo": 61,
+  "prazo": 42.0,
   "prazoCorridos": 61,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "R.A.L.",
   "ger": "Gerência Operações",
   "local": "Salões",
@@ -10929,13 +10995,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "R.A.L.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -10943,13 +11009,13 @@ const OCORRENCIAS = [
   "mes": "fev2026",
   "abertura": "28/02/2026",
   "fechamento": "05/03/2026",
-  "prazo": 5,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "ressarc": false,
   "valor": 156.95
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "M.M.J.S.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -10957,13 +11023,13 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "12/04/2026",
   "fechamento": "30/04/2026",
-  "prazo": 18,
+  "prazo": 13.0,
   "prazoCorridos": 18,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "K.C.S.O.",
   "ger": "Gerência Operações",
   "local": "Refúgio",
@@ -10971,13 +11037,13 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "16/05/2026",
-  "prazo": 1,
+  "prazo": 0.0,
   "prazoCorridos": 1,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "P.R.S.S.(.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -10985,13 +11051,13 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 17,
+  "prazo": 11.0,
   "prazoCorridos": 17,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "P.R.S.S.(.",
   "ger": "Gerência Operações",
   "local": "GINÁSTICA ARTISTICA",
@@ -10999,13 +11065,13 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "01/06/2026",
-  "prazo": 17,
+  "prazo": 11.0,
   "prazoCorridos": 17,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "L.B.R.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11013,13 +11079,13 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "18/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 57,
+  "prazo": 41.0,
   "prazoCorridos": 57,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "V.S.A.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11027,13 +11093,13 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "03/06/2026",
   "fechamento": "03/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "J.R.D.G.H.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -11041,13 +11107,13 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "11/06/2026",
   "fechamento": "16/07/2026",
-  "prazo": 35,
+  "prazo": 25.0,
   "prazoCorridos": 35,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "V.F.D.",
   "ger": "Gerência Operações",
   "local": "Refeitório",
@@ -11055,13 +11121,13 @@ const OCORRENCIAS = [
   "mes": "jun2026",
   "abertura": "16/06/2026",
   "fechamento": "16/06/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "N.F.S.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -11069,13 +11135,13 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "31/07/2026",
   "fechamento": "31/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "A.S.S.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11083,13 +11149,13 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "17/08/2026",
   "fechamento": "17/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "I.A.R.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11097,13 +11163,13 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "28/08/2026",
-  "prazo": 4,
+  "prazo": 4.0,
   "prazoCorridos": 4,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "J.R.S.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11111,13 +11177,13 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "27/08/2026",
   "fechamento": "27/08/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "I.D.V.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11125,13 +11191,13 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "02/07/2026",
   "fechamento": "14/07/2026",
-  "prazo": 12,
+  "prazo": 8.0,
   "prazoCorridos": 12,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "P.S.C.",
   "ger": "Gerência Recursos Humanos",
   "local": "Sem Local",
@@ -11139,13 +11205,13 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "13/07/2026",
   "fechamento": "13/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "A.K.S.",
   "ger": "Gerência Recursos Humanos",
   "local": "Sem Local",
@@ -11153,22 +11219,22 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "14/07/2026",
   "fechamento": "14/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "ressarc": false,
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Interna",
+  "tipo": "Ocorrência interna",
   "nome": "M.V.F.F.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Estacionamento",
   "assunto": "Comportamento de Terceirizado",
   "mes": "ago2026",
   "abertura": "11/08/2026",
-  "fechamento": null,
-  "prazo": null,
-  "prazoCorridos": null,
+  "fechamento": "22/09/2026",
+  "prazo": 29.0,
+  "prazoCorridos": 42,
   "ressarc": false,
   "valor": 0.0
  },
@@ -11181,7 +11247,7 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "30/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 8,
+  "prazo": 5.0,
   "prazoCorridos": 8,
   "ressarc": false,
   "valor": 0.0
@@ -11195,7 +11261,7 @@ const OCORRENCIAS = [
   "mes": "jan2026",
   "abertura": "30/01/2026",
   "fechamento": "07/02/2026",
-  "prazo": 8,
+  "prazo": 5.0,
   "prazoCorridos": 8,
   "ressarc": false,
   "valor": 0.0
@@ -11209,7 +11275,7 @@ const OCORRENCIAS = [
   "mes": "abr2026",
   "abertura": "27/04/2026",
   "fechamento": "10/09/2026",
-  "prazo": 136,
+  "prazo": 96.0,
   "prazoCorridos": 136,
   "ressarc": false,
   "valor": 0.0
@@ -11223,7 +11289,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "19/05/2026",
   "fechamento": "31/07/2026",
-  "prazo": 73,
+  "prazo": 53.0,
   "prazoCorridos": 73,
   "ressarc": false,
   "valor": 0.0
@@ -11237,7 +11303,7 @@ const OCORRENCIAS = [
   "mes": "mai2026",
   "abertura": "26/05/2026",
   "fechamento": "14/07/2026",
-  "prazo": 49,
+  "prazo": 35.0,
   "prazoCorridos": 49,
   "ressarc": false,
   "valor": 0.0
@@ -11251,7 +11317,7 @@ const OCORRENCIAS = [
   "mes": "jul2026",
   "abertura": "15/07/2026",
   "fechamento": "23/09/2026",
-  "prazo": 70,
+  "prazo": 49.0,
   "prazoCorridos": 70,
   "ressarc": false,
   "valor": 0.0
@@ -11279,7 +11345,7 @@ const OCORRENCIAS = [
   "mes": "ago2026",
   "abertura": "06/08/2026",
   "fechamento": "23/09/2026",
-  "prazo": 63,
+  "prazo": 33.0,
   "prazoCorridos": 48,
   "ressarc": false,
   "valor": 0.0
@@ -11292,6 +11358,132 @@ const OCORRENCIAS = [
   "assunto": "Sem Assunto",
   "mes": "ago2026",
   "abertura": "13/08/2026",
+  "fechamento": null,
+  "prazo": null,
+  "prazoCorridos": null,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência interna",
+  "nome": "A.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Controle de Acesso",
+  "mes": "set2026",
+  "abertura": "11/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência interna",
+  "nome": "J.F.R.O.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Dano Material",
+  "mes": "set2026",
+  "abertura": "15/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 10,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência interna",
+  "nome": "L.B.R.",
+  "ger": "Gerência Recursos Humanos",
+  "local": "Estacionamento",
+  "assunto": "Comportamento de Associado",
+  "mes": "set2026",
+  "abertura": "15/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 10,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "E.B.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Ginásio 9",
+  "assunto": "Comportamento de Funcionário",
+  "mes": "set2026",
+  "abertura": "11/09/2026",
+  "fechamento": "15/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 4,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "F.M.C.",
+  "ger": "Gerência Operações",
+  "local": "Sede Social",
+  "assunto": "Dano Material",
+  "mes": "set2026",
+  "abertura": "11/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "L.G.A.",
+  "ger": "Gerência Operações",
+  "local": "Ginásio 2",
+  "assunto": "Dano Material",
+  "mes": "set2026",
+  "abertura": "29/09/2026",
+  "fechamento": "29/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Administrativa",
+  "nome": "K.S.R.",
+  "ger": "Gerência Operações",
+  "local": "Praça pequena",
+  "assunto": "Dano Material",
+  "mes": "set2026",
+  "abertura": "30/09/2026",
+  "fechamento": "30/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "T.D.B.",
+  "ger": "Diretoria",
+  "local": "Sem Local",
+  "assunto": "Comportamento de funcionário",
+  "mes": "ago2026",
+  "abertura": "13/08/2026",
+  "fechamento": null,
+  "prazo": null,
+  "prazoCorridos": null,
+  "ressarc": false,
+  "valor": 0.0
+ },
+ {
+  "tipo": "Ocorrência Sindicância",
+  "nome": "I.D.V.",
+  "ger": "Diretoria",
+  "local": "Sem Local",
+  "assunto": "Comportamento de Associado",
+  "mes": "jul2026",
+  "abertura": "22/07/2026",
   "fechamento": null,
   "prazo": null,
   "prazoCorridos": null,
@@ -11315,6 +11507,7 @@ const COBERTURA_OCORRENCIAS = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
 };
 const CORES_OCOR = ['#3d7bff','#e8192c','#f2b705','#00e5a0','#a855f7','#fb923c','#06b6d4','#f472b6','#b0b0d0','#22d3ee','#facc15','#8b8fa8','#5a5c78'];
 
@@ -11330,12 +11523,42 @@ function renderOcorrencias(mesesSel){
   const filtroAtivo = filtroAtivo0;
   // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
   const recorteVazio = filtroAtivo && !noPeriodo.length;
-  const ocs = noPeriodo.length ? noPeriodo : OCORRENCIAS;
+  // CAUSA DO ACUMULADO: a linha abaixo era `noPeriodo.length ? noPeriodo : BASE`.
+  // Quando o período filtrado não tinha nenhum registro (Setembro, por exemplo, que
+  // esta base ainda não cobre), o recorte vinha vazio e o render caía na BASE INTEIRA
+  // — a tela mostrava o ano todo com um aviso em amarelo. Agora, com filtro ativo, o
+  // recorte vale mesmo quando é vazio: filtra primeiro, agrega depois, sempre.
+  const ocs = filtroAtivo ? noPeriodo : OCORRENCIAS;
 
+  // Período sem nenhuma ocorrência: a tela diz isso, em vez de exibir outro período.
+  if(recorteVazio){
+    el.innerHTML = `
+    <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
+      <b>Nenhuma ocorrência registrada no período selecionado.</b>
+      O registro de ocorrências da CRA cobre <b>${textoCobertura(COBERTURA_OCORRENCIAS)}</b>.
+      Ausência de registro não é zero de operação: pode ser período ainda não enviado pela gestora.
+    </div></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
+      ${cardKpi('📋 Ocorrências', '0', 'no período selecionado')}
+      ${cardKpi('⏱️ Tempo Médio', '—', 'sem ocorrência fechada para medir')}
+      ${cardKpi('⚡ Resolvidas em até 7 dias', '0', '—')}
+      ${cardKpi('💰 Ressarcimentos', fmtBRL0(0), '0 ocorrência com cobrança')}
+    </div>`;
+    return;
+  }
+
+
+  // ENCERRADAS: têm Data de Fim. Só elas entram nas métricas de fechamento.
   const comPrazo = ocs.filter(o=>o.prazo!=null);
   const prazoMedio = comPrazo.length ? comPrazo.reduce((s,o)=>s+o.prazo,0)/comPrazo.length : null;
   const rapidas = comPrazo.filter(o=>o.prazo<=7).length;
   const lentas  = comPrazo.filter(o=>o.prazo>30);
+  // EM ABERTO: sem Data de Fim. O prazo continua correndo até hoje, e o atraso
+  // é reconhecido agora — não espera o encerramento para aparecer.
+  const emAberto        = ocs.filter(o=>o.aberta);
+  const abertasAtrasadas= emAberto.filter(o=>o.foraPrazo);
+  const abertasNoPrazo  = emAberto.filter(o=>!o.foraPrazo);
+  const maisAntigaAberta= emAberto.reduce((a,o)=> (a==null||(o.diasAberto||0)>(a.diasAberto||0)) ? o : a, null);
   const ressarc = ocs.filter(o=>o.ressarc);
   const valorRess = ocs.reduce((s,o)=>s+o.valor, 0);
 
@@ -11403,31 +11626,45 @@ function renderOcorrencias(mesesSel){
       <div style="font-size:11.5px; color:var(--muted); margin-top:5px;">${(f.qtd/totFx*100).toFixed(0)}% das fechadas</div>
     </div>`).join('');
 
-  const linhas = [...ocs].sort((a,b)=>(b.prazo??-1)-(a.prazo??-1)).map(o=>`
+  // ordena pelo tempo que cada uma consumiu — fechadas pelo prazo até o fim,
+  // abertas pelo tempo que já estão correndo (senão as abertas cairiam no fim)
+  const tempoDe = o => o.aberta ? (o.diasAberto ?? -1) : (o.prazo ?? -1);
+  const linhas = [...ocs].sort((a,b)=>tempoDe(b)-tempoDe(a)).map(o=>`
     <tr>
       <td style="white-space:nowrap;">${o.abertura||'—'}</td>
       <td style="white-space:nowrap;">${o.nome}</td>
       <td style="white-space:nowrap;">${o.tipo}</td>
       <td>${o.assunto}</td>
       <td style="white-space:nowrap;">${o.local}</td>
-      <td class="num" style="${o.prazo!=null && o.prazo>30 ? 'color:#ff6b6b; font-weight:700;' : ''}">${o.prazo!=null?String(o.prazo).replace('.',',')+'d':'—'}</td>
+      <td class="num" style="${o.aberta ? (o.foraPrazo ? 'color:#ff6b6b; font-weight:700;' : 'color:#f2b705;')
+                               : (o.prazo!=null && o.prazo>30 ? 'color:#ff6b6b; font-weight:700;' : '')}">${
+        o.aberta ? (o.diasAberto!=null ? String(o.diasAberto).replace('.',',')+'d em aberto' : 'em aberto')
+                 : (o.prazo!=null ? String(o.prazo).replace('.',',')+'d' : '—')}</td>
       <td class="num">${o.valor?fmtBRL0(o.valor):(o.ressarc===false?'não':'—')}</td>
     </tr>`).join('');
 
   el.innerHTML = `
-    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
-        <b>Os números abaixo NÃO são do período que você filtrou.</b> Não há ocorrência
-        registrada nesse recorte, então a tela está mostrando <b>todas as ${OCORRENCIAS.length} de 2026</b>.
-        O registro de ocorrências cobre <b>${textoCobertura(COBERTURA_OCORRENCIAS)}</b>.
-      </div></div>` : ''}
-
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('📋 Ocorrências', String(ocs.length), !recorteVazio && (keys.length||0) ? 'abertas no período' : 'registradas em 2026')}
-      ${cardKpi('⏱️ Tempo Médio', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `contados em D+1, sem fim de semana · ${comPrazo.length} fechadas`)}
+      ${cardKpi('⏱️ Tempo Médio', prazoMedio!=null ? prazoMedio.toFixed(1).replace('.',',')+' dias úteis' : '—', `até o fechamento · D+1, sem fim de semana · ${comPrazo.length} encerrada${comPrazo.length===1?'':'s'}`)}
+      ${cardKpi('🔄 Em Aberto', String(emAberto.length),
+          emAberto.length ? `${abertasAtrasadas.length} fora do prazo de ${SLA_OCOR} dias úteis` : 'todas encerradas no período',
+          emAberto.length && abertasAtrasadas.length ? 'var(--red)' : undefined)}
       ${cardKpi('⚡ Resolvidas em até 7 dias', String(rapidas), comPrazo.length?`${(rapidas/comPrazo.length*100).toFixed(0)}% das fechadas · dias úteis`:'—')}
       ${cardKpi('💰 Ressarcimentos', fmtBRL0(valorRess), `${ressarc.length} ocorrência${ressarc.length===1?'':'s'} com cobrança`)}
     </div>
 
+    ${abertasAtrasadas.length ? `<div class="alert-box" style="border-color:var(--red); margin-top:16px;"><span>⏳</span><div>
+      <b>${abertasAtrasadas.length} ocorrência${abertasAtrasadas.length===1?'':'s'} em aberto já ${abertasAtrasadas.length===1?'passou':'passaram'} do prazo de ${SLA_OCOR} dias úteis</b>
+      e continua${abertasAtrasadas.length===1?'':'m'} sem Data de Fim — o prazo segue contando.
+      ${maisAntigaAberta ? `A mais antiga foi aberta em <b>${maisAntigaAberta.abertura}</b> e está há
+        <b>${String(maisAntigaAberta.diasAberto).replace('.',',')} dias úteis</b> em andamento (${maisAntigaAberta.local}).` : ''}
+      <br><span class="muted">Contagem até ${new Date().toLocaleDateString('pt-BR')}; ela anda sozinha enquanto a ocorrência não for encerrada.</span>
+    </div></div>` : ''}
+    ${(emAberto.length && !abertasAtrasadas.length) ? `<div class="alert-box" style="border-color:var(--green); margin-top:16px;"><span>🕒</span><div>
+      <b>${emAberto.length} ocorrência${emAberto.length===1?'':'s'} em aberto, ${emAberto.length===1?'ainda dentro':'todas dentro'} do prazo de ${SLA_OCOR} dias úteis.</b>
+      Seguem em andamento: só serão encerradas quando receberem Data de Fim.
+    </div></div>` : ''}
     ${lentas.length ? `<div class="alert-box" style="border-color:var(--red); margin-top:16px;"><span>⚠️</span><div>
       <b>${lentas.length} ocorrência${lentas.length===1?'':'s'} levaram mais de 30 dias para fechar</b>
       (a mais longa, ${Math.max.apply(null,lentas.map(o=>o.prazo))} dias${lentas.length?` · ${lentas.reduce((a,b)=>b.prazo>a.prazo?b:a).local}`:''}).
@@ -11459,7 +11696,8 @@ function renderOcorrencias(mesesSel){
     <div class="card full" style="margin-top:16px;">
       <div class="card-label">Tempo até o Fechamento (dias úteis, D+1)</div>
       <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:16px;">${faixasHtml}</div>
-      <div class="card-meta" style="margin-top:12px;">${ocs.length-comPrazo.length} ocorrência${ocs.length-comPrazo.length===1?'':'s'} sem prazo preenchido na planilha ${ocs.length-comPrazo.length===1?'não entra':'não entram'} neste cálculo.</div>
+      <div class="card-meta" style="margin-top:12px;">Faixas de tempo <b>até o fechamento</b>: entram apenas as <b>${comPrazo.length}</b> ocorrência${comPrazo.length===1?'':'s'} com Data de Fim.${
+        emAberto.length ? ` ${emAberto.length===1?'A':'As'} <b>${emAberto.length}</b> em aberto ${emAberto.length===1?'não aparece':'não aparecem'} aqui porque ${emAberto.length===1?'ainda não tem':'ainda não têm'} tempo final — ${emAberto.length===1?'seu prazo segue':'seus prazos seguem'} contando.` : ''}</div>
     </div>
 
     </div>`;
@@ -11478,175 +11716,6 @@ function renderOcorrencias(mesesSel){
 // Nomes em iniciais (LGPD).
 const MANIFESTACOES = [
  {
-  "tipo": "Sugestão",
-  "nome": "A.R.A.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jan2026",
-  "abertura": "07/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 22,
-  "prazoCorridos": 31,
-  "prot": "8376"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.C.S.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jan2026",
-  "abertura": "14/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 17,
-  "prazoCorridos": 24,
-  "prot": "8380"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "A.P.P.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jan2026",
-  "abertura": "15/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 16,
-  "prazoCorridos": 23,
-  "prot": "8381"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "A.F.L.A.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Procedimentos Internos",
-  "mes": "jan2026",
-  "abertura": "20/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 13,
-  "prazoCorridos": 18,
-  "prot": "8383"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.R.S.M.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Procedimentos Internos",
-  "mes": "jan2026",
-  "abertura": "20/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 13,
-  "prazoCorridos": 18,
-  "prot": "8384"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.C.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Atendimento",
-  "mes": "jan2026",
-  "abertura": "26/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 9,
-  "prazoCorridos": 12,
-  "prot": "8385"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.M.M.B.S.C.",
-  "ger": "Gerência Operações",
-  "local": "Ginásio 2",
-  "assunto": "Comportamento de Associado",
-  "mes": "jan2026",
-  "abertura": "27/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 11,
-  "prot": "8386"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.C.",
-  "ger": "Gerência Operações",
-  "local": "Pista de Atletismo",
-  "assunto": "Comportamento de Associado",
-  "mes": "jan2026",
-  "abertura": "27/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 11,
-  "prot": "8387"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.M.Z.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Procedimentos Internos",
-  "mes": "jan2026",
-  "abertura": "27/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 11,
-  "prot": "8388"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.M.Z.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Atendimento",
-  "mes": "jan2026",
-  "abertura": "27/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 8,
-  "prazoCorridos": 11,
-  "prot": "8389"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.D.C.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Comportamento de Associado",
-  "mes": "jan2026",
-  "abertura": "29/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 6,
-  "prazoCorridos": 9,
-  "prot": "8391"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "K.M.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jan2026",
-  "abertura": "29/01/2026",
-  "fechamento": "07/02/2026",
-  "prazo": 6,
-  "prazoCorridos": 9,
-  "prot": "8392"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.A.F.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "fev2026",
-  "abertura": "07/02/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 34,
-  "prazoCorridos": 47,
-  "prot": "8395"
- },
- {
   "tipo": "Elogio",
   "nome": "N.B.",
   "ger": "Gerência Esportiva",
@@ -11655,152 +11724,9 @@ const MANIFESTACOES = [
   "mes": "fev2026",
   "abertura": "07/02/2026",
   "fechamento": "07/02/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "prot": "8397"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.S.G.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Salões",
-  "assunto": "Eventos",
-  "mes": "fev2026",
-  "abertura": "26/02/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 45,
-  "prazoCorridos": 63,
-  "prot": "8399"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.G.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Salões",
-  "assunto": "Eventos",
-  "mes": "fev2026",
-  "abertura": "27/02/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 44,
-  "prazoCorridos": 62,
-  "prot": "8400"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.P.P.",
-  "ger": "Gerência Operações",
-  "local": "G.r.d.",
-  "assunto": "Higienização e Limpeza",
-  "mes": "fev2026",
-  "abertura": "27/02/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 19,
-  "prazoCorridos": 27,
-  "prot": "8401"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.S.R.",
-  "ger": "Gerência Esportiva",
-  "local": "Fitness",
-  "assunto": "Organização de Aula",
-  "mes": "mar2026",
-  "abertura": "03/03/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 17,
-  "prazoCorridos": 23,
-  "prot": "8417"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.S.O.B.",
-  "ger": "Gerência Operações",
-  "local": "Centro de Esportes",
-  "assunto": "Higienização e Limpeza",
-  "mes": "mar2026",
-  "abertura": "03/03/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 17,
-  "prazoCorridos": 23,
-  "prot": "8418"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "V.M.D.",
-  "ger": "Gerência Esportiva",
-  "local": "Judo",
-  "assunto": "Organização de Aula",
-  "mes": "mar2026",
-  "abertura": "03/03/2026",
-  "fechamento": "26/05/2026",
-  "prazo": 60,
-  "prazoCorridos": 84,
-  "prot": "8419"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.G.C.F.",
-  "ger": "Gerência Esportiva",
-  "local": "Secretaria Esportiva",
-  "assunto": "Organização de Aula",
-  "mes": "mar2026",
-  "abertura": "04/03/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 16,
-  "prazoCorridos": 22,
-  "prot": "8420"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "S.L.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Eventos",
-  "mes": "mar2026",
-  "abertura": "10/03/2026",
-  "fechamento": "26/03/2026",
-  "prazo": 12,
-  "prazoCorridos": 16,
-  "prot": "8422"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "J.C.B.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Eventos",
-  "assunto": "Eventos",
-  "mes": "mar2026",
-  "abertura": "10/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 37,
-  "prazoCorridos": 51,
-  "prot": "8423"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.A.H.",
-  "ger": "Gerência Operações",
-  "local": "Vestiário das piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "mar2026",
-  "abertura": "10/03/2026",
-  "fechamento": "27/03/2026",
-  "prazo": 13,
-  "prazoCorridos": 17,
-  "prot": "8424"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.W.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "mar2026",
-  "abertura": "10/03/2026",
-  "fechamento": "27/03/2026",
-  "prazo": 13,
-  "prazoCorridos": 17,
-  "prot": "8425"
  },
  {
   "tipo": "Elogio",
@@ -11811,360 +11737,9 @@ const MANIFESTACOES = [
   "mes": "mar2026",
   "abertura": "10/03/2026",
   "fechamento": "27/03/2026",
-  "prazo": 13,
+  "prazo": 13.0,
   "prazoCorridos": 17,
   "prot": "8426"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.N.M.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Eventos",
-  "assunto": "Eventos",
-  "mes": "mar2026",
-  "abertura": "13/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 34,
-  "prazoCorridos": 48,
-  "prot": "8427"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.L.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Segurança",
-  "mes": "mar2026",
-  "abertura": "13/03/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 54,
-  "prazoCorridos": 76,
-  "prot": "8428"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "J.R.M.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Atendimento",
-  "mes": "mar2026",
-  "abertura": "18/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 31,
-  "prazoCorridos": 43,
-  "prot": "8429"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "Z.O.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mar2026",
-  "abertura": "18/03/2026",
-  "fechamento": "27/03/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8430"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "O.N.J.J.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "mar2026",
-  "abertura": "18/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 31,
-  "prazoCorridos": 43,
-  "prot": "8431"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.S.G.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Organização de Aula",
-  "mes": "mar2026",
-  "abertura": "19/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 30,
-  "prazoCorridos": 42,
-  "prot": "8432"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.Z.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Segurança",
-  "mes": "mar2026",
-  "abertura": "25/03/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 46,
-  "prazoCorridos": 64,
-  "prot": "8433"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Atendimento",
-  "mes": "mar2026",
-  "abertura": "27/03/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 24,
-  "prazoCorridos": 34,
-  "prot": "8434"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "S.N.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Secretaria Administrativa",
-  "assunto": "Atendimento",
-  "mes": "mar2026",
-  "abertura": "31/03/2026",
-  "fechamento": "25/06/2026",
-  "prazo": 62,
-  "prazoCorridos": 86,
-  "prot": "8435"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.B.C.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Eventos",
-  "mes": "abr2026",
-  "abertura": "01/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 21,
-  "prazoCorridos": 29,
-  "prot": "8436"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "A.M.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Natação",
-  "assunto": "Organização de Aula",
-  "mes": "abr2026",
-  "abertura": "08/04/2026",
-  "fechamento": "18/06/2026",
-  "prazo": 51,
-  "prazoCorridos": 71,
-  "prot": "8437"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.P.P.S.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Atendimento",
-  "mes": "abr2026",
-  "abertura": "13/04/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 64,
-  "prazoCorridos": 88,
-  "prot": "8447"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.A.G.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Comportamento de Associado",
-  "mes": "abr2026",
-  "abertura": "17/04/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 29,
-  "prazoCorridos": 41,
-  "prot": "8448"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.V.O.B.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Eventos",
-  "mes": "abr2026",
-  "abertura": "17/04/2026",
-  "fechamento": "02/07/2026",
-  "prazo": 54,
-  "prazoCorridos": 76,
-  "prot": "8449"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "D.H.M.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Reserva",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 28,
-  "prazoCorridos": 38,
-  "prot": "8450"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.M.S.",
-  "ger": "Gerência Operações",
-  "local": "Recepção",
-  "assunto": "Higienização e Limpeza",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 8,
-  "prazoCorridos": 10,
-  "prot": "8451"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.V.O.B.",
-  "ger": "Gerência Operações",
-  "local": "Pista de Atletismo",
-  "assunto": "Comportamento de Associado",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 8,
-  "prazoCorridos": 10,
-  "prot": "8452"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.S.M.",
-  "ger": "Gerência Operações",
-  "local": "Área Ajardinada",
-  "assunto": "Segurança",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 8,
-  "prazoCorridos": 10,
-  "prot": "8453"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "B.L.B.F.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Investimento em Melhorias",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "23/07/2026",
-  "prazo": 68,
-  "prazoCorridos": 94,
-  "prot": "8454"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.M.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Segurança",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 28,
-  "prazoCorridos": 38,
-  "prot": "8456"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "B.S.G.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Reserva",
-  "mes": "abr2026",
-  "abertura": "20/04/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 28,
-  "prazoCorridos": 38,
-  "prot": "8457"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "J.G.R.",
-  "ger": "Gerência Operações",
-  "local": "Ginástica Artistica",
-  "assunto": "Higienização e Limpeza",
-  "mes": "abr2026",
-  "abertura": "23/04/2026",
-  "fechamento": "30/04/2026",
-  "prazo": 5,
-  "prazoCorridos": 7,
-  "prot": "8458"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "J.C.D.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Reserva",
-  "mes": "abr2026",
-  "abertura": "24/04/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 24,
-  "prazoCorridos": 34,
-  "prot": "8459"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "B.B.T.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "abr2026",
-  "abertura": "30/04/2026",
-  "fechamento": "05/05/2026",
-  "prazo": 3,
-  "prazoCorridos": 5,
-  "prot": "8465"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "S.M.S.K.",
-  "ger": "Gerência Geral",
-  "local": "Secretaria Administrativa",
-  "assunto": "Procedimentos Internos",
-  "mes": "abr2026",
-  "abertura": "30/04/2026",
-  "fechamento": "18/06/2026",
-  "prazo": 35,
-  "prazoCorridos": 49,
-  "prot": "8466"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.O.H.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Economatos",
-  "assunto": "Atendimento",
-  "mes": "abr2026",
-  "abertura": "30/04/2026",
-  "fechamento": "25/06/2026",
-  "prazo": 40,
-  "prazoCorridos": 56,
-  "prot": "8467"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "S.R.R.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Procedimentos Internos",
-  "mes": "mai2026",
-  "abertura": "04/05/2026",
-  "fechamento": "05/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8468"
  },
  {
   "tipo": "Elogio",
@@ -12175,33 +11750,98 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "05/05/2026",
   "fechamento": "14/05/2026",
-  "prazo": 7,
+  "prazo": 7.0,
   "prazoCorridos": 9,
   "prot": "8469"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "E.J.G.D.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Manutenção",
-  "mes": "mai2026",
-  "abertura": "11/05/2026",
-  "fechamento": "29/06/2026",
-  "prazo": 35,
-  "prazoCorridos": 49,
-  "prot": "8470"
+  "tipo": "Sugestão",
+  "nome": "P.S.R.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Biblioteca",
+  "assunto": "Outros",
+  "mes": "jun2026",
+  "abertura": "12/06/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 5,
+  "prot": "8542"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "R.T.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "10/07/2026",
+  "fechamento": "16/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8592"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "I.B.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Atendimento",
+  "mes": "ago2026",
+  "abertura": "12/08/2026",
+  "fechamento": "17/08/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 5,
+  "prot": "8647"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "A.R.A.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jan2026",
+  "abertura": "07/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 22.0,
+  "prazoCorridos": 31,
+  "prot": "8376"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "A.P.P.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jan2026",
+  "abertura": "15/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 16.0,
+  "prazoCorridos": 23,
+  "prot": "8381"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "A.M.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Natação",
+  "assunto": "Organização de Aula",
+  "mes": "abr2026",
+  "abertura": "08/04/2026",
+  "fechamento": "18/06/2026",
+  "prazo": 49.0,
+  "prazoCorridos": 71,
+  "prot": "8437"
  },
  {
   "tipo": "Sugestão",
   "nome": "B.B.V.",
   "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
+  "local": "GINÁSTICA ARTISTICA",
   "assunto": "Organização de Aula",
   "mes": "mai2026",
   "abertura": "11/05/2026",
   "fechamento": "28/05/2026",
-  "prazo": 13,
+  "prazo": 13.0,
   "prazoCorridos": 17,
   "prot": "8471"
  },
@@ -12214,438 +11854,9 @@ const MANIFESTACOES = [
   "mes": "mai2026",
   "abertura": "15/05/2026",
   "fechamento": "18/06/2026",
-  "prazo": 24,
+  "prazo": 24.0,
   "prazoCorridos": 34,
   "prot": "8473"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.C.B.",
-  "ger": "Gerência Operações",
-  "local": "Sem Local",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "15/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 9,
-  "prazoCorridos": 13,
-  "prot": "8477"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "N.P.J.",
-  "ger": "Gerência Manutenção",
-  "local": "Biblioteca",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "16/05/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 23,
-  "prazoCorridos": 32,
-  "prot": "8491"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.E.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "19/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8495"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "H.M.S.A.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "19/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8497"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.M.C.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Piscinas",
-  "mes": "mai2026",
-  "abertura": "19/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8498"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.M.C.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Procedimentos Internos",
-  "mes": "mai2026",
-  "abertura": "19/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8499"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.B.B.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Basquete",
-  "assunto": "Horários",
-  "mes": "mai2026",
-  "abertura": "19/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8500"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.T.K.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "20/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 6,
-  "prazoCorridos": 8,
-  "prot": "8501"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "E.L.",
-  "ger": "Gerência Manutenção",
-  "local": "Futebol",
-  "assunto": "Manutenção",
-  "mes": "mai2026",
-  "abertura": "21/05/2026",
-  "fechamento": "09/07/2026",
-  "prazo": 35,
-  "prazoCorridos": 49,
-  "prot": "8502"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "T.S.D.",
-  "ger": "Gerência Esportiva",
-  "local": "Levantamento de Pesos",
-  "assunto": "Comunicação",
-  "mes": "mai2026",
-  "abertura": "22/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 4,
-  "prazoCorridos": 6,
-  "prot": "8504"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.B.A.P.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Comunicação",
-  "mes": "mai2026",
-  "abertura": "25/05/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 17,
-  "prazoCorridos": 23,
-  "prot": "8508"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.T.M.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8509"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.T.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 16,
-  "prazoCorridos": 22,
-  "prot": "8510"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.T.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Gerência Esportiva",
-  "assunto": "Atendimento",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8511"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.T.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Gerência Esportiva",
-  "assunto": "Organização de Aula",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8512"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.C.G.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "mai2026",
-  "abertura": "26/05/2026",
-  "fechamento": "27/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8517"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.C.K.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "27/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8518"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.C.K.",
-  "ger": "Gerência Manutenção",
-  "local": "Ginástica Artistica",
-  "assunto": "Manutenção",
-  "mes": "mai2026",
-  "abertura": "27/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8519"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.C.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Organização de Aula",
-  "mes": "mai2026",
-  "abertura": "27/05/2026",
-  "fechamento": "28/05/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8520"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "Y.P.L.",
-  "ger": "Gerência Manutenção",
-  "local": "Sem Local",
-  "assunto": "Manutenção",
-  "mes": "mai2026",
-  "abertura": "27/05/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 15,
-  "prazoCorridos": 21,
-  "prot": "8521"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.C.V.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Olímpica",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "28/05/2026",
-  "fechamento": "31/07/2026",
-  "prazo": 46,
-  "prazoCorridos": 64,
-  "prot": "8522"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.C.V.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Olímpica",
-  "assunto": "Melhorias realizadas",
-  "mes": "mai2026",
-  "abertura": "29/05/2026",
-  "fechamento": "29/05/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8524"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.C.V.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Olímpica",
-  "assunto": "Investimento em Melhorias",
-  "mes": "mai2026",
-  "abertura": "29/05/2026",
-  "fechamento": "29/05/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8525"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.L.P.R.",
-  "ger": "Gerência Esportiva",
-  "local": "Piscinas",
-  "assunto": "Procedimentos Internos",
-  "mes": "mai2026",
-  "abertura": "29/05/2026",
-  "fechamento": "11/06/2026",
-  "prazo": 9,
-  "prazoCorridos": 13,
-  "prot": "8526"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "V.F.H.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Manutenção",
-  "mes": "mai2026",
-  "abertura": "30/05/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 13,
-  "prazoCorridos": 18,
-  "prot": "8527"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.N.A.",
-  "ger": "Gerência Esportiva",
-  "local": "Natação",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jun2026",
-  "abertura": "02/06/2026",
-  "fechamento": "09/07/2026",
-  "prazo": 27,
-  "prazoCorridos": 37,
-  "prot": "8528"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.R.P.C.",
-  "ger": "Gerência Manutenção",
-  "local": "Jardinagem",
-  "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "03/06/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 10,
-  "prazoCorridos": 14,
-  "prot": "8529"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "R.E.S.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jun2026",
-  "abertura": "03/06/2026",
-  "fechamento": "03/06/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8530"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "R.E.S.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jun2026",
-  "abertura": "03/06/2026",
-  "fechamento": "03/06/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8531"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "R.E.S.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jun2026",
-  "abertura": "03/06/2026",
-  "fechamento": "06/06/2026",
-  "prazo": 2,
-  "prazoCorridos": 3,
-  "prot": "8532"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.M.F.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jun2026",
-  "abertura": "05/06/2026",
-  "fechamento": "13/06/2026",
-  "prazo": 5,
-  "prazoCorridos": 8,
-  "prot": "8534"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.M.S.C.",
-  "ger": "Gerência Manutenção",
-  "local": "Estacionamento",
-  "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "05/06/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 8,
-  "prazoCorridos": 12,
-  "prot": "8535"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.S.S.G.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "jun2026",
-  "abertura": "06/06/2026",
-  "fechamento": "13/06/2026",
-  "prazo": 5,
-  "prazoCorridos": 7,
-  "prot": "8536"
  },
  {
   "tipo": "Sugestão",
@@ -12656,7 +11867,7 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "06/06/2026",
   "fechamento": "11/06/2026",
-  "prazo": 4,
+  "prazo": 4.0,
   "prazoCorridos": 5,
   "prot": "8537"
  },
@@ -12669,46 +11880,20 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "09/06/2026",
   "fechamento": "13/06/2026",
-  "prazo": 3,
+  "prazo": 3.0,
   "prazoCorridos": 4,
   "prot": "8538"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.S.E.S.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jun2026",
-  "abertura": "11/06/2026",
-  "fechamento": "13/06/2026",
-  "prazo": 1,
-  "prazoCorridos": 2,
-  "prot": "8539"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "P.S.R.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Biblioteca",
-  "assunto": "Outros",
-  "mes": "jun2026",
-  "abertura": "12/06/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 3,
-  "prazoCorridos": 5,
-  "prot": "8542"
  },
  {
   "tipo": "Sugestão",
   "nome": "C.S.G.F.",
   "ger": "Gerência Esportiva",
-  "local": "Volei",
+  "local": "VOLEI",
   "assunto": "Organização de Aula",
   "mes": "jun2026",
   "abertura": "12/06/2026",
   "fechamento": "09/07/2026",
-  "prazo": 19,
+  "prazo": 19.0,
   "prazoCorridos": 27,
   "prot": "8543"
  },
@@ -12716,27 +11901,92 @@ const MANIFESTACOES = [
   "tipo": "Sugestão",
   "nome": "J.V.",
   "ger": "Gerência Esportiva",
-  "local": "Volei",
+  "local": "VOLEI",
   "assunto": "Organização de Aula",
   "mes": "jun2026",
   "abertura": "12/06/2026",
   "fechamento": "08/07/2026",
-  "prazo": 18,
+  "prazo": 18.0,
   "prazoCorridos": 26,
   "prot": "8544"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "L.R.S.",
-  "ger": "Gerência Manutenção",
-  "local": "Piscinas",
+  "tipo": "Sugestão",
+  "nome": "K.B.C.",
+  "ger": "Gerência Esportiva",
+  "local": "VOLEI",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "08/07/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8587"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "L.M.B.M.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
   "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "13/06/2026",
-  "fechamento": "17/06/2026",
-  "prazo": 3,
-  "prazoCorridos": 4,
-  "prot": "8545"
+  "mes": "jul2026",
+  "abertura": "16/07/2026",
+  "fechamento": "07/08/2026",
+  "prazo": 16.0,
+  "prazoCorridos": 22,
+  "prot": "8604"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "M.W.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Valores",
+  "mes": "jul2026",
+  "abertura": "21/07/2026",
+  "fechamento": "25/08/2026",
+  "prazo": 25.0,
+  "prazoCorridos": 35,
+  "prot": "8616"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "E.M.W.",
+  "ger": "Gerência Esportiva",
+  "local": "Natação",
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "10/08/2026",
+  "fechamento": "19/08/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8636"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "S.M.S.K.",
+  "ger": "Gerência Geral",
+  "local": "Secretaria Administrativa",
+  "assunto": "Procedimentos Internos",
+  "mes": "abr2026",
+  "abertura": "30/04/2026",
+  "fechamento": "18/06/2026",
+  "prazo": 34.0,
+  "prazoCorridos": 49,
+  "prot": "8466"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "E.L.",
+  "ger": "Gerência Manutenção",
+  "local": "FUTEBOL",
+  "assunto": "Manutenção",
+  "mes": "mai2026",
+  "abertura": "21/05/2026",
+  "fechamento": "09/07/2026",
+  "prazo": 35.0,
+  "prazoCorridos": 49,
+  "prot": "8502"
  },
  {
   "tipo": "Sugestão",
@@ -12747,7 +11997,7 @@ const MANIFESTACOES = [
   "mes": "jun2026",
   "abertura": "13/06/2026",
   "fechamento": "17/06/2026",
-  "prazo": 3,
+  "prazo": 3.0,
   "prazoCorridos": 4,
   "prot": "8546"
  },
@@ -12755,287 +12005,144 @@ const MANIFESTACOES = [
   "tipo": "Sugestão",
   "nome": "C.S.S.G.",
   "ger": "Gerência Manutenção",
-  "local": "Futebol",
+  "local": "FUTEBOL",
   "assunto": "Investimento em Melhorias",
   "mes": "jun2026",
   "abertura": "16/06/2026",
   "fechamento": "10/07/2026",
-  "prazo": 18,
+  "prazo": 18.0,
   "prazoCorridos": 24,
   "prot": "8548"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "A.D.C.G.",
+  "tipo": "Sugestão",
+  "nome": "R.F.S.",
   "ger": "Gerência Manutenção",
-  "local": "Churrasqueiras",
-  "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "18/06/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 16,
-  "prazoCorridos": 22,
-  "prot": "8551"
+  "local": "Sem Local",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "28/07/2026",
+  "fechamento": "29/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8621"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "N.P.J.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Academia",
-  "assunto": "Procedimentos Internos",
-  "mes": "jun2026",
-  "abertura": "19/06/2026",
-  "fechamento": "25/06/2026",
-  "prazo": 4,
-  "prazoCorridos": 6,
-  "prot": "8553"
+  "tipo": "Sugestão",
+  "nome": "C.P.",
+  "ger": "Gerência Manutenção",
+  "local": "Economatos",
+  "assunto": "Acessibilidade Universal",
+  "mes": "ago2026",
+  "abertura": "10/08/2026",
+  "fechamento": "18/08/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 8,
+  "prot": "8637"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "S.S.F.",
+  "tipo": "Sugestão",
+  "nome": "C.S.P.",
   "ger": "Gerência Manutenção",
   "local": "Vestiário das piscinas",
-  "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "23/06/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 13,
-  "prazoCorridos": 17,
-  "prot": "8556"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.A.S.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Comunicação",
-  "mes": "jun2026",
-  "abertura": "24/06/2026",
-  "fechamento": "26/06/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8557"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.D.R.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Gerência Administrativa",
-  "assunto": "Outros",
-  "mes": "jun2026",
-  "abertura": "24/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8558"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.C.P.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Procedimentos Internos",
-  "mes": "jun2026",
-  "abertura": "27/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 5,
-  "prazoCorridos": 6,
-  "prot": "8560"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "V.M.L.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8561"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.S.N.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8562"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.N.V.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8563"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "D.M.R.G.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8564"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.R.R.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8565"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.N.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8566"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.C.Z.C.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8567"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.V.H.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8568"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.L.A.M.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "04/07/2026",
-  "prazo": 4,
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "13/08/2026",
+  "fechamento": "18/08/2026",
+  "prazo": 3.0,
   "prazoCorridos": 5,
-  "prot": "8569"
+  "prot": "8650"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "B.K.V.",
-  "ger": "Gerência Operações",
+  "tipo": "Sugestão",
+  "nome": "M.G.B.F.",
+  "ger": "Gerência Manutenção",
   "local": "Vestiário das piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "03/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8571"
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "20/08/2026",
+  "fechamento": "28/08/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 8,
+  "prot": "8658"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "B.G.T.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginásio 1",
-  "assunto": "Manutenção",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 9,
-  "prazoCorridos": 11,
-  "prot": "8572"
+  "tipo": "Sugestão",
+  "nome": "A.F.L.A.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "jan2026",
+  "abertura": "20/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 18,
+  "prot": "8383"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "L.S.H.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "06/07/2026",
-  "prazo": 5,
-  "prazoCorridos": 7,
-  "prot": "8573"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.J.M.",
+  "tipo": "Sugestão",
+  "nome": "O.N.J.J.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
   "assunto": "Estacionamento",
-  "mes": "jun2026",
-  "abertura": "29/06/2026",
-  "fechamento": "02/07/2026",
-  "prazo": 3,
-  "prazoCorridos": 3,
-  "prot": "8574"
+  "mes": "mar2026",
+  "abertura": "18/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 29.0,
+  "prazoCorridos": 43,
+  "prot": "8431"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "S.G.M.",
+  "tipo": "Sugestão",
+  "nome": "S.R.R.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Procedimentos Internos",
+  "mes": "mai2026",
+  "abertura": "04/05/2026",
+  "fechamento": "05/05/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8468"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "R.E.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
   "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "02/07/2026",
-  "fechamento": "02/07/2026",
-  "prazo": 0,
+  "mes": "jun2026",
+  "abertura": "03/06/2026",
+  "fechamento": "03/06/2026",
+  "prazo": 0.0,
   "prazoCorridos": 0,
-  "prot": "8577"
+  "prot": "8530"
  },
  {
-  "tipo": "Reclamação",
-  "nome": "S.G.M.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Gerência Administrativa",
-  "assunto": "Atendimento",
-  "mes": "jul2026",
-  "abertura": "02/07/2026",
-  "fechamento": "16/07/2026",
-  "prazo": 10,
-  "prazoCorridos": 14,
-  "prot": "8578"
+  "tipo": "Sugestão",
+  "nome": "R.E.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jun2026",
+  "abertura": "03/06/2026",
+  "fechamento": "03/06/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8531"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "R.E.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jun2026",
+  "abertura": "03/06/2026",
+  "fechamento": "06/06/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 3,
+  "prot": "8532"
  },
  {
   "tipo": "Sugestão",
@@ -13046,7 +12153,7 @@ const MANIFESTACOES = [
   "mes": "jul2026",
   "abertura": "02/07/2026",
   "fechamento": "03/07/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8579"
  },
@@ -13059,191 +12166,9 @@ const MANIFESTACOES = [
   "mes": "jul2026",
   "abertura": "03/07/2026",
   "fechamento": "03/07/2026",
-  "prazo": 0,
+  "prazo": 0.0,
   "prazoCorridos": 0,
   "prot": "8581"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.B.C.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "04/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 5,
-  "prazoCorridos": 6,
-  "prot": "8582"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.S.F.",
-  "ger": "Gerência Esportiva",
-  "local": "Pista de Atletismo",
-  "assunto": "Atendimento",
-  "mes": "jul2026",
-  "abertura": "04/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 5,
-  "prazoCorridos": 6,
-  "prot": "8583"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.P.L.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Organização de Aula",
-  "mes": "jul2026",
-  "abertura": "06/07/2026",
-  "fechamento": "07/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8584"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.J.R.",
-  "ger": "Gerência Operações",
-  "local": "Vestiário das piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jul2026",
-  "abertura": "07/07/2026",
-  "fechamento": "08/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8585"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "K.B.C.",
-  "ger": "Gerência Esportiva",
-  "local": "Volei",
-  "assunto": "Organização de Aula",
-  "mes": "jul2026",
-  "abertura": "08/07/2026",
-  "fechamento": "08/07/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8587"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.R.B.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Organização de Aula",
-  "mes": "jul2026",
-  "abertura": "08/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8588"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.B.H.",
-  "ger": "Gerência Operações",
-  "local": "Vestiário das piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jul2026",
-  "abertura": "08/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8589"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.B.H.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "08/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8590"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "J.N.A.",
-  "ger": "Gerência Manutenção",
-  "local": "Estacionamento",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "09/07/2026",
-  "fechamento": "10/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8591"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "R.T.M.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Secretaria Administrativa",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "10/07/2026",
-  "fechamento": "16/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 6,
-  "prot": "8592"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "S.R.R.",
-  "ger": "Gerência Manutenção",
-  "local": "Praça pequena",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "10/07/2026",
-  "fechamento": "24/07/2026",
-  "prazo": 10,
-  "prazoCorridos": 14,
-  "prot": "8593"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "L.F.S.",
-  "ger": "Gerência Manutenção",
-  "local": "Tênis",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "11/07/2026",
-  "fechamento": "28/07/2026",
-  "prazo": 12,
-  "prazoCorridos": 17,
-  "prot": "8594"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.Z.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "13/07/2026",
-  "fechamento": "14/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8595"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "C.M.N.C.",
-  "ger": "Gerência Operações",
-  "local": "Vestiário das piscinas",
-  "assunto": "Higienização e Limpeza",
-  "mes": "jul2026",
-  "abertura": "13/07/2026",
-  "fechamento": "14/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8596"
  },
  {
   "tipo": "Sugestão",
@@ -13254,35 +12179,9 @@ const MANIFESTACOES = [
   "mes": "jul2026",
   "abertura": "13/07/2026",
   "fechamento": "16/07/2026",
-  "prazo": 3,
+  "prazo": 3.0,
   "prazoCorridos": 3,
   "prot": "8600"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "L.M.B.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "16/07/2026",
-  "fechamento": "07/08/2026",
-  "prazo": 16,
-  "prazoCorridos": 22,
-  "prot": "8604"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.M.C.S.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Secretaria Administrativa",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "16/07/2026",
-  "fechamento": "22/07/2026",
-  "prazo": 4,
-  "prazoCorridos": 6,
-  "prot": "8605"
  },
  {
   "tipo": "Sugestão",
@@ -13293,321 +12192,9 @@ const MANIFESTACOES = [
   "mes": "jul2026",
   "abertura": "17/07/2026",
   "fechamento": "22/07/2026",
-  "prazo": 3,
+  "prazo": 3.0,
   "prazoCorridos": 5,
   "prot": "8606"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.B.R.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Procedimentos Internos",
-  "mes": "jul2026",
-  "abertura": "20/07/2026",
-  "fechamento": "20/07/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8609"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.G.A.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Procedimentos Internos",
-  "mes": "jul2026",
-  "abertura": "20/07/2026",
-  "fechamento": "23/07/2026",
-  "prazo": 3,
-  "prazoCorridos": 3,
-  "prot": "8613"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.M.G.P.",
-  "ger": "Gerência Esportiva",
-  "local": "Judo",
-  "assunto": "Eventos",
-  "mes": "jul2026",
-  "abertura": "20/07/2026",
-  "fechamento": "20/08/2026",
-  "prazo": 23,
-  "prazoCorridos": 31,
-  "prot": "8614"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.W.",
-  "ger": "Gerência Manutenção",
-  "local": "Tênis",
-  "assunto": "Manutenção",
-  "mes": "jul2026",
-  "abertura": "21/07/2026",
-  "fechamento": "31/07/2026",
-  "prazo": 8,
-  "prazoCorridos": 10,
-  "prot": "8615"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "M.W.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Valores",
-  "mes": "jul2026",
-  "abertura": "21/07/2026",
-  "fechamento": "25/08/2026",
-  "prazo": 25,
-  "prazoCorridos": 35,
-  "prot": "8616"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "V.M.L.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "28/07/2026",
-  "fechamento": "29/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8620"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "R.F.S.",
-  "ger": "Gerência Manutenção",
-  "local": "Sem Local",
-  "assunto": "Investimento em Melhorias",
-  "mes": "jul2026",
-  "abertura": "28/07/2026",
-  "fechamento": "29/07/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8621"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "G.S.C.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Procedimentos Internos",
-  "mes": "jul2026",
-  "abertura": "29/07/2026",
-  "fechamento": "31/07/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8623"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "F.X.V.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Piscinas",
-  "mes": "jul2026",
-  "abertura": "31/07/2026",
-  "fechamento": "18/08/2026",
-  "prazo": 12,
-  "prazoCorridos": 18,
-  "prot": "8626"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "D.C.I.M.",
-  "ger": "Gerência Esportiva",
-  "local": "Ginástica Artistica",
-  "assunto": "Comportamento de Funcionário",
-  "mes": "ago2026",
-  "abertura": "01/08/2026",
-  "fechamento": "09/09/2026",
-  "prazo": 28,
-  "prazoCorridos": 39,
-  "prot": "8628"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.A.U.",
-  "ger": "Gerência Esportiva",
-  "local": "Tênis",
-  "assunto": "Informações",
-  "mes": "ago2026",
-  "abertura": "03/08/2026",
-  "fechamento": "06/08/2026",
-  "prazo": 3,
-  "prazoCorridos": 3,
-  "prot": "8629"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.M.B.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "04/08/2026",
-  "fechamento": "05/08/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8630"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "V.M.L.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Academia",
-  "assunto": "Organização de Aula",
-  "mes": "ago2026",
-  "abertura": "04/08/2026",
-  "fechamento": "05/08/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8631"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "R.S.P.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "10/08/2026",
-  "fechamento": "10/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8634"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "A.C.A.B.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "10/08/2026",
-  "fechamento": "10/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8635"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "E.M.W.",
-  "ger": "Gerência Esportiva",
-  "local": "Natação",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "10/08/2026",
-  "fechamento": "19/08/2026",
-  "prazo": 7,
-  "prazoCorridos": 9,
-  "prot": "8636"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "C.P.",
-  "ger": "Gerência Manutenção",
-  "local": "Economatos",
-  "assunto": "Acessibilidade Universal",
-  "mes": "ago2026",
-  "abertura": "10/08/2026",
-  "fechamento": "18/08/2026",
-  "prazo": 6,
-  "prazoCorridos": 8,
-  "prot": "8637"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "S.R.R.",
-  "ger": "Gerência Operações",
-  "local": "Churrasqueiras",
-  "assunto": "Comportamento de Funcionário",
-  "mes": "ago2026",
-  "abertura": "10/08/2026",
-  "fechamento": "13/08/2026",
-  "prazo": 3,
-  "prazoCorridos": 3,
-  "prot": "8638"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.A.C.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Patinação",
-  "assunto": "Organização de Aula",
-  "mes": "ago2026",
-  "abertura": "11/08/2026",
-  "fechamento": "27/08/2026",
-  "prazo": 12,
-  "prazoCorridos": 16,
-  "prot": "8639"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.M.H.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "11/08/2026",
-  "fechamento": "11/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8640"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "E.Z.",
-  "ger": "Gerência Operações",
-  "local": "Vestiário das piscinas",
-  "assunto": "Segurança",
-  "mes": "ago2026",
-  "abertura": "11/08/2026",
-  "fechamento": "13/08/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8641"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "K.S.N.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "11/08/2026",
-  "fechamento": "11/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8642"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "N.R.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "11/08/2026",
-  "fechamento": "13/08/2026",
-  "prazo": 2,
-  "prazoCorridos": 2,
-  "prot": "8643"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "I.B.M.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Secretaria Administrativa",
-  "assunto": "Atendimento",
-  "mes": "ago2026",
-  "abertura": "12/08/2026",
-  "fechamento": "17/08/2026",
-  "prazo": 3,
-  "prazoCorridos": 5,
-  "prot": "8647"
  },
  {
   "tipo": "Sugestão",
@@ -13618,35 +12205,9 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "13/08/2026",
   "fechamento": "17/08/2026",
-  "prazo": 2,
+  "prazo": 2.0,
   "prazoCorridos": 4,
   "prot": "8648"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.T.K.",
-  "ger": "Gerência Esportiva",
-  "local": "Fitness",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "13/08/2026",
-  "fechamento": "17/08/2026",
-  "prazo": 2,
-  "prazoCorridos": 4,
-  "prot": "8649"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "C.S.P.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "13/08/2026",
-  "fechamento": "18/08/2026",
-  "prazo": 3,
-  "prazoCorridos": 5,
-  "prot": "8650"
  },
  {
   "tipo": "Sugestão",
@@ -13657,111 +12218,254 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "13/08/2026",
   "fechamento": "18/08/2026",
-  "prazo": 3,
+  "prazo": 3.0,
   "prazoCorridos": 5,
   "prot": "8651"
  },
  {
   "tipo": "Reclamação",
-  "nome": "A.U.E.",
-  "ger": "Gerência Operações",
-  "local": "Piscinas",
-  "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "17/08/2026",
-  "fechamento": "18/08/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8653"
+  "nome": "P.C.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "jan2026",
+  "abertura": "26/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 12,
+  "prot": "8385"
  },
  {
   "tipo": "Reclamação",
-  "nome": "Z.O.",
-  "ger": "Gerência Manutenção",
-  "local": "Sem Local",
-  "assunto": "Outros",
-  "mes": "ago2026",
-  "abertura": "17/08/2026",
-  "fechamento": "27/08/2026",
-  "prazo": 8,
-  "prazoCorridos": 10,
-  "prot": "8654"
+  "nome": "A.M.Z.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "jan2026",
+  "abertura": "27/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 11,
+  "prot": "8389"
  },
  {
   "tipo": "Reclamação",
-  "nome": "A.M.H.",
-  "ger": "Gerência Recursos Humanos",
-  "local": "Volei",
+  "nome": "P.S.G.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Salões",
+  "assunto": "Eventos",
+  "mes": "fev2026",
+  "abertura": "26/02/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 43.0,
+  "prazoCorridos": 63,
+  "prot": "8399"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.G.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Salões",
+  "assunto": "Eventos",
+  "mes": "fev2026",
+  "abertura": "27/02/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 42.0,
+  "prazoCorridos": 62,
+  "prot": "8400"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.C.B.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Eventos",
+  "assunto": "Eventos",
+  "mes": "mar2026",
+  "abertura": "10/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 35.0,
+  "prazoCorridos": 51,
+  "prot": "8423"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.N.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Eventos",
+  "assunto": "Eventos",
+  "mes": "mar2026",
+  "abertura": "13/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 32.0,
+  "prazoCorridos": 48,
+  "prot": "8427"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.R.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "mar2026",
+  "abertura": "18/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 29.0,
+  "prazoCorridos": 43,
+  "prot": "8429"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.N.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Atendimento",
+  "mes": "mar2026",
+  "abertura": "31/03/2026",
+  "fechamento": "25/06/2026",
+  "prazo": 59.0,
+  "prazoCorridos": 86,
+  "prot": "8435"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.B.C.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Eventos",
+  "mes": "abr2026",
+  "abertura": "01/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 19.0,
+  "prazoCorridos": 29,
+  "prot": "8436"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.P.P.S.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "abr2026",
+  "abertura": "13/04/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 62.0,
+  "prazoCorridos": 88,
+  "prot": "8447"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.V.O.B.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Eventos",
+  "mes": "abr2026",
+  "abertura": "17/04/2026",
+  "fechamento": "02/07/2026",
+  "prazo": 52.0,
+  "prazoCorridos": 76,
+  "prot": "8449"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.L.B.F.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Investimento em Melhorias",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "23/07/2026",
+  "prazo": 66.0,
+  "prazoCorridos": 94,
+  "prot": "8454"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.O.H.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "abr2026",
+  "abertura": "30/04/2026",
+  "fechamento": "25/06/2026",
+  "prazo": 39.0,
+  "prazoCorridos": 56,
+  "prot": "8467"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "N.P.J.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Academia",
   "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "18/08/2026",
-  "fechamento": "24/08/2026",
-  "prazo": 4,
+  "mes": "jun2026",
+  "abertura": "19/06/2026",
+  "fechamento": "25/06/2026",
+  "prazo": 4.0,
   "prazoCorridos": 6,
-  "prot": "8656"
+  "prot": "8553"
  },
  {
   "tipo": "Reclamação",
-  "nome": "M.G.S.",
-  "ger": "Gerência Esportiva",
-  "local": "Sem Local",
+  "nome": "A.D.R.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Gerência Administrativa",
+  "assunto": "Outros",
+  "mes": "jun2026",
+  "abertura": "24/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8558"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.G.M.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Gerência Administrativa",
+  "assunto": "Atendimento",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "16/07/2026",
+  "prazo": 10.0,
+  "prazoCorridos": 14,
+  "prot": "8578"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.M.C.S.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Secretaria Administrativa",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "16/07/2026",
+  "fechamento": "22/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8605"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.A.C.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Patinação",
   "assunto": "Organização de Aula",
   "mes": "ago2026",
-  "abertura": "19/08/2026",
-  "fechamento": "04/09/2026",
-  "prazo": 12,
-  "prazoCorridos": 16,
-  "prot": "8657"
- },
- {
-  "tipo": "Sugestão",
-  "nome": "M.G.B.F.",
-  "ger": "Gerência Manutenção",
-  "local": "Vestiário das piscinas",
-  "assunto": "Investimento em Melhorias",
-  "mes": "ago2026",
-  "abertura": "20/08/2026",
-  "fechamento": "28/08/2026",
-  "prazo": 6,
-  "prazoCorridos": 8,
-  "prot": "8658"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "M.R.",
-  "ger": "Gerência Operações",
-  "local": "Estacionamento",
-  "assunto": "Estacionamento",
-  "mes": "ago2026",
-  "abertura": "20/08/2026",
-  "fechamento": "25/08/2026",
-  "prazo": 3,
-  "prazoCorridos": 5,
-  "prot": "8659"
- },
- {
-  "tipo": "Reclamação",
-  "nome": "P.R.A.",
-  "ger": "Gerência Esportiva",
-  "local": "Futebol",
-  "assunto": "Manutenção",
-  "mes": "ago2026",
-  "abertura": "20/08/2026",
+  "abertura": "11/08/2026",
   "fechamento": "27/08/2026",
-  "prazo": 5,
-  "prazoCorridos": 7,
-  "prot": "8660"
+  "prazo": 12.0,
+  "prazoCorridos": 16,
+  "prot": "8639"
  },
  {
   "tipo": "Reclamação",
-  "nome": "P.C.R.",
+  "nome": "P.Y.C.R.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Salões",
   "assunto": "Eventos",
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "25/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8662"
  },
@@ -13774,48 +12478,672 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "24/08/2026",
   "fechamento": "25/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8663"
  },
  {
   "tipo": "Reclamação",
-  "nome": "J.A.P.",
-  "ger": "Gerência TI",
-  "local": "Sistema",
-  "assunto": "Procedimentos Internos",
+  "nome": "I.A.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Ballet",
+  "assunto": "Organização de Aula",
   "mes": "ago2026",
-  "abertura": "25/08/2026",
-  "fechamento": "25/08/2026",
-  "prazo": 0,
-  "prazoCorridos": 0,
-  "prot": "8669"
+  "abertura": "31/08/2026",
+  "fechamento": "02/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8684"
  },
  {
   "tipo": "Reclamação",
-  "nome": "P.C.S.S.",
-  "ger": "Gerência Operações",
+  "nome": "P.S.R.",
+  "ger": "Gerência Esportiva",
+  "local": "Fitness",
+  "assunto": "Organização de Aula",
+  "mes": "mar2026",
+  "abertura": "03/03/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 17.0,
+  "prazoCorridos": 23,
+  "prot": "8417"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.M.D.",
+  "ger": "Gerência Esportiva",
+  "local": "Judo",
+  "assunto": "Organização de Aula",
+  "mes": "mar2026",
+  "abertura": "03/03/2026",
+  "fechamento": "26/05/2026",
+  "prazo": 57.0,
+  "prazoCorridos": 84,
+  "prot": "8419"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.G.C.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Secretaria Esportiva",
+  "assunto": "Organização de Aula",
+  "mes": "mar2026",
+  "abertura": "04/03/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 16.0,
+  "prazoCorridos": 22,
+  "prot": "8420"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.S.G.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "mar2026",
+  "abertura": "19/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 28.0,
+  "prazoCorridos": 42,
+  "prot": "8432"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Atendimento",
+  "mes": "mar2026",
+  "abertura": "27/03/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 22.0,
+  "prazoCorridos": 34,
+  "prot": "8434"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.A.G.",
+  "ger": "Gerência Esportiva",
   "local": "Piscinas",
-  "assunto": "Piscinas",
-  "mes": "ago2026",
-  "abertura": "25/08/2026",
-  "fechamento": "26/08/2026",
-  "prazo": 1,
-  "prazoCorridos": 1,
-  "prot": "8670"
+  "assunto": "Comportamento de Associado",
+  "mes": "abr2026",
+  "abertura": "17/04/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 27.0,
+  "prazoCorridos": 41,
+  "prot": "8448"
  },
  {
   "tipo": "Reclamação",
-  "nome": "C.S.B.",
-  "ger": "Gerência Operações",
+  "nome": "D.H.M.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Reserva",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 26.0,
+  "prazoCorridos": 38,
+  "prot": "8450"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.M.M.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Segurança",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 26.0,
+  "prazoCorridos": 38,
+  "prot": "8456"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.S.G.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Reserva",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 26.0,
+  "prazoCorridos": 38,
+  "prot": "8457"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.C.D.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Reserva",
+  "mes": "abr2026",
+  "abertura": "24/04/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 23.0,
+  "prazoCorridos": 34,
+  "prot": "8459"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.E.",
+  "ger": "Gerência Esportiva",
+  "local": "Piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8495"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "H.M.S.A.",
+  "ger": "Gerência Esportiva",
+  "local": "Piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8497"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.M.C.",
+  "ger": "Gerência Esportiva",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8499"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.B.B.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Basquete",
+  "assunto": "Horários",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8500"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.T.K.",
+  "ger": "Gerência Esportiva",
+  "local": "Piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "20/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 8,
+  "prot": "8501"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "T.S.D.",
+  "ger": "Gerência Esportiva",
+  "local": "LEVANTAMENTO DE PESOS",
+  "assunto": "Comunicação",
+  "mes": "mai2026",
+  "abertura": "22/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8504"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.B.A.P.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Comunicação",
+  "mes": "mai2026",
+  "abertura": "25/05/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 17.0,
+  "prazoCorridos": 23,
+  "prot": "8508"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.T.M.",
+  "ger": "Gerência Esportiva",
   "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 16.0,
+  "prazoCorridos": 22,
+  "prot": "8510"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.T.M.",
+  "ger": "Gerência Esportiva",
+  "local": "Gerência Esportiva",
+  "assunto": "Atendimento",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8511"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.T.M.",
+  "ger": "Gerência Esportiva",
+  "local": "Gerência Esportiva",
+  "assunto": "Organização de Aula",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8512"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.C.K.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "27/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8518"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.C.M.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Organização de Aula",
+  "mes": "mai2026",
+  "abertura": "27/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8520"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.C.V.",
+  "ger": "Gerência Esportiva",
+  "local": "Ginástica Olímpica",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "28/05/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 46.0,
+  "prazoCorridos": 64,
+  "prot": "8522"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.C.V.",
+  "ger": "Gerência Esportiva",
+  "local": "Ginástica Olímpica",
+  "assunto": "Melhorias realizadas",
+  "mes": "mai2026",
+  "abertura": "29/05/2026",
+  "fechamento": "29/05/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8524"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.C.V.",
+  "ger": "Gerência Esportiva",
+  "local": "Ginástica Olímpica",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "29/05/2026",
+  "fechamento": "29/05/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8525"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.L.P.R.",
+  "ger": "Gerência Esportiva",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "mai2026",
+  "abertura": "29/05/2026",
+  "fechamento": "11/06/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 13,
+  "prot": "8526"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.N.A.",
+  "ger": "Gerência Esportiva",
+  "local": "Natação",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jun2026",
+  "abertura": "02/06/2026",
+  "fechamento": "09/07/2026",
+  "prazo": 27.0,
+  "prazoCorridos": 37,
+  "prot": "8528"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.M.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jun2026",
+  "abertura": "05/06/2026",
+  "fechamento": "13/06/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 8,
+  "prot": "8534"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.C.P.M.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Procedimentos Internos",
+  "mes": "jun2026",
+  "abertura": "27/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 6,
+  "prot": "8560"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.M.L.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8561"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.S.N.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8562"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.N.V.M.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8563"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "D.M.R.G.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8564"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.R.R.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8565"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.N.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8566"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.O.C.Z.C.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8567"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.V.H.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8568"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.G.T.",
+  "ger": "Gerência Esportiva",
+  "local": "Ginásio 1",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 11,
+  "prot": "8572"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.S.H.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "06/07/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8573"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.S.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Atendimento",
+  "mes": "jul2026",
+  "abertura": "04/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 6,
+  "prot": "8583"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.P.L.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "06/07/2026",
+  "fechamento": "07/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8584"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.R.B.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8588"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.M.G.P.",
+  "ger": "Gerência Esportiva",
+  "local": "Judo",
+  "assunto": "Eventos",
+  "mes": "jul2026",
+  "abertura": "20/07/2026",
+  "fechamento": "20/08/2026",
+  "prazo": 23.0,
+  "prazoCorridos": 31,
+  "prot": "8614"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.M.L.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "28/07/2026",
+  "fechamento": "29/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8620"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "D.C.I.M.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
   "assunto": "Comportamento de Funcionário",
   "mes": "ago2026",
-  "abertura": "26/08/2026",
-  "fechamento": "27/08/2026",
-  "prazo": 1,
+  "abertura": "01/08/2026",
+  "fechamento": "09/09/2026",
+  "prazo": 27.0,
+  "prazoCorridos": 39,
+  "prot": "8628"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.A.U.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Informações",
+  "mes": "ago2026",
+  "abertura": "03/08/2026",
+  "fechamento": "06/08/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8629"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.M.L.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Academia",
+  "assunto": "Organização de Aula",
+  "mes": "ago2026",
+  "abertura": "04/08/2026",
+  "fechamento": "05/08/2026",
+  "prazo": 1.0,
   "prazoCorridos": 1,
-  "prot": "8674"
+  "prot": "8631"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.T.K.",
+  "ger": "Gerência Esportiva",
+  "local": "Fitness",
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "13/08/2026",
+  "fechamento": "17/08/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 4,
+  "prot": "8649"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.G.N.S.",
+  "ger": "Gerência Esportiva",
+  "local": "Sem Local",
+  "assunto": "Organização de Aula",
+  "mes": "ago2026",
+  "abertura": "19/08/2026",
+  "fechamento": "04/09/2026",
+  "prazo": 12.0,
+  "prazoCorridos": 16,
+  "prot": "8657"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.R.A.",
+  "ger": "Gerência Esportiva",
+  "local": "FUTEBOL",
+  "assunto": "Manutenção",
+  "mes": "ago2026",
+  "abertura": "20/08/2026",
+  "fechamento": "27/08/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8660"
  },
  {
   "tipo": "Reclamação",
@@ -13826,7 +13154,7 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "09/09/2026",
-  "prazo": 10,
+  "prazo": 9.0,
   "prazoCorridos": 14,
   "prot": "8677"
  },
@@ -13839,7 +13167,7 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "27/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8678"
  },
@@ -13852,7 +13180,7 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "04/09/2026",
-  "prazo": 7,
+  "prazo": 7.0,
   "prazoCorridos": 9,
   "prot": "8679"
  },
@@ -13865,7 +13193,7 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "26/08/2026",
   "fechamento": "27/08/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8680"
  },
@@ -13878,22 +13206,828 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "28/08/2026",
   "fechamento": "04/09/2026",
-  "prazo": 5,
+  "prazo": 5.0,
   "prazoCorridos": 7,
   "prot": "8683"
  },
  {
   "tipo": "Reclamação",
-  "nome": "I.A.",
-  "ger": "Gerência Administrativa - Financeira",
-  "local": "Ballet",
-  "assunto": "Organização de Aula",
+  "nome": "C.R.",
+  "ger": "Gerência Esportiva",
+  "local": "Sem Local",
+  "assunto": "Procedimentos Internos",
   "mes": "ago2026",
   "abertura": "31/08/2026",
-  "fechamento": "02/09/2026",
-  "prazo": 2,
+  "fechamento": "04/09/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8687"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.J.G.D.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "mai2026",
+  "abertura": "11/05/2026",
+  "fechamento": "29/06/2026",
+  "prazo": 35.0,
+  "prazoCorridos": 49,
+  "prot": "8470"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "N.P.J.",
+  "ger": "Gerência Manutenção",
+  "local": "Biblioteca",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "16/05/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 23.0,
+  "prazoCorridos": 32,
+  "prot": "8491"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.C.K.",
+  "ger": "Gerência Manutenção",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Manutenção",
+  "mes": "mai2026",
+  "abertura": "27/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8519"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "Y.P.L.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Manutenção",
+  "mes": "mai2026",
+  "abertura": "27/05/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 15.0,
+  "prazoCorridos": 21,
+  "prot": "8521"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "V.F.H.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "mai2026",
+  "abertura": "30/05/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 18,
+  "prot": "8527"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.R.P.C.",
+  "ger": "Gerência Manutenção",
+  "local": "Jardinagem",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "03/06/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 10.0,
+  "prazoCorridos": 14,
+  "prot": "8529"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.M.S.C.",
+  "ger": "Gerência Manutenção",
+  "local": "Estacionamento",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "05/06/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 12,
+  "prot": "8535"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.R.S.",
+  "ger": "Gerência Manutenção",
+  "local": "Piscinas",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "13/06/2026",
+  "fechamento": "17/06/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 4,
+  "prot": "8545"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.D.C.G.",
+  "ger": "Gerência Manutenção",
+  "local": "Churrasqueiras",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "18/06/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 16.0,
+  "prazoCorridos": 22,
+  "prot": "8551"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.S.F.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "jun2026",
+  "abertura": "23/06/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 17,
+  "prot": "8556"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.B.C.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "04/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 6,
+  "prot": "8582"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.B.H.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 2.0,
   "prazoCorridos": 2,
-  "prot": "8684"
+  "prot": "8590"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.N.A.",
+  "ger": "Gerência Manutenção",
+  "local": "Estacionamento",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "09/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8591"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.R.R.",
+  "ger": "Gerência Manutenção",
+  "local": "Praça pequena",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "10/07/2026",
+  "fechamento": "24/07/2026",
+  "prazo": 10.0,
+  "prazoCorridos": 14,
+  "prot": "8593"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.F.S.",
+  "ger": "Gerência Manutenção",
+  "local": "Tênis",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "11/07/2026",
+  "fechamento": "28/07/2026",
+  "prazo": 12.0,
+  "prazoCorridos": 17,
+  "prot": "8594"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.Z.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8595"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.W.",
+  "ger": "Gerência Manutenção",
+  "local": "Tênis",
+  "assunto": "Manutenção",
+  "mes": "jul2026",
+  "abertura": "21/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 10,
+  "prot": "8615"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "Z.O.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Outros",
+  "mes": "ago2026",
+  "abertura": "17/08/2026",
+  "fechamento": "27/08/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 10,
+  "prot": "8654"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.C.S.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jan2026",
+  "abertura": "14/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 17.0,
+  "prazoCorridos": 24,
+  "prot": "8380"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.R.S.M.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Procedimentos Internos",
+  "mes": "jan2026",
+  "abertura": "20/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 18,
+  "prot": "8384"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.M.M.B.S.C.",
+  "ger": "Gerência Operações",
+  "local": "Ginásio 2",
+  "assunto": "Comportamento de Associado",
+  "mes": "jan2026",
+  "abertura": "27/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 11,
+  "prot": "8386"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.C.",
+  "ger": "Gerência Operações",
+  "local": "Pista de Atletismo",
+  "assunto": "Comportamento de Associado",
+  "mes": "jan2026",
+  "abertura": "27/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 11,
+  "prot": "8387"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.M.Z.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Procedimentos Internos",
+  "mes": "jan2026",
+  "abertura": "27/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 8.0,
+  "prazoCorridos": 11,
+  "prot": "8388"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.D.B.C.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Comportamento de Associado",
+  "mes": "jan2026",
+  "abertura": "29/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 9,
+  "prot": "8391"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "K.M.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jan2026",
+  "abertura": "29/01/2026",
+  "fechamento": "07/02/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 9,
+  "prot": "8392"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.A.F.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "fev2026",
+  "abertura": "07/02/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 34.0,
+  "prazoCorridos": 47,
+  "prot": "8395"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.P.P.",
+  "ger": "Gerência Operações",
+  "local": "G.R.D.",
+  "assunto": "Higienização e Limpeza",
+  "mes": "fev2026",
+  "abertura": "27/02/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 19.0,
+  "prazoCorridos": 27,
+  "prot": "8401"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.S.O.B.",
+  "ger": "Gerência Operações",
+  "local": "Centro de Esportes",
+  "assunto": "Higienização e Limpeza",
+  "mes": "mar2026",
+  "abertura": "03/03/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 17.0,
+  "prazoCorridos": 23,
+  "prot": "8418"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.L.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Eventos",
+  "mes": "mar2026",
+  "abertura": "10/03/2026",
+  "fechamento": "26/03/2026",
+  "prazo": 12.0,
+  "prazoCorridos": 16,
+  "prot": "8422"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.A.H.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "mar2026",
+  "abertura": "10/03/2026",
+  "fechamento": "27/03/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 17,
+  "prot": "8424"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.W.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "mar2026",
+  "abertura": "10/03/2026",
+  "fechamento": "27/03/2026",
+  "prazo": 13.0,
+  "prazoCorridos": 17,
+  "prot": "8425"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.L.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Segurança",
+  "mes": "mar2026",
+  "abertura": "13/03/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 51.0,
+  "prazoCorridos": 76,
+  "prot": "8428"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "Z.O.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mar2026",
+  "abertura": "18/03/2026",
+  "fechamento": "27/03/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8430"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.Z.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Segurança",
+  "mes": "mar2026",
+  "abertura": "25/03/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 43.0,
+  "prazoCorridos": 64,
+  "prot": "8433"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.M.S.",
+  "ger": "Gerência Operações",
+  "local": "Recepção",
+  "assunto": "Higienização e Limpeza",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 10,
+  "prot": "8451"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.V.O.B.",
+  "ger": "Gerência Operações",
+  "local": "Pista de Atletismo",
+  "assunto": "Comportamento de Associado",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 10,
+  "prot": "8452"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.S.M.",
+  "ger": "Gerência Operações",
+  "local": "Área Ajardinada",
+  "assunto": "Segurança",
+  "mes": "abr2026",
+  "abertura": "20/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 10,
+  "prot": "8453"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.G.R.",
+  "ger": "Gerência Operações",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Higienização e Limpeza",
+  "mes": "abr2026",
+  "abertura": "23/04/2026",
+  "fechamento": "30/04/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8458"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.B.T.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "abr2026",
+  "abertura": "30/04/2026",
+  "fechamento": "05/05/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 5,
+  "prot": "8465"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.C.B.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Investimento em Melhorias",
+  "mes": "mai2026",
+  "abertura": "15/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 13,
+  "prot": "8477"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.M.C.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Piscinas",
+  "mes": "mai2026",
+  "abertura": "19/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8498"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.T.M.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "28/05/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8509"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.C.G.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "mai2026",
+  "abertura": "26/05/2026",
+  "fechamento": "27/05/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8517"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.S.S.G.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "jun2026",
+  "abertura": "06/06/2026",
+  "fechamento": "13/06/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8536"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.S.E.S.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jun2026",
+  "abertura": "11/06/2026",
+  "fechamento": "13/06/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 2,
+  "prot": "8539"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.A.S.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Comunicação",
+  "mes": "jun2026",
+  "abertura": "24/06/2026",
+  "fechamento": "26/06/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8557"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.L.A.M.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "04/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 5,
+  "prot": "8569"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.K.V.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "03/07/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8571"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.J.M.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "jun2026",
+  "abertura": "29/06/2026",
+  "fechamento": "02/07/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8574"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.G.M.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Investimento em Melhorias",
+  "mes": "jul2026",
+  "abertura": "02/07/2026",
+  "fechamento": "02/07/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8577"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.J.R.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "07/07/2026",
+  "fechamento": "08/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8585"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.B.H.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "08/07/2026",
+  "fechamento": "10/07/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8589"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.M.N.C.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "jul2026",
+  "abertura": "13/07/2026",
+  "fechamento": "14/07/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8596"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.B.R.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "20/07/2026",
+  "fechamento": "20/07/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8609"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.G.A.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "20/07/2026",
+  "fechamento": "23/07/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8613"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.X.V.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Piscinas",
+  "mes": "jul2026",
+  "abertura": "31/07/2026",
+  "fechamento": "18/08/2026",
+  "prazo": 12.0,
+  "prazoCorridos": 18,
+  "prot": "8626"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.R.R.",
+  "ger": "Gerência Operações",
+  "local": "Churrasqueiras",
+  "assunto": "Comportamento de Funcionário",
+  "mes": "ago2026",
+  "abertura": "10/08/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8638"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.Z.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Segurança",
+  "mes": "ago2026",
+  "abertura": "11/08/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8641"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.U.E.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "17/08/2026",
+  "fechamento": "18/08/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8653"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.R.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "ago2026",
+  "abertura": "20/08/2026",
+  "fechamento": "25/08/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 5,
+  "prot": "8659"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.C.S.S.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Piscinas",
+  "mes": "ago2026",
+  "abertura": "25/08/2026",
+  "fechamento": "26/08/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8670"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.S.B.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Comportamento de Funcionário",
+  "mes": "ago2026",
+  "abertura": "26/08/2026",
+  "fechamento": "27/08/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8674"
  },
  {
   "tipo": "Reclamação",
@@ -13904,7 +14038,7 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "31/08/2026",
   "fechamento": "01/09/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8685"
  },
@@ -13917,22 +14051,685 @@ const MANIFESTACOES = [
   "mes": "ago2026",
   "abertura": "31/08/2026",
   "fechamento": "01/09/2026",
-  "prazo": 1,
+  "prazo": 1.0,
   "prazoCorridos": 1,
   "prot": "8686"
  },
  {
   "tipo": "Reclamação",
-  "nome": "C.R.",
+  "nome": "A.M.H.",
+  "ger": "Gerência Recursos Humanos",
+  "local": "VOLEI",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "18/08/2026",
+  "fechamento": "24/08/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8656"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.S.C.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "jul2026",
+  "abertura": "29/07/2026",
+  "fechamento": "31/07/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8623"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.M.B.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "04/08/2026",
+  "fechamento": "05/08/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8630"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.S.P.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "10/08/2026",
+  "fechamento": "10/08/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8634"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.C.A.B.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "10/08/2026",
+  "fechamento": "10/08/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8635"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "E.M.H.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "11/08/2026",
+  "fechamento": "11/08/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8640"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "K.S.N.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "11/08/2026",
+  "fechamento": "11/08/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8642"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "N.R.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Investimento em Melhorias",
+  "mes": "ago2026",
+  "abertura": "11/08/2026",
+  "fechamento": "13/08/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8643"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.A.P.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "ago2026",
+  "abertura": "25/08/2026",
+  "fechamento": "25/08/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8669"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "O.B.F.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Atendimento",
+  "mes": "set2026",
+  "abertura": "03/09/2026",
+  "fechamento": "09/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 6,
+  "prot": "8694"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.B.S.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Salões",
+  "assunto": "Eventos",
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "30/09/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 9,
+  "prot": "8724"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.R.R.B.",
+  "ger": "Gerência Esportiva",
+  "local": "Tênis",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "04/09/2026",
+  "fechamento": "18/09/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 14,
+  "prot": "8698"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "O.B.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Judo",
+  "assunto": "Atendimento",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "15/09/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8703"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.M.M.B.S.C.",
+  "ger": "Gerência Esportiva",
+  "local": "Secretaria Esportiva",
+  "assunto": "Atendimento",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "09/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 0,
+  "prot": "8706"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.B.L.",
+  "ger": "Gerência Esportiva",
+  "local": "Recreação",
+  "assunto": "Atendimento",
+  "mes": "set2026",
+  "abertura": "12/09/2026",
+  "fechamento": "15/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 3,
+  "prot": "8713"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.M.J.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "set2026",
+  "abertura": "15/09/2026",
+  "fechamento": "17/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8716"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.R.H.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "24/09/2026",
+  "fechamento": "30/09/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 6,
+  "prot": "8734"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "T.A.S.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Manutenção",
+  "mes": "set2026",
+  "abertura": "08/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8700"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.L.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Manutenção",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8707"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "P.R.B.",
+  "ger": "Gerência Manutenção",
+  "local": "Praça grande",
+  "assunto": "Manutenção",
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "24/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8722"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "B.B.",
+  "ger": "Gerência Manutenção",
+  "local": "Projetos e Obras",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8723"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.C.S.",
+  "ger": "Gerência Manutenção",
+  "local": "Praça grande",
+  "assunto": "Manutenção",
+  "mes": "set2026",
+  "abertura": "26/09/2026",
+  "fechamento": "29/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 3,
+  "prot": "8736"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.B.V.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "01/09/2026",
+  "fechamento": "02/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8688"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.B.V.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Estacionamento",
+  "mes": "set2026",
+  "abertura": "02/09/2026",
+  "fechamento": "03/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8690"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.D.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Piscinas",
+  "mes": "set2026",
+  "abertura": "02/09/2026",
+  "fechamento": "03/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8691"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.C.G.",
+  "ger": "Gerência Operações",
+  "local": "Sem Local",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "04/09/2026",
+  "fechamento": "08/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 4,
+  "prot": "8697"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "F.M.B.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "set2026",
+  "abertura": "08/09/2026",
+  "fechamento": "22/09/2026",
+  "prazo": 10.0,
+  "prazoCorridos": 14,
+  "prot": "8699"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "I.D.V.",
+  "ger": "Gerência Operações",
+  "local": "Sede Social",
+  "assunto": "Comportamento de Associado",
+  "mes": "set2026",
+  "abertura": "08/09/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 11.0,
+  "prazoCorridos": 15,
+  "prot": "8701"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "K.K.G.",
+  "ger": "Gerência Operações",
+  "local": "Praça grande",
+  "assunto": "Comportamento de Associado",
+  "mes": "set2026",
+  "abertura": "10/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 11.0,
+  "prazoCorridos": 15,
+  "prot": "8708"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.A.A.",
+  "ger": "Gerência Operações",
+  "local": "Praça grande",
+  "assunto": "Comportamento de Associado",
+  "mes": "set2026",
+  "abertura": "10/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 11.0,
+  "prazoCorridos": 15,
+  "prot": "8709"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "G.M.S.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "12/09/2026",
+  "fechamento": "22/09/2026",
+  "prazo": 7.0,
+  "prazoCorridos": 10,
+  "prot": "8714"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "M.K.F.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "14/09/2026",
+  "fechamento": "22/09/2026",
+  "prazo": 6.0,
+  "prazoCorridos": 8,
+  "prot": "8715"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "C.V.F.A.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Segurança",
+  "mes": "set2026",
+  "abertura": "18/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8719"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "S.A.B.",
+  "ger": "Gerência Operações",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Segurança",
+  "mes": "set2026",
+  "abertura": "18/09/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 5,
+  "prot": "8720"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "R.T.L.",
+  "ger": "Gerência Operações",
+  "local": "Praça grande",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "19/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 6,
+  "prot": "8721"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.T.B.",
+  "ger": "Gerência Operações",
+  "local": "Praça grande",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "25/09/2026",
+  "prazo": 4.0,
+  "prazoCorridos": 4,
+  "prot": "8725"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "T.V.L.",
+  "ger": "Gerência Operações",
+  "local": "Piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "26/09/2026",
+  "fechamento": "29/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 3,
+  "prot": "8735"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "I.E.S.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Higienização e Limpeza",
+  "mes": "set2026",
+  "abertura": "28/09/2026",
+  "fechamento": "29/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8737"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "A.O.S.",
+  "ger": "Gerência Operações",
+  "local": "Sede Social",
+  "assunto": "Investimento em Melhorias",
+  "mes": "set2026",
+  "abertura": "29/09/2026",
+  "fechamento": "30/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8738"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.L.C.S.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "03/09/2026",
+  "fechamento": "04/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8693"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "J.C.J.D.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "04/09/2026",
+  "fechamento": "05/09/2026",
+  "prazo": 0.0,
+  "prazoCorridos": 1,
+  "prot": "8696"
+ },
+ {
+  "tipo": "Reclamação",
+  "nome": "L.P.A.F.",
+  "ger": "Gerência TI",
+  "local": "Sistema",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8702"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "J.T.P.",
+  "ger": "Gerência Administrativa - Financeira",
+  "local": "Economatos",
+  "assunto": "Investimento em Melhorias",
+  "mes": "set2026",
+  "abertura": "24/09/2026",
+  "fechamento": "29/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 5,
+  "prot": "8733"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "D.P.C.",
+  "ger": "Gerência Esportiva",
+  "local": "GINÁSTICA ARTISTICA",
+  "assunto": "Organização de Aula",
+  "mes": "set2026",
+  "abertura": "02/09/2026",
+  "fechamento": "17/09/2026",
+  "prazo": 10.0,
+  "prazoCorridos": 15,
+  "prot": "8692"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "J.P.C.N.",
   "ger": "Gerência Esportiva",
   "local": "Sem Local",
   "assunto": "Procedimentos Internos",
-  "mes": "ago2026",
-  "abertura": "31/08/2026",
-  "fechamento": "04/09/2026",
-  "prazo": 4,
-  "prazoCorridos": 4,
-  "prot": "8687"
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "24/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8727"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "F.F.",
+  "ger": "Gerência Esportiva",
+  "local": "Pista de Atletismo",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "22/09/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8729"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "P.P.L.",
+  "ger": "Gerência Manutenção",
+  "local": "Pista de Atletismo",
+  "assunto": "Manutenção",
+  "mes": "set2026",
+  "abertura": "03/09/2026",
+  "fechamento": "05/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 2,
+  "prot": "8695"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "O.B.F.",
+  "ger": "Gerência Manutenção",
+  "local": "Vestiário das piscinas",
+  "assunto": "Investimento em Melhorias",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "11/09/2026",
+  "prazo": 2.0,
+  "prazoCorridos": 2,
+  "prot": "8705"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "R.S.O.B.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Investimento em Melhorias",
+  "mes": "set2026",
+  "abertura": "21/09/2026",
+  "fechamento": "24/09/2026",
+  "prazo": 3.0,
+  "prazoCorridos": 3,
+  "prot": "8728"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "T.T.W.",
+  "ger": "Gerência Manutenção",
+  "local": "Sem Local",
+  "assunto": "Investimento em Melhorias",
+  "mes": "set2026",
+  "abertura": "23/09/2026",
+  "fechamento": "30/09/2026",
+  "prazo": 5.0,
+  "prazoCorridos": 7,
+  "prot": "8732"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "O.B.F.",
+  "ger": "Gerência Operações",
+  "local": "Estacionamento",
+  "assunto": "Estacionamento",
+  "mes": "set2026",
+  "abertura": "09/09/2026",
+  "fechamento": "22/09/2026",
+  "prazo": 9.0,
+  "prazoCorridos": 13,
+  "prot": "8704"
+ },
+ {
+  "tipo": "Sugestão",
+  "nome": "M.M.A.",
+  "ger": "Gerência Operações",
+  "local": "Vestiário das piscinas",
+  "assunto": "Procedimentos Internos",
+  "mes": "set2026",
+  "abertura": "22/09/2026",
+  "fechamento": "23/09/2026",
+  "prazo": 1.0,
+  "prazoCorridos": 1,
+  "prot": "8731"
  }
 ];;
 
@@ -13951,6 +14748,7 @@ const COBERTURA_MANIFESTACOES = {
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
+  set2026: {ini:'2026-09-01', fim:'2026-09-30'},
 };
 // Descreve a cobertura de um bloco a partir do próprio dado. Antes, o aviso de
 // "nenhum registro no período" trazia a frase "Janeiro a Junho/2026" cravada no
@@ -14019,7 +14817,31 @@ function renderManifestacoes(mesesSel){
   const filtroAtivo = filtroAtivo0;
   // "vazio" também quando o filtro existe mas nenhum mês dele é coberto por esta área
   const recorteVazio = filtroAtivo && !noPeriodo.length;
-  const ms = noPeriodo.length ? noPeriodo : MANIFESTACOES;
+  // CAUSA DO ACUMULADO: a linha abaixo era `noPeriodo.length ? noPeriodo : BASE`.
+  // Quando o período filtrado não tinha nenhum registro (Setembro, por exemplo, que
+  // esta base ainda não cobre), o recorte vinha vazio e o render caía na BASE INTEIRA
+  // — a tela mostrava o ano todo com um aviso em amarelo. Agora, com filtro ativo, o
+  // recorte vale mesmo quando é vazio: filtra primeiro, agrega depois, sempre.
+  const ms = filtroAtivo ? noPeriodo : MANIFESTACOES;
+
+  // Período sem nenhuma manifestação: a tela diz isso, em vez de exibir outro período.
+  if(recorteVazio){
+    el.innerHTML = `
+    <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
+      <b>Nenhuma manifestação registrada no período selecionado.</b>
+      O registro de manifestações da CRA cobre <b>${textoCobertura(COBERTURA_MANIFESTACOES)}</b>.
+      Ausência de registro não é zero de operação: pode ser período ainda não enviado pela gestora.
+    </div></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
+      ${cardKpi('💬 Manifestações', '0', 'no período selecionado')}
+      ${cardKpi('🚩 Reclamações', '0', '—')}
+      ${cardKpi('💡 Sugestões', '0', '—')}
+      ${cardKpi('⭐ Elogios', '0', '—')}
+      ${cardKpi('✅ Dentro do Prazo', '—', 'sem manifestação para medir')}
+    </div>`;
+    return;
+  }
+
 
   const abertas   = ms.filter(m=>!m.fechamento);
   const comPrazo  = ms.filter(m=>m.prazo!=null);
@@ -14030,9 +14852,14 @@ function renderManifestacoes(mesesSel){
   const noSla     = comPrazo.filter(m=>m.prazo<=SLA_MANIF);
   const prazoMedio= comPrazo.length ? comPrazo.reduce((s,m)=>s+m.prazo,0)/comPrazo.length : null;
   const recl      = ms.filter(m=>m.tipo==='Reclamação').length;
-  // Tudo que não é reclamação: sugestões e os poucos elogios. Assim
-  // recl + sug = total, e o donut fecha com o card de Manifestações.
+  // Tudo que não é reclamação: sugestões e elogios juntos. Só o DONUT usa este
+  // número — duas fatias que somam o total do card de Manifestações.
   const sug       = ms.length - recl;
+  // Os CARDS executivos mostram as três classificações separadas, como estão na
+  // planilha da CRA: nada de elogio contado como sugestão. Conferem com o total:
+  // recl + sugReal + elog = ms.length.
+  const sugReal   = ms.filter(m=>m.tipo==='Sugestão').length;
+  const elog      = ms.filter(m=>m.tipo==='Elogio').length;
 
   const cont = fn => {
     const mp=new Map(); ms.forEach(x=>{const k=fn(x); if(k!=null) mp.set(k,(mp.get(k)||0)+1);});
@@ -14114,16 +14941,11 @@ function renderManifestacoes(mesesSel){
     </tr>`).join('');
 
   el.innerHTML = `
-    ${recorteVazio ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
-        <b>Os números abaixo NÃO são do período que você filtrou.</b> Não há manifestação
-        registrada nesse recorte, então a tela está mostrando <b>todas as ${MANIFESTACOES.length} de 2026</b>.
-        O registro de manifestações cobre <b>${textoCobertura(COBERTURA_MANIFESTACOES)}</b>.
-      </div></div>` : ''}
-
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('💬 Manifestações', String(ms.length), !recorteVazio && (keys.length||0) ? 'abertas no período' : 'registradas em 2026')}
       ${cardKpi('🚩 Reclamações', String(recl), ms.length?`${(recl/ms.length*100).toFixed(0)}% do total`:'—')}
-      ${cardKpi('💡 Sugestões', String(sug), ms.length?`${100-Math.round(recl/ms.length*100)}% do total`:'—')}
+      ${cardKpi('💡 Sugestões', String(sugReal), ms.length?`${(sugReal/ms.length*100).toFixed(0)}% do total`:'—')}
+      ${cardKpi('⭐ Elogios', String(elog), ms.length?`${(elog/ms.length*100).toFixed(0)}% do total`:'—')}
       ${cardKpi('✅ Dentro do Prazo', comPrazo.length?`${(noSla.length/comPrazo.length*100).toFixed(0)}%` : '—', `${noSla.length} de ${comPrazo.length} respondidas`)}
     </div>
 
@@ -15059,6 +15881,26 @@ const DESLIGAMENTOS_MESES = {
     negociacoesDesligados: 'R$ 0,00',
     analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">24 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados continuam em 24, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo declara 24 desligados e a aba lista 25 linhas — uma de diferença, mesma assimetria já presente em abril e agosto.',
   },
+  out2026: {
+    periodoTag:'Outubro/2026 (parcial · posição de 01/10)',
+    kpis:[
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'13', sub:'registros na aba de Outubro'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'—', sub:'a aba de Outubro não traz esse quadro', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'solicitados em setembro, desligados em 01/10'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'13', sub:'com data de desligamento 01/10/2026', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'—', sub:'não informado na aba de Outubro', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'não informado na aba de Outubro', valorCor:'#fb923c'},
+    ],
+    categorias: [{"nome": "Contribuinte", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Contribuinte Individual", "qtd": 4, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#a855f7"}, {"nome": "Contibuinte Individual", "qtd": 1, "cor": "#f2b705"}],
+    motivos: [{"motivo": "Mudança", "qtd": 4, "pct": 30.77, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 3, "pct": 23.08, "cor": "#00e5a0"}, {"motivo": "Não Utilização", "qtd": 3, "pct": 23.08, "cor": "#a855f7"}, {"motivo": "Saúde", "qtd": 2, "pct": 15.38, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 7.69, "cor": "#06b6d4"}],
+    totalDesligamentos: 13,
+    ticketMedio: 'R$ 445,33', dependentes: '1,7',
+    residual: '—', residualLabel: 'Residual Acumulado',
+    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:1, nao:6},
+    quadroSocial: null,
+    negociacoesDesligados: 'R$ 0,00',
+    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>. <b style="color:var(--gold);">Mês recém-aberto, posição de 01/10.</b> A aba traz <b>13 registros</b>, todos com <b>Data de Desligamento em 01/10/2026</b> — as solicitações são de setembro, mas a saída se efetivou em outubro, e é a data de desligamento que define a competência. <b>Mudança lidera com 4</b>, seguida de financeiro e não utilização. Ticket médio de <b>R$ 445,33</b> (12 dos 13 com ticket informado) e 1,7 dependente por titular (7 informados). Não há valor negociado nem taxa de desligamento nestes registros. <b style="color:var(--gold);">Atenção à leitura:</b> a aba de Outubro ainda não traz o quadro de residuais, retidos e programados nem o quadro social do mês — esses campos aparecem como "—" em vez de zero, porque ausência de informação não é ausência de evento. O quadro-resumo lateral da aba declara <b>11</b> em categorias pagantes enquanto as linhas somam <b>13</b>: a diferença está em duas linhas cuja categoria foi digitada fora do padrão do quadro. Aqui vale a linha.',
+  },
 };
 
 function getRetencaoMes(key){
@@ -15402,12 +16244,45 @@ function paraISO(br){                       // 'dd/mm/aaaa' -> 'aaaa-mm-dd'
 }
 // Recalcula os prazos com o calendário disponível. Rodar depois de carregar os dados:
 // assim, quando novos feriados forem incluídos, os números se ajustam sozinhos.
+// Prazo acordado para o CRA tratar uma ocorrência, em dias ÚTEIS. É o mesmo
+// número já explicado na tela (os 4 dias de análise de imagens estão DENTRO
+// destes 10, não são prazo adicional).
+const SLA_OCOR = 10;
+
+// Data de referência do painel: o "hoje" do navegador, sem hora e sem fuso —
+// nada de data fixa, para a contagem das ocorrências abertas seguir andando.
+function dataReferenciaCRA(){
+  const d = new Date(), p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+}
+
 function recalcularPrazos(){
   [typeof OCORRENCIAS!=='undefined'?OCORRENCIAS:[], typeof MANIFESTACOES!=='undefined'?MANIFESTACOES:[]]
     .forEach(lista => lista.forEach(r => {
       const n = diasUteisD1(paraISO(r.abertura), paraISO(r.fechamento));
       if(n !== null) r.prazo = n;
     }));
+
+  // REGRA OFICIAL DA GESTORA: a ocorrência só é encerrada quando tem Data de Fim.
+  // Sem Data de Fim ela continua ABERTA e o relógio não para — o prazo segue
+  // correndo até a data de referência. Esse tempo corrente fica em 'diasAberto',
+  // NUNCA em 'prazo': 'prazo' é o tempo até o fechamento e alimenta as métricas
+  // de casos fechados (tempo médio, faixas, "resolvidas em até 7 dias"), que não
+  // podem ser contaminadas por quem ainda está em andamento.
+  if(typeof OCORRENCIAS !== 'undefined'){
+    const hojeISO = dataReferenciaCRA();
+    OCORRENCIAS.forEach(o => {
+      o.aberta = !o.fechamento;
+      if(o.aberta){
+        o.prazo      = null;                                       // não há fechamento para medir
+        o.diasAberto = diasUteisD1(paraISO(o.abertura), hojeISO);  // D+1, sem fim de semana nem feriado
+        o.foraPrazo  = o.diasAberto != null && o.diasAberto > SLA_OCOR;
+      } else {
+        o.diasAberto = null;
+        o.foraPrazo  = o.prazo != null && o.prazo > SLA_OCOR;      // fechada fora do prazo
+      }
+    });
+  }
 }
 recalcularPrazos();
 
@@ -17667,6 +18542,12 @@ function terceirosResumo(){
 
   // cobertura da base de 2026 (derivada, não escrita à mão)
   const idxComDadoTodos = v26.map((v,i)=>v!=null?i:null).filter(i=>i!=null);
+  // Menor custo do ANO inteiro, entre os meses efetivamente realizados. Mês sem
+  // informação não entra — não é R$ 0,00. Independe do período filtrado: o
+  // destaque é sobre 2026, não sobre o recorte da tela.
+  const iMelhorAno = idxComDadoTodos.reduce((a,i)=> (a==null || v26[i] < v26[a]) ? i : a, null);
+  const idxAnt = idxComDadoTodos.filter(i=> i !== iMelhorAno);
+  const iSegundoAno = idxAnt.reduce((a,i)=> (a==null || v26[i] < v26[a]) ? i : a, null);
   const ultRot = idxComDadoTodos.length ? MESES_RH[idxComDadoTodos[idxComDadoTodos.length-1]] : null;
   // o período PEDIDO no filtro passou do fim da base? (nunca vira zero: só avisa)
   const fr = (typeof window !== 'undefined') ? window._filtroRange : null;
@@ -17680,6 +18561,7 @@ function terceirosResumo(){
     iMenor, iMaior, iUlt, iAnt, varUltMes, varUltAno, tendPct,
     baseUltimoMes: ultRot,
     baseQtdMeses: idxComDadoTodos.length,
+    iMelhorAno, iSegundoAno,
     passouDaBase: passouDaBase,
   };
 }
@@ -17884,7 +18766,13 @@ function terceirosAnalise(r){
   if(ult.length)
     P.push(`<b>${rotFim}</b> registrou ${fmtMilReais(r.v26[r.iUlt])}: ${ult.join(', e permanece ')}.`);
 
-  // 5 — limite da base: o que ela NÃO responde
+  // 5 — melhor mês do ano (fato do ano inteiro, não do recorte)
+  if(r.iMelhorAno != null && r.baseQtdMeses > 1){
+    const dentro = r.comDado.indexOf(r.iMelhorAno) >= 0;
+    P.push(`No ano, o <b>menor custo mensal de 2026</b> é o de <b>${MESES_RH[r.iMelhorAno]}</b> (<b style="color:var(--green);">${fmtMilReais(r.v26[r.iMelhorAno])}</b>), entre os ${r.baseQtdMeses} meses realizados${dentro ? '' : ' — fora do período filtrado'}.`);
+  }
+
+  // 6 — limite da base: o que ela NÃO responde
   P.push(`<span class="muted">A planilha de origem traz apenas o valor mensal consolidado — não há fornecedor, contrato, setor ou centro de custo. Por isso os números acima descrevem <b>o que</b> variou, não <b>por que</b> variou.</span>`);
 
   return P.map(p=>`<div style="margin-bottom:7px;">${p}</div>`).join('');
@@ -17959,7 +18847,28 @@ function terceirosBloco(){
       </div>
     </div>`;
 
-  return titulo + terceirosCards(r) + painelGrafico + analise;
+  // Destaque gerencial: o menor custo mensal de 2026 entre os meses realizados.
+  // Derivado da série — se outro mês passar a ser o menor, a faixa acompanha
+  // sozinha. Discreto de propósito: uma linha, sem card extra.
+  let melhor = '';
+  if(r.iMelhorAno != null && r.baseQtdMeses > 1){
+    const vM = r.v26[r.iMelhorAno];
+    const vS = r.iSegundoAno != null ? r.v26[r.iSegundoAno] : null;
+    const abaixo = vS != null ? (1 - vM/vS)*100 : null;
+    melhor = `
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+                  background:rgba(0,229,160,.07); border:1px solid rgba(0,229,160,.28);
+                  border-radius:10px; padding:10px 14px; margin-bottom:14px; font-size:13px;">
+        <span style="font-size:15px;">🏆</span>
+        <span style="color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.4px; font-size:11px;">Menor custo mensal de 2026</span>
+        <span style="color:var(--text); font-weight:800;">${MESES_RH[r.iMelhorAno]}</span>
+        <span style="color:var(--green); font-weight:900;">${fmtMilReais(vM)}</span>
+        ${abaixo != null ? `<span class="muted">${terceirosPctMag(abaixo)} abaixo do segundo menor (${MESES_RH[r.iSegundoAno]}, ${fmtMilReais(vS)})</span>` : ''}
+        <span class="muted" style="margin-left:auto;">entre os ${r.baseQtdMeses} meses realizados</span>
+      </div>`;
+  }
+
+  return titulo + melhor + terceirosCards(r) + painelGrafico + analise;
 }
 
 function renderTerceirosGerencial(){
