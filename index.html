@@ -8961,7 +8961,7 @@ const RETENCAO_CRA = [
   "nome": "D.M.C.W.",
   "cat": "Senior",
   "perm": "6 meses",
-  "mes": "ago2026",
+  "mes": "set2026",
   "inicio": "01/08/2026",
   "valor": 1596.0,
   "beneficios": [
@@ -8971,7 +8971,8 @@ const RETENCAO_CRA = [
   "negociacao": null,
   "vNegociacao": 0.0,
   "sucesso": true,
-  "beneficioUsado": true
+  "beneficioUsado": true,
+  "_competencia": "Registrado em 03/09/2026, acordo iniciado em 01/08/2026. A competência de setembro foi validada pela gestora da CRA em 01/10/2026 (setembro = 3 retenções + 1 licença)."
  },
  {
   "nome": "A.B.E.",
@@ -9194,9 +9195,10 @@ const LICENCAS_CRA = [
  {
   "nome": "H.A.C.F.",
   "cat": "Contribuinte",
-  "mes": "abr2026",
+  "mes": "set2026",
   "inicio": "27/04/2026",
-  "fim": "30/11/2026"
+  "fim": "30/11/2026",
+  "_competencia": "Registrada em 15/09/2026, licença iniciada em 27/04/2026. Competência de setembro validada pela gestora da CRA em 01/10/2026."
  }
 ]
 
@@ -15866,20 +15868,20 @@ const DESLIGAMENTOS_MESES = {
     // retencao/licenca sairam da lista e H.A.C.F. voltou como desligamento
     // efetivo em 23/09. As 25 linhas agora sao todas desligamento.
     periodoTag: 'Setembro/2026 (até 28/09)',
-    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "39", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "8", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "24", "sub": "efetivados no período", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "4", "sub": "associados mantidos", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "11", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
+    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "39", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "10", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "25", "sub": "efetivados no período", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "4", "sub": "associados mantidos", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "11", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
     // Recalculados das 25 linhas. "Contribuinte Universitário" e "Não
     // utilização"/"Troca de categoria" passam a usar a MESMA grafia dos outros
     // meses — sem isso a agregacao de varios meses criava duas entradas para a
     // mesma categoria.
     categorias: [{"nome": "Contribuinte", "qtd": 12, "cor": "#3d7bff"}, {"nome": "Patrimonial", "qtd": 6, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 3, "cor": "#a855f7"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#f2b705"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#06b6d4"}, {"nome": "Contribuinte Universitário", "qtd": 1, "cor": "#fb923c"}],
     motivos: [{"motivo": "Mudança", "qtd": 9, "pct": 36.00, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 20.00, "cor": "#00e5a0"}, {"motivo": "Financeiro", "qtd": 5, "pct": 20.00, "cor": "#a855f7"}, {"motivo": "Viagem", "qtd": 3, "pct": 12.00, "cor": "#f2b705"}, {"motivo": "Saúde", "qtd": 1, "pct": 4.00, "cor": "#06b6d4"}, {"motivo": "Troca de categoria", "qtd": 1, "pct": 4.00, "cor": "#fb923c"}, {"motivo": "Insatisfação", "qtd": 1, "pct": 4.00, "cor": "#e8192c"}],
-    totalDesligamentos: 24,
+    totalDesligamentos: 25,
     ticketMedio: 'R$ 602,66', dependentes: '1,8',
     residual: 15, residualLabel: 'Residual Acumulado',
     desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:18},
     quadroSocial: 26,
     negociacoesDesligados: 'R$ 0,00',
-    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">24 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados continuam em 24, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo declara 24 desligados e a aba lista 25 linhas — uma de diferença, mesma assimetria já presente em abril e agosto.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. \"Deste Mês\" também foi corrigido de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
     periodoTag:'Outubro/2026 (parcial · posição de 01/10)',
