@@ -2632,14 +2632,18 @@ const REINGRESSO_HISTORICO = [
   // Continua sem abertura por campanha e por categoria — ficam como
   // "aguardando registro" para os graficos fecharem sem inventar distribuicao.
   // ticketMedio NAO e digitado: sai de valor/total no forEach abaixo (R$ 571,88).
-  {mesKey:'set2026', periodoTag:'Setembro/2026 (até 28/09)', total:54, valor:30881.49, contatos:null,
+  {mesKey:'set2026', periodoTag:'Setembro/2026 (fechado · 01 a 30/09)', total:96, valor:51416.34, contatos:null,
     campanhas:[
-      {nome:'Aguardando registro na campanha', qtd:54, cor:'#4a4c68'},
+      {nome:'Taxa reduzida', qtd:44, cor:'#06b6d4'},
+      {nome:'RBN', qtd:39, cor:'#3d7bff'},
+      {nome:'Benefício patrimonial', qtd:6, cor:'#a855f7'},
+      {nome:'Promoção aniversário', qtd:5, cor:'#00e5a0'},
+      {nome:'Lista de excluídos', qtd:2, cor:'#f2b705'},
     ],
     categorias:[
-      {nome:'Categoria a informar', qtd:54, cor:'#4a4c68'},
+      {nome:'Categoria a informar', qtd:96, cor:'#4a4c68'},
     ],
-    alerta: '<b style=\"color:var(--gold);\">Mês em andamento — posição de 28/09.</b> <b>54 reingressos somando R$ 30.881,49</b>, ticket médio de R$ 571,88. Na posição anterior, de 21/09, eram 27 e R$ 17.806,84 — <b>o mês dobrou de volume na última semana</b>. Agosto fechou com 68 e R$ 37.329,06, então setembro está em 79% do volume de agosto com o mês ainda aberto. O ticket caiu de R$ 659,51 para R$ 571,88, aproximando-se dos R$ 548,96 de agosto. <b style=\"color:var(--gold);\">A abertura por campanha e por categoria continua não informada</b> — os 54 aparecem como aguardando registro até chegar o detalhamento.'},
+    alerta: '<b style=\"color:var(--green);\">Setembro fechado — 96 reingressos e R$ 51.416,34</b>, contra 54 e R$ 30.881,49 na posição de 28/09: o fechamento acrescentou 42 reingressos nos últimos dias do mês. <b style=\"color:var(--green);\">Meta de 50 batida com 192%</b> — 96 realizados. É o <b>maior volume do ano</b>, acima de agosto (68) e de janeiro (75). Ticket médio de R$ 535,59, abaixo dos R$ 548,96 de agosto e dos R$ 571,88 da posição parcial: o fechamento trouxe volume com valor menor por reingresso. <b>Taxa reduzida (44) e RBN (39) respondem por 83 dos 96</b>, com benefício patrimonial (6), promoção aniversário (5) e lista de excluídos (2) completando o mês. <b style=\"color:var(--gold);\">Ressalva de origem:</b> a peça traz a quantidade por campanha, mas <b>não informa o valor financeiro de cada uma</b> — por isso os R$ 51.416,34 aparecem só como total do mês, sem rateio nem ticket por campanha. A abertura por categoria também não veio.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -6808,7 +6812,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Convênio OAB', qtd:1},
       {nome:'Plano Single', qtd:1},
     ],
-    alerta: '<b>Mês em andamento — posição de 26/09.</b> <b>54 associações novas</b> somando <b>R$ 25.497,00</b>, ticket médio de <b>R$ 472,17</b>. <b style=\"color:var(--green);\">A meta de 52 já foi superada (104%)</b> e o desafio de 60 está em 90% com o mês ainda aberto. <b>Helena e Nicole empatam em 27 vendas cada</b> — R$ 12.553,00 e R$ 12.944,00 —, e as duas respondem por 100% do mês: Claudia e Sabrina não registram vendas em setembro. O canal combinado <b>Campanha + Tour soma 14</b>, à frente de Tour (11) e Campanha (11); <b>Contribuinte Familiar concentra 26 das 54</b>. Somando os 54 reingressos da posição de 28/09, vendas + reingressos chegam a <b>108</b> e a R$ 56.378,49 de taxa total. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> 4 dos 54 registros ainda estão sem valor e sem detalhamento na planilha (entram como aguardando registro, com valor zero), e a <b>meta de reingresso de setembro ainda não foi informada</b> pela Secretaria Administrativa — por isso as linhas de reingresso e de total aparecem sem orçado. <b style=\"color:var(--gold);\">Mudança de medida:</b> a planilha passou a separar "Adesão" de "Valor Contribuição". A série do painel (inclusive os R$ 28.655,50 de agosto) é a de <b>Valor Contribuição</b> — conferida linha a linha nas 66 linhas de agosto, com zero divergências. A nova coluna "Adesão" somaria R$ 30.603,73 em setembro e R$ 30.127,50 em agosto, e não foi incorporada.',
+    alerta: '<b>Mês em andamento — posição de 26/09.</b> <b>54 associações novas</b> somando <b>R$ 25.497,00</b>, ticket médio de <b>R$ 472,17</b>. <b style=\"color:var(--green);\">A meta de 52 já foi superada (104%)</b> e o desafio de 60 está em 90% com o mês ainda aberto. <b>Helena e Nicole empatam em 27 vendas cada</b> — R$ 12.553,00 e R$ 12.944,00 —, e as duas respondem por 100% do mês: Claudia e Sabrina não registram vendas em setembro. O canal combinado <b>Campanha + Tour soma 14</b>, à frente de Tour (11) e Campanha (11); <b>Contribuinte Familiar concentra 26 das 54</b>. Somando os <b>96 reingressos do fechamento de setembro</b>, vendas + reingressos chegam a <b>150</b> e a R$ 76.913,34 de taxa total. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> 4 dos 54 registros ainda estão sem valor e sem detalhamento na planilha (entram como aguardando registro, com valor zero). A <b>meta de reingresso de setembro é 50</b>, informada na peça de fechamento da Secretaria Administrativa, e foi superada com 96 reingressos. <b style=\"color:var(--gold);\">Mudança de medida:</b> a planilha passou a separar "Adesão" de "Valor Contribuição". A série do painel (inclusive os R$ 28.655,50 de agosto) é a de <b>Valor Contribuição</b> — conferida linha a linha nas 66 linhas de agosto, com zero divergências. A nova coluna "Adesão" somaria R$ 30.603,73 em setembro e R$ 30.127,50 em agosto, e não foi incorporada.',
     metas:{
       // orcado 52 e desafio 60 vem do topo da propria aba Setembro da planilha.
       // A meta de REINGRESSO nunca veio na planilha — em jul/ago ela foi
@@ -6817,15 +6821,17 @@ const VENDAS_EXTRA_MESES = {
       // ATENCAO: os campos de reingresso abaixo REPETEM o que esta em
       // REINGRESSO_HISTORICO.set2026 — hoje nao ha derivacao automatica entre
       // as duas estruturas. Ao atualizar o reingresso, mudar NOS DOIS lugares.
-      // 28/09: 27 -> 54 reingressos e R$ 17.806,84 -> R$ 30.881,49.
-      //   totalVR.real = 54 vendas + 54 reingressos = 108  (coincidencia: os
-      //   dois numeros deram 54; os valores sao diferentes, R$ 25.497,00 e
-      //   R$ 30.881,49, entao nao ha troca de um pelo outro)
-      //   taxaTotal    = 25.497,00 + 30.881,49 = 56.378,49
-      vendas:{orcado:52, real:54}, reingressos:{orcado:null, real:54},
-      totalVR:{orcado:null, real:108}, desafioVenda:60, desafioReingresso:null,
-      total:{orcado:60, real:108, gap:48},
-      taxaAdesao:25497.00, taxaReingresso:30881.49, taxaTotal:56378.49,
+      // 01/10: setembro FECHADO. 54 -> 96 reingressos e R$ 30.881,49 -> R$ 51.416,34,
+      //   pela peca "Entradas de Reingresso · 01 a 30 de setembro".
+      //   A meta de reingresso finalmente veio na peca: 50 (realizado 96).
+      //   totalVR.orcado = 52 vendas + 50 reingressos = 102
+      //   totalVR.real   = 54 vendas + 96 reingressos = 150
+      //   taxaTotal      = 25.497,00 + 51.416,34 = 76.913,34
+      //   O desafio de reingresso continua null: a peca nao traz desafio.
+      vendas:{orcado:52, real:54}, reingressos:{orcado:50, real:96},
+      totalVR:{orcado:102, real:150}, desafioVenda:60, desafioReingresso:null,
+      total:{orcado:60, real:150, gap:90},
+      taxaAdesao:25497.00, taxaReingresso:51416.34, taxaTotal:76913.34,
     },
   },
 };
