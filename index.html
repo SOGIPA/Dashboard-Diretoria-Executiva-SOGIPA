@@ -4789,7 +4789,15 @@ function renderReingressoMeses(meses){
       <div class="card"><div class="card-label">Distribuição</div><div id="reingressoDonut" class="donut-wrap"></div></div>
     </div>`;
   }
-  if(r.categorias){
+  // ── Bloco "Por Categoria de Sócio" — OCULTO em 02/10/2026 ────────────────
+  // A fonte ainda manda tudo como "Categoria a informar", então a faixa só
+  // mostrava 100% numa categoria que não é categoria nenhuma. Está apenas
+  // OCULTA: os dados em REINGRESSO_HISTORICO[].categorias, o cálculo e todo o
+  // markup abaixo continuam intactos. Para reativar quando a Secretaria mandar
+  // as categorias reais, basta trocar esta constante para true — nada mais.
+  // Com a flag em false nada é acrescentado ao html, então não sobra espaço.
+  const MOSTRAR_CATEGORIA_REINGRESSO = false;
+  if(r.categorias && MOSTRAR_CATEGORIA_REINGRESSO){
     const totCat = r.categorias.reduce((s,c)=>s+c.qtd,0);
     const linhasCat = r.categorias.map(c=>`
       <div style="display:flex; align-items:center; gap:10px; padding:7px 0;">
