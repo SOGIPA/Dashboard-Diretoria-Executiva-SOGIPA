@@ -238,6 +238,75 @@
      em vez de rolar. Era o que aparecia no celular: cards fatiados na direita,
      sem como chegar neles. Com min(), a coluna nunca pede mais que a largura
      disponível e a grade cai para uma coluna sozinha. */
+  /* Capacidade (Esportes > Modalidades) — reaproveita .kpi-grid e .card;
+     só a contagem de colunas e o respiro precisavam de regra própria. */
+  /* Seletor duplicado de propósito: .kpi-grid é redefinido em quatro media
+     queries mais abaixo (1100/820/680/420px) e, com uma classe só, a última
+     regra venceria e a faixa viraria 4 ou 2 colunas. .kpi-grid.esp-ocup-grid
+     tem especificidade maior e ganha de todas, na ordem em que estiverem.
+     Os cortes seguem os mesmos pontos do resto do painel. */
+  .kpi-grid.esp-ocup-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); margin-bottom:18px; }
+  @media (max-width:820px){
+    .kpi-grid.esp-ocup-grid{ gap:10px; }
+  }
+  @media (max-width:420px){
+    .kpi-grid.esp-ocup-grid{ grid-template-columns:1fr; gap:10px; }
+  }
+
+  /* ── Esportes > card da modalidade: hierarquia do número ── */
+  .esp-card-nome{ font-size:13.5px; font-weight:700; color:var(--text);
+                  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .esp-card-rot{ font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
+                 color:var(--muted); margin-top:9px; }
+  .esp-card-valor{ font-size:19px; font-weight:800; line-height:1.15; margin-top:2px; }
+  .esp-card-sinal{ font-size:10.5px; color:var(--muted); margin-top:2px; }
+  .esp-card-ocup{ margin-top:9px; padding-top:8px; border-top:1px solid var(--border); }
+  .esp-ocup-aviso{ margin:-4px 0 14px; font-size:12px; }
+
+  /* ── Esportes > detalhe: cabeçalho executivo ── */
+  .esp-det-cab{ display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  .esp-det-ident{ min-width:0; }
+  .esp-det-nome{ font-size:17px; font-weight:800; color:var(--text); line-height:1.2; }
+  .esp-det-ctx{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .esp-det-res{ margin-left:auto; text-align:right; }
+  .esp-det-valor{ font-size:26px; font-weight:900; line-height:1.1; white-space:nowrap; }
+  .esp-det-fechar{ background:transparent; border:1px solid var(--border); color:var(--muted);
+                   font-family:inherit; font-size:12px; padding:5px 12px; border-radius:8px;
+                   cursor:pointer; align-self:flex-start; }
+  .esp-det-fechar:hover{ color:var(--text); border-color:var(--blue); }
+  .esp-det-pils{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:14px;
+                 padding-top:13px; border-top:1px solid var(--border); }
+  .esp-det-pil{ display:inline-flex; align-items:baseline; gap:7px; background:rgba(255,255,255,.04);
+                border:1px solid var(--border); border-radius:9px; padding:6px 11px; }
+  .esp-det-pil-rot{ font-size:10px; font-weight:700; letter-spacing:.5px;
+                    text-transform:uppercase; color:var(--muted); }
+  .esp-det-pil-val{ font-size:15px; font-weight:800; color:var(--text); }
+  .esp-det-pil-nota{ font-size:11px; color:var(--muted); }
+
+  /* ── Esportes > subaba Ocupação ── */
+  .esp-ocup-barra-topo{ display:flex; align-items:center; gap:12px 16px; flex-wrap:wrap; margin-bottom:14px; }
+  .esp-ord{ display:flex; gap:6px; flex-wrap:wrap; }
+  .esp-ord-btn{ background:transparent; border:1px solid var(--border); color:var(--muted);
+                font-family:inherit; font-size:11.5px; font-weight:700; padding:6px 11px;
+                border-radius:8px; cursor:pointer; white-space:nowrap; }
+  .esp-ord-btn:hover{ color:var(--text); border-color:var(--blue); }
+  .esp-ord-btn.ativo{ color:var(--text); border-color:var(--blue); background:rgba(61,123,255,.12); }
+  .esp-ocup-faixas{ display:flex; gap:12px; flex-wrap:wrap; margin-left:auto;
+                    font-size:11px; color:var(--muted); }
+  .esp-ocup-faixa{ display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+  .esp-ocup-faixa i{ width:8px; height:8px; border-radius:2px; display:inline-block; }
+  .esp-ocup-lista{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(260px,100%), 1fr)); gap:11px; }
+  .esp-ocup-linha{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .esp-ocup-cab{ display:flex; align-items:baseline; gap:10px; }
+  .esp-ocup-nome{ font-size:13.5px; font-weight:700; color:var(--text);
+                  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .esp-ocup-pct{ margin-left:auto; font-size:17px; font-weight:900; white-space:nowrap; }
+  .esp-ocup-sub{ font-size:11.5px; color:var(--muted); margin-top:3px; }
+  @media (max-width:680px){
+    .esp-det-res{ margin-left:0; text-align:left; }
+    .esp-ocup-faixas{ margin-left:0; }
+  }
+
   .esp-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(215px,100%), 1fr)); gap:11px; }
   .esp-card{ transition:border-color .15s ease, transform .1s ease; }
   .esp-card:hover{ border-color:var(--blue); transform:translateY(-1px); }
@@ -1595,7 +1664,8 @@
 
       <div class="rh-subtabs">
         <button class="rh-subtab-btn active" id="subtabBtnEspMod" onclick="mudarSubAbaEsp('mod')">🏃 Modalidades</button>
-        <button class="rh-subtab-btn" id="subtabBtnEspGeral" onclick="mudarSubAbaEsp('geral')">📊 Ranking das Modalidades</button>
+        <button class="rh-subtab-btn" id="subtabBtnEspGeral" onclick="mudarSubAbaEsp('geral')">📊 Ranking</button>
+        <button class="rh-subtab-btn" id="subtabBtnEspOcup" onclick="mudarSubAbaEsp('ocup')">👥 Ocupação</button>
       </div>
 
       <div id="espSubMod">
@@ -1603,6 +1673,9 @@
       </div>
       <div id="espSubGeral" style="display:none;">
         <div id="esportesConteudo"></div>
+      </div>
+      <div id="espSubOcup" style="display:none;">
+        <div id="esportesOcupConteudo"></div>
       </div>
     </div>
 
@@ -2207,6 +2280,7 @@ const COBERTURA_ESPORTES = {
   mai2026: {ini:'2026-05-01', fim:'2026-05-31'},
   jun2026: {ini:'2026-06-01', fim:'2026-06-30'},
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
+  ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
 
 const ESPORTES_COLUNAS = [
@@ -2218,43 +2292,69 @@ const ESPORTES_COLUNAS = [
   {key:'alto', nome:'Alto Rendimento', cor:'#06b6d4'},
 ];
 
-// Resultado por modalidade, MÊS A MÊS (jan a jul/2026). Fonte: Controladoria.
+// Resultado por modalidade, MÊS A MÊS (jan a AGO/2026). Fonte: Controladoria.
+// AGOSTO/2026 veio da apresentação "Modalidades", coluna ago/26, em reais inteiros.
+// A coluna acumulada "2026" da apresentação é a trava por modalidade. Na carga
+// de agosto duas modalidades não fechavam; na v336 a gestão definiu a
+// apresentação como fonte oficial e as duas foram reconciliadas:
+//   · Esgrima          — mai/jun zerados e jul 406 → 439  (fecha em 1.399 × 1.400)
+//   · Personal Vaqueiro— jul −1.100 → +852                (fecha em 6.814 × 6.813)
+// As outras 31 modalidades continuam com jan–jul exatamente como publicado.
+// O campo 'ano' continua sendo o total declarado na planilha de jan–jul e NÃO
+// é lido por nenhuma tela; ficou intacto de propósito.
 // Antes só tínhamos o acumulado do semestre, então a aba não respondia ao filtro.
 // 'ano' é o total declarado na planilha; 'm' traz cada mês. Diferenças de ±R$ 1 entre
 // a soma dos meses e o total declarado são arredondamento de centavos na origem.
 const ESPORTES_MESES = [
-  {nome:'Aikido', ano:4014.32, m:{jan:542.11, fev:501, mar:70, abr:1245.87, mai:693.13, jun:520.21, jul:442}},
-  {nome:'Athletic Trainning', ano:-67339.616596, m:{jan:-9550.587148, fev:-9105.559768, mar:-9423.689768, abr:-6991.693304, mai:-11334.793304, jun:-7643.293304, jul:-13290}},
-  {nome:'Atletismo', ano:-238858.76945, m:{jan:-18684.13945, fev:-29090.15, mar:-19307.89, abr:-28807.02, mai:-52722.25, jun:-36803.32, jul:-53444}},
-  {nome:'Ballet Gutierres', ano:4403.06, m:{jan:127.39, fev:0, mar:797.24, abr:944.77, mai:757.66, jun:763, jul:1013}},
-  {nome:'Basquete', ano:-31173.3308, m:{jan:-2992.1008, fev:5294.87, mar:14429.07, abr:2438.89, mai:-26896.4, jun:-35788.66, jul:12341}},
-  {nome:'Beach Tennis', ano:-18633.25, m:{jan:-3652.2, fev:-2418.05, mar:-3671.92, abr:-611.81, mai:-2634.29, jun:-2198.98, jul:-3446}},
-  {nome:'Boxe', ano:55942.3, m:{jan:7281.79, fev:7955.28, mar:8863.86, abr:8431.56, mai:8318.8, jun:7304.01, jul:7787}},
-  {nome:'Esgrima', ano:527, m:{jan:0, fev:0, mar:0, abr:0, mai:67, jun:54, jul:406}},
-  {nome:'Fitness', ano:-11322.760871, m:{jan:200.588068, fev:-2340.295247, mar:-1058.065247, abr:-878.109482, mai:-3809.649482, jun:-1653.229482, jul:-1784}},
-  {nome:'Futebol', ano:-4781.494487, m:{jan:-3991.854488, fev:271.12, mar:523.54, abr:4119.24, mai:5904.09, jun:-13386.63, jul:1779}},
-  {nome:'Ginástica Artística', ano:19596.2746, m:{jan:-20559.3054, fev:-4459.16, mar:17795.75, abr:19623.38, mai:-23933.44, jun:-9955.95, jul:41085}},
-  {nome:'Ginástica Rítmica', ano:34747.328541, m:{jan:-7456.80267, fev:9944.359146, mar:16369.539146, abr:961.887639, mai:6365.927639, jun:16819.417639, jul:-8257}},
-  {nome:'Ginástica Veteranas', ano:16195.845497, m:{jan:230.74, fev:-4040.685989, mar:4566.884011, abr:3795.225825, mai:3607.735825, jun:3650.945825, jul:4385}},
-  {nome:'Hidroginástica', ano:47271.630255, m:{jan:-255.06, fev:163.912635, mar:9312.142635, abr:10716.394995, mai:10844.704995, jun:9654.534995, jul:6835}},
-  {nome:'Judô', ano:-276684.13724, m:{jan:-64587.66724, fev:-39619.86, mar:-20425.37, abr:-38686.98, mai:-30381.72, jun:-36206.54, jul:-46776}},
-  {nome:'Kung Fu', ano:2298.19, m:{jan:389.1, fev:276.49, mar:457.8, abr:371.4, mai:0, jun:518.4, jul:285}},
-  {nome:'Levantamento de Peso', ano:29956.95, m:{jan:9473.23, fev:7692.98, mar:8289.37, abr:2971.89, mai:-185.65, jun:-2177.87, jul:3893}},
-  {nome:'Musculação', ano:785051.14295, m:{jan:113286.13885, fev:108936.18015, mar:118082.13015, abr:108549.5146, mai:103557.3446, jun:117638.8346, jul:115001}},
-  {nome:'Natação', ano:86529.381095, m:{jan:-6333.65865, fev:-4908.832635, mar:19096.817365, abr:29394.585005, mai:19424.335005, jun:18458.135005, jul:11398}},
-  {nome:'Patinação', ano:12571.34, m:{jan:79.99, fev:362.85, mar:2087.39, abr:2544.21, mai:2729.15, jun:2037.75, jul:2730}},
-  {nome:'Percorrer', ano:61746.49, m:{jan:8355.04, fev:8204.96, mar:8973.49, abr:9421.77, mai:9208.84, jun:7969.39, jul:9613}},
-  {nome:'Personal Postura', ano:66771.16, m:{jan:12109.98, fev:8813.82, mar:4290.15, abr:15039.63, mai:0, jun:16517.58, jul:10000}},
-  {nome:'Personal Tênis', ano:17825.29, m:{jan:1770, fev:1890, mar:1950, abr:4825.29, mai:2320, jun:2040, jul:3030}},
-  {nome:'Personal Vaqueiro', ano:4010.09308, m:{jan:851.68436, fev:851.68436, mar:851.68, abr:851.68436, mai:851.68, jun:851.68, jul:-1100}},
-  {nome:'Punhobol', ano:-35387.31, m:{jan:-2706.57, fev:-2006.81, mar:-9825.38, abr:-6155.01, mai:-16467.07, jun:1927.53, jul:-154}},
-  {nome:'Ritmos', ano:2715.83, m:{jan:0, fev:0, mar:70, abr:582.63, mai:70, jun:1144.2, jul:849}},
-  {nome:'Tênis', ano:20411.33278, m:{jan:11911.46278, fev:-6014.91, mar:14388.0, abr:-25269.09, mai:-21840.84, jun:8261.71, jul:38975}},
-  {nome:'Tênis de Mesa', ano:6701.9971, m:{jan:1079.9271, fev:-1615.84, mar:-1456.36, abr:-856.37, mai:4503.85, jun:-59.21, jul:5106}},
-  {nome:'Vôlei', ano:-35677.3296, m:{jan:-15315.9396, fev:8800.83, mar:-15282.58, abr:-16977.42, mai:-14175.64, jun:-2000.58, jul:19274}},
-  {nome:'Vôlei Kika', ano:13580.66, m:{jan:177.28, fev:222.32, mar:1946.1, abr:2123.22, mai:2942.26, jun:2911.48, jul:3258}},
-  {nome:'Vôlei Veteranas', ano:2136.4, m:{jan:-226.73, fev:-1259.35, mar:1573.35, abr:-719.03, mai:906.16, jun:909, jul:953}},
-  {nome:'Yoga', ano:2032.71, m:{jan:-1062.47, fev:2241.88, mar:386.39, abr:-78.43, mai:157.86, jun:379.48, jul:8}},
+  {nome:'Aikido', ano:4014.32, m:{jan:542.11, fev:501, mar:70, abr:1245.87, mai:693.13, jun:520.21, jul:442, ago:497}},
+  {nome:'Athletic Trainning', ano:-67339.616596, m:{jan:-9550.587148, fev:-9105.559768, mar:-9423.689768, abr:-6991.693304, mai:-11334.793304, jun:-7643.293304, jul:-13290, ago:-10749}},
+  {nome:'Atletismo', ano:-238858.76945, m:{jan:-18684.13945, fev:-29090.15, mar:-19307.89, abr:-28807.02, mai:-52722.25, jun:-36803.32, jul:-53444, ago:-59398}},
+  {nome:'Ballet Gutierres', ano:4403.06, m:{jan:127.39, fev:0, mar:797.24, abr:944.77, mai:757.66, jun:763, jul:1013, ago:1057}},
+  {nome:'Basquete', ano:-31173.3308, m:{jan:-2992.1008, fev:5294.87, mar:14429.07, abr:2438.89, mai:-26896.4, jun:-35788.66, jul:12341, ago:25810}},
+  {nome:'Beach Tennis', ano:-18633.25, m:{jan:-3652.2, fev:-2418.05, mar:-3671.92, abr:-611.81, mai:-2634.29, jun:-2198.98, jul:-3446, ago:-2907}},
+  {nome:'Boxe', ano:55942.3, m:{jan:7281.79, fev:7955.28, mar:8863.86, abr:8431.56, mai:8318.8, jun:7304.01, jul:7787, ago:7506}},
+  // Modalidade que aparece pela PRIMEIRA VEZ na fonte de agosto. Não existe
+  // em ESPORTES_ORC nem na base de 2025 — o card sai sem selo de orçado, como
+  // já acontece com Esgrima. Só 'ago' é declarado: os meses anteriores vêm em
+  // branco na fonte e o acumulado 2026 (-77) é igual a ago/26, o que prova que
+  // jan–jul não teve movimento. Não inventamos sete zeros para preencher.
+  {nome:'Dança Country', ano:-77, m:{ago:-77}},
+  // RECONCILIADA com a apresentação (fonte oficial desta carga): ela declara
+  // jul 439, ago 960 e acumulado 2026 de 1.400, deixando abr/mai/jun em branco.
+  // Os antigos mai 67 / jun 54 / jul 406 somavam 527 e contrariavam esse
+  // acumulado, então saíram. Soma agora: 1.399 — R$ 1 abaixo da trava, que é o
+  // arredondamento da própria fonte (ela publica em reais inteiros).
+  // 'ano' é a declaração antiga de jan–jul e não é lida por nenhuma tela;
+  // ficou como está para não inventar um total que a fonte não traz.
+  {nome:'Esgrima', ano:527, m:{jan:0, fev:0, mar:0, abr:0, mai:0, jun:0, jul:439, ago:960}},
+  {nome:'Fitness', ano:-11322.760871, m:{jan:200.588068, fev:-2340.295247, mar:-1058.065247, abr:-878.109482, mai:-3809.649482, jun:-1653.229482, jul:-1784, ago:-4028}},
+  {nome:'Futebol', ano:-4781.494487, m:{jan:-3991.854488, fev:271.12, mar:523.54, abr:4119.24, mai:5904.09, jun:-13386.63, jul:1779, ago:-52360}},
+  {nome:'Ginástica Artística', ano:19596.2746, m:{jan:-20559.3054, fev:-4459.16, mar:17795.75, abr:19623.38, mai:-23933.44, jun:-9955.95, jul:41085, ago:27488}},
+  {nome:'Ginástica Rítmica', ano:34747.328541, m:{jan:-7456.80267, fev:9944.359146, mar:16369.539146, abr:961.887639, mai:6365.927639, jun:16819.417639, jul:-8257, ago:11892}},
+  {nome:'Ginástica Veteranas', ano:16195.845497, m:{jan:230.74, fev:-4040.685989, mar:4566.884011, abr:3795.225825, mai:3607.735825, jun:3650.945825, jul:4385, ago:2697}},
+  {nome:'Hidroginástica', ano:47271.630255, m:{jan:-255.06, fev:163.912635, mar:9312.142635, abr:10716.394995, mai:10844.704995, jun:9654.534995, jul:6835, ago:8776}},
+  {nome:'Judô', ano:-276684.13724, m:{jan:-64587.66724, fev:-39619.86, mar:-20425.37, abr:-38686.98, mai:-30381.72, jun:-36206.54, jul:-46776, ago:-10145}},
+  {nome:'Kung Fu', ano:2298.19, m:{jan:389.1, fev:276.49, mar:457.8, abr:371.4, mai:0, jun:518.4, jul:285, ago:0}},
+  {nome:'Levantamento de Peso', ano:29956.95, m:{jan:9473.23, fev:7692.98, mar:8289.37, abr:2971.89, mai:-185.65, jun:-2177.87, jul:3893, ago:2193}},
+  {nome:'Musculação', ano:785051.14295, m:{jan:113286.13885, fev:108936.18015, mar:118082.13015, abr:108549.5146, mai:103557.3446, jun:117638.8346, jul:115001, ago:118582}},
+  {nome:'Natação', ano:86529.381095, m:{jan:-6333.65865, fev:-4908.832635, mar:19096.817365, abr:29394.585005, mai:19424.335005, jun:18458.135005, jul:11398, ago:15785}},
+  {nome:'Patinação', ano:12571.34, m:{jan:79.99, fev:362.85, mar:2087.39, abr:2544.21, mai:2729.15, jun:2037.75, jul:2730, ago:2682}},
+  {nome:'Percorrer', ano:61746.49, m:{jan:8355.04, fev:8204.96, mar:8973.49, abr:9421.77, mai:9208.84, jun:7969.39, jul:9613, ago:7977}},
+  {nome:'Personal Postura', ano:66771.16, m:{jan:12109.98, fev:8813.82, mar:4290.15, abr:15039.63, mai:0, jun:16517.58, jul:10000, ago:10970}},
+  {nome:'Personal Tênis', ano:17825.29, m:{jan:1770, fev:1890, mar:1950, abr:4825.29, mai:2320, jun:2040, jul:3030, ago:2500}},
+  // Jul/26 corrigido de -1.100 para +852: a apresentação mostra julho positivo
+  // e igual aos demais meses (852/mês de abr a ago). Nenhum outro mês foi
+  // tocado — não há evidência na fonte para alterá-los. Soma agora: 6.814,09
+  // contra 6.813 da trava (R$ 1,09 de arredondamento da fonte).
+  {nome:'Personal Vaqueiro', ano:4010.09308, m:{jan:851.68436, fev:851.68436, mar:851.68, abr:851.68436, mai:851.68, jun:851.68, jul:852, ago:852}},
+  {nome:'Punhobol', ano:-35387.31, m:{jan:-2706.57, fev:-2006.81, mar:-9825.38, abr:-6155.01, mai:-16467.07, jun:1927.53, jul:-154, ago:2053}},
+  {nome:'Ritmos', ano:2715.83, m:{jan:0, fev:0, mar:70, abr:582.63, mai:70, jun:1144.2, jul:849, ago:893}},
+  {nome:'Tênis', ano:20411.33278, m:{jan:11911.46278, fev:-6014.91, mar:14388.0, abr:-25269.09, mai:-21840.84, jun:8261.71, jul:38975, ago:38100}},
+  {nome:'Tênis de Mesa', ano:6701.9971, m:{jan:1079.9271, fev:-1615.84, mar:-1456.36, abr:-856.37, mai:4503.85, jun:-59.21, jul:5106, ago:6217}},
+  {nome:'Vôlei', ano:-35677.3296, m:{jan:-15315.9396, fev:8800.83, mar:-15282.58, abr:-16977.42, mai:-14175.64, jun:-2000.58, jul:19274, ago:-65845}},
+  {nome:'Vôlei Kika', ano:13580.66, m:{jan:177.28, fev:222.32, mar:1946.1, abr:2123.22, mai:2942.26, jun:2911.48, jul:3258, ago:2978}},
+  {nome:'Vôlei Veteranas', ano:2136.4, m:{jan:-226.73, fev:-1259.35, mar:1573.35, abr:-719.03, mai:906.16, jun:909, jul:953, ago:1465}},
+  {nome:'Yoga', ano:2032.71, m:{jan:-1062.47, fev:2241.88, mar:386.39, abr:-78.43, mai:157.86, jun:379.48, jul:8, ago:-315}},
 ];
 // Atletismo conferido em 11/08: fevereiro -29.090 e junho -36.803 (leitura anterior
 // estava errada). A soma dos meses passa a fechar com o total do ano declarado.
@@ -2305,6 +2405,112 @@ const ESPORTES_MESES = [
 //    (30 das 31 modalidades diferem). É só o rótulo da coluna que está errado.
 // 5) Esgrima não existe nesta planilha, como também não existe na de centros
 //    de custo. Fica sem orçado, e a tela diz isso.
+// ═══════════════════════════════════════════════════════════
+// ESPORTES — CAPACIDADE (lotação / inscritos / ocupação)
+// ═══════════════════════════════════════════════════════════
+// Base NOVA e independente da série financeira. Fonte: apresentação
+// "Modalidades", quadro de TURMAS, posição de AGOSTO/2026 — é uma FOTO do mês,
+// não um acumulado.
+//
+// Três cuidados que valem registro:
+// 1) OCUPAÇÃO nunca é digitada: sai sempre de inscritos ÷ lotação. O percentual
+//    da fonte serve só de conferência (as 33 linhas batem com o calculado).
+// 2) Isto NÃO é ESPORTES_ORC.oi, que são INSCRIÇÕES ORÇADAS (meta). Aqui são
+//    inscritos reais. As duas bases convivem e nenhuma sobrescreve a outra.
+// 3) Capacidade não entra em nenhuma conta financeira: lotação é vaga,
+//    inscritos é pessoa, ocupação é percentual, resultado é R$.
+//
+// 'semSerie' marca a modalidade que veio na fonte mas ainda não existe em
+// ESPORTES_MESES — ela conta nos totalizadores (senão a soma não fecharia com
+// a fonte) e não ganha card financeiro até a gestão validar.
+const ESPORTES_OCUPACAO = {
+ ago2026: [
+  {nome:'Aikido', lotacao:45, inscritos:15},
+  {nome:'Athletic Trainning', lotacao:328, inscritos:165},
+  {nome:'Atletismo', lotacao:258, inscritos:155},
+  {nome:'Ballet Gutierres', lotacao:30, inscritos:17},
+  {nome:'Basquete', lotacao:356, inscritos:213},
+  {nome:'Beach Tennis', lotacao:76, inscritos:33},
+  {nome:'Boxe', lotacao:159, inscritos:83},
+  {nome:'Dança Country', lotacao:20, inscritos:4},   // criada nesta carga (ver comentário em ESPORTES_MESES)
+  {nome:'Esgrima', lotacao:50, inscritos:10},
+  {nome:'Fitness', lotacao:78, inscritos:46},
+  {nome:'Futebol', lotacao:161, inscritos:87},
+  {nome:'Ginástica Artística', lotacao:618, inscritos:424},
+  {nome:'Ginástica Rítmica', lotacao:274, inscritos:197},
+  {nome:'Ginástica Veteranas', lotacao:139, inscritos:73},
+  {nome:'Hidroginástica', lotacao:135, inscritos:45},
+  {nome:'Judô', lotacao:424, inscritos:310},
+  {nome:'Kung Fu', lotacao:20, inscritos:6},
+  {nome:'Levantamento de Peso', lotacao:62, inscritos:14},
+  {nome:'Musculação', lotacao:3915, inscritos:1744},
+  {nome:'Natação', lotacao:707, inscritos:333},
+  {nome:'Patinação', lotacao:201, inscritos:100},
+  {nome:'Percorrer', lotacao:500, inscritos:143},
+  {nome:'Personal Postura', lotacao:500, inscritos:6},
+  {nome:'Personal Tênis', lotacao:29, inscritos:14},
+  {nome:'Personal Vaqueiro', lotacao:30, inscritos:3},
+  {nome:'Punhobol', lotacao:210, inscritos:81},
+  {nome:'Ritmos', lotacao:45, inscritos:16},
+  {nome:'Tênis', lotacao:335, inscritos:230},
+  {nome:'Tênis de Mesa', lotacao:361, inscritos:204},
+  {nome:'Vôlei', lotacao:508, inscritos:380},
+  {nome:'Vôlei Kika', lotacao:90, inscritos:44},
+  {nome:'Vôlei Veteranas', lotacao:25, inscritos:21},
+  {nome:'Yoga', lotacao:60, inscritos:26},
+ ]
+};
+// trava de auditoria da carga (não alimenta tela nenhuma)
+const __AUDIT_OCUPACAO = {lotacao:10749, inscritos:5242, modalidades:33};
+
+// Capacidade é foto de agosto: só aparece quando agosto está no recorte.
+function espOcupacaoSnapshot(chaves){
+  if(typeof ESPORTES_OCUPACAO === 'undefined') return null;
+  return (chaves || []).includes('ago') ? ESPORTES_OCUPACAO.ago2026 : null;
+}
+// O painel do Diretor não tinha formatador de inteiro com separador de milhar
+// (fmtBRL0 põe "R$" e fmtMil arredonda para milhares). Vaga e pessoa não são
+// dinheiro, então entra este, restrito a Esportes.
+function espNum(v){
+  if(v == null || isNaN(v)) return '—';
+  return Math.round(v).toLocaleString('pt-BR');
+}
+function espOcupNorm(s){
+  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+         .toUpperCase().replace(/[^A-Z]/g,'');
+}
+function espOcupacaoDe(nome, chaves){
+  const snap = espOcupacaoSnapshot(chaves);
+  if(!snap) return null;
+  const k = espOcupNorm(nome);
+  const r = snap.find(x=>espOcupNorm(x.nome) === k);
+  if(!r || !r.lotacao) return null;
+  return {lotacao:r.lotacao, inscritos:r.inscritos, pct: r.inscritos / r.lotacao * 100};
+}
+function espOcupacaoTotais(chaves){
+  const snap = espOcupacaoSnapshot(chaves);
+  if(!snap || !snap.length) return null;
+  const lot  = snap.reduce((s,x)=>s + (x.lotacao   || 0), 0);
+  const insc = snap.reduce((s,x)=>s + (x.inscritos || 0), 0);
+  const fora = snap.filter(x=>x.semSerie);
+  return {lotacao:lot, inscritos:insc, pct: lot ? insc/lot*100 : 0,
+          modalidades:snap.length, fora};
+}
+// Semáforo: sinaliza USO da capacidade. Ocupação baixa não é "ruim" por si —
+// pode ser turma nova, modalidade sazonal ou vaga propositalmente folgada.
+function espOcupacaoCor(pct){
+  if(pct >= 70) return '#00e5a0';
+  if(pct >= 50) return '#3d7bff';
+  if(pct >= 30) return '#ffd32a';
+  return '#ff6b6b';
+}
+function espOcupacaoBarra(pct, altura){
+  const c = espOcupacaoCor(pct), a = altura || 4;
+  return `<div style="height:${a}px; border-radius:${a}px; background:rgba(255,255,255,.07); overflow:hidden;">
+    <div style="height:100%; width:${Math.max(1, Math.min(100, pct)).toFixed(1)}%; background:${c}; border-radius:${a}px;"></div>
+  </div>`;
+}
+
 const ESPORTES_ORC = [
   {nome:'Aikido', od:[-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669,-1493.4741666666669], orr:[1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335,1448.3133333333335], oi:[19,19,19,16,19,18,18,18,17,15,15,15], r25:[873.6700000000001,506.49,624.5,612.8300000000002,831.3200000000002,685.69,685.5899999999999,649.5100000000002,576.8300000000002,613.73,506.51,0], i25:[19,19,19,16,19,18,18,18,17,15,15,15], n:{serv:{o:[-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336,-45.16083333333336], r25:[873.6700000000001,506.49,624.5,612.8300000000002,831.3200000000002,685.69,685.5899999999999,649.5100000000002,576.8300000000002,613.73,506.51,0]}, form:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, rend:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, alto:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, comp:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, ev:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}}},
   {nome:'Athletic Trainning', od:[-8698.8394705,-8698.8394705,-8698.8394705,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666,-9314.975137166666], orr:[-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575,-149.2575], oi:[176,183,192,191,183,177,153,155,157,156,162,164], r25:[-9307.427049999998,-4596.625845,-7588.214715,-8648.14601,-9655.206010000002,-6579.440020000002,-9659.291226,-8725.189769,-8070.435583,-9417.890499,-5312.7244839999985,4950.207565000001], i25:[176,183,192,191,183,177,153,155,157,156,162,164], n:{serv:{o:[-8848.096970499999,-8848.096970499999,-8848.096970499999,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666,-9464.232637166666], r25:[-9307.427049999998,-4596.625845,-7588.214715,-8648.14601,-9655.206010000002,-6579.440020000002,-9659.291226,-8725.189769,-8070.435583,-9417.890499,-5312.7244839999985,4950.207565000001]}, form:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, rend:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, alto:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, comp:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}, ev:{o:[0,0,0,0,0,0,0,0,0,0,0,0], r25:[0,0,0,0,0,0,0,0,0,0,0,0]}}},
@@ -7184,6 +7390,7 @@ function aplicarFiltroMes(){
   window._mesesEsportes = mesesEsp;
   renderEsportes(mesesEsp);
   renderEsportesCards(mesesEsp);
+  renderEsportesOcupacao(mesesEsp);
   const mesesRH = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_RH);
   setRHPeriodo(mesesRH);
   renderRH(mesKey);
@@ -17145,6 +17352,7 @@ function sparkEsporte(serie, cor, idxDestaque){
 const ESP_SUBABAS = [
   {id:'mod',   botao:'subtabBtnEspMod',   painel:'espSubMod'},
   {id:'geral', botao:'subtabBtnEspGeral', painel:'espSubGeral'},
+  {id:'ocup',  botao:'subtabBtnEspOcup',  painel:'espSubOcup'},
 ];
 function mudarSubAbaEsp(qual){
   const existe = ESP_SUBABAS.some(x=>x.id===qual);
@@ -17285,11 +17493,127 @@ function graficoEvolucaoEsportes(chaves){
     </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════
+// ESPORTES > OCUPAÇÃO & INSCRITOS — comparação entre modalidades
+// ═══════════════════════════════════════════════════════════
+// Papel desta subaba: comparar as modalidades entre si. Os três totalizadores
+// moram AQUI e não se repetem na aba Modalidades — lá a ocupação aparece só
+// como linha compacta dentro do card, que é leitura rápida, e no detalhe como
+// contexto da modalidade. Mesma informação, três profundidades diferentes.
+let _espOcupOrdem = 'maior';
+function setEspOcupOrdem(o){
+  _espOcupOrdem = o;
+  renderEsportesOcupacao(window._mesesEsportes || []);
+}
+function renderEsportesOcupacao(mesesEsp){
+  const el = document.getElementById('esportesOcupConteudo');
+  if(!el) return;
+  const chaves = esportesChavesPeriodo(mesesEsp);
+  const tot = espOcupacaoTotais(chaves);
+
+  if(!tot){
+    el.innerHTML = `<div class="alert-box"><span>📐</span><div>
+      <b>Dados de ocupação disponíveis a partir de Ago/26.</b>
+      Lotação e inscritos são uma foto do mês, não um acumulado — por isso o painel
+      não os projeta para períodos anteriores. Inclua Agosto no filtro para ver a
+      comparação entre as modalidades.
+    </div></div>`;
+    return;
+  }
+
+  const snap = espOcupacaoSnapshot(chaves).map(x=>({
+    nome:x.nome, lotacao:x.lotacao, inscritos:x.inscritos, pct:x.inscritos/x.lotacao*100}));
+  const ord = {
+    maior:  (a,b)=> b.pct - a.pct,
+    menor:  (a,b)=> a.pct - b.pct,
+    inscr:  (a,b)=> b.inscritos - a.inscritos,
+    nome:   (a,b)=> a.nome.localeCompare(b.nome, 'pt-BR'),
+  }[_espOcupOrdem] || ((a,b)=>b.pct-a.pct);
+  const lista = snap.slice().sort(ord);
+
+  const botao = (id, rot) => `<button class="esp-ord-btn${_espOcupOrdem===id?' ativo':''}"
+      onclick="setEspOcupOrdem('${id}')">${rot}</button>`;
+
+  const linhas = lista.map(m=>{
+    const c = espOcupacaoCor(m.pct);
+    return `
+    <div class="esp-ocup-linha">
+      <div class="esp-ocup-cab">
+        <span class="esp-ocup-nome">${m.nome}</span>
+        <span class="esp-ocup-pct" style="color:${c};">${m.pct.toFixed(0)}%</span>
+      </div>
+      <div class="esp-ocup-sub"><b>${espNum(m.inscritos)}</b> inscritos de <b>${espNum(m.lotacao)}</b> vagas</div>
+      <div style="margin-top:7px;">${espOcupacaoBarra(m.pct, 7)}</div>
+    </div>`;
+  }).join('');
+
+  // Faixas: só descrevem o uso da capacidade. Ocupação baixa pode ser turma
+  // nova, modalidade sazonal ou vaga folgada de propósito — não é julgamento.
+  const faixa = (lim, rot, cor) => {
+    const n = snap.filter(lim).length;
+    return `<span class="esp-ocup-faixa"><i style="background:${cor};"></i>${rot}: <b>${n}</b></span>`;
+  };
+
+  el.innerHTML = `
+    <div class="kpi-grid esp-ocup-grid">
+      <div class="card">
+        <div class="card-label">🏟 Lotação Total</div>
+        <div class="card-value">${espNum(tot.lotacao)}</div>
+        <div class="card-meta">capacidade disponível · Ago/26</div>
+      </div>
+      <div class="card">
+        <div class="card-label">👥 Inscritos</div>
+        <div class="card-value">${espNum(tot.inscritos)}</div>
+        <div class="card-meta">alunos inscritos · Ago/26</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📊 Ocupação Geral</div>
+        <div class="card-value" style="color:${espOcupacaoCor(tot.pct)};">${tot.pct.toFixed(0)}%</div>
+        <div style="margin:8px 0 7px;">${espOcupacaoBarra(tot.pct, 6)}</div>
+        <div class="card-meta">${espNum(tot.inscritos)} de ${espNum(tot.lotacao)} vagas ocupadas</div>
+      </div>
+    </div>
+
+    <div class="card-meta" style="margin:-8px 0 16px; font-size:12px;">
+      Ocupação geral = <b>${espNum(tot.inscritos)} ÷ ${espNum(tot.lotacao)}</b> =
+      <b>${tot.pct.toFixed(2).replace('.', ',')}%</b> — é a razão entre os totais, não a média
+      das ocupações individuais. Posição de <b>Agosto/2026</b> nas ${tot.modalidades} modalidades.
+    </div>
+
+    <div class="esp-ocup-barra-topo">
+      <div class="esp-ord">
+        ${botao('maior','Maior ocupação')}${botao('menor','Menor ocupação')}${botao('inscr','Mais inscritos')}${botao('nome','Nome')}
+      </div>
+      <div class="esp-ocup-faixas">
+        ${faixa(x=>x.pct>=70, '70% ou mais', '#00e5a0')}
+        ${faixa(x=>x.pct>=50 && x.pct<70, '50 a 69%', '#3d7bff')}
+        ${faixa(x=>x.pct>=30 && x.pct<50, '30 a 49%', '#ffd32a')}
+        ${faixa(x=>x.pct<30, 'abaixo de 30%', '#ff6b6b')}
+      </div>
+    </div>
+
+    <div class="esp-ocup-lista">${linhas}</div>
+
+    <div class="alert-box" style="margin-top:16px;"><span>🧭</span><div>
+      As cores indicam <b>uso da capacidade instalada</b>, não desempenho. Ocupação baixa
+      pode significar turma recém-aberta, modalidade sazonal ou vaga mantida folgada de
+      propósito — e ocupação alta pode indicar demanda represada por mais turmas.
+    </div></div>`;
+}
+
 function renderEsportesCards(mesesEsp){
   const el = document.getElementById('esportesCardsConteudo');
   if(!el) return;
   const chaves = esportesChavesPeriodo(mesesEsp);
   if(!chaves.length){ el.innerHTML = ''; return; }
+
+  // Os três totalizadores agora moram na subaba "Ocupação", que é o lugar da
+  // comparação gerencial. Aqui fica só um aviso curto quando o recorte não
+  // alcança agosto — a ocupação de cada card simplesmente não aparece.
+  const temOcup = !!espOcupacaoSnapshot(chaves);
+  const blocoOcup = temOcup ? '' : `
+    <div class="card-meta esp-ocup-aviso">📐 Dados de ocupação disponíveis a partir de
+    <b>Ago/26</b> — lotação e inscritos são foto do mês e não são projetados para trás.</div>`;
 
   const cards = ESPORTES_MESES.map(mod=>{
     const serie = ORDEM_MES_ESP.filter(k=>k in mod.m).map(k=>({k, rot:ROT_MES_ESP[k]||k, v:mod.m[k]}));
@@ -17300,15 +17624,39 @@ function renderEsportesCards(mesesEsp){
     const sub = chaves.length>1
       ? `${positivos} de ${chaves.length} meses positivos`
       : `resultado de ${ROT_MES_ESP[chaves[0]]}/26`;
-    // Card enxuto: só o nome e o resultado. O detalhe abre ao clicar.
+    // Hierarquia do card: nome → rótulo do que é o número → número → leitura
+    // do sinal. A ocupação entra abaixo de um filete, como informação
+    // secundária, para não disputar atenção com o resultado financeiro.
+    const rotuloPer = chaves.length > 1
+      ? `${ROT_MES_ESP[chaves[0]]}–${ROT_MES_ESP[chaves[chaves.length-1]]}/26`
+      : `${ROT_MES_ESP[chaves[0]]}/26`;
+    const leituraSinal = total > 0 ? 'positivo no período'
+                       : total < 0 ? 'negativo no período' : 'sem movimento no período';
     return `
     <div class="kpi-spark-card esp-card" style="cursor:pointer; padding:14px 16px;" onclick="abrirDetalheEsporte('${mod.nome.replace(/'/g,"\\'")}')" id="card-esp-${mod.nome.replace(/[^0-9A-Za-zÀ-ÿ]/g,'')}">
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="width:8px; height:8px; border-radius:2px; background:${cor}; flex-shrink:0;"></span>
-        <span style="font-size:13.5px; font-weight:700; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${mod.nome}</span>
+        <span class="esp-card-nome">${mod.nome}</span>
         <span style="margin-left:auto; opacity:.4; font-size:12px;">🔍</span>
       </div>
-      <div style="font-size:17px; font-weight:800; color:${cor}; margin-top:6px;">${fmtSinEsp(total)}</div>
+      <div class="esp-card-rot">Resultado · ${rotuloPer}</div>
+      <div class="esp-card-valor" style="color:${cor};">${fmtSinEsp(total)}</div>
+      <div class="esp-card-sinal">${chaves.length>1 ? sub : leituraSinal}</div>
+      ${(()=>{
+        // Capacidade é grandeza diferente do resultado: entra abaixo de um
+        // filete, discreta, como leitura rápida da utilização das vagas.
+        const oc = espOcupacaoDe(mod.nome, chaves);
+        if(!oc) return '';
+        const c = espOcupacaoCor(oc.pct);
+        return `
+        <div class="esp-card-ocup">
+          <div style="display:flex; align-items:baseline; gap:6px; font-size:11px; color:var(--muted);">
+            <span><b style="color:var(--text);">${espNum(oc.inscritos)}</b> / ${espNum(oc.lotacao)} inscritos</span>
+            <span style="margin-left:auto; font-weight:800; color:${c};">${oc.pct.toFixed(0)}%</span>
+          </div>
+          <div style="margin-top:4px;">${espOcupacaoBarra(oc.pct, 4)}</div>
+        </div>`;
+      })()}
       ${(()=>{
         const av = avaliarModalidade(mod.nome, chaves);
         if(!av) return `<div style="margin-top:7px; font-size:11px; color:var(--muted);">sem orçado nesta base</div>`;
@@ -17329,7 +17677,7 @@ function renderEsportesCards(mesesEsp){
     </div>`;
   }).join('');
 
-  el.innerHTML = `<div class="esp-grid">${cards}</div><div id="detalhe-esporte"></div>`;
+  el.innerHTML = blocoOcup + `<div class="esp-grid">${cards}</div><div id="detalhe-esporte"></div>`;
   if(window._detalheEsporteAberto) abrirDetalheEsporte(window._detalheEsporteAberto, true);
 }
 
@@ -17747,13 +18095,37 @@ function abrirDetalheEsporte(nome, manter){
 
   alvo.innerHTML = `
     <div class="card full" style="margin-top:16px; border-left:3px solid ${total>=0?'#00e5a0':'#ff6b6b'};">
-      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-        <div class="card-label" style="font-size:15px; color:var(--text);">${mod.nome}</div>
-        <div style="font-size:22px; font-weight:900; color:${total>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(total)}</div>
-        <button onclick="abrirDetalheEsporte('${mod.nome.replace(/'/g,"\\'")}')"
-          style="margin-left:auto; background:transparent; border:1px solid var(--border); color:var(--muted);
-                 font-size:12px; padding:5px 12px; border-radius:8px; cursor:pointer;">fechar ✕</button>
-      </div>
+      ${(()=>{
+        // CABEÇALHO EXECUTIVO: responde, na ordem, "qual modalidade",
+        // "qual período", "qual resultado" e "qual ocupação". Antes o nome e o
+        // número ficavam lado a lado sem rótulo, e o valor parecia solto.
+        const rotuloPer = chaves.length > 1
+          ? `${ROT_MES_ESP[chaves[0]]}–${ROT_MES_ESP[chaves[chaves.length-1]]}/26`
+          : `${ROT_MES_ESP[chaves[0]]}/26`;
+        const oc = espOcupacaoDe(mod.nome, chaves);
+        const pil = (rot, val, cor) => `<div class="esp-det-pil">
+            <span class="esp-det-pil-rot">${rot}</span>
+            <span class="esp-det-pil-val"${cor?` style="color:${cor};"`:''}>${val}</span>
+          </div>`;
+        return `
+        <div class="esp-det-cab">
+          <div class="esp-det-ident">
+            <div class="esp-det-nome">${mod.nome}</div>
+            <div class="esp-det-ctx">Resultado operacional · ${rotuloPer}</div>
+          </div>
+          <div class="esp-det-res">
+            <div class="esp-det-valor" style="color:${total>=0?'#00e5a0':'#ff6b6b'};">${fmtSinEsp(total)}</div>
+            <div class="esp-det-ctx">${chaves.length>1?'resultado acumulado do período':'resultado do mês'}</div>
+          </div>
+          <button class="esp-det-fechar" onclick="abrirDetalheEsporte('${mod.nome.replace(/'/g,"\\'")}')">fechar ✕</button>
+        </div>
+        ${oc ? `<div class="esp-det-pils">
+            ${pil('Lotação',  espNum(oc.lotacao),   null)}
+            ${pil('Inscritos', espNum(oc.inscritos), null)}
+            ${pil('Ocupação', oc.pct.toFixed(0)+'%', espOcupacaoCor(oc.pct))}
+            <span class="esp-det-pil-nota">posição de Ago/26</span>
+          </div>` : ''}`;
+      })()}
       <div style="display:flex; gap:8px; margin-top:16px; align-items:stretch;">${barras}</div>
       <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin-top:18px;">
         ${cardKpi('📅 Meses no período', String(noPeriodo.length), chaves.length>1?`de ${ROT_MES_ESP[chaves[0]]} a ${ROT_MES_ESP[chaves[chaves.length-1]]}`:'mês único')}
@@ -17806,6 +18178,7 @@ function renderEsportes(mesesEsp){
     const avisoFB = el.innerHTML;
     renderEsportes(ultimos);              // redesenha com a janela completa
     renderEsportesCards(ultimos);
+    renderEsportesOcupacao(ultimos);
     el.innerHTML = avisoFB + el.innerHTML; // o aviso fica no topo do conteúdo
     window._espFallback = false;
     return;
@@ -17829,7 +18202,7 @@ function renderEsportes(mesesEsp){
 
   const aviso = `<div class="alert-box" style="border-color:var(--blue);"><span>📊</span><div>
       Resultado por modalidade em <b>${rotuloPeriodo}</b> — ${cobertos===1?'mês único':cobertos+' meses somados'}.
-      A base cobre <b>Janeiro a Julho/2026</b> com abertura mensal, então os números acompanham o filtro.
+      A base cobre <b>${textoCobertura(COBERTURA_ESPORTES)}</b> com abertura mensal, então os números acompanham o filtro.
     </div></div>`;
 
   // ── Agregado do conjunto, para os selos dos dois primeiros cards ──
@@ -21299,7 +21672,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v132</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v133</div>
     </div>
   </div>
 </header>
@@ -21310,7 +21683,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v132</div>
+">SOGIPA · PAINEL 01 · v133</div>
 
 <main>
 
@@ -22157,7 +22530,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v132 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v133 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -22490,6 +22863,7 @@ const QS = {
     6:  { vendR:23, reingR:31, conv:7, entrOrc:33.00,  exclR:54,  deslR:55,  saiOrc:47.00,  titOrc:3695.00, titReal:3540 },
     7:  { vendR:32, reingR:39, conv:3, entrOrc:71.00, exclR:39, deslR:48, saiOrc:87.00, titOrc:3667.00, titReal:3524 },  // conv/orçado-mov. pendentes (Painel do Diretor)
     8:  { vendR:64, reingR:68, conv:1, entrOrc:132.00, exclR:37, deslR:46, saiOrc:83.00, titOrc:3681.00, titReal:3573 },  // fechamento Ago/26 (Quadro Social oficial); conv/orçado-mov. pendentes
+    9:  { vendR:null, reingR:null, conv:null, entrOrc:null, exclR:null, deslR:null, saiOrc:null, titOrc:null, titReal:3719 },  // Set/26: só snapshot de sócios (Pagantes 3.719). Movimento (vendas/reing./excl./desl./orçado) vem de fonte separada — pendente (null = sem dado, não zero)
   }
 };
 
@@ -22506,7 +22880,8 @@ const ISENTOS = {
   2026: {
     6: { total: 488 },                        // Jun/26: 3.540 + 488 = 4.028 (sem detalhe de Conv. Especial)
     7: { total: 487 },                        // Jul/26: 3.524 + 487 = 4.011 (sem detalhe de Conv. Especial)
-    8: { total: 489, convidadoEspecial: 90 }  // Ago/26: 489 inclui 90 Conv.Esp. → card usa 399 → 3.573 + 399 = 3.972
+    8: { total: 489, convidadoEspecial: 90 },  // Ago/26: 489 inclui 90 Conv.Esp. → card usa 399 → 3.573 + 399 = 3.972
+    9: { total: 401 }                          // Set/26: 401 (Laureados 87 + Remido 7 + Veterano 307) — NÃO há Conv.Esp. na fonte → card usa 401 → 3.719 + 401 = 4.120
   }
 };
 
@@ -22766,8 +23141,11 @@ function getMesesQS(mesIni, anoIni, mesFim, anoFim) {
 // Soma do período: Entradas/Saídas são FLUXO (somam); Sócios Ativos é ESTOQUE (último mês)
 function somaPeriodoQS(meses) {
   let vendR=0, reingR=0, conv=0, entrOrc=0, exclR=0, deslR=0, saiOrc=0;
+  let nFluxo=0;  // nº de meses COM dados de movimento (fluxo)
   meses.forEach(({ano,mes}) => {
     const d = QS[ano][mes];
+    if (d.vendR == null) return;  // mês só com snapshot de sócios (ex.: Set/26) não entra no fluxo
+    nFluxo++;
     vendR   += d.vendR;
     reingR  += d.reingR;
     conv    += (d.conv || 0);
@@ -22776,8 +23154,9 @@ function somaPeriodoQS(meses) {
     deslR   += d.deslR;
     saiOrc  += d.saiOrc;
   });
-  const entrR = vendR + reingR;
-  const saiR  = exclR + deslR;
+  const temFluxo = nFluxo > 0;
+  const entrR = temFluxo ? vendR + reingR : null;
+  const saiR  = temFluxo ? exclR + deslR : null;
 
   // Sócios Ativos: valor do ÚLTIMO mês do período (estoque)
   const last = meses[meses.length-1];
@@ -22785,10 +23164,12 @@ function somaPeriodoQS(meses) {
   const titReal = dLast.titReal;
   const titOrc  = dLast.titOrc;
 
-  // vs Ano anterior: mesmo conjunto de meses, ano-1
+  // vs Ano anterior: só meses em que o mês atual TEM fluxo (comparação like-for-like)
   let vendAnt=0, reingAnt=0, exclAnt=0, deslAnt=0;
   let titRealAnt = null;
   meses.forEach(({ano,mes}) => {
+    const dcur = QS[ano] && QS[ano][mes];
+    if (!dcur || dcur.vendR == null) return;
     const prevAno = ano - 1;
     if (QS[prevAno] && QS[prevAno][mes]) {
       const dp = QS[prevAno][mes];
@@ -22798,8 +23179,8 @@ function somaPeriodoQS(meses) {
       deslAnt  += dp.deslR;
     }
   });
-  const entrAnt = vendAnt + reingAnt;
-  const saiAnt  = exclAnt + deslAnt;
+  const entrAnt = temFluxo ? vendAnt + reingAnt : 0;
+  const saiAnt  = temFluxo ? exclAnt + deslAnt : 0;
   const prevLastAno = last.ano - 1;
   if (QS[prevLastAno] && QS[prevLastAno][last.mes]) {
     titRealAnt = QS[prevLastAno][last.mes].titReal;
@@ -22849,17 +23230,27 @@ function renderQS() {
     document.getElementById('arrRetencao').innerHTML = '';
   }
 
-  // Entradas (maior é melhor)
-  document.getElementById('valEntradas').textContent = fmtInt(s.entrR);
-  document.getElementById('arrEntradas').innerHTML =
-    arrowHTMLqs(s.entrR, s.entrOrc, true, 'vs. Orçado') +
-    (s.entrAnt > 0 ? arrowHTMLqs(s.entrR, s.entrAnt, true, 'vs. Ano anterior') : '');
+  // Entradas (maior é melhor) — FLUXO; "—" quando o período não tem mês com movimento
+  if (s.entrR == null) {
+    document.getElementById('valEntradas').textContent = '—';
+    document.getElementById('arrEntradas').innerHTML = '';
+  } else {
+    document.getElementById('valEntradas').textContent = fmtInt(s.entrR);
+    document.getElementById('arrEntradas').innerHTML =
+      arrowHTMLqs(s.entrR, s.entrOrc, true, 'vs. Orçado') +
+      (s.entrAnt > 0 ? arrowHTMLqs(s.entrR, s.entrAnt, true, 'vs. Ano anterior') : '');
+  }
 
-  // Saídas (menor é melhor)
-  document.getElementById('valSaidas').textContent = fmtInt(s.saiR);
-  document.getElementById('arrSaidas').innerHTML =
-    arrowHTMLqs(s.saiR, s.saiOrc, false, 'vs. Orçado') +
-    (s.saiAnt > 0 ? arrowHTMLqs(s.saiR, s.saiAnt, false, 'vs. Ano anterior') : '');
+  // Saídas (menor é melhor) — FLUXO; "—" quando o período não tem mês com movimento
+  if (s.saiR == null) {
+    document.getElementById('valSaidas').textContent = '—';
+    document.getElementById('arrSaidas').innerHTML = '';
+  } else {
+    document.getElementById('valSaidas').textContent = fmtInt(s.saiR);
+    document.getElementById('arrSaidas').innerHTML =
+      arrowHTMLqs(s.saiR, s.saiOrc, false, 'vs. Orçado') +
+      (s.saiAnt > 0 ? arrowHTMLqs(s.saiR, s.saiAnt, false, 'vs. Ano anterior') : '');
+  }
 
   // Sócios Ativos (maior é melhor, estoque)
   document.getElementById('valSocios').textContent = fmtInt(s.titReal);
@@ -24277,7 +24668,7 @@ function gerarDiagnostico() {
   let entradas = 0, saidas = 0, vendR=0, reingR=0, exclR=0, deslR=0;
   meses.forEach(({ano,mes}) => {
     const q = QS[ano] && QS[ano][mes];
-    if (q) { vendR += q.vendR; reingR += q.reingR; exclR += q.exclR; deslR += q.deslR; entradas += q.vendR + q.reingR; saidas += q.exclR + q.deslR; }
+    if (q && q.vendR != null) { vendR += q.vendR; reingR += q.reingR; exclR += q.exclR; deslR += q.deslR; entradas += q.vendR + q.reingR; saidas += q.exclR + q.deslR; }
   });
   const saldoQS = entradas - saidas;
   const saldoValor = `${saldoQS>=0?'+':'\u2212'}${fmtInt(Math.abs(saldoQS))}`;
@@ -24372,7 +24763,7 @@ function gerarDiagnostico() {
   // Saldo QS mensal
   const qsMeses = meses.map(({ano,mes}) => {
     const q = QS[ano]&&QS[ano][mes];
-    return q ? (q.vendR + q.reingR - q.exclR - q.deslR) : null;
+    return (q && q.vendR != null) ? (q.vendR + q.reingR - q.exclR - q.deslR) : null;
   }).filter(v=>v!==null);
   const qsLbls = qsMeses.map((_,i) => mesLabels[i] || '');
   const qsSlope = calcTendencia(qsMeses);
@@ -24424,7 +24815,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v132');
+  html = html.split('{{VERSAO}}').join('v133');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
@@ -24716,7 +25107,6 @@ render();
 
 </body>
 </html>
-
 </script>
 </body>
 </html>
