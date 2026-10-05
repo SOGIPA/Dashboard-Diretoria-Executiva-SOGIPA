@@ -1631,7 +1631,7 @@
     </div>
 
     <div class="page-section" id="page-rh">
-      <div class="section-title">Recursos Humanos <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Jan/26 a Ago/26</span><div class="line"></div></div>
+      <div class="section-title">Recursos Humanos <span class="tag" id="rhPeriodoTag" style="background:rgba(136,136,170,.15); color:var(--muted);">Jan/26 a Set/26</span><div class="line"></div></div>
       <div class="rh-subtabs">
         <button class="rh-subtab-btn active" id="subtabBtnRH" onclick="mudarSubAbaRH('rh')">👥 RH</button>
         <button class="rh-subtab-btn" id="subtabBtnDP" onclick="mudarSubAbaRH('dp')">📋 DP</button>
@@ -2895,12 +2895,15 @@ const NEGOCIACOES = [
   {mes:'Jun/26', valor:304596, contatos:614},
   {mes:'Jul/26', valor:402369, contatos:804},
   {mes:'Ago/26', valor:375041, contatos:null},
-  {mes:'Set/26', valor:206723, contatos:null},
+  {mes:'Set/26', valor:329577, contatos:null},   // atualizado em 05/10 junto com a tabela por faixa
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
 //   julho  R$ 402.369 (fechado)   ·  agosto R$ 146.346 (mês em andamento)
-// Contatos de agosto ainda não informados pela Sec. Adm.
+//   setembro R$ 329.577 (posição de 05/10) — sai da MESMA coluna RECUPERADO da
+//   tabela por faixa, por isso é atualizado junto com ela. Deixá-lo em 206.723
+//   colocaria dois números para o mesmo mês na mesma tela.
+// Contatos de agosto e setembro ainda não informados pela Sec. Adm.
 // Total apurado mar-jun: R$ 460.277,00 · 1.498 contatos. Confere com a apresentação.
 const NEG_TOTAL_APRESENTACAO = 460277;
 const NEG_CONTATOS_APRESENTACAO = 1498;
@@ -2920,7 +2923,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':594338};   // abertura do mês; não muda com o avanço da cobrança
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':576700};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -2998,25 +3001,44 @@ const HE_HISTORICO_MENSAL = [
   {mes:'Jun/26', horas:1087.76, valor:42038.99, colaboradores:110, totalColab:241, qtdCC:38},
   {mes:'Jul/26', horas:1062.58, valor:44513.20, colaboradores:136, totalColab:248, qtdCC:37},
   {mes:'Ago/26', horas:566.41, valor:22843.14, colaboradores:112, totalColab:275, qtdCC:41},
+  // Set/26 calculado das 124 linhas individuais da planilha "HE SETEMBRO"; a
+  // linha final de R$ 28.061,94 é o TOTAL da planilha, não um colaborador, e
+  // foi descartada — a soma dos 124 individuais dá exatamente esse mesmo valor.
+  // 'totalColab' é o quadro de lotação do mês (QL set = 241), mesma leitura de
+  // jun (241) e jul (248). Em ago/26 esse campo ficou com 275, que é a contagem
+  // de LINHAS da planilha daquele mês e não o quadro — divergência registrada,
+  // não corrigida aqui porque jan–ago não pode ser alterado nesta carga.
+  {mes:'Set/26', horas:796.52, valor:28061.94, colaboradores:124, totalColab:241, qtdCC:44},
 ];
 
 // ═══════════════════════════════════════════════════════════
 // DADOS — RH x DP (planilha "proposta Cíntia")
 // Estrutura definida pela própria Gerente de RH: RH = pessoas/gestão, DP = operacional/custos
 // ═══════════════════════════════════════════════════════════
-// Set/26 entrou com o fechamento de Terceiros. Os demais indicadores do RH/DP
-// ainda não têm setembro: ficam com null nessa posição — "sem dado", nunca zero.
-// As regras de agregação já descartam null, então nenhum valor histórico muda.
+// Set/26 COMPLETO em 05/10, com as planilhas "Indicadores Setembro" e
+// "HE SETEMBRO" (Gerência de RH). Jan–ago não foi tocado.
+// Duas posições seguem em null de propósito, porque a fonte não as traz:
+//   · Infrações de Ponto — a célula de setembro veio VAZIA na planilha. Vazio
+//     não é zero: zero diria que não houve nenhuma infração no mês.
+//   · Projeto Olímpico   — sem setembro nesta planilha, como já em jul e ago.
+// As regras de agregação descartam null, então nenhum valor histórico muda.
+//
+// DIVERGÊNCIA REGISTRADA, NÃO CORRIGIDA: a planilha nova também traz jan–ago de
+// Infrações de Ponto e discorda do que está publicado em três meses — mar 111
+// (painel 116), mai 73 (painel 77) e jul 80 (painel 84). Mar e mai foram
+// revisados pela própria área em 24/08, segundo a nota abaixo; jul é novo.
+// Jan–ago não foi alterado, conforme a instrução da carga. Confirmar com o RH
+// qual das duas versões vale antes de mexer no histórico.
 const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26'];
 
 const RH_INDICADORES = {
-  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247, null], meta:null, formato:'int'},
-  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47, null], meta:null, formato:'pct', invertido:true,
+  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247, 241], meta:null, formato:'int'},
+  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47, 4.15], meta:null, formato:'pct', invertido:true,
                 nota:'A elevação do turnover no período reflete a <b>adequação da força de trabalho</b> em curso, não uma perda espontânea de pessoal.'},
-  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13, null], meta:null, formato:'int'},
-  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14, null], meta:null, formato:'int', invertido:true},
-  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24, null], meta:null, formato:'pct', invertido:true},
-  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25, null], meta:null, formato:'int',
+  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13, 7], meta:null, formato:'int'},
+  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14, 13], meta:null, formato:'int', invertido:true},
+  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24, 2.66], meta:null, formato:'pct', invertido:true},
+  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25, 345.25], meta:null, formato:'int',
                 nota:'Pela base estratégica do clube, é um indicador de <b>tendência sempre a melhorar</b>. Ainda não há meta definida.'},
 };
 // Avisos de pendências removidos a pedido da diretoria (não haverá esses dados até a apresentação)
@@ -3032,10 +3054,10 @@ RH_INDICADORES.saldoLiquido = {
 
 // Séries do custo de folha — exibidas juntas num único card interativo
 const FOLHA_DADOS = {
-  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91, null]},
-  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92, null]},
+  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91, 1242400.33]},
+  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92, 534023.17]},
   olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null, null]},   // jul: não vem nesta planilha
-  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83, null]},
+  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83, 477787.95]},
 };
 
 // ── Custo com Terceiros · série comparativa de 2025 ────────────────────────
@@ -3052,11 +3074,11 @@ const TERCEIROS_2025_MESES = ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/
 const DP_INDICADORES = {
   infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84, null], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
-  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38, null], meta:null, formato:'num', jornada:true},
-  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15, null], meta:null, formato:'num', invertido:true, jornada:true,
+  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38, 43184.96], meta:null, formato:'num', jornada:true},
+  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15, 284.87], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
-  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33, null], meta:null, formato:'num', invertido:true},
-  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14, null], meta:null, formato:'moeda', invertido:true, he:true},
+  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33, 865.09], meta:null, formato:'num', invertido:true},
+  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14, 28061.94], meta:null, formato:'moeda', invertido:true, he:true},
   custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06, 53230.60], meta:null, formato:'moeda', invertido:true,
                      valores2025:TERCEIROS_2025, gerencial:'terceiros'},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
@@ -3232,6 +3254,65 @@ const HE_POR_MES = {
     ],
     donutSegments: [{"nome": "Manutenção", "valor": 3146.28, "cor": "#e8192c"}, {"nome": "Volei Rendimento", "valor": 2624.78, "cor": "#3d7bff"}, {"nome": "Atletismo Rendimento", "valor": 2339.14, "cor": "#a855f7"}, {"nome": "Judo Formação", "valor": 1689.27, "cor": "#f2b705"}, {"nome": "Musculação Serviços", "valor": 1343.41, "cor": "#06b6d4"}, {"nome": "Outros (36 setores)", "valor": 11700.26, "cor": "#b0b0d0"}],
   },
+  set2026: {
+    // Calculado das 124 linhas individuais da planilha "HE SETEMBRO".
+    // A linha final da planilha (R$ 28.061,94, sem matrícula) é o TOTAL e foi
+    // EXCLUÍDA do conjunto: somá-la dobraria o mês. A soma dos 124 colaboradores
+    // devolve exatamente os mesmos R$ 28.061,94 — resumo, ranking e donut saem
+    // todos dessa base e fecham entre si.
+    // Sem nomes de colaborador, como nos demais meses — a estrutura de HE do
+    // painel guarda só o agregado por centro de custo.
+    // Três centros aparecem pela primeira vez: Coleta Seletiva, Gerência de
+    // Projetos e Desenvolvimento e Projetos e Obras.
+    resumo: {"totalValor": 28061.94, "totalHoras": 796.52, "colaboradoresComHE": 124, "totalColaboradores": 241, "ccComHE": 44, "dataReferencia": "Setembro/2026"},
+    ccRanking: [
+      {"nome": "Manutenção", "valor": 5359.57, "qtd": 15, "horas": 173.97},
+      {"nome": "Gin Artística Rendimento", "valor": 1926.14, "qtd": 4, "horas": 29.18},
+      {"nome": "Limpeza e Conservação", "valor": 1758.37, "qtd": 11, "horas": 72.16},
+      {"nome": "Central de Eventos", "valor": 1743.47, "qtd": 5, "horas": 63.91},
+      {"nome": "Recepção", "valor": 1616.99, "qtd": 10, "horas": 65.35},
+      {"nome": "Atletismo Rendimento", "valor": 1566.72, "qtd": 2, "horas": 37.39},
+      {"nome": "Musculação Serviços", "valor": 1327.92, "qtd": 5, "horas": 27.03},
+      {"nome": "Judo Formação", "valor": 1136.67, "qtd": 2, "horas": 31.75},
+      {"nome": "Basquete Rendimento", "valor": 1105.81, "qtd": 1, "horas": 28.53},
+      {"nome": "Atletismo Formação", "valor": 1094.59, "qtd": 1, "horas": 28.3},
+      {"nome": "Volei Rendimento", "valor": 1037.65, "qtd": 3, "horas": 22.15},
+      {"nome": "Projeto Criança Escol.", "valor": 947.69, "qtd": 20, "horas": 25.43},
+      {"nome": "Tênis Rendimento", "valor": 821.1, "qtd": 2, "horas": 18.38},
+      {"nome": "Tênis de Mesa Formação", "valor": 720.27, "qtd": 1, "horas": 12.26},
+      {"nome": "G.R.D. Rendimento", "valor": 569.61, "qtd": 1, "horas": 12.75},
+      {"nome": "Judo Rendimento", "valor": 524.79, "qtd": 1, "horas": 10.11},
+      {"nome": "Piscinas Manutenção", "valor": 520.33, "qtd": 3, "horas": 19.47},
+      {"nome": "Tênis Manutenção", "valor": 461.06, "qtd": 3, "horas": 23.63},
+      {"nome": "Controladoria", "valor": 365.43, "qtd": 2, "horas": 11.51},
+      {"nome": "Gerência de Projetos e Desenvolvimento", "valor": 332.16, "qtd": 2, "horas": 8.54},
+      {"nome": "Judo Alto Rendimento", "valor": 324.27, "qtd": 1, "horas": 2.28},
+      {"nome": "G.R.D. Formação", "valor": 285.51, "qtd": 1, "horas": 9.25},
+      {"nome": "Recursos Humanos", "valor": 284.99, "qtd": 1, "horas": 3.32},
+      {"nome": "Gerência de Informática", "valor": 242.34, "qtd": 1, "horas": 2.5},
+      {"nome": "Tênis Serviços", "valor": 215.91, "qtd": 1, "horas": 11.17},
+      {"nome": "Marketing", "valor": 195.14, "qtd": 2, "horas": 4.91},
+      {"nome": "Diretoria", "valor": 183.11, "qtd": 1, "horas": 4.52},
+      {"nome": "Gerência Administrativa", "valor": 169.2, "qtd": 1, "horas": 1.47},
+      {"nome": "Coleta Seletiva", "valor": 160.2, "qtd": 1, "horas": 7.16},
+      {"nome": "Gerência Esportiva", "valor": 149.74, "qtd": 1, "horas": 2.0},
+      {"nome": "Sede Social Conserv", "valor": 144.17, "qtd": 5, "horas": 7.62},
+      {"nome": "Gerência Manut. e Obras", "valor": 125.56, "qtd": 1, "horas": 1.29},
+      {"nome": "Suprimentos", "valor": 121.56, "qtd": 1, "horas": 2.32},
+      {"nome": "Conselho Deliberativo", "valor": 108.13, "qtd": 1, "horas": 3.53},
+      {"nome": "Gin Artística Alto Rendimento", "valor": 96.35, "qtd": 1, "horas": 1.25},
+      {"nome": "Projetos Esportivos", "valor": 61.83, "qtd": 1, "horas": 1.18},
+      {"nome": "Athletic Trainning Serviços", "valor": 54.41, "qtd": 2, "horas": 1.73},
+      {"nome": "Projetos e Obras", "valor": 50.84, "qtd": 1, "horas": 1.11},
+      {"nome": "Sec. Esportiva", "valor": 48.46, "qtd": 1, "horas": 2.0},
+      {"nome": "Biblioteca", "valor": 38.32, "qtd": 1, "horas": 2.01},
+      {"nome": "Coral", "valor": 23.32, "qtd": 1, "horas": 0.1},
+      {"nome": "Secretaria Adm.", "valor": 23.3, "qtd": 1, "horas": 1.4},
+      {"nome": "Punhobol Rendimento", "valor": 14.49, "qtd": 1, "horas": 0.35},
+      {"nome": "Informática", "valor": 4.45, "qtd": 1, "horas": 0.25}
+    ],
+    donutSegments: [{"nome": "Manutenção", "valor": 5359.57, "cor": "#e8192c"}, {"nome": "Gin Artística Rendimento", "valor": 1926.14, "cor": "#3d7bff"}, {"nome": "Limpeza e Conservação", "valor": 1758.37, "cor": "#a855f7"}, {"nome": "Central de Eventos", "valor": 1743.47, "cor": "#f2b705"}, {"nome": "Recepção", "valor": 1616.99, "cor": "#06b6d4"}, {"nome": "Outros (39 setores)", "valor": 15657.4, "cor": "#b0b0d0"}],
+  },
 };
 let HE_RESUMO = HE_POR_MES.jun2026.resumo;
 let HE_CC_RANKING = HE_POR_MES.jun2026.ccRanking;
@@ -3251,6 +3332,13 @@ const RH_AGG_REGRA = {
 // Índices (posições em MESES_RH) do período filtrado. Fallback: todos os meses.
 let RH_PERIODO_IDX = MESES_RH.map((_,i)=>i);
 
+// O selo do título de RH era um texto fixo ("Jan/26 a Ago/26") e não acompanhava
+// o filtro nem a chegada de um mês novo. Passa a sair de rhPeriodoLabel(), a
+// mesma função que já rotula os cards — sem rótulo novo e sem cálculo paralelo.
+function pintarRHPeriodoTag(){
+  const el = document.getElementById('rhPeriodoTag');
+  if(el) el.textContent = rhPeriodoLabel();
+}
 function setRHPeriodo(mesesFlx){
   // mapeia as chaves jan2026.. para índices de MESES_RH — derivado da própria
   // lista de meses, para não precisar editar aqui a cada mês novo importado
@@ -3263,6 +3351,7 @@ function setRHPeriodo(mesesFlx){
   } else {
     RH_PERIODO_IDX = MESES_RH.map((_,i)=>i);
   }
+  pintarRHPeriodoTag();
 }
 
 // Agrega uma série de valores (array alinhado a MESES_RH) segundo a regra do indicador.
@@ -3767,14 +3856,35 @@ const NEG_FAIXAS = [
   // critério do que compõe 'ATIVOS' ou reabertura de negociação — a imagem
   // não permite decidir. Confirmar com a Cobrança.
   { mes:'Set/26', label:'Setembro/2026', fechado:false,
-    fonte:'Período Setembro/26 (Cobrança)', importadoEm:'18/09/2026',
-    inicio:594338, base:594338, totRec:206723, totAb:387615,
+    fonte:'Negociação Resultados — Período Setembro/26 (Cobrança)', importadoEm:'05/10/2026',
+    inicio:576700, base:576700, totRec:329577, totAb:247124,
     faixas:[
-      {fx:'FX1',   idade:'1 mês',     ref:'ago/26',     abertura:278403, rec:149899, ab:128504},
-      {fx:'FX2',   idade:'2 meses',   ref:'jul/26',     abertura:95076, rec:35104, ab:59972},
-      {fx:'FX3',   idade:'3 meses',   ref:'jun/26',     abertura:105104, rec:11456, ab:93648},
-      {fx:'FORA',  idade:'4+ meses',  ref:'≤ mai/26',   abertura:115756, rec:10264, ab:105492},
-    ], selo:178301500 },
+      {fx:'FX1',   idade:'1 mês',     ref:'ago/26',     abertura:277538, rec:235694, ab:41844},
+      {fx:'FX2',   idade:'2 meses',   ref:'jul/26',     abertura:94086, rec:55619, ab:38467},
+      {fx:'FX3',   idade:'3 meses',   ref:'jun/26',     abertura:97853, rec:20523, ab:77330},
+      {fx:'FORA',  idade:'4+ meses',  ref:'≤ mai/26',   abertura:107224, rec:17741, ab:89483},
+    ], selo:173010200 },
+  // ── ATUALIZAÇÃO DE 05/10 · SETEMBRO/26 (quadro "NEGOCIAÇÃO RESULTADOS") ────
+  // ATUALIZAÇÃO da mesma competência, não mês novo: a régua continua
+  // FX1 ago/26 · FX2 jul/26 · FX3 jun/26 · FORA ≤ mai/26. A fonte passou a
+  // rotular a quarta linha como "FX4 MAI26"; é a mesma faixa que o painel chama
+  // de FORA (4+ meses), e o rótulo interno ficou como está para não quebrar o
+  // gráfico e a legenda.
+  //            fechamento 18/09 -> 05/10        recuperado 18/09 -> 05/10
+  //   FX1       278.403 -> 277.538   (-865)      149.899 -> 235.694 (+85.795)
+  //   FX2        95.076 ->  94.086   (-990)       35.104 ->  55.619 (+20.515)
+  //   FX3       105.104 ->  97.853 (-7.251)       11.456 ->  20.523  (+9.067)
+  //   FORA      115.756 -> 107.224 (-8.532)       10.264 ->  17.741  (+7.477)
+  //   BASE      594.338 -> 576.700 (-17.638)     206.723 -> 329.577 (+122.854)
+  //   em aberto 387.615 -> 247.124 (-140.491)    taxa 34,8% -> 57,1%
+  // As quatro linhas fecham exatas (fechamento = recuperado + em aberto) e o
+  // recuperado e o em aberto das faixas somam EXATAMENTE os totais declarados.
+  // Só o fechamento tem R$ 1 de diferença: as faixas somam 576.701 e a fonte
+  // declara 576.700. Vale o total declarado, como nas cargas anteriores — sem
+  // compensação em nenhuma faixa.
+  // A queda de base de R$ 17.638 acompanha avanço de cobrança e saída de
+  // quadro; não é revisão de régua (as quatro aberturas caíram juntas).
+  //
   // ── ATUALIZAÇÃO DE 18/09 · SETEMBRO/26 ─────────────────────────────────────
   // Quadro "ATIVOS (18/09/26)". ATUALIZAÇÃO da mesma competência, não mês novo:
   // a régua segue FX1 ago/26 · FX2 jul/26 · FX3 jun/26 · FORA ≤ mai/26.
@@ -3936,7 +4046,7 @@ function acenderFaixa(id){
 //   quebra por faixa ... jul-ago    retrato ............ jul
 // Data do último fechamento recebido da Cobrança. Aparece no card de taxa e no
 // rodapé do gráfico por faixa. Atualizar junto com a importação de um mês novo.
-const NEG_ATUALIZACAO = '18/09/2026';
+const NEG_ATUALIZACAO = '05/10/2026';
 const NEG_RETRATO = {
   'Jul/26': {gerado:2208407, atraso:440189, inad:574, tit:3524, ticket:767,
              inadTotal:931, atrasoTotal:602186}
