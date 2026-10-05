@@ -21790,7 +21790,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v133</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v134</div>
     </div>
   </div>
 </header>
@@ -21801,7 +21801,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v133</div>
+">SOGIPA · PAINEL 01 · v134</div>
 
 <main>
 
@@ -22274,8 +22274,8 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <div class="status-label">Inadimplência ({{INADIM_MES}})</div>
       <div class="status-value">{{INADIM_VALOR}}</div>
       <div class="status-meta">{{INADIM_META}}</div>
-      <div class="status-desc">Crescimento consistente ao longo do ano. Principal fator gerador de exclusões e queda do quadro social.</div>
-      <div class="status-trend trend-up-bad">▲ +4,3 p.p. desde Janeiro</div>
+      <div class="status-desc">Permanece em nível de atenção e segue como principal fator gerador de exclusões do quadro social.</div>
+      <div class="status-trend trend-up-bad">▲ Acima da meta histórica do período</div>
     </div>
 
   </div>
@@ -22323,8 +22323,8 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <div class="diag-item">
         <div class="diag-dot red"></div>
         <div class="diag-text">
-          <strong>Inadimplência crescente</strong>
-          <span>Subiu de 12,1% em Janeiro para 16,4% em Maio — alta de 4,3 pontos. É o principal gerador de exclusões e deve ser a prioridade de gestão no 2° semestre.</span>
+          <strong>Inadimplência em nível de atenção</strong>
+          <span>Segue acima da meta histórica e é o principal gerador de exclusões — prioridade de gestão. Acompanhe a evolução mês a mês no indicador de inadimplência.</span>
         </div>
       </div>
       <div class="diag-item">
@@ -22520,9 +22520,9 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
   <div class="msg-card red">
     <div class="msg-icon">🚨</div>
     <div>
-      <div class="msg-title">PRIORIDADE CRÍTICA — Inadimplência em alta</div>
+      <div class="msg-title">PRIORIDADE — Inadimplência em nível de atenção</div>
       <div class="msg-body">
-        <strong>16,4% em Maio vs meta de 13,5% — alta de 4,3 pontos desde Janeiro.</strong>
+        <strong>Permanece acima da meta histórica e é o principal motor de exclusões.</strong>
         A inadimplência é o principal motor de exclusões. Cada sócio excluído representa perda dupla:
         de receita imediata e de vínculo com o clube. Ação urgente: acionar plano estruturado de cobrança,
         oferecer parcelamento e identificar perfil dos inadimplentes para abordagem personalizada.
@@ -22627,8 +22627,8 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
         <td><strong>Inadimplência</strong></td>
         <td><span class="badge red">❌ Crítico</span></td>
         <td>{{INADIM_VALOR}}</td>
-        <td>13,5% (meta)</td>
-        <td>Alta crescente</td>
+        <td>11,45% (meta)</td>
+        <td>Atenção</td>
         <td>Plano urgente de cobrança</td>
       </tr>
     </tbody>
@@ -22648,7 +22648,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v133 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v134 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -23220,7 +23220,30 @@ const INADIM = {
     5:{real:0.1641, meta:0.1330},
     6:{real:0.1599, meta:0.1350},
     7:{real:0.1629, meta:0.1350},
-    8:{real:0.1503, meta:0.1350}
+    8:{real:0.1503, meta:0.1350},
+    9:{real:0.1490, meta:0.1145}   // Set/26: realizado 14,90% · meta = realizado Set/2025 (11,45%), regra "meta = ano anterior"
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+//  INADIM_DET — detalhamento executivo oficial da inadimplência (uso gerencial)
+//  Preencher só meses com relatório oficial completo. Exibido de forma discreta
+//  no bloco de inadimplência (fatia "Exclusões"), sem criar nova seção.
+//  Cobrança operacional (recuperado/em aberto) NÃO entra aqui — é outro indicador.
+// ═══════════════════════════════════════════════════════════
+const INADIM_DET = {
+  2026: {
+    9: {
+      totalInad:626, valor:546773,
+      pagInad:546, pagValor:508611, pagPct:0.1467,
+      isInad:80,   isValor:38162,
+      faixas:[
+        {lbl:'até 30d', qtd:403, val:266494},
+        {lbl:'até 60d', qtd:71,  val:71333},
+        {lbl:'até 90d', qtd:28,  val:34703},
+        {lbl:'+91d',    qtd:124, val:174244}
+      ]
+    }
   }
 };
 
@@ -23721,6 +23744,19 @@ function renderPizzaQS(s, meses) {
           <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="display:block;">${bars}</svg>
         </div>` : '';
 
+      // Detalhamento oficial (quando houver relatório completo da competência — ex.: Set/26)
+      const det = INADIM_DET[last.ano] && INADIM_DET[last.ano][last.mes];
+      const fmtRS = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+      const inadimQtdHTML = det
+        ? `<div class="qs-inadim-label" style="margin-top:4px;"><strong style="color:${inadimColor}">${fmtInt(det.totalInad)} sócios</strong> inadimplentes · <strong style="color:${inadimColor}">${fmtRS(det.valor)}</strong></div>`
+        : (inadimQtd ? `<div class="qs-inadim-label" style="margin-top:4px;">~<strong style="color:${inadimColor}">${fmtInt(inadimQtd)} sócios</strong> inadimplentes</div>` : '');
+      const inadimDetHTML = det ? `
+        <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,.12); font-size:11px; color:var(--muted); line-height:1.6;">
+          <div>Pagantes: <strong style="color:#e8e8f4;">${fmtInt(det.pagInad)}</strong> (${(det.pagPct*100).toFixed(2)}%) · ${fmtRS(det.pagValor)}</div>
+          <div>Isentas: <strong style="color:#e8e8f4;">${fmtInt(det.isInad)}</strong> · ${fmtRS(det.isValor)}</div>
+          <div style="margin-top:4px;">Por faixa: ${det.faixas.map(f => `${f.lbl} <strong style="color:#e8e8f4;">${fmtInt(f.qtd)}</strong>`).join(' · ')}</div>
+        </div>` : '';
+
       legElQS.className = 'freq-legend-solo';
       legElQS.innerHTML = `
         <div class="freq-solo-card" style="border-left:4px solid ${x.color};">
@@ -23743,7 +23779,8 @@ function renderPizzaQS(s, meses) {
                   <div class="qs-inadim-label">meta (2025)</div>
                 </div>` : ''}
               </div>
-              ${inadimQtd ? `<div class="qs-inadim-label" style="margin-top:4px;">~<strong style="color:${inadimColor}">${fmtInt(inadimQtd)} sócios</strong> inadimplentes</div>` : ''}
+              ${inadimQtdHTML}
+              ${inadimDetHTML}
               <!-- Receita em risco oculta para esta apresentação -->
               ${barChartHTML}
             ` : '<div class="qs-no-data">⚠️ Dados em fechamento para este período</div>'}
@@ -24759,6 +24796,17 @@ function miniBarSVG(vals, labels, color, w=300, h=80) {
 function gerarDiagnostico() {
   const { mesIni, anoIni, mesFim, anoFim } = currentPeriod;
   const meses = getMeses(mesIni, anoIni, mesFim, anoFim);
+  // Inadimplência tem fonte própria (pode ter competência além da DRE, ex.: Set/26).
+  // Lista de meses do intervalo que possuem dado em INADIM (independe da DRE).
+  const mesesInad = (() => {
+    const r = []; let a = anoIni, m = mesIni, g = 0;
+    while ((a < anoFim || (a === anoFim && m <= mesFim)) && g < 60) {
+      if (INADIM[a] && INADIM[a][m] != null) r.push({ ano:a, mes:m });
+      m++; if (m > 12) { m = 1; a++; } g++;
+    }
+    return r;
+  })();
+  const inadReal = v => (typeof v === 'object' ? v.real : v);  // 2026 = objeto {real,meta}; 2025 = número
   const nomesExt = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
   const periodoTitulo = meses.length === 1
@@ -24796,12 +24844,12 @@ function gerarDiagnostico() {
 
   let inadimValor = '\u2014', inadimMeta = '\u2014', inadimMes = '';
   // Calcular tendência de inadimplência (crescendo/estável/caindo)
-  const inadimVals = meses.map(({ano,mes}) => INADIM[ano] && INADIM[ano][mes] ? INADIM[ano][mes].real : null).filter(v=>v!==null);
+  const inadimVals = mesesInad.map(({ano,mes}) => inadReal(INADIM[ano][mes]));
   if (inadimVals.length > 0) {
-    const lm = meses[meses.length-1];
+    const lm = mesesInad[mesesInad.length-1];
     const ind = INADIM[lm.ano] && INADIM[lm.ano][lm.mes];
     if (ind) {
-      inadimValor = `${(ind.real*100).toFixed(1)}%`;
+      inadimValor = `${(inadReal(ind)*100).toFixed(1)}%`;
       inadimMes = `${MESES_NOMES[lm.mes]}/${String(lm.ano).slice(2)}`;
       // inadimMeta set below after tendency calcs
       // Tendência
@@ -24864,9 +24912,9 @@ function gerarDiagnostico() {
                 : `Ticket estável no período. Variação de R$ ${Math.round(Math.abs(tkLast-tkFirst))}.`;
   const tkSvgT = miniBarSVG(tkVals, tkLbls||[], tkHex, 300, 80);
 
-  // Inadimplência
-  const inadVals = meses.map(({ano,mes}) => INADIM[ano]&&INADIM[ano][mes] ? INADIM[ano][mes].real*100 : null).filter(v=>v!==null);
-  const inadLbls = inadVals.map((_,i) => mesLabels[i] || '');
+  // Inadimplência (usa mesesInad — competência própria, pode ir além da DRE)
+  const inadVals = mesesInad.map(({ano,mes}) => inadReal(INADIM[ano][mes])*100);
+  const inadLbls = mesesInad.map(({mes}) => MESES_NOMES[mes]);
   const inadSlope = calcTendencia(inadVals);
   const inadLast = inadVals[inadVals.length-1]||0;
   const inadCorT  = inadSlope > 0.3 ? 'red' : inadSlope < -0.3 ? 'green' : 'yellow';
@@ -24933,7 +24981,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v133');
+  html = html.split('{{VERSAO}}').join('v134');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
