@@ -1150,11 +1150,11 @@
       <div class="section-title">Recursos Humanos — Horas Extras<div class="line"></div></div>
       <div class="grid-2 reverse">
         <div class="card">
-          <div class="card-label">Composição do HE por Centro de Custo</div>
+          <div class="card-label">Composição do HE por Centro de Custo <span id="vgHECCPeriodo" style="text-transform:none; letter-spacing:0; color:var(--muted); font-weight:700;"></span></div>
           <div id="vgDonutHE" class="donut-wrap"></div>
         </div>
         <div class="card">
-          <div class="card-label">Resumo — Horas Extras (Jun/2026)</div>
+          <div class="card-label">Resumo — Horas Extras (<span id="vgHEPeriodo" style="text-transform:none; letter-spacing:0;">—</span>)</div>
           <div class="mini-stat-row">
             <div class="mini-stat"><div class="mini-stat-label">Total Pago</div><div class="mini-stat-value" style="color:var(--red);" id="vgHETotalValor"></div></div>
             <div class="mini-stat"><div class="mini-stat-label">Total Horas</div><div class="mini-stat-value" style="color:var(--blue);" id="vgHETotalHoras"></div></div>
@@ -3338,6 +3338,7 @@ let HE_RESUMO = HE_POR_MES.jun2026.resumo;
 let HE_CC_RANKING = HE_POR_MES.jun2026.ccRanking;
 let HE_DONUT_SEGMENTS = HE_POR_MES.jun2026.donutSegments;
 let HE_MES_SEM_DADOS = null; // guarda o mesKey pedido quando não há dado de HE ainda
+let HE_CC_JANELA = null;     // janela realmente coberta pela quebra por centro de custo
 
 // Define como cada indicador se comporta ao agregar um período:
 //  'soma'  → fluxos (admitidos, horas, custos, HE) — somam os meses
@@ -3411,6 +3412,47 @@ function agregarHE(){
     ultimoMes: ult.mes,
     dataReferencia: linhas.length>1 ? `${linhas[0].mes} a ${ult.mes}` : ult.mes,
   };
+}
+
+// Ranking e donut por centro de custo agregados na MESMA janela que o resumo.
+// Antes vinham de setHEPeriodo(mesKey), e o mesKey que chega aqui é o do Fluxo
+// de Caixa, cuja cobertura para em ago/26 — por isso o bloco mostrava o maior
+// centro de custo de AGOSTO (Manutenção R$ 3.146,28) ao lado dos totais de
+// SETEMBRO. Com um intervalo de meses era pior: os totais somavam o período e o
+// ranking continuava de um mês só.
+// Agora a janela é a de RH_PERIODO_IDX, a mesma de agregarHE(): título, totais,
+// colaboradores, centro de custo e donut andam sempre juntos.
+const HE_CORES_CC = ['#e8192c','#3d7bff','#a855f7','#f2b705','#06b6d4'];
+function heChavesHE(){
+  // 'Set/26' -> 'set2026', derivado do próprio rótulo (sem lista fixa)
+  const map = {Jan:'jan',Fev:'fev',Mar:'mar',Abr:'abr',Mai:'mai',Jun:'jun',
+               Jul:'jul',Ago:'ago',Set:'set',Out:'out',Nov:'nov',Dez:'dez'};
+  return RH_PERIODO_IDX.map(i=>MESES_RH[i])
+    .map(rot => { const [m,a] = rot.split('/'); return map[m] ? map[m] + '20' + a : null; })
+    .filter(k => k && HE_POR_MES[k]);
+}
+function agregarHECC(){
+  const chaves = heChavesHE();
+  if(!chaves.length) return null;
+  const soma = new Map();
+  chaves.forEach(k => (HE_POR_MES[k].ccRanking || []).forEach(c => {
+    const a = soma.get(c.nome) || {nome:c.nome, valor:0, qtd:0, horas:0};
+    a.valor += c.valor || 0; a.qtd += c.qtd || 0; a.horas += c.horas || 0;
+    soma.set(c.nome, a);
+  }));
+  const rank = [...soma.values()]
+    .map(c => ({nome:c.nome, valor:Math.round(c.valor*100)/100, qtd:c.qtd, horas:Math.round(c.horas*100)/100}))
+    .sort((a,b)=>b.valor-a.valor);
+  if(!rank.length) return null;
+  const top = rank.slice(0,5);
+  const resto = Math.round(rank.slice(5).reduce((t,c)=>t+c.valor,0)*100)/100;
+  const donut = top.map((c,i)=>({nome:c.nome, valor:c.valor, cor:HE_CORES_CC[i]}));
+  if(rank.length > 5) donut.push({nome:`Outros (${rank.length-5} setores)`, valor:resto, cor:'#b0b0d0'});
+  // Rótulo da janela REALMENTE coberta pela quebra por centro de custo. Ela pode
+  // ser menor que a dos totais: HE_POR_MES começa em jun/26, enquanto o
+  // histórico mensal (totais) vai desde jan/26. Quando for menor, a tela diz —
+  // não se inventa quebra por centro de custo para os meses que não têm.
+  return {rank, donut, nMeses:chaves.length, chaves};
 }
 
 function setHEPeriodo(mesKey){
@@ -4856,6 +4898,16 @@ renderVGVendasResumo(null);
 drawDonut('vgRetencaoDonut', RETENCAO_CATEGORIAS.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), '23', 'desligamentos', {semLegenda:true});
 
 function renderVisaoGeralHE(){
+  // O período do título sai do MESMO resumo que alimenta os números — um mês
+  // ("Set/26") ou o intervalo inteiro ("Jan/26 a Set/26").
+  const elPer = document.getElementById('vgHEPeriodo');
+  if(elPer) elPer.textContent = (HE_RESUMO && HE_RESUMO.dataReferencia) ? HE_RESUMO.dataReferencia : '—';
+  // Só avisa quando a quebra por centro de custo cobre MENOS que os totais.
+  const elCC = document.getElementById('vgHECCPeriodo');
+  if(elCC){
+    const iguais = !HE_CC_JANELA || !HE_RESUMO || HE_CC_JANELA === HE_RESUMO.dataReferencia;
+    elCC.textContent = iguais ? '' : `· só ${HE_CC_JANELA} (sem quebra por centro de custo antes de Jun/26)`;
+  }
   drawDonut('vgDonutHE', HE_DONUT_SEGMENTS, fmtBRL0(HE_RESUMO.totalValor), 'total em HE');
   document.getElementById('vgHESetorMaior').textContent = HE_CC_RANKING[0].nome;
   document.getElementById('vgHEValorMaior').textContent = fmtBRL(HE_CC_RANKING[0].valor);
@@ -19849,10 +19901,19 @@ function renderRH(mesKey){
       dataReferencia: heAgg.dataReferencia,
       _nMeses: heAgg.nMeses,
     };
-    // O detalhamento por centro de custo só existe para Junho — mantém como referência
-    // quando o período abrange mais de um mês (aviso é exibido abaixo).
     HE_MES_SEM_DADOS = null;
   }
+  // Centro de custo e donut na MESMA janela dos totais acima.
+  const ccAgg = agregarHECC();
+  if(ccAgg){
+    HE_CC_RANKING = ccAgg.rank; HE_DONUT_SEGMENTS = ccAgg.donut;
+    // janela coberta pela quebra por CC, em rótulos iguais aos do resumo
+    const ABREV = {jan:'Jan',fev:'Fev',mar:'Mar',abr:'Abr',mai:'Mai',jun:'Jun',
+                   jul:'Jul',ago:'Ago',set:'Set',out:'Out',nov:'Nov',dez:'Dez'};
+    const rot = k => ABREV[k.slice(0,3)] + '/' + k.slice(-2);
+    const c = ccAgg.chaves;
+    HE_CC_JANELA = c.length === 1 ? rot(c[0]) : `${rot(c[0])} a ${rot(c[c.length-1])}`;
+  } else { HE_CC_JANELA = null; }
   renderVisaoGeralHE();
   const el = document.getElementById('rhConteudo');
   const avisoSemDados = HE_MES_SEM_DADOS ? `
