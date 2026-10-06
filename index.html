@@ -1643,7 +1643,7 @@
         <div id="dpIndicadoresConteudo"></div>
         <div id="terceirosGerencial"></div>
         <div id="heBloco" style="display:none;">
-          <div class="section-title" style="margin-top:24px;">Horas Extras <span class="tag" style="background:rgba(136,136,170,.15); color:var(--muted);">Junho/2026</span><div class="line"></div>
+          <div class="section-title" style="margin-top:24px;">Horas Extras <span class="tag" id="rhHEPeriodo" style="background:rgba(136,136,170,.15); color:var(--muted);">—</span><div class="line"></div>
             <button onclick="document.getElementById('heBloco').style.display='none'" style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer; margin-left:10px;">✕</button>
           </div>
           <div id="rhConteudo"></div>
@@ -2708,7 +2708,7 @@ const RETENCAO_EXTRA_MESES = {
     ticketMedio:'R$ 562,47', dependentes:'1,7', residual:'19', residualLabel:'Residual Acumulado', desligadosComTaxa:'R$ 1.002,00',
     taxaQtd:1, modalidadeTaxa:{sim:2, nao:14}, quadroSocial:19,
     negociacoesDesligados:'R$ 0,00',
-    analise:'Fonte: Plano de Trabalho de Retenção 2026 (V3), contagem conferida registro a registro. <b style="color:var(--gold);">Mês em andamento</b> — dados posicionados em 03/08. Das 20 solicitações em aberto, <b>19 vieram de julho</b> e apenas 1 foi aberta em agosto: é a fila residual sendo processada, não demanda nova. Dos 16 desligamentos, 14 têm data de 01/08, 1 de 02/08 e 1 está programado para 10/08. Patrimonial empata com Contribuinte no topo (6 cada) — proporção bem acima da de julho, quando Patrimonial era 7 de 44. Financeiro segue como principal motivo (31,3%). Ticket médio de R$ 562,47, abaixo dos R$ 631,57 de julho. Isenção de modalidade foi ofertada a apenas 2 dos 16 desligados. <b>Números vão subir até o fim do mês.</b>',
+    analise:'Fonte: Plano de Trabalho de Retenção 2026 (V3), contagem conferida registro a registro. <b style="color:var(--gold);">Posição parcial de 03/08</b> — a competência de agosto já encerrou e esta base não recebeu o fechamento do mês. Das 20 solicitações em aberto, <b>19 vieram de julho</b> e apenas 1 foi aberta em agosto: é a fila residual sendo processada, não demanda nova. Dos 16 desligamentos, 14 têm data de 01/08, 1 de 02/08 e 1 está programado para 10/08. Patrimonial empata com Contribuinte no topo (6 cada) — proporção bem acima da de julho, quando Patrimonial era 7 de 44. Financeiro segue como principal motivo (31,3%). Ticket médio de R$ 562,47, abaixo dos R$ 631,57 de julho. Isenção de modalidade foi ofertada a apenas 2 dos 16 desligados. <b>Os números acima são os da posição de 03/08 e não representam o fechamento de agosto.</b>',
   },
   jan2026: {
     periodoTag:'Janeiro/2026',
@@ -4223,6 +4223,25 @@ function renderNegSecao1(meses){
     : `A cobertura em R$ da inadimplência começa em <b>jul/26</b>. Meses anteriores têm apenas a taxa percentual.`;
 }
 
+// Uma competência está encerrada quando o último dia do mês já passou. O card de
+// ritmo rotulava "EM CURSO" qualquer posição não declarada como fechamento pela
+// Cobrança — e com agosto e setembro nessa condição, a tela dizia que meses
+// terminados há semanas ainda estavam correndo. O dado não muda: muda o rótulo.
+// AUTOSSUFICIENTE de propósito: renderNegRitmo roda no pré-render de topo do
+// painel, antes de MES_NEG_NUM/_negMesParaNum existirem. Usar aqueles bindings
+// levantaria TDZ, o catch tentaria _log (também em TDZ) e o script inteiro
+// morreria. Esta função não depende de nada declarado depois dela.
+function negCompetenciaEncerrada(rot){
+  const AB = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const m = String(rot||'').toLowerCase().match(/^([a-zç]{3})\/(\d{2,4})$/);
+  if(!m) return false;
+  const mi = AB.indexOf(m[1]);
+  if(mi < 0) return false;
+  const ano = m[2].length === 2 ? 2000 + Number(m[2]) : Number(m[2]);
+  const fim = new Date(ano, mi + 1, 0); fim.setHours(23,59,59,999);
+  return new Date() > fim;
+}
+
 // ── SEÇÃO 2: ritmo do mês e produtividade ──
 function renderNegRitmo(meses){
   const box=document.getElementById('negRitmoBox'); if(!box) return;
@@ -4235,7 +4254,10 @@ function renderNegRitmo(meses){
     card.style.display='none'; return;
   }
   card.style.display='';
-  flag.textContent=curso.label.toUpperCase()+' EM CURSO'; flag.className='neg-flag';
+  let encerrado = false;
+  try{ encerrado = negCompetenciaEncerrada(curso.mes); }catch(e){ encerrado = false; }
+  flag.textContent = curso.label.toUpperCase() + (encerrado ? ' · POSIÇÃO PARCIAL' : ' EM CURSO');
+  flag.className='neg-flag';
   // aplica a taxa de cada faixa do mês fechado à abertura do mês em curso
   const esperado = curso.faixas.reduce((t,f,i)=>{
     const b=base.faixas[i]; return t + f.abertura * (b.rec/b.abertura);
@@ -4245,16 +4267,17 @@ function renderNegRitmo(meses){
       <div class="card"><div class="card-label">Esperado ao fechar</div>
         <div class="card-value" style="color:var(--gold)">${fmtBRL0(esperado)}</div>
         <div class="card-meta">taxas de ${base.label.toLowerCase()} aplicadas a cada faixa</div></div>
-      <div class="card"><div class="card-label">Realizado até agora</div>
+      <div class="card"><div class="card-label">${encerrado ? 'Realizado na posição' : 'Realizado até agora'}</div>
         <div class="card-value" style="color:#3d7bff">${fmtBRL0(curso.totRec)}</div>
         <div class="card-meta">${fmtPct(pct)} do esperado</div></div>
-      <div class="card"><div class="card-label">Falta para o ritmo</div>
+      <div class="card"><div class="card-label">${encerrado ? 'Diferença para o ritmo' : 'Falta para o ritmo'}</div>
         <div class="card-value" style="color:var(--muted)">${fmtBRL0(Math.max(0,esperado-curso.totRec))}</div>
         <div class="card-meta">para igualar ${base.label.toLowerCase()}</div></div>
     </div>
     <div class="neg-prog"><div class="fill" style="width:${Math.min(100,pct).toFixed(1)}%">${fmtPct(pct)}</div></div>
     <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:5px;">
-      <span>R$ 0</span><span style="color:var(--gold)">alvo ${fmtBRL0(esperado)}</span></div>`;
+      <span>R$ 0</span><span style="color:var(--gold)">alvo ${fmtBRL0(esperado)}</span></div>
+    ${encerrado ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>ℹ️</span><div><b>${curso.label} já encerrou como competência.</b> A Cobrança não declarou esta posição como fechamento do mês, por isso ela segue comparada ao ritmo de ${base.label.toLowerCase()} — mas não há mais mês correndo para recuperar a diferença.</div></div>` : ''}`;
 }
 
 function renderNegProdutividade(meses){
@@ -4682,8 +4705,11 @@ function showSerieDetalhe(nome, chartElId, detailElId){
 function renderNegociacaoResumo(mesKey, de, ate){
   if(mesKey === 'sem-dado'){
     const avisoEl = document.getElementById('negAvisoPeriodo');
-    if(avisoEl) avisoEl.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de inadimplência/negociação para o período selecionado.</b> Nosso histórico cobre Março a Julho/2026.</div></div>`;
-    document.getElementById('negAlertaTopo').innerHTML = 'Selecione um intervalo entre Março e Julho/2026 para ver a análise de inadimplência.';
+    // Cobertura informada no aviso sai da base, não de texto fixo.
+    const _cob = (typeof coberturaNegociacao === 'function') ? coberturaNegociacao() : null;
+    const _rot = _cob ? _cob.rotulo : 'o período já importado';
+    if(avisoEl) avisoEl.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de inadimplência/negociação para o período selecionado.</b> Nosso histórico cobre ${_rot}.</div></div>`;
+    document.getElementById('negAlertaTopo').innerHTML = `Selecione um intervalo dentro de ${_rot} para ver a análise de inadimplência.`;
     document.getElementById('negResumoCards').innerHTML = '';
     document.getElementById('negAlertaRodape').innerHTML = '';
     // esconde a caixa inteira — sem texto ela virava um card vazio só com o ícone
@@ -4727,14 +4753,21 @@ function renderNegociacaoResumo(mesKey, de, ate){
     document.getElementById('vgRecuperadoNegPeriodo').innerHTML = `▲ ${mesInicio}-${mesFim}/26`;
   }
 
-  // o mês selecionado no filtro tem dado próprio de inadimplência/negociação?
-  const prefixoMes = mesKey==='jul2026' ? 'jul' : (mesKey==='jun2026' ? 'jun' : null);
+  // O mês FECHADO pelo filtro tem taxa de inadimplência própria? O prefixo sai
+  // da data final do recorte — antes era uma lista fixa ('jul2026'/'jun2026'),
+  // que deixava qualquer mês novo de fora.
+  const ABREV_NEG = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const _fim = parseDataISO(ate);
+  const prefixoMes = (mesInicio === mesFim) ? ABREV_NEG[_fim.getMonth()] : null;
   const temDadoDoMes = prefixoMes ? comInad.some(d=>d.mes.toLowerCase().startsWith(prefixoMes)) : true;
 
+  const rotuloMesSel = prefixoMes
+    ? `${MES_NEG_EXT[_fim.getMonth()+1]}/${_fim.getFullYear()}`
+    : 'do período selecionado';
   const avisoSemDado = !temDadoDoMes ? `
     <div class="alert-box">
       <span>🆕</span>
-      <div>Ainda não recebemos os dados de inadimplência/negociação de <b>${DADOS_MES[mesKey] ? DADOS_MES[mesKey].label : mesKey}</b>. Mostrando <b>${ultima.mes}</b> (mais recente disponível) como referência abaixo.</div>
+      <div>Ainda não recebemos a <b>taxa de inadimplência</b> de <b>${rotuloMesSel}</b>. Mostrando <b>${ultima.mes}</b> (mais recente disponível) como referência abaixo.</div>
     </div>` : '';
   const avisoEl = document.getElementById('negAvisoPeriodo');
   if(avisoEl) avisoEl.innerHTML = avisoSemDado;
@@ -4917,7 +4950,13 @@ function renderVisaoGeralHE(){
   // O período do título sai do MESMO resumo que alimenta os números — um mês
   // ("Set/26") ou o intervalo inteiro ("Jan/26 a Set/26").
   const elPer = document.getElementById('vgHEPeriodo');
-  if(elPer) elPer.textContent = (HE_RESUMO && HE_RESUMO.dataReferencia) ? HE_RESUMO.dataReferencia : '—';
+  const refHE = (HE_RESUMO && HE_RESUMO.dataReferencia) ? HE_RESUMO.dataReferencia : '—';
+  if(elPer) elPer.textContent = refHE;
+  // A aba RH/DP tinha a MESMA tag cravada em "Junho/2026" desde a primeira carga
+  // de HE: o bloco seguia o filtro nos números e mentia no título. Agora as duas
+  // telas leem a competência do mesmo resumo que alimenta os valores.
+  const elPerRH = document.getElementById('rhHEPeriodo');
+  if(elPerRH) elPerRH.textContent = refHE;
   // Só avisa quando a quebra por centro de custo cobre MENOS que os totais.
   const elCC = document.getElementById('vgHECCPeriodo');
   if(elCC){
@@ -6773,8 +6812,49 @@ const COBERTURA_MES = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
 };
-// Negociação/Inadimplência tem histórico próprio (Mar-Jun), independente do resto
-const COBERTURA_NEGOCIACAO = {ini:'2026-03-01', fim:'2026-08-31'};
+// ── Cobertura de Negociação — DERIVADA DAS BASES, nunca digitada ──────────
+// Era uma janela fixa ({ini:'2026-03-01', fim:'2026-08-31'}) e um texto fixo
+// ("Março a Julho/2026"). Setembro entrou nas bases em 05/10 e a janela não
+// acompanhou: a tela acusava "não há dados" bem em cima dos R$ 576.700 /
+// R$ 329.577 / 57,15% de setembro, que estavam logo abaixo.
+// Agora a cobertura sai da UNIÃO das duas bases que alimentam a aba:
+//   NEGOCIACOES  — recuperado e contatos por mês (série mais longa)
+//   NEG_FAIXAS   — quebra por faixa de atraso
+// Qualquer mês novo importado entra sozinho, sem editar nada aqui.
+const MES_NEG_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+const MES_NEG_EXT = {1:'Janeiro',2:'Fevereiro',3:'Março',4:'Abril',5:'Maio',6:'Junho',
+                     7:'Julho',8:'Agosto',9:'Setembro',10:'Outubro',11:'Novembro',12:'Dezembro'};
+function _negMesParaNum(rot){            // 'Set/26' -> {ano:2026, mes:9}
+  const [m,a] = String(rot||'').split('/');
+  const n = MES_NEG_NUM[String(m).slice(0,3).toLowerCase()];
+  return n ? {ano: 2000 + parseInt(a,10), mes:n} : null;
+}
+function coberturaNegociacao(){
+  const meses = [];
+  if(typeof NEGOCIACOES !== 'undefined')
+    NEGOCIACOES.forEach(n=>{ if(n.valor != null){ const x=_negMesParaNum(n.mes); if(x) meses.push(x); } });
+  if(typeof NEG_FAIXAS !== 'undefined')
+    NEG_FAIXAS.forEach(f=>{ const x=_negMesParaNum(f.mes); if(x) meses.push(x); });
+  if(!meses.length) return null;
+  const ord = meses.map(x=>x.ano*12+x.mes);
+  const a = meses[ord.indexOf(Math.min.apply(null, ord))];
+  const b = meses[ord.indexOf(Math.max.apply(null, ord))];
+  const p = n => String(n).padStart(2,'0');
+  const ultimoDia = new Date(b.ano, b.mes, 0).getDate();
+  const rotulo = (a.ano===b.ano && a.mes===b.mes)
+    ? `${MES_NEG_EXT[a.mes]}/${a.ano}`
+    : (a.ano===b.ano ? `${MES_NEG_EXT[a.mes]} a ${MES_NEG_EXT[b.mes]}/${b.ano}`
+                     : `${MES_NEG_EXT[a.mes]}/${a.ano} a ${MES_NEG_EXT[b.mes]}/${b.ano}`);
+  return {ini:`${a.ano}-${p(a.mes)}-01`, fim:`${b.ano}-${p(b.mes)}-${p(ultimoDia)}`, rotulo};
+}
+// O recorte do filtro INTERSECTA a cobertura? Antes exigia-se que o intervalo
+// inteiro coubesse dentro dela (faixaContidaEm), e por isso um filtro Jan–Set,
+// que contém sete meses com dado, era tratado como "sem dado".
+function temDadoNegociacao(de, ate){
+  const c = coberturaNegociacao();
+  if(!c) return false;
+  return parseDataISO(de) <= parseDataISO(c.fim) && parseDataISO(ate) >= parseDataISO(c.ini);
+}
 
 // Retenção tem histórico próprio mais longo (Jan, Fev, Mar, Mai, Jun, Jul — Abril não foi preenchido
 // na planilha da Cíntia), independente da cobertura de Fluxo de Caixa/Vendas (que só tem Jun/Jul)
@@ -7274,7 +7354,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Convênio OAB', qtd:1},
       {nome:'Plano Single', qtd:1},
     ],
-    alerta: '<b>Mês em andamento — posição de 26/09.</b> <b>54 associações novas</b> somando <b>R$ 25.497,00</b>, ticket médio de <b>R$ 472,17</b>. <b style=\"color:var(--green);\">A meta de 52 já foi superada (104%)</b> e o desafio de 60 está em 90% com o mês ainda aberto. <b>Helena e Nicole empatam em 27 vendas cada</b> — R$ 12.553,00 e R$ 12.944,00 —, e as duas respondem por 100% do mês: Claudia e Sabrina não registram vendas em setembro. O canal combinado <b>Campanha + Tour soma 14</b>, à frente de Tour (11) e Campanha (11); <b>Contribuinte Familiar concentra 26 das 54</b>. Somando os <b>97 reingressos do fechamento de setembro</b>, vendas + reingressos chegam a <b>151</b> e a R$ 76.913,34 de taxa total. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> 4 dos 54 registros ainda estão sem valor e sem detalhamento na planilha (entram como aguardando registro, com valor zero). A <b>meta de reingresso de setembro é 50</b>, informada na peça de fechamento da Secretaria Administrativa, e foi superada com 97 reingressos. <b style=\"color:var(--gold);\">Mudança de medida:</b> a planilha passou a separar "Adesão" de "Valor Contribuição". A série do painel (inclusive os R$ 28.655,50 de agosto) é a de <b>Valor Contribuição</b> — conferida linha a linha nas 66 linhas de agosto, com zero divergências. A nova coluna "Adesão" somaria R$ 30.603,73 em setembro e R$ 30.127,50 em agosto, e não foi incorporada.',
+    alerta: '<b>Posição parcial de 26/09.</b> <b style=\"color:var(--gold);\">Setembro já encerrou</b> e a base corrigida do fechamento de Vendas ainda não foi recebida — os números abaixo são os da posição de 26/09, não o fechamento do mês. <b>54 associações novas</b> somando <b>R$ 25.497,00</b>, ticket médio de <b>R$ 472,17</b>. <b style=\"color:var(--green);\">A meta de 52 já foi superada (104%)</b> e o desafio de 60 está em 90% nessa posição. <b>Helena e Nicole empatam em 27 vendas cada</b> — R$ 12.553,00 e R$ 12.944,00 —, e as duas respondem por 100% do mês: Claudia e Sabrina não registram vendas em setembro. O canal combinado <b>Campanha + Tour soma 14</b>, à frente de Tour (11) e Campanha (11); <b>Contribuinte Familiar concentra 26 das 54</b>. Somando os <b>97 reingressos do fechamento de setembro</b>, vendas + reingressos chegam a <b>151</b> e a R$ 76.913,34 de taxa total. <b style=\"color:var(--gold);\">Duas ressalvas de origem:</b> 4 dos 54 registros ainda estão sem valor e sem detalhamento na planilha (entram como aguardando registro, com valor zero). A <b>meta de reingresso de setembro é 50</b>, informada na peça de fechamento da Secretaria Administrativa, e foi superada com 97 reingressos. <b style=\"color:var(--gold);\">Mudança de medida:</b> a planilha passou a separar "Adesão" de "Valor Contribuição". A série do painel (inclusive os R$ 28.655,50 de agosto) é a de <b>Valor Contribuição</b> — conferida linha a linha nas 66 linhas de agosto, com zero divergências. A nova coluna "Adesão" somaria R$ 30.603,73 em setembro e R$ 30.127,50 em agosto, e não foi incorporada.',
     metas:{
       // orcado 52 e desafio 60 vem do topo da propria aba Setembro da planilha.
       // A meta de REINGRESSO nunca veio na planilha — em jul/ago ela foi
@@ -7657,8 +7737,8 @@ function aplicarFiltroMes(){
   // Patrocínio: cobertura própria (Jan-Mai/26), mesma sistemática de agregação
   renderPatrocinioPeriodo(mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_PATROCINIO));
 
-  // Negociação: cobertura própria (Mar-Jun/26)
-  renderNegociacaoResumo(faixaContidaEm(de, ate, COBERTURA_NEGOCIACAO.ini, COBERTURA_NEGOCIACAO.fim) ? mesKey : 'sem-dado', de, ate);
+  // Negociação: cobertura própria, derivada das bases (ver coberturaNegociacao)
+  renderNegociacaoResumo(temDadoNegociacao(de, ate) ? mesKey : 'sem-dado', de, ate);
   // Gráfico responde ao filtro; acumulado do ano sempre soma desde março até o mês visível
   const negIdx = negMesesNoIntervalo(de, ate);
   drawNegInadInteractive('negChartFull', 'negLegendaNeg', 'negSerieDetalhe', negIdx);
@@ -15936,6 +16016,21 @@ function todosContratosLocacao(){
 }
 function fmtDataBR(iso){ const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 
+// Cobertura de Locações lida dos PRÓPRIOS contratos. Antes, o aviso de ausência
+// trazia "Junho/2026 e Julho/2026 (parcial)" cravado no texto — coincidia com a
+// base hoje, mas passaria a informar errado na primeira carga de agosto.
+function coberturaLocacoes(){
+  const isos = todosContratosLocacao().map(c=>contratoDataISO(c.dataPgto)).filter(Boolean).sort();
+  if(!isos.length) return null;
+  const EXT={1:'Janeiro',2:'Fevereiro',3:'Março',4:'Abril',5:'Maio',6:'Junho',
+             7:'Julho',8:'Agosto',9:'Setembro',10:'Outubro',11:'Novembro',12:'Dezembro'};
+  const ks=[...new Set(isos.map(i=>i.slice(0,7)))];
+  const nome=k=>EXT[+k.slice(5,7)]+'/'+k.slice(0,4);
+  const meses = ks.length===1 ? nome(ks[0])
+    : ks.slice(0,-1).map(nome).join(', ')+' e '+nome(ks[ks.length-1]);
+  return {meses, ini:isos[0], fim:isos[isos.length-1], qtd:isos.length};
+}
+
 function renderLocacoesPeriodo(mesKey, de, ate){
   const el = document.getElementById('locacoesConteudo');
   const todos = todosContratosLocacao();
@@ -15962,7 +16057,7 @@ function renderLocacoesPeriodo(mesKey, de, ate){
 
   if(!contratos.length){
     document.getElementById('locacoesPeriodoTag').textContent = 'sem dados no período';
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há contratos de locação no período selecionado.</b> Temos registros de Junho/2026 e Julho/2026 (parcial).</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há contratos de locação no período selecionado.</b> ${(()=>{const c=coberturaLocacoes(); return c ? `Temos ${c.qtd} contratos registrados em <b>${c.meses}</b>, de ${fmtDataBR(c.ini)} a ${fmtDataBR(c.fim)}.` : 'Não há contratos de locação registrados em nenhum período.';})()}</div></div>`;
     return;
   }
 
@@ -16395,7 +16490,7 @@ const DESLIGAMENTOS_MESES = {
     // nas duas versoes da planilha. O resto do mes nao mudou.
     quadroSocial:50,
     negociacoesDesligados:'R$ 0,00', negociacoesRetencoes:28,
-    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Mês em andamento</b> — posição 24/08. <b>60 solicitações</b>, com 37 desligamentos, 13 retidos (10 retenções + 3 licenças) e <b style=\"color:var(--gold);\">10 já programados</b> — pedidos com data futura marcada, que ainda não saíram do quadro. Houve 28 negociações com os retidos. <b>Financeiro é o motivo dominante (14 de 37, 37,8%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 37 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura nesta aba. <b style=\"color:var(--green);\">O quadro-resumo agora fecha em todos os pontos</b> e as 10 retenções declaradas aqui batem com as 10 da planilha de Retenção — as duas fontes convergiram.',
+    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Posição parcial de 24/08</b> — a competência de agosto já encerrou e esta base não recebeu o fechamento do mês. <b>60 solicitações</b>, com 37 desligamentos, 13 retidos (10 retenções + 3 licenças) e <b style=\"color:var(--gold);\">10 já programados</b> — pedidos com data futura marcada, que ainda não saíram do quadro. Houve 28 negociações com os retidos. <b>Financeiro é o motivo dominante (14 de 37, 37,8%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 37 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura nesta aba. <b style=\"color:var(--green);\">O quadro-resumo agora fecha em todos os pontos</b> e as 10 retenções declaradas aqui batem com as 10 da planilha de Retenção — as duas fontes convergiram.',
 
   },
   set2026: {
@@ -16425,7 +16520,7 @@ const DESLIGAMENTOS_MESES = {
     desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:18},
     quadroSocial: 26,
     negociacoesDesligados: 'R$ 0,00',
-    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Mês em andamento, posição de 28/09.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Posição parcial de 28/09 — setembro já encerrou e esta base não recebeu o fechamento do mês.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
     periodoTag:'Outubro/2026 (parcial · posição de 01/10)',
@@ -20202,7 +20297,7 @@ function renderFunilVendas(de, ate){
     : VENDAS_FUNIL_DIARIO;
 
   if(!dias.length){
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> Temos registros diários de 03 a 31/07/2026.</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> ${(()=>{const ds=VENDAS_FUNIL_DIARIO.map(d=>d.data).filter(Boolean).sort(); return ds.length ? `Temos <b>${ds.length} dias</b> de registro, de ${fmtDataBR(ds[0])} a ${fmtDataBR(ds[ds.length-1])}.` : 'Não há registro diário do funil em nenhum período.';})()}</div></div>`;
     return;
   }
 
