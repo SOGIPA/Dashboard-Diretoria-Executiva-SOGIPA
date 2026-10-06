@@ -2870,8 +2870,24 @@ const REINGRESSO_HISTORICO = [
       {nome:'Promoção aniversário', qtd:5, cor:'#00e5a0'},
       {nome:'Lista de excluídos', qtd:2, cor:'#f2b705'},
     ],
+    // Distribuicao por CATEGORIA DE ASSOCIADO, recebida em 06/10. Substitui o
+    // provisorio "Categoria a informar", que existia so para o grafico fechar
+    // enquanto a Secretaria nao tinha a abertura. As nove categorias somam 97,
+    // exatamente o total de reingressos do mes: 97 de 97 com categoria
+    // informada, 100% de cobertura. Nenhum total foi ajustado para fechar.
+    // Categoria do associado e campanha de origem sao dimensoes DIFERENTES: a
+    // quebra por campanha acima nao foi tocada nem reclassificada.
+    // Os percentuais nao sao digitados — saem de qtd/total no render.
     categorias:[
-      {nome:'Categoria a informar', qtd:97, cor:'#4a4c68'},
+      {nome:'Contribuinte', qtd:41, cor:'#3d7bff'},
+      {nome:'Patrimonial', qtd:27, cor:'#00e5a0'},
+      {nome:'Contribuinte Individual', qtd:10, cor:'#a855f7'},
+      {nome:'Patrimonial Individual', qtd:7, cor:'#f2b705'},
+      {nome:'Veterano Contribuinte', qtd:5, cor:'#06b6d4'},
+      {nome:'Contribuinte Sênior', qtd:3, cor:'#fb923c'},
+      {nome:'Contribuinte Individual Derivado', qtd:2, cor:'#e8192c'},
+      {nome:'Contribuinte Derivado', qtd:1, cor:'#b0b0d0'},
+      {nome:'Contribuinte Universitário', qtd:1, cor:'#5a5c78'},
     ],
     alerta: '<b style=\"color:var(--green);\">Setembro fechado — 97 reingressos e R$ 51.416,34</b>, contra 54 e R$ 30.881,49 na posição de 28/09. <b style=\"color:var(--green);\">Meta de 50 batida com 194%</b> — 97 realizados. É o <b>maior volume do ano</b>, acima de agosto (68) e de janeiro (75). Ticket médio de R$ 530,07, abaixo dos R$ 548,96 de agosto e dos R$ 571,88 da posição parcial: o fechamento trouxe volume com valor menor por reingresso. <b>Taxa reduzida (45) e RBN (39) respondem por 84 dos 97</b>, com benefício patrimonial (6), promoção aniversário (5) e lista de excluídos (2) completando o mês. <b style=\"color:var(--gold);\">Ajustado em 01/10:</b> a peça de fechamento trazia 96 reingressos e 44 na Taxa reduzida; a Secretaria Administrativa registrou acréscimo na campanha depois dela e o total validado do mês é <b>97</b>, com 45 na Taxa reduzida. <b style=\"color:var(--gold);\">Ressalva de origem:</b> a peça traz a quantidade por campanha, mas <b>não informa o valor financeiro de cada uma</b>, e o valor do mês <b>não acompanhou esse acréscimo</b> — por isso os R$ 51.416,34 seguem como o total informado, sem rateio nem ticket por campanha. A abertura por categoria também não veio.'},
 ];
@@ -4998,14 +5014,13 @@ function renderReingressoMeses(meses){
       <div class="card"><div class="card-label">Distribuição</div><div id="reingressoDonut" class="donut-wrap"></div></div>
     </div>`;
   }
-  // ── Bloco "Por Categoria de Sócio" — OCULTO em 02/10/2026 ────────────────
-  // A fonte ainda manda tudo como "Categoria a informar", então a faixa só
-  // mostrava 100% numa categoria que não é categoria nenhuma. Está apenas
-  // OCULTA: os dados em REINGRESSO_HISTORICO[].categorias, o cálculo e todo o
-  // markup abaixo continuam intactos. Para reativar quando a Secretaria mandar
-  // as categorias reais, basta trocar esta constante para true — nada mais.
-  // Com a flag em false nada é acrescentado ao html, então não sobra espaço.
-  const MOSTRAR_CATEGORIA_REINGRESSO = false;
+  // ── Bloco "Por Categoria de Sócio" — REATIVADO em 06/10/2026 ─────────────
+  // Ficou oculto de 02/10 a 06/10 porque a fonte mandava tudo como "Categoria a
+  // informar" e a faixa mostrava 100% numa categoria que nao era categoria
+  // nenhuma. Com a abertura oficial de setembro (9 categorias somando 97) o
+  // bloco volta: mesma estrutura, mesmo markup, nada duplicado.
+  // A flag fica, para o caso de uma competencia futura chegar sem abertura.
+  const MOSTRAR_CATEGORIA_REINGRESSO = true;
   if(r.categorias && MOSTRAR_CATEGORIA_REINGRESSO){
     const totCat = r.categorias.reduce((s,c)=>s+c.qtd,0);
     const linhasCat = r.categorias.map(c=>`
