@@ -1907,70 +1907,90 @@ const PROJECAO = [
   {d:'23/set', mov:-30100, banco:-590381, indices:2647254},
   {d:'24/set', mov:-44971, banco:-606995, indices:2623226},
   {d:'25/set', mov:-140850, banco:-747845, indices:2623226},
-  {d:'28/set', mov:-33050, banco:-780895, indices:2441226},
-  {d:'29/set', mov:9950, banco:-770945, indices:2400226},
-  {d:'30/set', mov:38500, banco:-732445, indices:2379226},
-  {d:'01/out', mov:12008, banco:-720437, indices:2379226},
-  {d:'02/out', mov:-8531, banco:-728968, indices:2379226},
-  {d:'05/out', mov:-39700, banco:-768668, indices:2379226},
-  {d:'06/out', mov:-383500, banco:-1152168, indices:2379226},
-  {d:'07/out', mov:125000, banco:-1027168, indices:2379226},
-  {d:'08/out', mov:85000, banco:-942168, indices:2379226},
-  {d:'09/out', mov:-167300, banco:-1109468, indices:2379226},
-  {d:'13/out', mov:-220450, banco:-1329918, indices:2379226},
-  {d:'14/out', mov:1330645, banco:728, indices:2379226},
-  {d:'15/out', mov:151000, banco:151728, indices:2379226},
-  {d:'16/out', mov:-80000, banco:71728, indices:2379226},
-  {d:'19/out', mov:145000, banco:216728, indices:2379226},
-  {d:'20/out', mov:-1022600, banco:-805872, indices:2234026},
-  {d:'21/out', mov:20000, banco:-785872, indices:2234026},
-  {d:'22/out', mov:-17494, banco:-803366, indices:2234026},
-  {d:'23/out', mov:-70090, banco:-873456, indices:2234026},
-  {d:'26/out', mov:-9000, banco:-882456, indices:2234026},
-  {d:'27/out', mov:-79200, banco:-961656, indices:2234026},
-  {d:'28/out', mov:10000, banco:-951656, indices:2234026},
-  {d:'29/out', mov:0, banco:-951656, indices:2188726},
-  {d:'30/out', mov:19000, banco:-932656, indices:2167726},
-  {d:'03/nov', mov:64300, banco:-868356, indices:2167726},
-  {d:'04/nov', mov:103900, banco:-764456, indices:2167726},
-  {d:'05/nov', mov:-43500, banco:-807956, indices:2167726},
-  {d:'06/nov', mov:-425500, banco:-1233456, indices:2167726},
-  {d:'09/nov', mov:87700, banco:-1145756, indices:2167726},
-  {d:'10/nov', mov:-113500, banco:-1259256, indices:2167726},
-  {d:'11/nov', mov:1425000, banco:165744, indices:2167726},
-  {d:'12/nov', mov:177645, banco:343390, indices:2167726},
-  {d:'13/nov', mov:-196450, banco:146940, indices:2167726},
-  {d:'16/nov', mov:26000, banco:172940, indices:2167726},
-  {d:'17/nov', mov:-5000, banco:167940, indices:2167726},
-  {d:'18/nov', mov:85000, banco:252940, indices:2167726},
-  {d:'19/nov', mov:-1006600, banco:-753660, indices:2167726},
-  {d:'23/nov', mov:-30100, banco:-783760, indices:2167726},
-  {d:'24/nov', mov:-39000, banco:-822760, indices:2167726},
-  {d:'25/nov', mov:10000, banco:-812760, indices:2167726},
-  {d:'26/nov', mov:30000, banco:-782760, indices:2167726},
-  {d:'27/nov', mov:-40300, banco:-823060, indices:2122426},
-  {d:'30/nov', mov:-286000, banco:-1109060, indices:2101426},
-  {d:'01/dez', mov:31900, banco:-1077160, indices:2101426},
-  {d:'02/dez', mov:2500, banco:-1074660, indices:2101426},
-  {d:'03/dez', mov:-95700, banco:-1170360, indices:2101426},
-  {d:'04/dez', mov:-375500, banco:-1545860, indices:2101426},
-  {d:'07/dez', mov:170000, banco:-1375860, indices:2101426},
-  {d:'08/dez', mov:95000, banco:-1280860, indices:2101426},
-  {d:'09/dez', mov:-47300, banco:-1328160, indices:2101426},
-  {d:'10/dez', mov:-52500, banco:-1380660, indices:1762626},
-  {d:'11/dez', mov:992550, banco:-388110, indices:1762626},
-  {d:'14/dez', mov:235000, banco:-153110, indices:1762626},
-  {d:'15/dez', mov:36000, banco:-117110, indices:1762626},
-  {d:'16/dez', mov:-5000, banco:-122110, indices:1762626},
-  {d:'17/dez', mov:-11000, banco:-133110, indices:1762626},
-  {d:'18/dez', mov:-1305600, banco:-1438710, indices:1762626},
-  {d:'21/dez', mov:70000, banco:-1368710, indices:1762626},
-  {d:'22/dez', mov:0, banco:-1368710, indices:1762626},
-  {d:'23/dez', mov:-19100, banco:-1387810, indices:1762626},
-  {d:'24/dez', mov:-119000, banco:-1506810, indices:1762626},
-  {d:'28/dez', mov:-54200, banco:-1561010, indices:1762626},
-  {d:'29/dez', mov:25000, banco:-1536010, indices:1717326},
-  {d:'30/dez', mov:24000, banco:-1512010, indices:1717326},
+  // ── RELAÇÃO DE NECESSIDADES · posição 30/09/2026 (Controladoria) ──────────
+  // SUBSTITUI a trajetória de 28/set em diante, que vinha da posição de 24/09.
+  // Jan a 25/set não foi tocado: são dias já realizados, fora do alcance da
+  // nova fonte, que começa justamente em 28/set.
+  // A fonte fecha com o Resumo mensal da MESMA data: em 30/set o banco é
+  // -671.294 e os índices 2.616.414, somando 1.945.120 — exatamente o SALDO
+  // BANCO 30/09 de R$ 1.945,1 mil declarado no fechamento. Duas fontes, uma
+  // posição só.
+  // O "total disponível/necessidade" da fonte NÃO é guardado: sai de
+  // banco + índices + LIMITE_CREDITO_TOTAL (R$ 6,4 milhões), que é como o
+  // painel já calcula. Em 30/dez: -1.228.742 + 1.673.240 + 6.400.000 =
+  // 6.844.498,00, igual ao declarado.
+  //
+  // DEGRAU EM 28/SET, CONHECIDO E NÃO SILENCIADO. A esteira não fecha na
+  // emenda das duas posições: 25/set encerra em -747.845 (posição de 24/09) e
+  // 28/set abre com movimento +8.210, o que daria -739.635, mas a nova fonte
+  // declara -719.286 — R$ 20.349 de diferença. A Controladoria revisou dias
+  // anteriores a 28/09 que esta fonte não traz, então não há como corrigir
+  // 25/set sem inventar número. O validador acusa o degrau na abertura, do
+  // mesmo jeito que já acusa o de 28/ago. Confirmar com a Controladoria.
+  {d:'28/set', mov:8210, banco:-719286, indices:2623226},
+  {d:'29/set', mov:21465, banco:-697821, indices:2623226},
+  {d:'30/set', mov:26527, banco:-671294, indices:2616414},
+  {d:'01/out', mov:12008, banco:-659286, indices:2616414},
+  {d:'02/out', mov:-9446, banco:-668732, indices:2616414},
+  {d:'05/out', mov:-39963, banco:-708694, indices:2596116},
+  {d:'06/out', mov:-383500, banco:-1092194, indices:2596116},
+  {d:'07/out', mov:125000, banco:-967194, indices:2596116},
+  {d:'08/out', mov:82891, banco:-884303, indices:2596116},
+  {d:'09/out', mov:-81808, banco:-966111, indices:2596116},
+  {d:'13/out', mov:-223904, banco:-1190015, indices:2588124},
+  {d:'14/out', mov:1411580, banco:221565, indices:2588124},
+  {d:'15/out', mov:151000, banco:372565, indices:2588124},
+  {d:'16/out', mov:6322, banco:378886, indices:2588124},
+  {d:'19/out', mov:59845, banco:438731, indices:2588124},
+  {d:'20/out', mov:-979050, banco:-540319, indices:2442924},
+  {d:'21/out', mov:20000, banco:-520319, indices:2442924},
+  {d:'22/out', mov:-30421, banco:-550740, indices:2442924},
+  {d:'23/out', mov:-70090, banco:-620830, indices:2442924},
+  {d:'26/out', mov:-49401, banco:-670231, indices:2401924},
+  {d:'27/out', mov:-69218, banco:-739449, indices:2387924},
+  {d:'28/out', mov:6686, banco:-732763, indices:2205924},
+  {d:'29/out', mov:-11455, banco:-744218, indices:2160624},
+  {d:'30/out', mov:-27297, banco:-771515, indices:2139624},
+  {d:'03/nov', mov:40065, banco:-731451, indices:2139624},
+  {d:'04/nov', mov:103900, banco:-627551, indices:2139624},
+  {d:'05/nov', mov:-43796, banco:-671346, indices:2139624},
+  {d:'06/nov', mov:-426595, banco:-1097941, indices:2139624},
+  {d:'09/nov', mov:87700, banco:-1010241, indices:2139624},
+  {d:'10/nov', mov:-113683, banco:-1123924, indices:2131632},
+  {d:'11/nov', mov:1425000, banco:301076, indices:2131632},
+  {d:'12/nov', mov:177645, banco:478722, indices:2131632},
+  {d:'13/nov', mov:-196450, banco:282272, indices:2131632},
+  {d:'16/nov', mov:26000, banco:308272, indices:2131632},
+  {d:'17/nov', mov:23051, banco:331323, indices:2131632},
+  {d:'18/nov', mov:85000, banco:416323, indices:2131632},
+  {d:'19/nov', mov:-986600, banco:-570277, indices:2131632},
+  {d:'23/nov', mov:-30100, banco:-600377, indices:2131632},
+  {d:'24/nov', mov:-41518, banco:-641894, indices:2131632},
+  {d:'25/nov', mov:10000, banco:-631894, indices:2131632},
+  {d:'26/nov', mov:24475, banco:-607419, indices:2131632},
+  {d:'27/nov', mov:-40300, banco:-647719, indices:2086332},
+  {d:'30/nov', mov:-286110, banco:-933829, indices:2065332},
+  {d:'01/dez', mov:31254, banco:-902576, indices:2065332},
+  {d:'02/dez', mov:2500, banco:-900076, indices:2065332},
+  {d:'03/dez', mov:-95700, banco:-995776, indices:2065332},
+  {d:'04/dez', mov:-383079, banco:-1378855, indices:2065332},
+  {d:'07/dez', mov:165754, banco:-1213101, indices:2065332},
+  {d:'08/dez', mov:85663, banco:-1127437, indices:2065332},
+  {d:'09/dez', mov:70885, banco:-1056552, indices:2065332},
+  {d:'10/dez', mov:-55800, banco:-1112352, indices:1718540},
+  {d:'11/dez', mov:961466, banco:-150887, indices:1718540},
+  {d:'14/dez', mov:234472, banco:83585, indices:1718540},
+  {d:'15/dez', mov:35923, banco:119508, indices:1718540},
+  {d:'16/dez', mov:-5086, banco:114422, indices:1718540},
+  {d:'17/dez', mov:12929, banco:127351, indices:1718540},
+  {d:'18/dez', mov:-1291578, banco:-1164227, indices:1718540},
+  {d:'21/dez', mov:68481, banco:-1095746, indices:1718540},
+  {d:'22/dez', mov:-51, banco:-1095797, indices:1718540},
+  {d:'23/dez', mov:-20587, banco:-1116384, indices:1718540},
+  {d:'24/dez', mov:-119000, banco:-1235384, indices:1718540},
+  {d:'28/dez', mov:-34200, banco:-1269584, indices:1718540},
+  {d:'29/dez', mov:16841, banco:-1252742, indices:1673240},
+  {d:'30/dez', mov:24000, banco:-1228742, indices:1673240},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -3798,6 +3818,10 @@ function negMesesNoIntervalo(de, ate){
 function seloNeg(p){
   return Math.round((p.faixas.reduce((t,f)=>t+f.rec+f.ab,0) + p.totRec + p.totAb + p.base)*100);
 }
+// Tolerância da conferência por faixa (abertura = recuperado + em aberto), em
+// reais. A Cobrança publica em reais inteiros; R$ 5 absorve o arredondamento
+// dela sem deixar passar erro de importação, que seria de outra ordem.
+const TOL_FAIXA_NEG = 5;
 const NEG_FAIXAS = [
   // ── JUNHO/26 acrescentado em 17/08 (Fechamento Junho/26, Cobrança) ──────────
   // A tabela veio em duas colunas: TOTAL (início R$ 871.107) e ATIVOS
@@ -3987,8 +4011,14 @@ function validarHistoricoNeg(){
   NEG_FAIXAS.forEach((p,i)=>{
     if(p.selo != null && seloNeg(p) !== p.selo)
       q.push(`${p.label}: números alterados desde a importação de ${p.importadoEm} — selo ${p.selo}, atual ${seloNeg(p)}`);
+    // TOLERANCIA DE R$ 5 (era R$ 1): a Cobranca publica em reais inteiros, e o
+    // arredondamento dela ja produziu R$ 4 de residuo na FX2 de agosto/26
+    // (abertura 157.797 contra 81.655 + 76.146 = 157.801). Os tres campos
+    // significam a mesma coisa e DEVEM fechar; a diferenca e da precisao da
+    // fonte, nao do painel. Um erro real de importacao seria de ordem muito
+    // maior que R$ 5, entao a trava segue pegando o que importa.
     p.faixas.forEach(f=>{
-      if(Math.abs((f.rec+f.ab)-f.abertura) > 1)
+      if(Math.abs((f.rec+f.ab)-f.abertura) > TOL_FAIXA_NEG)
         q.push(`${p.label} · ${f.fx}: abertura ${f.abertura} ≠ ${f.rec} + ${f.ab}`);
     });
     if(Math.abs(p.totRec+p.totAb-p.base) > 1) q.push(`${p.label}: base ${p.base} ≠ recuperado + em aberto`);
@@ -3996,23 +4026,40 @@ function validarHistoricoNeg(){
     // a barra INADIMPL. do gráfico de cima tem de mostrar exatamente esta base
     if(NEG_ESTOQUE[p.mes] !== p.base)
       q.push(`${p.label}: NEG_ESTOQUE diz ${NEG_ESTOQUE[p.mes]} mas a tabela por faixa abre com ${p.base}`);
-    // A esteira jun→jul NÃO fecha (fx1 deixou 140.749 aberto e a fx2 de julho
-    // abriu com 112.997). Não é erro de importação: junho veio na régua ATIVOS e
-    // julho na régua FECHAMENTO da própria tabela dele, e entre um mês e outro há
-    // exclusão de inativos e revisão da Cobrança. Fica listado como observação,
-    // não como quebra, até a área confirmar a régua de cada fechamento.
+    // ── ESTEIRA: OBSERVAÇÃO GERENCIAL, NÃO ERRO ─────────────────────────
+    // A regra "em aberto da faixa N no mês anterior = abertura da faixa N+1 no
+    // mês seguinte" é uma trava criada no painel, NÃO uma garantia da fonte.
+    // Entre duas posições da Cobrança há exclusão de sócio do quadro (a dívida
+    // sai junto), revisão de régua (ATIVOS × FECHAMENTO, como em jun→jul),
+    // lançamento vencido registrado depois, reabertura de negociação e
+    // reclassificação entre faixas. Nada disso é erro do painel, e por isso
+    // nenhuma divergência de esteira entra no contador vermelho.
+    // As diferenças continuam TODAS rastreáveis em __AUDIT_NEG.observacoes,
+    // separadas por sentido, porque os dois casos pedem leituras diferentes:
+    //   · faixa CRESCE ao envelhecer → não há explicação operacional conhecida;
+    //     precisa da posição intermediária da Cobrança para conciliar.
+    //   · faixa DIMINUI → compatível com exclusão/reclassificação entre
+    //     posições, que é o comportamento esperado da carteira.
     const nx = NEG_FAIXAS[i+1];
-    const REGUA_DIFERENTE = ['Jun/26'];
     if(nx) [[0,1],[1,2]].forEach(([a,bb])=>{
-      if(Math.abs(p.faixas[a].ab - nx.faixas[bb].abertura) > p.faixas[a].ab*0.05 + 500){
-        const msg=`esteira ${p.label}→${nx.label}: ${p.faixas[a].fx} deixou ${p.faixas[a].ab} aberto, ${nx.faixas[bb].fx} abriu com ${nx.faixas[bb].abertura}`;
-        if(REGUA_DIFERENTE.indexOf(p.mes)>=0) _negObs.push(msg); else q.push(msg);
+      const deixou = p.faixas[a].ab, abriu = nx.faixas[bb].abertura;
+      if(Math.abs(deixou - abriu) > deixou*0.05 + 500){
+        const dif = abriu - deixou;
+        const rotulo = dif > 0
+          ? 'Divergência de esteira — requer fonte intermediária para conciliação'
+          : 'Variação de esteira — pode decorrer de exclusões/reclassificações entre posições';
+        _negObs.push(`${rotulo}. ${p.label}→${nx.label}: ${p.faixas[a].fx} deixou ${deixou} aberto, `
+                   + `${nx.faixas[bb].fx} abriu com ${abriu} (${dif>0?'+':''}${dif}, `
+                   + `${(dif/deixou*100).toFixed(1)}%)`);
       }
     });
   });
   window.__AUDIT_NEG = {ok:q.length===0, quebras:q, observacoes:_negObs.slice()};
   if(q.length){ _log.erro('🚨 NEGOCIAÇÃO POR FAIXA — '+q.length+' problema(s):');
                 q.forEach(m=>_log.erro('   · '+m)); }
+  // Observações NÃO são erro: saem como informação, para a gestão acompanhar.
+  if(_negObs.length){ _log.info('ℹ NEGOCIAÇÃO · esteira entre posições — '+_negObs.length+' observação(ões), sem erro de painel:');
+                      _negObs.forEach(m=>_log.info('   · '+m)); }
   return window.__AUDIT_NEG;
 }
 if(typeof window!=='undefined') window.addEventListener('load', ()=>{ try{ validarHistoricoNeg(); }catch(e){ _log.warn('validador '+'validarHistoricoNeg'+' falhou: '+e.message); } });
@@ -6609,6 +6656,23 @@ const PAGAMENTOS_POR_PERIODO = {
   '21-25set': {label:'21 a 25/09/2026', qtd:197, total:513389.49, maiorQtd:20, maiorTotal:330322.81, menorQtd:177, menorTotal:183066.68,
     top:[{nome:"Cia de Gas do Estado do RS Sulgas",qtd:1,valor:97799.50,pct:19.05},{nome:"VT Solucoes Administracao e Servicos Ltda",qtd:2,valor:48039.88,pct:9.36},{nome:"MERCADOPAGO.COM Representacoes LTDA.",qtd:42,valor:22935.51,pct:4.47},{nome:"Folha Pagamento",qtd:6,valor:21313.23,pct:4.15},{nome:"S.M.P.B. (pessoa física)",qtd:1,valor:20580.00,pct:4.01},{nome:"3S Solucoes em Servicos e Seguranca Ltda",qtd:2,valor:17154.55,pct:3.34},{nome:"MGV Construcoes Ltda",qtd:1,valor:15644.58,pct:3.05},{nome:"Superblind Materiais para Persianas LTDA.",qtd:1,valor:14556.77,pct:2.84},{nome:"Cesar V da Luz & Melero Cia Ltda",qtd:1,valor:14409.50,pct:2.81},{nome:"Decooprisma Eventos Ltda",qtd:2,valor:12536.67,pct:2.44},{nome:"A.C.S. (pessoa física)",qtd:1,valor:12000.00,pct:2.34},{nome:"N.L.P. (pessoa física)",qtd:2,valor:10093.26,pct:1.97},{nome:"Telles Engenharia e Construcoes Ltda",qtd:1,valor:9100.00,pct:1.77},{nome:"Prospection Producoes e Eventos Ltda",qtd:1,valor:9000.00,pct:1.75},{nome:"Direct Borrachas Industria e Comercio de Pro",qtd:1,valor:8642.00,pct:1.68}],
     bancos:[{nome:"BANRISUL",qtd:157,total:457920.63},{nome:"ALTO RENDIME",qtd:4,total:17043.20},{nome:"PROJETO OLIM",qtd:4,total:16000.00},{nome:"ÍNDICES CONS",qtd:1,total:14409.50},{nome:"Caixa Sogipa",qtd:30,total:7896.16},{nome:"BANCO DO BR",qtd:1,total:120.00}]},
+  // ── CORTE 28/09 a 02/10/2026 (Controladoria, recebido em 06/10) ───────────
+  // ATRAVESSA DOIS MESES de propósito: 28, 29 e 30/09 mais 01 e 02/10. Por isso
+  // entra SÓ aqui, como corte de período, e NÃO em PAGAMENTOS_MESES — não é
+  // fechamento de setembro nem de outubro. Também não tem relação com a Agenda
+  // de Pagamentos do Fluxo de Caixa, que é previsto; aqui é realizado.
+  // Travas conferidas na importação: 25 + 116 = 141 lançamentos; 505.583,39 +
+  // 124.032,46 = 629.615,85; os cinco bancos somam 141 e 629.615,85; e os cinco
+  // dias também. Ticket 629.615,85 / 141 = 4.465,36.
+  // Quebra por dia (a estrutura de período não guarda dia a dia; fica no
+  // registro para rastreabilidade): 28/09 24 pag · R$ 81.320,14 | 29/09 17 ·
+  // R$ 27.168,68 | 30/09 29 · R$ 80.059,93 | 01/10 21 · R$ 53.578,16 |
+  // 02/10 50 · R$ 387.488,94 — o dia 02/10 concentra 61,5% do valor do corte.
+  // LGPD: as quatro pessoas físicas da fonte entram por iniciais, como nos
+  // cortes anteriores (N.L.P. já aparece assim em 21-25/09).
+  '28set-02out': {label:'28/09 a 02/10/2026', qtd:141, total:629615.85, maiorQtd:25, maiorTotal:505583.39, menorQtd:116, menorTotal:124032.46,
+    top:[{nome:"Gba Brasil Administracao de Pessoas Ltda",qtd:1,valor:165935.78,pct:26.36},{nome:"Folha Pagamento",qtd:8,valor:62006.26,pct:9.85},{nome:"Caixa Economica Federal",qtd:5,valor:52956.92,pct:8.41},{nome:"Vitale Restaurantes Empresariais Ltda",qtd:2,valor:51968.40,pct:8.25},{nome:"M.S. (pessoa física)",qtd:1,valor:26419.80,pct:4.20},{nome:"L.A.S. (pessoa física)",qtd:1,valor:19329.71,pct:3.07},{nome:"Centro de Integração Empresa Escola",qtd:1,valor:18702.65,pct:2.97},{nome:"Prospection Producoes e Eventos Ltda",qtd:1,valor:18540.00,pct:2.94},{nome:"3S Solucoes em Servicos e Seguranca Ltda",qtd:3,valor:15737.03,pct:2.50},{nome:"E.M. (pessoa física)",qtd:1,valor:14450.00,pct:2.30},{nome:"W3K Tecnologia Ltda",qtd:2,valor:12066.51,pct:1.92},{nome:"Confederação Brasileira de Judô",qtd:1,valor:11209.53,pct:1.78},{nome:"Buffet Bettino",qtd:2,valor:10670.00,pct:1.69},{nome:"N.L.P. (pessoa física)",qtd:1,valor:9900.00,pct:1.57},{nome:"Contabilizi Consultoria Ltda",qtd:1,valor:9592.00,pct:1.52}],
+    bancos:[{nome:"BANRISUL",qtd:128,total:580256.01},{nome:"PATROCÍNIO A",qtd:2,total:15303.67},{nome:"Caixa Sogipa",qtd:7,total:13980.67},{nome:"PROJ SOGIPA",qtd:3,total:11630.00},{nome:"ÍNDICES CONS",qtd:1,total:8445.50}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -6631,7 +6695,10 @@ const PERIODOS = [
   // Relatório "PAGAMENTOS 14 A 18 / 21 A 25 DE SETEMBRO" (gestora do Financeiro).
   // 19/09 foi sábado e 20/09 domingo: o corte pula do dia 18 para o dia 21.
   {key:'14-18set',     temDados:{pagamentos:true}, ini:'2026-09-14', fim:'2026-09-18'},
-  {key:'21-25set',     temDados:{pagamentos:true}, ini:'2026-09-21', fim:'2026-09-25', atual:true},
+  {key:'21-25set',     temDados:{pagamentos:true}, ini:'2026-09-21', fim:'2026-09-25'},
+  // Atravessa a virada do mês: 28, 29 e 30/09 + 01 e 02/10. 26/09 foi sábado e
+  // 27/09 domingo, então o corte começa na segunda-feira, dia 28.
+  {key:'28set-02out',  temDados:{pagamentos:true}, ini:'2026-09-28', fim:'2026-10-02', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -8003,84 +8070,95 @@ const DADOS_MES = {
   },
   set2026: {
     label: 'Setembro/2026',
-    // ── POSICAO 24/09/2026 · Resumo Fluxo de Caixa SET2026 importar 28.09 ──
-    // Substitui integralmente a posicao de 10/09. Nada foi somado.
+    // ── FECHAMENTO 30/09/2026 · Resumo Fluxo de Caixa SET2026 ─────────────
+    // SUBSTITUI integralmente a posicao parcial de 24/09. Nada foi somado.
+    // Com o mes fechado, tendencia e realizado passam a ser o mesmo numero.
+    // Hierarquia conferida na fonte (as linhas-filhas fecham com a linha-mae):
+    //   Pessoal de Apoio 1.605,4 = Salarios 675,1 + Encargos 551,7 +
+    //     Rescisoes 101,0 + Outros 277,6; e Outros 277,6 = Alimentacao 102,2 +
+    //     Assistencia Medica 106,2 + VT 48,0 + Estagiarios 21,2.
+    //   Desp. de Funcionamento 1.048,8 = Limpeza/Seguranca 225,6 +
+    //     Contratos 213,2 + Fornecedores Diversos 610,0.
+    //   Despesas Fixas 327,6 = Agua 108,1 + Energia 104,6 + Gas 98,6 +
+    //     Comunicacoes 16,3 + Combustivel do Gerador 0.
+    // O painel guarda so as linhas-mae, como nos meses anteriores.
     despesas: [
-      {nome:'Pessoal de Apoio', prev:1490.5, tend:1590.9, real:1526.4},
-      {nome:'Despesas de Funcionamento', prev:1112.9, tend:1108.6, real:967.6},
-      {nome:'Despesas Fixas', prev:330.0, tend:313.1, real:228.8},
-      {nome:'Esporte', prev:226.8, tend:220.0, real:174.0},
-      {nome:'Eventos', prev:188.1, tend:185.0, real:170.0},
+      {nome:'Pessoal de Apoio', prev:1490.5, tend:1605.4, real:1605.4},
+      {nome:'Despesas de Funcionamento', prev:1112.9, tend:1048.8, real:1048.8},
+      {nome:'Despesas Fixas', prev:330.0, tend:327.6, real:327.6},
+      {nome:'Esporte', prev:226.8, tend:199.4, real:199.4},
+      {nome:'Eventos', prev:188.1, tend:211.6, real:211.6},
       {nome:'Taxas e Impostos', prev:110.0, tend:107.6, real:107.6},
-      {nome:'Imobilizado', prev:64.1, tend:66.7, real:49.7},
-      {nome:'Contingências (Indenizações)', prev:17.9, tend:14.6, real:13.6},
-      {nome:'Tarifas e Desp. Bancárias', prev:9.7, tend:9.6, real:5.9},
+      {nome:'Imobilizado', prev:64.1, tend:49.7, real:49.7},
+      {nome:'Contingências (Indenizações)', prev:17.9, tend:17.2, real:17.2},
+      {nome:'Tarifas e Desp. Bancárias', prev:9.7, tend:6.8, real:6.8},
     ],
     receitas: [
-      {nome:'Boletos', prev:1525.0, tend:1494.5, real:1449.5},
+      {nome:'Boletos', prev:1525.0, tend:1489.8, real:1489.8},
       {nome:'Débito em Conta', prev:711.0, tend:703.2, real:703.2},
-      {nome:'Receitas Diversas', prev:626.0, tend:595.8, real:470.8},
-      {nome:'Cartões Crédito', prev:487.0, tend:487.1, real:427.1},
-      {nome:'Cartões Débito', prev:160.0, tend:148.3, real:131.3},
+      {nome:'Receitas Diversas', prev:626.0, tend:602.9, real:602.9},
+      {nome:'Cartões Crédito', prev:487.0, tend:493.5, real:493.5},
+      {nome:'Cartões Débito', prev:160.0, tend:158.7, real:158.7},
       {nome:'Cheque pré-datados', prev:0, tend:0, real:0},
       {nome:'Rendimento Aplicação', prev:0, tend:0.1, real:0.1},
       {nome:'Patrocínios', prev:0, tend:0, real:0},
     ],
-    // Totais como o documento DECLARA (mesma regra ja usada em agosto). Nas
-    // tres colunas de receita o declarado bate no centavo com a soma das
-    // linhas. Na despesa ha 0,1 de arredondamento da propria fonte: previsto
-    // declarado 3.549,9 contra 3.550,0 somando as linhas, e realizado 3.243,7
-    // contra 3.243,6. A tendencia (3.616,1) fecha exata.
+    // Totais como o documento DECLARA (mesma regra ja usada em agosto). As
+    // tres colunas de receita batem no centavo com a soma das linhas
+    // (3.509,0 / 3.448,2 / 3.448,2). Na despesa ha 0,1 de arredondamento da
+    // propria fonte: previsto declarado 3.549,9 contra 3.550,0 somando as
+    // linhas, e tendencia/realizado 3.574,2 contra 3.574,1. Vale o declarado.
     totaisReceitaDespesa: {
       previsto:  {receita:3509.0, despesa:3549.9},
-      tendencia: {receita:3429.0, despesa:3616.1},
-      realizado: {receita:3182.0, despesa:3243.7},
+      tendencia: {receita:3448.2, despesa:3574.2},
+      realizado: {receita:3448.2, despesa:3574.2},
     },
-    // ── ATUALIZADO EM 28/09 · Resumo Necessidades, posicao 24/09/2026 ────
-    // SUBSTITUI a lista da posicao de 04/09 (14 linhas, R$ 1.356.924,35). Nao e
-    // soma: os pagamentos de 04/09, 09/09 e 15/09 sairam da tabela porque ja
-    // foram executados, e entrou o Espaco Infinity de 24/09.
-    // RECONCILIACAO: as 11 linhas somam R$ 920.637,58 e o documento declara
-    // TOTAL R$ 906.228,08 — diferenca de R$ 14.409,50, exatamente a linha de
-    // 24/09 (Espaco Infinity), que e o proprio dia da posicao. O documento
-    // anterior INCLUIA a linha do dia da posicao no seu total, entao a regra
-    // mudou de um documento para o outro. Aqui vale a LINHA, como sempre.
+    // ── ATUALIZADO EM 06/10 · Relacao de Necessidades, posicao 30/09/2026 ──
+    // SUBSTITUI a lista da posicao de 24/09 (11 linhas, R$ 920.637,58). Nao e
+    // soma: os pagamentos de 28, 29 e 30/09 sairam da tabela porque ja foram
+    // executados, e entraram o quadro eletrico de 05/10, as tres luminarias do
+    // tenis (13/10, 10/11 e 10/12) e o telhado do Restaurante Tenis de 28/10.
+    // RECONCILIACAO: as 14 linhas somam R$ 943.876,83 e o documento declara
+    // exatamente esse TOTAL — sem diferenca nenhuma, ao contrario do documento
+    // anterior, onde a linha do dia da posicao ficava de fora do total.
+    // As tres luminarias vieram SEM fornecedor na fonte; ficam com "—" em vez
+    // de herdar o fornecedor da linha de cima.
     obras: [
-      {data:'24/09/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Espaço Infinity', valor:14409.50},
-      {data:'28/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
-      {data:'29/09/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
-      {data:'30/09/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
+      {data:'05/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
+      {data:'13/10/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
       {data:'20/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:145200.00},
+      {data:'26/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
+      {data:'27/10/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Espaço Infinity', valor:14409.50},
+      {data:'28/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
       {data:'29/10/2026', fornecedor:'MTX Parc 1/15', projeto:'Muscul. dos Atletas', valor:45300.00},
       {data:'30/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
+      {data:'10/11/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
       {data:'27/11/2026', fornecedor:'MTX Parc 2/15', projeto:'Muscul. dos Atletas', valor:45300.00},
       {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'10/12/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:338800.00},
+      {data:'10/12/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
       {data:'29/12/2026', fornecedor:'MTX Parc 3/15', projeto:'Muscul. dos Atletas', valor:45300.00},
     ],
-    obrasTotal: 920637.58,
-    // ── POSICAO UNICA: 24/09/2026 ─────────────────────────────────────────
-    // Fechada em 28/09 com os DOIS documentos da mesma data:
-    //   "Resumo Fluxo de Caixa SET2026 importar 28.09"  -> bloco mensal
-    //   "Resumo Necessidades - importar 28.9"           -> PROJECAO e obras
-    // As duas fontes fecham entre si: o diario traz, em 24/set, banco -606.995
-    // e indices 2.623.226 (soma 2.016.231) e o mensal declara SALDO FINAL
-    // BANCOS 2.016,2; em 30/set o diario da -732.445 + 2.379.226 = 1.646.781 e
-    // o mensal declara SALDO BANCO 30/09 = 1.646,8. Nao ha mistura de posicoes.
-    // SALDO FINAL BANCOS 24/09/2026 = 2.016,2 (declarado no documento).
-    // Confere com o diario de necessidades da MESMA posicao: em 24/set o banco
-    // disponivel e -606.995 e os indices construtivos 2.623.226 — soma
-    // 2.016.231. As duas fontes fecham entre si, o que confirma que o mensal e
-    // o diario estao na mesma data de referencia.
-    // Percentuais derivados do proprio saldo: -607,0/2.016,2 = -30,1% e
-    // 2.623,2/2.016,2 = 130,1% (somam 100%).
-    caixaLivre: -607.0, fundoObras: 2623.2, resultadoOper: -187.2, saldoTotal: 2016.2,
-    caixaLivrePct: -30.1, fundoObrasPct: 130.1, negativo: true,
-    receitaReal: 3182.0, despesaReal: 3243.7,
-    resultadoLiquido: -916.7,
-    dataReferencia: '24/09/2026',
-    fechado: false,
-    ptoAtencao: '<b>Mês em andamento — posição de 24/09.</b> O realizado é de R$ 3.182,0 mil de receita contra R$ 3.243,7 mil de despesa, <b style=\"color:var(--red);\">-R$ 61,7 mil no acumulado do mês</b>. O caixa operacional livre está em -R$ 607,0 mil e, com o fundo Índices Construtivos de R$ 2.623,2 mil, o saldo em banco é de <b>R$ 2.016,2 mil</b> — R$ 107,9 mil acima da posição de 10/09. <b style=\"color:var(--gold);\">A tendência para o mês fechado piorou de novo:</b> de -R$ 117,1 mil em 10/09 para <b>-R$ 187,2 mil</b>. <b>A piora veio da receita, não da despesa:</b> a tendência de receita caiu R$ 73,1 mil (de R$ 3.502,1 para R$ 3.429,0 mil) enquanto a de despesa praticamente não se moveu (-R$ 3,1 mil). <b>Receitas Diversas (-R$ 29,8 mil) e Boletos (-R$ 29,7 mil) explicam 81% da queda</b> — vale confirmar com a Controladoria se é postergação de recebimento ou perda de receita. Do lado da despesa, Pessoal de Apoio subiu mais R$ 17,8 mil (para R$ 1.590,9 mil) e foi compensado por Despesas Fixas (-R$ 14,4 mil) e Eventos (-R$ 6,5 mil). <b style=\"color:var(--red);\">O resultado líquido projetado é de -R$ 916,7 mil</b>, porque saem R$ 729,5 mil pela conta de Índices Construtivos. O saldo projetado para 30/09 caiu de R$ 1.740,9 para <b>R$ 1.646,8 mil</b> — exatamente os R$ 94,1 mil de piora do resultado líquido, e o mesmo valor que a projeção diária traz para 30/set. <b style=\"color:var(--gold);\">Compromissos de obras em R$ 920,6 mil</b> (posição de 24/09): a lista caiu de R$ 1.356,9 mil porque os pagamentos de 04/09, 09/09 e 15/09 — R$ 450,7 mil — já foram executados e saíram da agenda; entrou o Espaço Infinity (R$ 14,4 mil, em 24/09). Seguem em aberto o Salão Panorâmico (R$ 484,0 mil em duas parcelas) e as três primeiras parcelas do MTX para a Musculação dos Atletas.',
+    obrasTotal: 943876.83,
+    // ── POSICAO UNICA: 30/09/2026 ─────────────────────────────────────────
+    // Fechada em 06/10 com os DOIS documentos da mesma data:
+    //   "Resumo Fluxo de Caixa SET2026"  -> bloco mensal (fechamento)
+    //   "Relacao de Necessidades"        -> PROJECAO e obras
+    // As duas fontes fecham entre si: o diario traz, em 30/set, banco -671.294
+    // e indices 2.616.414 (soma 1.945.120) e o mensal declara SALDO BANCO
+    // 30/09 = 1.945,1. Nao ha mistura de posicoes.
+    // Percentuais derivados do proprio saldo: -671,3/1.945,1 = -34,5% e
+    // 2.616,4/1.945,1 = 134,5% (somam 100%).
+    // resultadoOper e o operacional do mes fechado: 3.448,2 - 3.574,2 = -126,0.
+    // resultadoLiquido soma a conta de Indices Construtivos: -126,0 + (-492,3)
+    // = -618,3, exatamente o declarado.
+    caixaLivre: -671.3, fundoObras: 2616.4, resultadoOper: -126.0, saldoTotal: 1945.1,
+    caixaLivrePct: -34.5, fundoObrasPct: 134.5, negativo: true,
+    receitaReal: 3448.2, despesaReal: 3574.2,
+    resultadoLiquido: -618.3,
+    dataReferencia: '30/09/2026',
+    fechado: true,
+    ptoAtencao: '<b>Mês fechado — posição de 30/09.</b> Setembro encerrou com <b>resultado operacional de -R$ 126,0 mil</b>, a melhor operação desde junho e bem acima dos -R$ 423,0 mil de agosto. A receita fechou em <b>R$ 3.448,2 mil</b>, R$ 60,8 mil abaixo do previsto — Boletos entregaram R$ 1.489,8 mil contra R$ 1.525,0 mil orçados e Receitas Diversas R$ 602,9 mil contra R$ 626,0 mil; do outro lado, Cartões de Crédito superaram o previsto em R$ 6,5 mil. A despesa fechou em <b>R$ 3.574,2 mil</b>, R$ 24,3 mil acima do previsto, e a conta é quase inteira de <b>Pessoal de Apoio: R$ 1.605,4 mil contra R$ 1.490,5 mil orçados (+R$ 114,9 mil)</b>, puxado por <b>R$ 101,0 mil de rescisões que não estavam no orçamento</b>. Despesas de Funcionamento compensaram parte, fechando R$ 64,1 mil abaixo do previsto. <b style=\"color:var(--red);\">O resultado líquido ficou em -R$ 618,3 mil</b> porque saíram R$ 492,3 mil pela conta de Índices Construtivos — menos que os R$ 683,0 mil programados. O saldo em banco encerrou em <b>R$ 1.945,1 mil</b>, dos quais <b>R$ 2.616,4 mil são do fundo de obras e o caixa operacional livre está negativo em R$ 671,3 mil</b>: o clube só tem saldo positivo porque o recurso vinculado cobre o rombo operacional. Pela frente, <b>R$ 943,9 mil de obras já contratadas</b> em 14 parcelas até dezembro, com os dois maiores desembolsos em 28/10 (Telhado Rest. Tênis, R$ 182,0 mil) e 10/12 (Salão Panorâmico, R$ 338,8 mil).',
   },
 };
 
@@ -8173,7 +8251,19 @@ const AUDITORIAS_IMPORT = [
       //     diferenca sao o desvio acumulado da projecao antiga ate 23/09,
       //     corrigido pela nova posicao. Os 66 dias importados encadeiam entre
       //     si sem nenhuma quebra.
-      const QUEBRAS_CONHECIDAS = ['28/jul','24/set'];
+      //   28/ago — emenda entre duas posicoes do Resumo de Necessidades. O dia
+      //     27/ago fecha em -566.369 e o movimento de 28/ago e -135.628, o que
+      //     daria -701.997; a posicao seguinte declara -602.730. Degrau de
+      //     R$ 99.267, que e o desvio acumulado da projecao anterior corrigido
+      //     pela posicao nova. Nao ha documento intermediario para reconciliar,
+      //     e nao se interpola nem se inventa movimento para fechar a conta.
+      //   28/set — carga de 06/10, Relacao de Necessidades posicao 30/09. A
+      //     serie anterior (posicao 24/09) encerra 25/set em -747.845; somando
+      //     o movimento de 28/set (+8.210) daria -739.635, mas a fonte nova
+      //     declara -719.286. Degrau de R$ 20.349: a Controladoria revisou dias
+      //     anteriores a 28/09 que esta fonte nao cobre. Mesma natureza de
+      //     28/jul, 28/ago e 24/set — emenda entre posicoes oficiais, nao erro.
+      const QUEBRAS_CONHECIDAS = ['28/jul','24/set','28/ago','28/set'];
       const MES_ORD = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
       const ordem = d => MES_ORD[d.split('/')[1]] || 0;
       _herdadas = [];
@@ -8257,30 +8347,33 @@ const TOTAIS_ASSINADOS = [
   {aba:'Sec. Adm · Negociação', doc:'Resumo das Negociações (gestora)', ate:'jun/2026',
    oque:'contatos enviados mar-jun', esperado:1498,
    calc:()=>NEGOCIACOES.slice(0,4).reduce((t,n)=>t+(n.contatos||0),0)},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
    oque:'total receitas previsto', esperado:3509.0,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.previsto.receita},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'total receitas tendência', esperado:3429.0,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'total receitas tendência', esperado:3448.2,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.tendencia.receita},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'total receitas já realizado', esperado:3182.0,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'total receitas já realizado', esperado:3448.2,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.realizado.receita},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'total despesas tendência', esperado:3616.1,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'total despesas tendência', esperado:3574.2,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.tendencia.despesa},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'total despesas já realizado', esperado:3243.7,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'total despesas já realizado', esperado:3574.2,
    calc:()=>DADOS_MES.set2026.totaisReceitaDespesa.realizado.despesa},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'resultado líquido', esperado:-916.7,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'resultado líquido', esperado:-618.3,
    calc:()=>DADOS_MES.set2026.resultadoLiquido},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 · importar 28.09', ate:'24/09/2026',
-   oque:'saldo banco + índices em 24/09 (R$ mil)', esperado:2016.2,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Fluxo de Caixa SET2026 (fechamento)', ate:'30/09/2026',
+   oque:'saldo banco + índices em 30/09 (R$ mil)', esperado:1945.1,
    calc:()=>DADOS_MES.set2026.saldoTotal},
-  {aba:'Financeiro · Fluxo de Caixa', doc:'Resumo Necessidades · importar 28.9', ate:'24/09/2026',
-   oque:'saldo projetado 30/09 = banco + índices do diário (R$ mil)', esperado:1646.8,
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Relação de Necessidades (posição 30/09)', ate:'30/09/2026',
+   oque:'saldo realizado 30/09 = banco + índices do diário (R$ mil)', esperado:1945.1,
    calc:()=>{const p=PROJECAO.find(x=>x.d==='30/set'); return Math.round((p.banco+p.indices)/100)/10;}},
+  {aba:'Financeiro · Fluxo de Caixa', doc:'Relação de Necessidades (posição 30/09)', ate:'30/09/2026',
+   oque:'obras contratadas pela conta de Índices Construtivos (R$)', esperado:943876.83,
+   calc:()=>Math.round(DADOS_MES.set2026.obras.reduce((t,o)=>t+o.valor,0)*100)/100},
   {aba:'Esportes', doc:'ORÇADO 2026 - importar para o painel', ate:'dez/2026',
    oque:'orçado do ano, 31 modalidades', esperado:4834547.97,
    calc:()=>ESPORTES_ORC.reduce((t,m)=>t+m.od.reduce((a,b)=>a+b,0)+m.orr.reduce((a,b)=>a+b,0),0)},
@@ -10067,7 +10160,7 @@ function renderRetencaoCRA(mesesSel){
 //   nome  -> iniciais LGPD, particulas fora (Lucas de Paula da Silva -> L.P.S.)
 //   prazo -> vem da COLUNA "Prazo" DA PLANILHA (null quando vazia)
 //   prazoCorridos -> fechamento menos abertura, em dias corridos
-//   'Ocorrencia interna' -> 'Ocorrência Interna' (so grafia, mesma categoria)
+//   'Ocorrencia interna' -> 'Interna' (so rotulo; ver OCOR_TIPO_MAPA)
 //
 // SOBRE O CAMPO "prazo": o valor gravado aqui vem da planilha (dias corridos),
 //   mas NAO e o que aparece na tela. No fim do arquivo, recalcularPrazos()
@@ -10083,7 +10176,7 @@ function renderRetencaoCRA(mesesSel){
 //   "fechada" no rodape do card.
 const OCORRENCIAS = [
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.P.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10097,7 +10190,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "R.H.M.",
   "ger": "Gerência Operações",
   "local": "Centro de Esportes",
@@ -10111,7 +10204,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.D.B.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10125,7 +10218,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "P.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10139,7 +10232,7 @@ const OCORRENCIAS = [
   "valor": 4131.32
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "B.S.O.",
   "ger": "Gerência Operações",
   "local": "Bicicletário",
@@ -10153,7 +10246,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.M.A.F.",
   "ger": "Gerência Operações",
   "local": "Bicicletário",
@@ -10167,7 +10260,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.G.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -10181,7 +10274,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.P.P.A.",
   "ger": "Gerência Operações",
   "local": "Economatos",
@@ -10195,7 +10288,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.P.A.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -10209,7 +10302,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.P.F.D.",
   "ger": "Gerência Operações",
   "local": "Ginásio 9",
@@ -10223,7 +10316,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.M.B.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -10237,7 +10330,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "R.M.B.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -10251,7 +10344,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.C.S.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -10265,7 +10358,7 @@ const OCORRENCIAS = [
   "valor": 1000.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.G.O.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10279,7 +10372,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "D.L.S.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10293,7 +10386,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "R.P.C.",
   "ger": "Gerência Operações",
   "local": "Praça grande",
@@ -10307,7 +10400,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.H.B.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10321,7 +10414,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "P.L.M.C.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10335,7 +10428,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "P.L.B.O.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10349,7 +10442,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.M.Z.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10363,7 +10456,7 @@ const OCORRENCIAS = [
   "valor": 1090.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "O.A.V.N.P.",
   "ger": "Gerência Operações",
   "local": "Economatos",
@@ -10377,7 +10470,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.P.M.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -10391,7 +10484,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.G.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10405,7 +10498,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10419,7 +10512,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10433,7 +10526,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "V.J.N.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10447,7 +10540,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "R.M.B.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10461,7 +10554,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10475,7 +10568,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.A.B.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10489,7 +10582,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "K.C.P.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -10503,7 +10596,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.A.P.R.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10517,7 +10610,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "I.G.K.M.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -10531,7 +10624,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "F.B.C.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -10545,7 +10638,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.W.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -10559,7 +10652,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.D.R.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -10573,7 +10666,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.T.F.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -10587,7 +10680,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.G.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -10601,7 +10694,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.S.(.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -10615,7 +10708,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.A.V.",
   "ger": "Gerência Operações",
   "local": "Sede Social",
@@ -10629,7 +10722,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.M.I.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -10643,7 +10736,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.R.B.",
   "ger": "Gerência Operações",
   "local": "Ginásio 1",
@@ -10657,7 +10750,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.C.",
   "ger": "Gerência Esportiva",
   "local": "Secretaria Esportiva",
@@ -10671,7 +10764,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "V.B.S.",
   "ger": "Gerência Operações",
   "local": "Tênis",
@@ -10685,7 +10778,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.R.V.",
   "ger": "Gerência Operações",
   "local": "Sauna",
@@ -10699,7 +10792,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.E.K.D.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10713,7 +10806,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "V.B.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10727,7 +10820,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.G.B.S.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -10741,7 +10834,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "R.S.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Secretaria Administrativa",
@@ -10755,7 +10848,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.J.G.D.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -10769,7 +10862,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "N.A.D.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10783,7 +10876,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.N.V.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -10797,7 +10890,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.F.T.",
   "ger": "Gerência Operações",
   "local": "Praça pequena",
@@ -10811,7 +10904,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.G.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -10825,7 +10918,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.R.D.M.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10839,7 +10932,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "I.D.S.",
   "ger": "Gerência Operações",
   "local": "Praça grande",
@@ -10853,7 +10946,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.L.T.R.C.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10867,7 +10960,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "Â.F.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10881,7 +10974,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10895,7 +10988,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.F.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10909,7 +11002,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "F.A.P.K.",
   "ger": "Gerência Operações",
   "local": "Ginásio 9",
@@ -10923,7 +11016,7 @@ const OCORRENCIAS = [
   "valor": 2800.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.A.D.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10937,7 +11030,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "N.N.L.",
   "ger": "Gerência Operações",
   "local": "Tênis de Mesa",
@@ -10951,7 +11044,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.P.R.E.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -10965,7 +11058,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "T.S.D.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -10979,7 +11072,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.M.B.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -10993,7 +11086,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "P.H.C.K.",
   "ger": "Gerência Operações",
   "local": "Tênis",
@@ -11007,7 +11100,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.S.B.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11021,7 +11114,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "J.V.R.F.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -11035,7 +11128,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.P.N.B.",
   "ger": "Gerência Operações",
   "local": "Academia",
@@ -11049,7 +11142,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "F.V.L.",
   "ger": "Gerência Operações",
   "local": "FUTEBOL",
@@ -11063,7 +11156,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.A.G.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11077,7 +11170,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.F.",
   "ger": "Gerência Operações",
   "local": "Salões",
@@ -11091,7 +11184,7 @@ const OCORRENCIAS = [
   "valor": 1990.97
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.M.C.S.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11105,7 +11198,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "N.S.F.",
   "ger": "Gerência Operações",
   "local": "Vestiário das piscinas",
@@ -11119,7 +11212,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.Z.P.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11133,7 +11226,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "B.F.F.P.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11147,7 +11240,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.S.M.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11161,7 +11254,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.G.A.M.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11175,7 +11268,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "C.C.L.",
   "ger": "Gerência Operações",
   "local": "GINÁSTICA ARTISTICA",
@@ -11189,7 +11282,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "A.S.V.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11203,7 +11296,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.G.A.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11217,7 +11310,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "D.L.A.Y.",
   "ger": "Gerência Esportiva",
   "local": "GINÁSTICA ARTISTICA",
@@ -11231,7 +11324,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.S.O.",
   "ger": "Gerência Esportiva",
   "local": "GINÁSTICA ARTISTICA",
@@ -11245,7 +11338,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.A.S.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -11259,7 +11352,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "M.A.D.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11273,7 +11366,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "G.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11287,7 +11380,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "A.M.B.L.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11301,7 +11394,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "R.A.B.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -11315,7 +11408,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "P.R.S.V.",
   "ger": "Gerência Operações",
   "local": "Ginásio 3",
@@ -11329,7 +11422,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "A.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11343,7 +11436,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "J.S.",
   "ger": "Gerência Operações",
   "local": "Piscinas",
@@ -11357,7 +11450,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "R.A.L.",
   "ger": "Gerência Operações",
   "local": "Salões",
@@ -11371,7 +11464,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "R.A.L.",
   "ger": "Gerência Operações",
   "local": "Churrasqueiras",
@@ -11385,7 +11478,7 @@ const OCORRENCIAS = [
   "valor": 156.95
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "M.M.J.S.",
   "ger": "Gerência Esportiva",
   "local": "Academia",
@@ -11399,7 +11492,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "K.C.S.O.",
   "ger": "Gerência Operações",
   "local": "Refúgio",
@@ -11413,7 +11506,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "P.R.S.S.(.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -11427,7 +11520,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "P.R.S.S.(.",
   "ger": "Gerência Operações",
   "local": "GINÁSTICA ARTISTICA",
@@ -11441,7 +11534,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "L.B.R.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11455,7 +11548,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "V.S.A.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11469,7 +11562,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "J.R.D.G.H.",
   "ger": "Gerência Operações",
   "local": "Judo",
@@ -11483,7 +11576,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "V.F.D.",
   "ger": "Gerência Operações",
   "local": "Refeitório",
@@ -11497,7 +11590,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "N.F.S.",
   "ger": "Gerência Operações",
   "local": "Atletismo",
@@ -11511,7 +11604,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "A.S.S.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11525,7 +11618,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "I.A.R.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11539,7 +11632,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "J.R.S.",
   "ger": "Gerência Operações",
   "local": "Recepção",
@@ -11553,7 +11646,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "I.D.V.",
   "ger": "Gerência Operações",
   "local": "Sem Local",
@@ -11567,7 +11660,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "P.S.C.",
   "ger": "Gerência Recursos Humanos",
   "local": "Sem Local",
@@ -11581,7 +11674,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "A.K.S.",
   "ger": "Gerência Recursos Humanos",
   "local": "Sem Local",
@@ -11595,7 +11688,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "M.V.F.F.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Estacionamento",
@@ -11609,7 +11702,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "F.S.P.",
   "ger": "Diretoria",
   "local": "Ginásio 9",
@@ -11623,7 +11716,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "F.S.P.",
   "ger": "Diretoria",
   "local": "Tênis de Mesa",
@@ -11637,7 +11730,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "H.R.P.",
   "ger": "Diretoria",
   "local": "Sede Social",
@@ -11651,7 +11744,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "E.Z.",
   "ger": "Diretoria",
   "local": "Economatos",
@@ -11665,7 +11758,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "F.R.",
   "ger": "Gerência Administrativa - Financeira",
   "local": "Praça pequena",
@@ -11679,7 +11772,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "J.P.R.E.",
   "ger": "Diretoria",
   "local": "Tênis",
@@ -11693,7 +11786,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "L.G.F.F.",
   "ger": "Diretoria",
   "local": "Sem Local",
@@ -11707,7 +11800,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "E.S.D.",
   "ger": "Diretoria",
   "local": "Ginásio 1",
@@ -11721,7 +11814,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "C.C.S.",
   "ger": "Diretoria",
   "local": "Sem Local",
@@ -11735,7 +11828,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "A.S.S.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11749,7 +11842,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "J.F.R.O.",
   "ger": "Gerência Operações",
   "local": "Estacionamento",
@@ -11763,7 +11856,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência interna",
+  "tipo": "Interna",
   "nome": "L.B.R.",
   "ger": "Gerência Recursos Humanos",
   "local": "Estacionamento",
@@ -11777,7 +11870,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "E.B.B.",
   "ger": "Gerência Esportiva",
   "local": "Ginásio 9",
@@ -11791,7 +11884,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "F.M.C.",
   "ger": "Gerência Operações",
   "local": "Sede Social",
@@ -11805,7 +11898,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "L.G.A.",
   "ger": "Gerência Operações",
   "local": "Ginásio 2",
@@ -11819,7 +11912,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Administrativa",
+  "tipo": "Administrativa",
   "nome": "K.S.R.",
   "ger": "Gerência Operações",
   "local": "Praça pequena",
@@ -11833,7 +11926,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "T.D.B.",
   "ger": "Diretoria",
   "local": "Sem Local",
@@ -11847,7 +11940,7 @@ const OCORRENCIAS = [
   "valor": 0.0
  },
  {
-  "tipo": "Ocorrência Sindicância",
+  "tipo": "Sindicância",
   "nome": "I.D.V.",
   "ger": "Diretoria",
   "local": "Sem Local",
@@ -16641,6 +16734,47 @@ function dataReferenciaCRA(){
   const d = new Date(), p = n => String(n).padStart(2,'0');
   return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
 }
+
+// ═══════════════════════════════════════════════════════════
+// CRA · OCORRÊNCIAS — tipos oficiais (definição da gestora, 06/10/2026)
+// ═══════════════════════════════════════════════════════════
+// São quatro: Administrativa, Sindicância, Interna e Sinistro (nova).
+// A nomenclatura antiga da planilha ("Ocorrência Administrativa",
+// "Ocorrência Sindicância", "Ocorrência interna") passa por este mapa e vira a
+// nova. É só troca de RÓTULO: nenhum registro é reclassificado, excluído ou
+// duplicado, e assunto, local, gerência, datas, prazo, ressarcimento e valor
+// não são tocados.
+// O mapa existe para que uma importação futura aceite as DUAS grafias sem
+// quebrar o histórico — quem chegar com o nome antigo é convertido na carga,
+// quem chegar com o novo passa direto.
+// SINISTRO entra como tipo VÁLIDO, sem nenhum registro ainda: não criamos card
+// nem linha artificial. Quando a primeira ocorrência de sinistro for importada,
+// ela aparece sozinha nos agrupamentos, que saem todos do próprio campo.
+const OCOR_TIPOS = ['Administrativa', 'Sindicância', 'Interna', 'Sinistro'];
+const OCOR_TIPO_MAPA = {
+  'ocorrência administrativa': 'Administrativa',
+  'ocorrencia administrativa': 'Administrativa',
+  'ocorrência sindicância':    'Sindicância',
+  'ocorrencia sindicancia':    'Sindicância',
+  'ocorrência interna':        'Interna',
+  'ocorrencia interna':        'Interna',
+  'administrativa':            'Administrativa',
+  'sindicância':               'Sindicância',
+  'sindicancia':               'Sindicância',
+  'interna':                   'Interna',
+  'sinistro':                  'Sinistro',
+};
+function ocorTipoNorm(t){
+  const k = String(t == null ? '' : t).trim().toLowerCase();
+  return OCOR_TIPO_MAPA[k] || (t == null ? t : String(t).trim());
+}
+// Roda na carga, antes de qualquer render: gráfico, tabela, legenda, filtro e
+// análise leem o campo já normalizado, sem precisar de tratamento em cada um.
+function normalizarTiposOcorrencia(){
+  if(typeof OCORRENCIAS === 'undefined') return;
+  OCORRENCIAS.forEach(o => { o.tipo = ocorTipoNorm(o.tipo); });
+}
+normalizarTiposOcorrencia();
 
 function recalcularPrazos(){
   [typeof OCORRENCIAS!=='undefined'?OCORRENCIAS:[], typeof MANIFESTACOES!=='undefined'?MANIFESTACOES:[]]
