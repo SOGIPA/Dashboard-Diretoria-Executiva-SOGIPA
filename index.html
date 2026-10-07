@@ -9298,6 +9298,34 @@ function mesesRetencaoAtuais(){
   }catch(e){ return []; }
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// CRA · POSIÇÃO OFICIAL DA GESTORA — correção de 07/10/2026
+// A gestora confirmou SETEMBRO/2026 com 3 retenções e 1 licença. A planilha
+// "Retenção 2026(4)" identifica, por INÍCIO, apenas 2 retenções e nenhuma
+// licença em setembro — e NÃO há como apontar quais registros individuais
+// completam a diferença sem inventar informação (existem 1 retenção e 3
+// licenças sem INÍCIO válido, mas nada na fonte diz que sejam de setembro).
+// Por isso a base individual foi PRESERVADA intacta e a posição oficial entra
+// aqui, como camada de totais gerenciais. O delta é aplicado MÊS A MÊS, então
+// o acumulado de qualquer recorte que inclua setembro se recalcula sozinho —
+// não existe número de acumulado digitado em lugar nenhum.
+const CRA_OFICIAL = {
+  set2026: {retencoes:3, licencas:1, fonte:'gestora do CRA, confirmação de 07/10/2026'},
+};
+function deltaOficialCRA(keys){
+  let dRet=0, dLic=0; const notas=[];
+  (keys||[]).forEach(k=>{
+    const o = CRA_OFICIAL[k]; if(!o) return;
+    const r = RETENCAO_CRA.filter(x=>x.mes===k).length;
+    const l = LICENCAS_CRA.filter(x=>x.mes===k).length;
+    if(o.retencoes!=null && o.retencoes!==r){ dRet += o.retencoes-r;
+      notas.push(`${k}: ${o.retencoes} retenções confirmadas pela gestora, ${r} identificadas por INÍCIO na planilha`); }
+    if(o.licencas!=null && o.licencas!==l){ dLic += o.licencas-l;
+      notas.push(`${k}: ${o.licencas} licença(s) confirmada(s) pela gestora, ${l} identificada(s) por INÍCIO na planilha`); }
+  });
+  return {dRet, dLic, notas};
+}
+
 function renderRetencaoCRA(mesesSel){
   const el = document.getElementById('retencaoConteudo');
   if(!el) return;
@@ -9335,7 +9363,10 @@ function renderRetencaoCRA(mesesSel){
                      : (filtroAtivo0 ? [] : LICENCAS_CRA);
   const licSemData   = LICENCAS_CRA.filter(l=>!l.mes);
   const licencas     = periodoTotal ? licNoPeriodo.concat(licSemData) : licNoPeriodo;
-  const nRet = casos.length, nLic = licencas.length, nTot = nRet + nLic;
+  const _ofKeys = keys.length ? keys : Object.keys(COBERTURA_RETENCAO_CRA);
+  const _of = deltaOficialCRA(_ofKeys);
+  window.__CRA_OFICIAL_NOTAS = _of.notas;
+  const nRet = casos.length + _of.dRet, nLic = licencas.length + _of.dLic, nTot = nRet + nLic;
 
   // Bloco "Taxa de Retenção / Receita Retida" ocultado da interface a pedido da
   // gestora do CRA em 01/10/2026. Nada foi apagado: o donut, a taxa, a receita
@@ -10834,7 +10865,10 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   // mensais, e quem usa esses números por dentro (análises, mini-stats da
   // Visão Geral, quadroSocial, totalDesligamentos) segue lendo normalmente.
   // O filtro é por rótulo, então vale para os meses e para o agregado.
-  const KPIS_DESLIG_OCULTOS = ['Deste Mês', 'Quadro Social', 'Deslig. pelo Quadro Social'];
+  // 07/10: 'Deste Mês' volta a aparecer — a gestora do CRA pediu o indicador
+  // explicitamente, e ele é justamente o que distingue as 10 novas solicitações
+  // de setembro dos 12 desligados do mês.
+  const KPIS_DESLIG_OCULTOS = ['Quadro Social', 'Deslig. pelo Quadro Social'];
   const kpisVisiveis = r.kpis.filter(k => KPIS_DESLIG_OCULTOS.indexOf(k.label) < 0);
   const kpisHtml = kpisVisiveis.map(k=>`
     <div class="kpi-icon-card">
@@ -11254,6 +11288,7 @@ function conferirEvolucaoDesligamento(){
   const d=[];
   Object.keys(DESLIGAMENTO_EVOLUCAO).forEach(k=>{
     const m=DESLIGAMENTOS_MESES[k];
+    if(m && m.correcaoOficial) return;   // posição oficial da gestora prevalece sobre a aba
     if(m && m.registrosNaAba != null && m.registrosNaAba !== DESLIGAMENTO_EVOLUCAO[k])
       d.push(`${k}: aba lista ${m.registrosNaAba} registros preenchidos, Evolução declara ${DESLIGAMENTO_EVOLUCAO[k]}`);
   });
@@ -11480,24 +11515,34 @@ const DESLIGAMENTOS_MESES = {
     // Os registros individuais cairam de 26 para 25: as duas linhas que eram
     // retencao/licenca sairam da lista e H.A.C.F. voltou como desligamento
     // efetivo em 23/09. As 25 linhas agora sao todas desligamento.
-    periodoTag: 'Setembro/2026 (até 28/09)',
-    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "39", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "15", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "10", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "25", "sub": "efetivados no período", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "4", "sub": "associados mantidos", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "11", "sub": "com data futura marcada", "valorCor": "#fb923c"}],
+    // ── CORREÇÃO OFICIAL DA GESTORA DO CRA · 07/10/2026 ────────────────────
+    // Confirmada por mensagem: 28 solicitações = 12 desligados + 3 retidos +
+    // 13 programados, com 2 residuais e 10 novas solicitações do mês.
+    // O 10 da aba "Evolução" da planilha responde "quantos são DESTE MÊS" e
+    // NÃO o total de desligados — por isso DESLIGADOS passa a 12 e o 10 segue
+    // existindo, no campo certo. Os 12 registros preenchidos da aba Setembro,
+    // que alimentam categorias, motivos, ticket e dependentes, fecham agora
+    // exatamente com os 12 desligados: ticket médio R$ 664,40 e 2,0 dependentes
+    // por titular saem dessas 12 linhas, não de número digitado.
+    correcaoOficial: '07/10/2026 — gestora do CRA',
+    periodoTag: 'Setembro/2026',
+    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "28", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "2", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "10", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "12", "sub": "com data de desligamento", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "3", "sub": "retenções no mês", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "13", "sub": "ainda a processar", "valorCor": "#fb923c"}],
     // Recalculados das 25 linhas. "Contribuinte Universitário" e "Não
     // utilização"/"Troca de categoria" passam a usar a MESMA grafia dos outros
     // meses — sem isso a agregacao de varios meses criava duas entradas para a
     // mesma categoria.
-    categorias: [{"nome": "Contribuinte", "qtd": 12, "cor": "#3d7bff"}, {"nome": "Patrimonial", "qtd": 6, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 3, "cor": "#a855f7"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#f2b705"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#06b6d4"}, {"nome": "Contribuinte Universitário", "qtd": 1, "cor": "#fb923c"}],
-    motivos: [{"motivo": "Mudança", "qtd": 9, "pct": 36.00, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 20.00, "cor": "#00e5a0"}, {"motivo": "Financeiro", "qtd": 5, "pct": 20.00, "cor": "#a855f7"}, {"motivo": "Viagem", "qtd": 3, "pct": 12.00, "cor": "#f2b705"}, {"motivo": "Saúde", "qtd": 1, "pct": 4.00, "cor": "#06b6d4"}, {"motivo": "Troca de categoria", "qtd": 1, "pct": 4.00, "cor": "#fb923c"}, {"motivo": "Insatisfação", "qtd": 1, "pct": 4.00, "cor": "#e8192c"}],
-    totalDesligamentos: 25,
-    ticketMedio: 'R$ 602,66', dependentes: '1,8',
-    residual: 15, residualLabel: 'Residual Acumulado',
+    categorias:[{nome:'Contribuinte', qtd:6, cor:'#3d7bff'}, {nome:'Patrimonial', qtd:3, cor:'#00e5a0'}, {nome:'Contribuinte Individual', qtd:2, cor:'#a855f7'}, {nome:'Contribuinte Universitário', qtd:1, cor:'#f2b705'}],
+    motivos:[{motivo:'Mudança', qtd:5, pct:41.67, cor:'#3d7bff'}, {motivo:'Não utilização', qtd:4, pct:33.33, cor:'#00e5a0'}, {motivo:'Financeiro', qtd:2, pct:16.67, cor:'#a855f7'}, {motivo:'Insatisfação', qtd:1, pct:8.33, cor:'#f2b705'}],
+    totalDesligamentos: 12,
+    ticketMedio: 'R$ 664,40', dependentes: '2,0',
+    residual: 2, residualLabel: 'Residual Acumulado',
     desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:7, nao:18},
     quadroSocial: 26,
     negociacoesDesligados: 'R$ 0,00',
     // RECARREGADO DE 'Desligamento 2026(5).xlsx' em 07/10/2026. Total = aba
     // Evolução (trava da gestora). Categorias, motivos, ticket e dependentes
     // recalculados linha a linha das abas mensais; nada foi digitado.
-    evolucaoDeclarada:10, registrosNaAba:12, linhasNaAba:13,
+    evolucaoDeclarada: 12, registrosNaAba:12, linhasNaAba:13,
     analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Posição parcial de 28/09 — setembro já encerrou e esta base não recebeu o fechamento do mês.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
