@@ -1930,67 +1930,81 @@ const PROJECAO = [
   {d:'28/set', mov:8210, banco:-719286, indices:2623226},
   {d:'29/set', mov:21465, banco:-697821, indices:2623226},
   {d:'30/set', mov:26527, banco:-671294, indices:2616414},
-  {d:'01/out', mov:12008, banco:-659286, indices:2616414},
-  {d:'02/out', mov:-9446, banco:-668732, indices:2616414},
-  {d:'05/out', mov:-39963, banco:-708694, indices:2596116},
-  {d:'06/out', mov:-383500, banco:-1092194, indices:2596116},
-  {d:'07/out', mov:125000, banco:-967194, indices:2596116},
-  {d:'08/out', mov:82891, banco:-884303, indices:2596116},
-  {d:'09/out', mov:-81808, banco:-966111, indices:2596116},
-  {d:'13/out', mov:-223904, banco:-1190015, indices:2588124},
-  {d:'14/out', mov:1411580, banco:221565, indices:2588124},
-  {d:'15/out', mov:151000, banco:372565, indices:2588124},
-  {d:'16/out', mov:6322, banco:378886, indices:2588124},
-  {d:'19/out', mov:59845, banco:438731, indices:2588124},
-  {d:'20/out', mov:-979050, banco:-540319, indices:2442924},
-  {d:'21/out', mov:20000, banco:-520319, indices:2442924},
-  {d:'22/out', mov:-30421, banco:-550740, indices:2442924},
-  {d:'23/out', mov:-70090, banco:-620830, indices:2442924},
-  {d:'26/out', mov:-49401, banco:-670231, indices:2401924},
-  {d:'27/out', mov:-69218, banco:-739449, indices:2387924},
-  {d:'28/out', mov:6686, banco:-732763, indices:2205924},
-  {d:'29/out', mov:-11455, banco:-744218, indices:2160624},
-  {d:'30/out', mov:-27297, banco:-771515, indices:2139624},
-  {d:'03/nov', mov:40065, banco:-731451, indices:2139624},
-  {d:'04/nov', mov:103900, banco:-627551, indices:2139624},
-  {d:'05/nov', mov:-43796, banco:-671346, indices:2139624},
-  {d:'06/nov', mov:-426595, banco:-1097941, indices:2139624},
-  {d:'09/nov', mov:87700, banco:-1010241, indices:2139624},
-  {d:'10/nov', mov:-113683, banco:-1123924, indices:2131632},
-  {d:'11/nov', mov:1425000, banco:301076, indices:2131632},
-  {d:'12/nov', mov:177645, banco:478722, indices:2131632},
-  {d:'13/nov', mov:-196450, banco:282272, indices:2131632},
-  {d:'16/nov', mov:26000, banco:308272, indices:2131632},
-  {d:'17/nov', mov:23051, banco:331323, indices:2131632},
-  {d:'18/nov', mov:85000, banco:416323, indices:2131632},
-  {d:'19/nov', mov:-986600, banco:-570277, indices:2131632},
-  {d:'23/nov', mov:-30100, banco:-600377, indices:2131632},
-  {d:'24/nov', mov:-41518, banco:-641894, indices:2131632},
-  {d:'25/nov', mov:10000, banco:-631894, indices:2131632},
-  {d:'26/nov', mov:24475, banco:-607419, indices:2131632},
-  {d:'27/nov', mov:-40300, banco:-647719, indices:2086332},
-  {d:'30/nov', mov:-286110, banco:-933829, indices:2065332},
-  {d:'01/dez', mov:31254, banco:-902576, indices:2065332},
-  {d:'02/dez', mov:2500, banco:-900076, indices:2065332},
-  {d:'03/dez', mov:-95700, banco:-995776, indices:2065332},
-  {d:'04/dez', mov:-383079, banco:-1378855, indices:2065332},
-  {d:'07/dez', mov:165754, banco:-1213101, indices:2065332},
-  {d:'08/dez', mov:85663, banco:-1127437, indices:2065332},
-  {d:'09/dez', mov:70885, banco:-1056552, indices:2065332},
-  {d:'10/dez', mov:-55800, banco:-1112352, indices:1718540},
-  {d:'11/dez', mov:961466, banco:-150887, indices:1718540},
-  {d:'14/dez', mov:234472, banco:83585, indices:1718540},
-  {d:'15/dez', mov:35923, banco:119508, indices:1718540},
-  {d:'16/dez', mov:-5086, banco:114422, indices:1718540},
-  {d:'17/dez', mov:12929, banco:127351, indices:1718540},
-  {d:'18/dez', mov:-1291578, banco:-1164227, indices:1718540},
-  {d:'21/dez', mov:68481, banco:-1095746, indices:1718540},
-  {d:'22/dez', mov:-51, banco:-1095797, indices:1718540},
-  {d:'23/dez', mov:-20587, banco:-1116384, indices:1718540},
-  {d:'24/dez', mov:-119000, banco:-1235384, indices:1718540},
-  {d:'28/dez', mov:-34200, banco:-1269584, indices:1718540},
-  {d:'29/dez', mov:16841, banco:-1252742, indices:1673240},
-  {d:'30/dez', mov:24000, banco:-1228742, indices:1673240},
+  // ── RELAÇÃO DE NECESSIDADES · posição 13/10/2026 (Controladoria) ──────────
+  // SUBSTITUI a trajetória de 01/out em diante, que vinha da posição de 30/09.
+  // Jan a 30/set NÃO foi tocado: são dias já realizados, fora do alcance desta
+  // fonte, que começa justamente em 01/out. Nenhuma data duplicada: as 61 linhas
+  // do documento cobrem 01/out a 30/dez e entram no lugar das antigas.
+  // `total` é a coluna "Total Disponível ou Necessidade" como a fonte DECLARA,
+  // com centavos. O painel calcula banco + índices + LIMITE_CREDITO_TOTAL e em
+  // 30/dez chega a 6.683.578,00 contra os 6.683.577,76 declarados — R$ 0,24 de
+  // resíduo, porque banco e índices vêm arredondados em reais inteiros na
+  // apresentação. Vale o declarado; nada foi ajustado para fechar.
+  // O limite de R$ 6,4 milhões é crédito, não entrada: não entra como receita
+  // nem como movimento diário, só compõe o total disponível.
+  // Os pagamentos pela conta dos Índices Construtivos JÁ estão refletidos nesta
+  // movimentação e nos saldos — não são somados de novo em lugar nenhum.
+  {d:'01/out', mov:16004, banco:-655290, indices:2616414, total:8361124.48},
+  {d:'02/out', mov:-273828, banco:-929118, indices:2616414, total:8087296.71},
+  {d:'05/out', mov:131876, banco:-797242, indices:2600433, total:8203191.22},
+  {d:'06/out', mov:-327428, banco:-1124670, indices:2600433, total:7875763.06},
+  {d:'07/out', mov:55136, banco:-1069534, indices:2600433, total:7930899.44},
+  {d:'08/out', mov:20148, banco:-1049386, indices:2600433, total:7951047.06},
+  {d:'09/out', mov:52192, banco:-997194, indices:2600433, total:8003238.68},
+  {d:'13/out', mov:-209704, banco:-1206898, indices:2592441, total:7785542.82},
+  {d:'14/out', mov:1340280, banco:133381, indices:2551441, total:9084822.49},
+  {d:'15/out', mov:155000, banco:288381, indices:2551441, total:9239822.49},
+  {d:'16/out', mov:-17678, banco:270703, indices:2551441, total:9222144.03},
+  {d:'19/out', mov:59845, banco:330548, indices:2551441, total:9281988.78},
+  {d:'20/out', mov:-970550, banco:-640002, indices:2406241, total:8166238.78},
+  {d:'21/out', mov:19446, banco:-620556, indices:2406241, total:8185684.78},
+  {d:'22/out', mov:-30421, banco:-650977, indices:2406241, total:8155263.73},
+  {d:'23/out', mov:-155090, banco:-806067, indices:2406241, total:8000173.93},
+  {d:'26/out', mov:-49401, banco:-855468, indices:2406241, total:7950772.83},
+  {d:'27/out', mov:-49218, banco:-904686, indices:2392241, total:7887554.95},
+  {d:'28/out', mov:6686, banco:-898000, indices:2210241, total:7712240.95},
+  {d:'29/out', mov:-11455, banco:-909455, indices:2164941, total:7655486.05},
+  {d:'30/out', mov:-27297, banco:-936752, indices:2143941, total:7607188.67},
+  {d:'03/nov', mov:40065, banco:-896688, indices:2143941, total:7647253.29},
+  {d:'04/nov', mov:103900, banco:-792788, indices:2143941, total:7751153.29},
+  {d:'05/nov', mov:-43796, banco:-836584, indices:2143941, total:7707357.48},
+  {d:'06/nov', mov:-426595, banco:-1263178, indices:2143941, total:7280762.98},
+  {d:'09/nov', mov:87700, banco:-1175478, indices:2143941, total:7368462.98},
+  {d:'10/nov', mov:-113683, banco:-1289161, indices:2135949, total:7246788.38},
+  {d:'11/nov', mov:1425000, banco:135839, indices:2135949, total:8671788.38},
+  {d:'12/nov', mov:177645, banco:313485, indices:2135949, total:8849433.78},
+  {d:'13/nov', mov:-196450, banco:117035, indices:2135949, total:8652983.78},
+  {d:'16/nov', mov:26000, banco:143035, indices:2135949, total:8678983.78},
+  {d:'17/nov', mov:23051, banco:166086, indices:2135949, total:8702035.12},
+  {d:'18/nov', mov:85000, banco:251086, indices:2135949, total:8787035.12},
+  {d:'19/nov', mov:-986600, banco:-735514, indices:2135949, total:7800435.12},
+  {d:'23/nov', mov:-30100, banco:-765614, indices:2135949, total:7770335.12},
+  {d:'24/nov', mov:-41518, banco:-807131, indices:2135949, total:7728817.62},
+  {d:'25/nov', mov:10000, banco:-797131, indices:2135949, total:7738817.62},
+  {d:'26/nov', mov:24475, banco:-772656, indices:2135949, total:7763292.62},
+  {d:'27/nov', mov:-40300, banco:-812956, indices:2090649, total:7677692.62},
+  {d:'30/nov', mov:-286110, banco:-1099066, indices:2069649, total:7370582.62},
+  {d:'01/dez', mov:31254, banco:-1067813, indices:2069649, total:7401836.41},
+  {d:'02/dez', mov:2500, banco:-1065313, indices:2069649, total:7404336.41},
+  {d:'03/dez', mov:-95700, banco:-1161013, indices:2069649, total:7308636.41},
+  {d:'04/dez', mov:-383079, banco:-1544092, indices:2069649, total:6925557.41},
+  {d:'07/dez', mov:165754, banco:-1378338, indices:2069649, total:7091311.41},
+  {d:'08/dez', mov:85663, banco:-1292674, indices:2069649, total:7176974.71},
+  {d:'09/dez', mov:70885, banco:-1221789, indices:2069649, total:7247859.87},
+  {d:'10/dez', mov:-55800, banco:-1277589, indices:1722857, total:6845267.87},
+  {d:'11/dez', mov:961466, banco:-316124, indices:1722857, total:7806733.37},
+  {d:'14/dez', mov:234472, banco:-81652, indices:1722857, total:8041205.37},
+  {d:'15/dez', mov:35923, banco:-45729, indices:1722857, total:8077128.37},
+  {d:'16/dez', mov:-5086, banco:-50815, indices:1722857, total:8072042.09},
+  {d:'17/dez', mov:12929, banco:-37886, indices:1722857, total:8084971.19},
+  {d:'18/dez', mov:-1291578, banco:-1329464, indices:1722857, total:6793393.01},
+  {d:'21/dez', mov:68481, banco:-1260983, indices:1722857, total:6861873.91},
+  {d:'22/dez', mov:-51, banco:-1261034, indices:1722857, total:6861823.02},
+  {d:'23/dez', mov:-20587, banco:-1281621, indices:1722857, total:6841236.30},
+  {d:'24/dez', mov:-119000, banco:-1400621, indices:1722857, total:6722236.30},
+  {d:'28/dez', mov:-34200, banco:-1434821, indices:1722857, total:6688036.30},
+  {d:'29/dez', mov:16841, banco:-1417979, indices:1677557, total:6659577.76},
+  {d:'30/dez', mov:24000, banco:-1393979, indices:1677557, total:6683577.76},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -7593,6 +7607,8 @@ const COBERTURA_FLUXO = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  // 13/10: outubro entrou como mês EM ANDAMENTO (posição de 08/10).
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 
 // RH/DP tem cobertura própria (planilha da Gerência de RH).
@@ -8469,6 +8485,91 @@ const DADOS_MES = {
     fechado: true,
     ptoAtencao: '<b>Mês fechado — posição de 30/09.</b> Setembro encerrou com <b>resultado operacional de -R$ 126,0 mil</b>, a melhor operação desde junho e bem acima dos -R$ 423,0 mil de agosto. A receita fechou em <b>R$ 3.448,2 mil</b>, R$ 60,8 mil abaixo do previsto — Boletos entregaram R$ 1.489,8 mil contra R$ 1.525,0 mil orçados e Receitas Diversas R$ 602,9 mil contra R$ 626,0 mil; do outro lado, Cartões de Crédito superaram o previsto em R$ 6,5 mil. A despesa fechou em <b>R$ 3.574,2 mil</b>, R$ 24,3 mil acima do previsto, e a conta é quase inteira de <b>Pessoal de Apoio: R$ 1.605,4 mil contra R$ 1.490,5 mil orçados (+R$ 114,9 mil)</b>, puxado por <b>R$ 101,0 mil de rescisões que não estavam no orçamento</b>. Despesas de Funcionamento compensaram parte, fechando R$ 64,1 mil abaixo do previsto. <b style=\"color:var(--red);\">O resultado líquido ficou em -R$ 618,3 mil</b> porque saíram R$ 492,3 mil pela conta de Índices Construtivos — menos que os R$ 683,0 mil programados. O saldo em banco encerrou em <b>R$ 1.945,1 mil</b>, dos quais <b>R$ 2.616,4 mil são do fundo de obras e o caixa operacional livre está negativo em R$ 671,3 mil</b>: o clube só tem saldo positivo porque o recurso vinculado cobre o rombo operacional. Pela frente, <b>R$ 943,9 mil de obras já contratadas</b> em 14 parcelas até dezembro, com os dois maiores desembolsos em 28/10 (Telhado Rest. Tênis, R$ 182,0 mil) e 10/12 (Salão Panorâmico, R$ 338,8 mil).',
   },
+  out2026: {
+    label: 'Outubro/2026',
+    // ── POSICAO 08/10/2026 · "Resumo Fluxo de Caixa OUT2026" ───────────────
+    // MES EM ANDAMENTO, NAO FECHADO. Tendencia e realizado sao numeros
+    // diferentes de proposito: o realizado cobre so os oito primeiros dias.
+    // Setembro NAO foi tocado por esta carga.
+    // RECONCILIACAO entre os dois documentos da semana: o mensal declara
+    // SALDO FINAL BANCOS 08/10 = 1.551,0 e a Relacao de Necessidades de 13/10
+    // traz, em 08/out, banco -1.049.386 + indices 2.600.433 = 1.551.047.
+    // As duas fontes dao a mesma posicao; nao ha mistura.
+    // OBSERVACAO DA FONTE, NAO CORRIGIDA: o proprio relatorio de outubro traz
+    // uma linha "SALDO BANCO 31/07/2026 = R$ 1.207,2 mil". Nao e fechamento de
+    // outubro e a data nao foi alterada por suposicao — fica registrada aqui.
+    despesas: [
+      {nome:'Pessoal de Apoio', prev:1578.6, tend:1579.3, real:603.7},
+      {nome:'Despesas de Funcionamento', prev:1168.8, tend:1163.4, real:368.4},
+      {nome:'Despesas Fixas', prev:326.8, tend:325.1, real:46.6},
+      {nome:'Eventos', prev:306.4, tend:307.2, real:46.0},
+      {nome:'Esporte', prev:240.9, tend:240.6, real:117.3},
+      {nome:'Taxas e Impostos', prev:114.0, tend:115.1, real:1.1},
+      {nome:'Imobilizado', prev:72.3, tend:72.0, real:55.7},
+      {nome:'Contingências (Indenizações)', prev:23.0, tend:23.0, real:3.1},
+      {nome:'Tarifas e Desp. Bancárias', prev:9.6, tend:9.2, real:4.6},
+    ],
+    receitas: [
+      {nome:'Boletos', prev:1530.0, tend:1529.4, real:496.4},
+      {nome:'Débito em Conta', prev:715.0, tend:715.0, real:0},
+      {nome:'Receitas Diversas', prev:650.0, tend:649.3, real:154.3},
+      {nome:'Cartões Crédito', prev:490.0, tend:490.3, real:167.3},
+      {nome:'Cartões Débito', prev:187.0, tend:185.3, real:50.3},
+      {nome:'Cheque pré-datados', prev:0, tend:0, real:0},
+      {nome:'Rendimento Aplicação', prev:0, tend:0.1, real:0.1},
+      {nome:'Patrocínios', prev:0, tend:0, real:0},
+    ],
+    // Totais como o documento DECLARA. As tres colunas de receita batem no
+    // centavo com a soma das linhas (3.572,0 / 3.569,4 / 868,4). Na despesa ha
+    // 0,2 de arredondamento da propria fonte no PREVISTO: declarado 3.840,2
+    // contra 3.840,4 somando as linhas. Tendencia (3.834,9) e realizado
+    // (1.246,5) fecham exatos. Vale o declarado, sem compensacao em linha.
+    totaisReceitaDespesa: {
+      previsto:  {receita:3572.0, despesa:3840.2},
+      tendencia: {receita:3569.4, despesa:3834.9},
+      realizado: {receita:868.4,  despesa:1246.5},
+    },
+    // ── Relacao de Necessidades, posicao 13/10/2026 ───────────────────────
+    // As 14 linhas somam R$ 943.876,83 e o documento declara exatamente esse
+    // TOTAL. Mudou so a data do Telhado Dona Leopoldina (26/10 -> 14/10) em
+    // relacao a posicao de 30/09; os valores sao os mesmos.
+    // Estes pagamentos JA estao refletidos na movimentacao diaria e nos saldos
+    // da fonte — nao sao somados de novo ao fluxo nem ao total disponivel.
+    obras: [
+      {data:'05/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
+      {data:'13/10/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'14/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Dn. Leopoldina', valor:41223.08},
+      {data:'20/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:145200.00},
+      {data:'27/10/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Espaço Infinity', valor:14409.50},
+      {data:'28/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Telhado Rest. Tênis', valor:182000.00},
+      {data:'29/10/2026', fornecedor:'MTX Parc 1/15', projeto:'Muscul. dos Atletas', valor:45300.00},
+      {data:'30/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
+      {data:'10/11/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'27/11/2026', fornecedor:'MTX Parc 2/15', projeto:'Muscul. dos Atletas', valor:45300.00},
+      {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
+      {data:'10/12/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:338800.00},
+      {data:'10/12/2026', fornecedor:'—', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'29/12/2026', fornecedor:'MTX Parc 3/15', projeto:'Muscul. dos Atletas', valor:45300.00},
+    ],
+    obrasTotal: 943876.83,
+    // Percentuais derivados do proprio saldo: -1.049,4/1.551,0 = -67,7% e
+    // 2.600,4/1.551,0 = 167,7% (somam 100%).
+    // resultadoOper e o operacional REALIZADO ate 08/10: 868,4 - 1.246,5 = -378,1.
+    // resultadoLiquido soma as nao operacionais REALIZADAS: -378,1 + (-16,0) = -394,1.
+    // resultadoLiquidoTendencia e o que a fonte declara para o mes inteiro:
+    // -265,5 + (-472,47) = -737,9. Sao bases diferentes e nao se misturam.
+    caixaLivre: -1049.4, fundoObras: 2600.4, resultadoOper: -378.1, saldoTotal: 1551.0,
+    caixaLivrePct: -67.7, fundoObrasPct: 167.7, negativo: true,
+    receitaReal: 868.4, despesaReal: 1246.5,
+    resultadoLiquido: -394.1,
+    resultadoOperTendencia: -265.5, resultadoOperPrevisto: -268.2,
+    naoOperacionais: {previsto:-476.79, tendencia:-472.47, realizado:-16.0},
+    resultadoLiquidoTendencia: -737.9,
+    saldoBancoObservacaoFonte: 'O relatório de OUT2026 traz também "SALDO BANCO 31/07/2026 = R$ 1.207,2 mil". Não é fechamento de outubro; data preservada como veio.',
+    dataReferencia: '08/10/2026',
+    fechado: false,
+    ptoAtencao: '<b>Mês em andamento — posição de 08/10.</b> Outubro corre com <b>resultado operacional realizado de -R$ 378,1 mil</b>, sobre R$ 868,4 mil de receita e R$ 1.246,5 mil de despesa — oito dias úteis de um mês cuja tendência é fechar em -R$ 265,5 mil. <b style="color:var(--gold);">A tendência já nasce pior que o previsto</b>: a receita de tendência (R$ 3.569,4 mil) está praticamente colada no orçado (R$ 3.572,0 mil), mas a despesa de tendência (R$ 3.834,9 mil) vem R$ 5,3 mil abaixo de um previsto que já era de R$ 3.840,2 mil — ou seja, o déficit operacional de -R$ 268,2 mil estava <b>orçado desde o início do mês</b> e não é desvio de execução. <b style="color:var(--red);">O resultado líquido de tendência é -R$ 737,9 mil</b>, porque a tendência das entradas e saídas não operacionais é de -R$ 472,5 mil (a conta dos Índices Construtivos), dos quais apenas R$ 16,0 mil saíram até 08/10. O saldo em banco na posição era de <b>R$ 1.551,0 mil</b>, com <b>R$ 2.600,4 mil do fundo de obras e -R$ 1.049,4 mil de caixa livre</b> — a mesma leitura que a Relação de Necessidades de 13/10 traz para 08/out (banco -1.049.386 + índices 2.600.433 = 1.551.047). As duas fontes fecham entre si. Detalhes na aba <b>Fluxo de Caixa</b>.',
+  },
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -8523,9 +8624,19 @@ const AUDITORIAS_IMPORT = [
           if(!_perto(_soma(m.receitas,c), t[col].receita))
             f.push(`${L}: receitas ${col} somam ${_soma(m.receitas,c).toFixed(1)} mas o total diz ${t[col].receita}`);
         });
-        // 2) os KPIs derivam dos totais — não podem ficar de um fechamento anterior
-        if(!_perto(m.resultadoOper, t.tendencia.receita - t.tendencia.despesa))
-          f.push(`${L}: resultadoOper ${m.resultadoOper} ≠ tendência (${(t.tendencia.receita-t.tendencia.despesa).toFixed(1)})`);
+        // 2) os KPIs derivam dos totais — não podem ficar de um fechamento anterior.
+        // MÊS FECHADO: tendência e realizado são o mesmo número, e resultadoOper
+        // tem de bater com os dois. MÊS EM ANDAMENTO (fechado:false): o cartão
+        // mostra o REALIZADO até a data da posição, que é legitimamente diferente
+        // da tendência do mês inteiro — comparar com a tendência acusaria erro
+        // onde há apenas duas medidas distintas. Quando o mês em andamento também
+        // declara resultadoOperTendencia, esse campo é conferido contra a tendência.
+        const _base = m.fechado === false ? t.realizado : t.tendencia;
+        const _rot  = m.fechado === false ? 'realizado' : 'tendência';
+        if(!_perto(m.resultadoOper, _base.receita - _base.despesa))
+          f.push(`${L}: resultadoOper ${m.resultadoOper} ≠ ${_rot} (${(_base.receita-_base.despesa).toFixed(1)})`);
+        if(m.resultadoOperTendencia != null && !_perto(m.resultadoOperTendencia, t.tendencia.receita - t.tendencia.despesa))
+          f.push(`${L}: resultadoOperTendencia ${m.resultadoOperTendencia} ≠ tendência (${(t.tendencia.receita-t.tendencia.despesa).toFixed(1)})`);
         if(!_perto(m.receitaReal, t.realizado.receita)) f.push(`${L}: receitaReal ≠ realizado.receita`);
         if(!_perto(m.despesaReal, t.realizado.despesa)) f.push(`${L}: despesaReal ≠ realizado.despesa`);
         // 3) composição do saldo
