@@ -6799,6 +6799,9 @@ const PAGAMENTOS_MESES = {
   },
 
 };
+// Cobertura da base MENSAL de pagamentos (jan a set/26). Os cortes semanais
+// vivem em PAGAMENTOS_POR_PERIODO/PERIODOS e são base separada: o corte de
+// 05-09/10 NÃO cria outubro aqui nem vira fechamento do mês.
 const COBERTURA_PAGAMENTOS = {
   jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
   fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
@@ -6885,6 +6888,21 @@ const PAGAMENTOS_POR_PERIODO = {
   '28set-02out': {label:'28/09 a 02/10/2026', qtd:141, total:629615.85, maiorQtd:25, maiorTotal:505583.39, menorQtd:116, menorTotal:124032.46,
     top:[{nome:"Gba Brasil Administracao de Pessoas Ltda",qtd:1,valor:165935.78,pct:26.36},{nome:"Folha Pagamento",qtd:8,valor:62006.26,pct:9.85},{nome:"Caixa Economica Federal",qtd:5,valor:52956.92,pct:8.41},{nome:"Vitale Restaurantes Empresariais Ltda",qtd:2,valor:51968.40,pct:8.25},{nome:"M.S. (pessoa física)",qtd:1,valor:26419.80,pct:4.20},{nome:"L.A.S. (pessoa física)",qtd:1,valor:19329.71,pct:3.07},{nome:"Centro de Integração Empresa Escola",qtd:1,valor:18702.65,pct:2.97},{nome:"Prospection Producoes e Eventos Ltda",qtd:1,valor:18540.00,pct:2.94},{nome:"3S Solucoes em Servicos e Seguranca Ltda",qtd:3,valor:15737.03,pct:2.50},{nome:"E.M. (pessoa física)",qtd:1,valor:14450.00,pct:2.30},{nome:"W3K Tecnologia Ltda",qtd:2,valor:12066.51,pct:1.92},{nome:"Confederação Brasileira de Judô",qtd:1,valor:11209.53,pct:1.78},{nome:"Buffet Bettino",qtd:2,valor:10670.00,pct:1.69},{nome:"N.L.P. (pessoa física)",qtd:1,valor:9900.00,pct:1.57},{nome:"Contabilizi Consultoria Ltda",qtd:1,valor:9592.00,pct:1.52}],
     bancos:[{nome:"BANRISUL",qtd:128,total:580256.01},{nome:"PATROCÍNIO A",qtd:2,total:15303.67},{nome:"Caixa Sogipa",qtd:7,total:13980.67},{nome:"PROJ SOGIPA",qtd:3,total:11630.00},{nome:"ÍNDICES CONS",qtd:1,total:8445.50}]},
+  // ── CORTE 05 a 09/10/2026 · importado em 13/10 ────────────────────────────
+  // Fonte: "RELATORIO PAGAMENTOS 05 - 09 OUTUBRO.xlsx", aba "05.10 - 09.10".
+  // As abas históricas do arquivo (DEZEMBRO 2025 e 01-21 JAN) NÃO foram lidas.
+  // RECONCILIAÇÃO — as 181 linhas da aba fecham em todos os cortes:
+  //   total         R$ 1.098.036,91  · ticket R$ 6.066,50 (1.098.036,91 ÷ 181)
+  //   acima de 5 mil  31 · R$ 923.912,51   até 5 mil  150 · R$ 174.124,40
+  //   31 + 150 = 181  e  923.912,51 + 174.124,40 = 1.098.036,91
+  //   os 5 dias somam 181 pagamentos e os 7 bancos somam 181 · R$ 1.098.036,91
+  // `dias` é novo nesta carga e guarda a quebra diária do relatório; as demais
+  // posições não têm esse detalhe e por isso o campo é opcional.
+  // Nomes de banco exatamente como a planilha os traz (ela já abrevia).
+  '05-09out': {label:'05 a 09/10/2026', qtd:181, total:1098036.91, maiorQtd:31, maiorTotal:923912.51, menorQtd:150, menorTotal:174124.40,
+    dias:[{data:'05/10/2026',qtd:51,total:110797.43},{data:'06/10/2026',qtd:44,total:654407.77},{data:'07/10/2026',qtd:25,total:71457.65},{data:'08/10/2026',qtd:16,total:126484.09},{data:'09/10/2026',qtd:45,total:134889.97}],
+    top:[{nome:"Folha Pagamento",qtd:10,valor:593681.21,pct:54.07},{nome:"Tondo Cia Ltda",qtd:1,valor:53635.00,pct:4.88},{nome:"Capitale Energia Comercializadora Ltda.",qtd:1,valor:33513.72,pct:3.05},{nome:"Alx Eventos Esportivos",qtd:1,valor:21098.72,pct:1.92},{nome:"Mercadopago.com Representacoes Ltda.",qtd:19,valor:20861.08,pct:1.90},{nome:"Galbo Engenharia Ltda - Epp",qtd:1,valor:20298.25,pct:1.85},{nome:"Lobl Cenografia Ltda",qtd:1,valor:19000.00,pct:1.73},{nome:"Comite Brasileiro de Clubes",qtd:1,valor:17842.50,pct:1.62},{nome:"Soji Centro de Capacitacao de Idiomas Ltda",qtd:1,valor:15470.74,pct:1.41},{nome:"3S Solucoes em Servicos e Seguranca Ltda",qtd:1,valor:14138.79,pct:1.29},{nome:"Minuzzi Faccin e Simon Sociedade de Advogados",qtd:2,valor:13500.23,pct:1.23},{nome:"JB Esporte e Marketing Ltda",qtd:1,valor:13471.79,pct:1.23},{nome:"Beckenkamp Vestuario Ltda",qtd:1,valor:12760.02,pct:1.16},{nome:"Escritorio Central de Distribuição e Arrecadação",qtd:1,valor:12617.36,pct:1.15},{nome:"Ponto do Turismo Ag de Viagens Ltda",qtd:1,valor:10232.03,pct:0.93}],
+    bancos:[{nome:"BANRISUL",qtd:173,total:947078.93},{nome:"PROJETO OLIM",qtd:3,total:67967.25},{nome:"CBC EDIT 11 R",qtd:1,total:50082.48},{nome:"ÍNDICES CONS",qtd:1,total:20298.25},{nome:"ALTO RENDIME",qtd:1,total:7500.00},{nome:"PROJ SOGIPA",qtd:1,total:3360.00},{nome:"PATROCÍNIO A",qtd:1,total:1750.00}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -6910,7 +6928,12 @@ const PERIODOS = [
   {key:'21-25set',     temDados:{pagamentos:true}, ini:'2026-09-21', fim:'2026-09-25'},
   // Atravessa a virada do mês: 28, 29 e 30/09 + 01 e 02/10. 26/09 foi sábado e
   // 27/09 domingo, então o corte começa na segunda-feira, dia 28.
-  {key:'28set-02out',  temDados:{pagamentos:true}, ini:'2026-09-28', fim:'2026-10-02', atual:true},
+  {key:'28set-02out',  temDados:{pagamentos:true}, ini:'2026-09-28', fim:'2026-10-02'},
+  // Relatório "PAGAMENTOS 05 - 09 OUTUBRO" (Controladoria), aba "05.10 - 09.10".
+  // 03/10 foi sábado e 04/10 domingo: o corte começa na segunda, dia 05.
+  // É um CORTE SEMANAL, não o fechamento de outubro — a base mensal de
+  // pagamentos segue terminando em setembro e não foi tocada.
+  {key:'05-09out',     temDados:{pagamentos:true}, ini:'2026-10-05', fim:'2026-10-09', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
