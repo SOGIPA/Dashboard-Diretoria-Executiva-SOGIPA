@@ -626,7 +626,7 @@
      ficava cortado. Em tela estreita viram uma grade de 2 colunas: todos visíveis,
      área de toque maior e sem rolagem lateral escondendo opção. */
   @media (max-width:680px){
-    .rh-subtabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 18px; }
+    .rh-subtabs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin:14px 0 18px; }
     .rh-subtab-btn{
       padding:12px 8px; font-size:13px; width:100%; white-space:normal; line-height:1.25;
       min-height:48px; display:flex; align-items:center; justify-content:center; text-align:center;
@@ -1649,6 +1649,7 @@
           <div id="rhConteudo"></div>
         </div>
       </div>
+
     </div>
 
     <!-- ══════════════════ LOCAÇÕES ══════════════════ -->
@@ -3177,6 +3178,14 @@ const DP_INDICADORES = {
                      valores2025:TERCEIROS_2025, gerencial:'terceiros'},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
+  // Vale-Transporte: indicador principal é o VALOR RETIDO. `valores` segue
+  // alinhado a MESES_RH (jan–set/26) como todos os outros cards do DP; a
+  // flag `vt` faz o card e o detalhamento lerem a base própria VALE_TRANSPORTE,
+  // que cobre ago/2019 a out/2026 — assim outubro aparece quando o filtro o
+  // inclui, sem mexer na régua de meses dos demais indicadores.
+  valeTransporte:   {label:'Vale-Transporte', unidade:'R$', cor:'#f2b705', meta:null, formato:'moeda', vt:true,
+                     valores:[7327.85,9389.75,9686.85,6349.37,14284.14,10217.20,10110.91,11115.31,11165.92],
+                     nota:'Indicador principal: <b>valor retido</b>, lido da coluna RETIDO da planilha “Retenções VALE TRANSPORTE”. O aproveitamento de um período é sempre <b>Σ retido ÷ Σ solicitado</b>, nunca a média dos percentuais mensais. Em 25 dos 91 meses da série a conta <i>solicitado − creditado</i> não fecha exatamente com o retido — a maior diferença é FEV/2022 (R$ 10.000,00); os valores foram preservados como a fonte os traz.'},
 };
 const DP_PENDENTES = [];
 
@@ -3423,6 +3432,7 @@ const RH_AGG_REGRA = {
   absenteismo:'media', hht:'soma', saldoLiquido:'soma',
   infracoesPonto:'soma', horasTrabalhadas:'soma', horasFalta:'soma',
   atestados:'soma', horasExtras:'soma', custoTerceiros:'soma', custoFolha:'soma',
+  valeTransporte:'soma',
 };
 // Índices (posições em MESES_RH) do período filtrado. Fallback: todos os meses.
 let RH_PERIODO_IDX = MESES_RH.map((_,i)=>i);
@@ -7973,6 +7983,7 @@ function aplicarFiltroMes(){
   renderEsportesOcupacao(mesesEsp);
   const mesesRH = mesesEmIntervalo(mIni, aIni, mFim, aFim, COBERTURA_RH);
   setRHPeriodo(mesesRH);
+  vtSetJanela(mIni, aIni, mFim, aFim);   // Vale-Transporte: janela própria, lida pelo card do DP
   renderRH(mesKey);
   renderLocacoesPeriodo(mesKey, de, ate);
   // precisa vir ANTES do diagnóstico: ele usa esses meses para as áreas do CRA e Esportes
@@ -14465,12 +14476,233 @@ function drawObrasEvolucao(elId){
   <div style="margin-top:10px; font-size:12px; color:var(--muted);">Barras roxas = saldo final acumulado do fundo em cada competência (passe o mouse para ver entradas e investimentos do mês)</div>`;
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// RH › DP › VALE-TRANSPORTE — novo módulo, carga de 13/10/2026
+// Fonte: "Retenções VALE TRANSPORTE (1) - para o painel.xlsx", abas 2019 a 2026.
+//
+// COBERTURA: 2019 começa em AGOSTO (ano parcial) e 2026 vai até OUTUBRO
+// (ano parcial). Novembro e dezembro de 2026 vieram sem valor e com #DIV/0!
+// na coluna de aproveitamento — entraram como `null`, nunca como zero.
+//
+// RECONCILIAÇÃO: em TODOS os oito anos a soma do RETIDO mensal bate exatamente
+// com a linha "Total de retenção" da própria aba:
+//   2019 62.813,75 · 2020 78.397,21 · 2021 79.257,94 · 2022 74.460,96
+//   2023 77.477,88 · 2024 96.958,99 · 2025 82.277,62 · 2026 jan–out 100.847,93
+// (Em 2023 o mês de agosto vem rotulado "Ag" na planilha, e não "AGO".)
+//
+// DIVERGÊNCIA DA FONTE, PRESERVADA: em 25 dos 91 meses a conta
+// SOLICITADO − CREDITADO não dá exatamente o RETIDO — a maior delas é
+// FEV/2022, com R$ 10.000,00 de diferença, e JAN/2020, com R$ 6.091,90.
+// Nada foi ajustado: o indicador de retenção usa SEMPRE a coluna RETIDO,
+// e solicitado e creditado seguem cada um no seu próprio campo.
+//
+// APROVEITAMENTO: para um único mês vale o percentual da planilha. Para
+// período agregado é recalculado como Σ retido ÷ Σ solicitado × 100 — nunca
+// média simples dos percentuais mensais.
+// ══════════════════════════════════════════════════════════════════════════
+const VALE_TRANSPORTE = {
+  '2019':{declarado:62813.75, meses:[
+    null, null, null, null, null, null,
+    null, {s:55224.64,c:36563.12,r:18661.52,a:33.7900}, {s:52105.02,c:38975.50,r:13129.52,a:25.2000}, {s:56006.38,c:43454.67,r:12551.71,a:22.4100}, {s:54198.96,c:46728.94,r:7470.02,a:13.7800}, {s:57639.68,c:46638.70,r:11000.98,a:19.0900}]},
+  '2020':{declarado:78397.21, meses:[
+    {s:54745.10,c:40175.55,r:8477.65,a:15.4900}, {s:45969.84,c:38285.33,r:7496.51,a:16.3100}, {s:53876.94,c:46199.63,r:7470.51,a:13.8700}, {s:32132.00,c:21699.76,r:10432.28,a:32.4700}, {s:9372.20,c:6007.37,r:3364.83,a:35.9000}, {s:10920.64,c:7497.46,r:3423.18,a:31.3500},
+    {s:22879.21,c:15933.02,r:6946.19,a:30.3600}, {s:12284.12,c:7687.82,r:4596.30,a:37.4200}, {s:18624.98,c:11863.15,r:6761.83,a:36.3100}, {s:20544.70,c:14627.82,r:5916.88,a:28.8000}, {s:24446.82,c:17867.57,r:6579.25,a:26.9100}, {s:27375.00,c:20444.01,r:6931.80,a:25.3200}]},
+  '2021':{declarado:79257.94, meses:[
+    {s:25791.82,c:20493.68,r:5298.14,a:20.5400}, {s:26845.04,c:20385.14,r:6459.90,a:24.0600}, {s:29116.24,c:20440.12,r:8676.12,a:29.8000}, {s:25484.43,c:16009.67,r:9474.67,a:37.1800}, {s:24645.96,c:17833.26,r:6812.70,a:27.6400}, {s:27123.41,c:20811.40,r:6312.01,a:23.2700},
+    {s:26039.15,c:19769.99,r:6269.16,a:24.0800}, {s:27273.70,c:21595.80,r:5677.90,a:20.8200}, {s:30976.80,c:25295.15,r:5681.65,a:18.3400}, {s:29795.18,c:23190.69,r:6604.49,a:22.1700}, {s:29865.84,c:24664.49,r:5201.35,a:17.4200}, {s:32345.24,c:25555.39,r:6789.85,a:20.9900}]},
+  '2022':{declarado:74460.96, meses:[
+    {s:31867.28,c:26407.85,r:5459.43,a:17.1300}, {s:16107.40,c:20842.03,r:5265.37,a:32.6900}, {s:30129.92,c:22629.70,r:7500.22,a:24.8900}, {s:29763.16,c:22420.29,r:7342.87,a:24.6700}, {s:33347.20,c:26536.06,r:6811.14,a:20.4200}, {s:35552.12,c:28626.99,r:6925.13,a:19.4800},
+    {s:34425.62,c:29277.87,r:5147.75,a:14.9500}, {s:34062.92,c:27259.03,r:6803.89,a:19.9700}, {s:33753.40,c:29107.08,r:4646.32,a:13.7700}, {s:34338.18,c:28274.18,r:6064.00,a:17.6600}, {s:34356.98,c:28324.27,r:6029.71,a:17.5500}, {s:37956.68,c:31491.55,r:6465.13,a:17.0300}]},
+  '2023':{declarado:77477.88, meses:[
+    {s:33044.70,c:26674.60,r:6370.10,a:19.2800}, {s:36371.62,c:27484.39,r:8887.23,a:24.4300}, {s:33354.16,c:26548.17,r:6805.99,a:20.4100}, {s:35970.72,c:29797.76,r:6172.96,a:17.1600}, {s:37138.73,c:30846.29,r:6292.44,a:16.9400}, {s:36920.08,c:30494.26,r:6085.68,a:16.4800},
+    {s:36202.85,c:30117.17,r:6172.96,a:17.0500}, {s:36735.36,c:31217.41,r:5517.95,a:15.0200}, {s:35094.08,c:28489.99,r:6604.09,a:18.8200}, {s:35025.86,c:29005.34,r:6020.52,a:17.1900}, {s:36481.28,c:31557.83,r:4923.45,a:13.5000}, {s:34652.84,c:27028.33,r:7624.51,a:22.0000}]},
+  '2024':{declarado:96958.99, meses:[
+    {s:29528.08,c:23556.38,r:5971.70,a:20.2200}, {s:29248.34,c:22972.93,r:6275.41,a:21.4600}, {s:32907.42,c:24680.79,r:8034.63,a:24.4200}, {s:34278.38,c:27277.22,r:6797.16,a:19.8300}, {s:34613.64,c:28686.71,r:5722.93,a:16.5300}, {s:32158.62,c:19574.68,r:12343.94,a:38.3800},
+    {s:34809.85,c:25357.65,r:9452.20,a:27.1500}, {s:36136.44,c:26968.19,r:8620.70,a:23.8600}, {s:32610.55,c:24011.95,r:7821.60,a:23.9800}, {s:37052.51,c:29260.01,r:7792.50,a:21.0300}, {s:38607.33,c:29921.98,r:8685.35,a:22.5000}, {s:37869.19,c:28428.32,r:9440.87,a:24.9300}]},
+  '2025':{declarado:82277.62, meses:[
+    {s:32824.32,c:26878.69,r:5575.72,a:16.9900}, {s:32014.61,c:24914.51,r:7100.10,a:22.1800}, {s:38905.73,c:31667.73,r:7238.00,a:18.6000}, {s:36559.34,c:29640.34,r:6919.00,a:18.9300}, {s:39173.90,c:31038.25,r:7595.95,a:19.3900}, {s:38925.00,c:32240.70,r:6685.20,a:17.1700},
+    {s:43739.40,c:37885.55,r:5853.85,a:13.3800}, {s:45584.70,c:39838.50,r:4999.70,a:10.9700}, {s:45537.60,c:37546.25,r:8081.35,a:17.7500}, {s:45322.30,c:41533.75,r:3313.35,a:7.3100}, {s:46284.10,c:37628.80,r:8298.80,a:17.9300}, {s:43417.65,c:32801.05,r:10616.60,a:24.4500}]},
+  '2026':{declarado:100847.93, meses:[
+    {s:38645.90,c:31318.05,r:7327.85,a:18.9600}, {s:37011.20,c:27621.45,r:9389.75,a:25.3700}, {s:42515.70,c:32828.85,r:9686.85,a:22.7800}, {s:45802.22,c:39452.85,r:6349.37,a:13.8600}, {s:48076.96,c:33792.82,r:14284.14,a:29.7100}, {s:49868.95,c:39429.15,r:10217.20,a:20.4900},
+    {s:52840.50,c:42729.59,r:10110.91,a:19.1300}, {s:54462.82,c:43071.91,r:11115.31,a:20.4100}, {s:56588.30,c:45422.38,r:11165.92,a:19.7300}, {s:53541.00,c:42340.37,r:11200.63,a:20.9200}, null, null]}
+};
+const VT_MES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const VT_MES_EXT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const VT_ANOS = Object.keys(VALE_TRANSPORTE).sort();
+let VT_HIST_DESDE = 2019;
+let VT_JANELA = null;   // guarda o recorte atual para o redesenho
+
+function vtMes(ano, m){
+  const a = VALE_TRANSPORTE[String(ano)];
+  return (a && a.meses[m]) ? a.meses[m] : null;
+}
+// Soma os três componentes de um intervalo (ano/mês inclusive nas duas pontas).
+// Mês sem dado NÃO entra na conta e NÃO vira zero.
+function vtAgrega(aIni, mIni, aFim, mFim){
+  let s=0, c=0, r=0, n=0, primeiro=null, ultimo=null;
+  for(let a=aIni; a<=aFim; a++){
+    const de = (a===aIni) ? mIni : 0, ate = (a===aFim) ? mFim : 11;
+    for(let m=de; m<=ate; m++){
+      const x = vtMes(a,m); if(!x) continue;
+      s+=x.s; c+=x.c; r+=x.r; n++;
+      if(!primeiro) primeiro={a,m};
+      ultimo={a,m};
+    }
+  }
+  if(!n) return null;
+  return {sol:+s.toFixed(2), cre:+c.toFixed(2), ret:+r.toFixed(2), n,
+          apr: s>0 ? r/s*100 : null, primeiro, ultimo};
+}
+// Rótulos dos meses do recorte, com os que existem na base
+function vtSerie(aIni, mIni, aFim, mFim){
+  const out=[];
+  for(let a=aIni; a<=aFim; a++){
+    const de=(a===aIni)?mIni:0, ate=(a===aFim)?mFim:11;
+    for(let m=de; m<=ate; m++){
+      const x=vtMes(a,m); if(!x) continue;
+      out.push({ano:a, m, rot:VT_MES_ABREV[m] + (aIni!==aFim ? '/'+String(a).slice(2) : ''), ...x});
+    }
+  }
+  return out;
+}
+
+/* ── gráficos (SVG inline, mesmo registro visual do painel) ─────────────── */
+function vtSvg(tag, attrs){
+  const e=document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+function vtCurto(v){
+  if(v==null) return '—';
+  return v>=1000 ? Math.round(v/1000).toLocaleString('pt-BR')+'k' : Math.round(v).toString();
+}
+// Barras agrupadas com eixo "redondo" e tooltip nativo (<title>), igual ao
+// padrão já usado no gráfico de pagamentos por semana.
+function vtBarras(alvo, rotulos, series, altura){
+  const el=document.getElementById(alvo); if(!el) return;
+  el.innerHTML='';
+  const W=Math.max(el.clientWidth||680, 320), H=altura||260;
+  const m={t:20,r:14,b:34,l:52}, iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const bruto=Math.max(1, ...series.flatMap(s=>s.v.map(x=>x||0)));
+  const base=Math.pow(10, Math.floor(Math.log10(bruto/4)));
+  const passo=[1,2,2.5,5,10].map(k=>k*base).find(k=>k*4>=bruto) || base*10;
+  const max=passo*4;
+  const svg=vtSvg('svg',{width:'100%',height:H,viewBox:'0 0 '+W+' '+H,role:'img'});
+  for(let g=0; g<=4; g++){
+    const y=m.t+ih-(ih*g/4);
+    svg.appendChild(vtSvg('line',{x1:m.l,x2:m.l+iw,y1:y,y2:y,stroke:'#40415a','stroke-width':1,opacity:g?.26:.6}));
+    const t=vtSvg('text',{x:m.l-8,y:y+4,fill:'#b0b0d0','font-size':10,'text-anchor':'end'});
+    t.textContent=vtCurto(max*g/4); svg.appendChild(t);
+  }
+  const passoX=iw/rotulos.length, nS=series.length, bw=Math.min(16,(passoX-8)/nS);
+  rotulos.forEach((r,i)=>{
+    const cx=m.l+passoX*i+passoX/2;
+    const t=vtSvg('text',{x:cx,y:H-11,fill:'#b0b0d0','font-size':10.5,'text-anchor':'middle'});
+    t.textContent=r; svg.appendChild(t);
+    series.forEach((s,j)=>{
+      const v=s.v[i]; if(v==null||!v) return;
+      const hh=Math.max(2, ih*v/max), x=cx-(nS*bw)/2+j*bw+1;
+      const rect=vtSvg('rect',{x:x,y:m.t+ih-hh,width:Math.max(2,bw-2),height:hh,rx:2.5,fill:s.cor});
+      const ti=vtSvg('title'); ti.textContent = s.nome+' · '+r+': '+fmtBRL(v); rect.appendChild(ti);
+      svg.appendChild(rect);
+    });
+  });
+  el.appendChild(svg);
+}
+// Barras verticais simples com rótulo de valor — usado na série histórica.
+function vtBarrasAno(alvo, itens, altura){
+  const el=document.getElementById(alvo); if(!el) return;
+  el.innerHTML='';
+  const W=Math.max(el.clientWidth||680, 320), H=altura||250;
+  const m={t:26,r:14,b:42,l:56}, iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const bruto=Math.max(1, ...itens.map(x=>x.valor));
+  const base=Math.pow(10, Math.floor(Math.log10(bruto/4)));
+  const passo=[1,2,2.5,5,10].map(k=>k*base).find(k=>k*4>=bruto) || base*10;
+  const max=passo*4;
+  const svg=vtSvg('svg',{width:'100%',height:H,viewBox:'0 0 '+W+' '+H,role:'img'});
+  for(let g=0; g<=4; g++){
+    const y=m.t+ih-(ih*g/4);
+    svg.appendChild(vtSvg('line',{x1:m.l,x2:m.l+iw,y1:y,y2:y,stroke:'#40415a','stroke-width':1,opacity:g?.26:.6}));
+    const t=vtSvg('text',{x:m.l-8,y:y+4,fill:'#b0b0d0','font-size':10,'text-anchor':'end'});
+    t.textContent=vtCurto(max*g/4); svg.appendChild(t);
+  }
+  const passoX=iw/itens.length, bw=Math.min(54, passoX*0.56);
+  itens.forEach((x,i)=>{
+    const cx=m.l+passoX*i+passoX/2, hh=Math.max(2, ih*x.valor/max);
+    // Ano parcial sai hachurado e com rótulo próprio: não se compara com ano
+    // completo como se tivessem a mesma cobertura.
+    const rect=vtSvg('rect',{x:cx-bw/2,y:m.t+ih-hh,width:bw,height:hh,rx:3,
+      fill:x.parcial?'rgba(242,183,5,.35)':'#3d7bff',
+      stroke:x.parcial?'#f2b705':'none','stroke-width':x.parcial?1.5:0,
+      'stroke-dasharray':x.parcial?'4 3':''});
+    const ti=vtSvg('title'); ti.textContent=x.ano+(x.parcial?' (parcial · '+x.cobertura+')':' (ano completo)')+': '+fmtBRL(x.valor); rect.appendChild(ti);
+    svg.appendChild(rect);
+    const lb=vtSvg('text',{x:cx,y:m.t+ih-hh-7,fill:x.parcial?'#f2b705':'#b0b0d0','font-size':10.5,'font-weight':700,'text-anchor':'middle'});
+    lb.textContent=vtCurto(x.valor); svg.appendChild(lb);
+    const an=vtSvg('text',{x:cx,y:H-23,fill:'#ffffff','font-size':11.5,'font-weight':700,'text-anchor':'middle'});
+    an.textContent=x.ano; svg.appendChild(an);
+    if(x.parcial){
+      const p=vtSvg('text',{x:cx,y:H-9,fill:'#f2b705','font-size':9.5,'text-anchor':'middle'});
+      p.textContent='parcial'; svg.appendChild(p);
+    }
+  });
+  el.appendChild(svg);
+}
+
+/* ── render principal ──────────────────────────────────────────────────── */
+/* A subaba própria de Vale-Transporte foi REMOVIDA na v358: o indicador passou
+   a viver na grade do DP, no mesmo cartão dos demais (cardVTGrade) e no mesmo
+   mecanismo de detalhamento (abrirDetalheIndicador). Os dados, os cálculos e as
+   travas numéricas continuam exatamente os mesmos.                            */
+
+/* ── BLOCO E · série histórica, com seletor LOCAL ───────────────────────────
+   O filtro global do painel cobre 2025–2026; este bloco tem seletor próprio e
+   NÃO interfere em nenhum outro indicador. Ano parcial é marcado como tal. */
+function vtRenderHistorico(){
+  const el=document.getElementById('vtChartHistorico'); if(!el) return;
+  const itens = VT_ANOS.filter(a=>+a>=VT_HIST_DESDE).map(a=>{
+    const ms=VALE_TRANSPORTE[a].meses;
+    const com=ms.map((x,i)=>x?i:null).filter(i=>i!==null);
+    const valor=+ms.reduce((s,x)=>s+(x?x.r:0),0).toFixed(2);
+    return {ano:a, valor, parcial:com.length<12, nMeses:com.length,
+            cobertura:VT_MES_ABREV[com[0]]+' a '+VT_MES_ABREV[com[com.length-1]]};
+  });
+  vtBarrasAno('vtChartHistorico', itens, 250);
+  const parciais=itens.filter(x=>x.parcial);
+  document.getElementById('vtLegHistorico').innerHTML =
+    '<div class="legend-row"><span class="dot" style="background:#3d7bff"></span> Ano completo — 12 competências</div>'
+   +'<div class="legend-row"><span class="dot" style="background:rgba(242,183,5,.35); border:1.5px dashed #f2b705"></span> Ano parcial — cobertura menor</div>'
+   + (parciais.length
+      ? '<div class="card-meta" style="margin-top:8px;">'+parciais.map(x=>'<b>'+x.ano+'</b> cobre '+x.cobertura+' ('+x.nMeses+' meses)').join(' · ')
+        +'. Totais parciais <b>não</b> devem ser lidos como se tivessem a mesma cobertura de um ano fechado.</div>'
+      : '');
+}
+
+// Trava: a soma mensal do RETIDO tem de bater com o total declarado em cada aba.
+function conferirValeTransporte(){
+  const q=[];
+  Object.keys(VALE_TRANSPORTE).forEach(a=>{
+    const d=VALE_TRANSPORTE[a];
+    if(d.declarado==null) return;
+    const s=+d.meses.reduce((t,x)=>t+(x?x.r:0),0).toFixed(2);
+    if(Math.abs(s-d.declarado)>0.01) q.push(a+': meses somam '+s+' e a aba declara '+d.declarado);
+  });
+  const j26=+VALE_TRANSPORTE['2026'].meses.slice(0,10).reduce((t,x)=>t+(x?x.r:0),0).toFixed(2);
+  if(Math.abs(j26-100847.93)>0.01) q.push('2026 jan–out: '+j26+' ≠ 100847,93');
+  const out=VALE_TRANSPORTE['2026'].meses[9];
+  if(Math.abs(out.r-11200.63)>0.005) q.push('OUT/26 retido '+out.r+' ≠ 11200,63');
+  window.__AUDIT_VT={ok:q.length===0, quebras:q};
+  return window.__AUDIT_VT;
+}
+if(typeof window!=='undefined') window.addEventListener('load', ()=>{ try{ conferirValeTransporte(); }catch(e){} });
+
 function mudarSubAbaRH(tab){
   document.getElementById('rhSubRH').style.display = tab==='rh' ? 'block' : 'none';
   document.getElementById('rhSubDP').style.display = tab==='dp' ? 'block' : 'none';
   document.getElementById('subtabBtnRH').classList.toggle('active', tab==='rh');
   document.getElementById('subtabBtnDP').classList.toggle('active', tab==='dp');
-  // o SVG comparativo mede o container: só dá para dimensionar quando o DP aparece
+  window._subAbaRH = tab;
+  // os SVGs medem o container: só dá para dimensionar quando a aba aparece
   if(tab==='dp') setTimeout(terceirosRedesenhar, 20);
   setTimeout(ajustarTextoKPI, 30);
 }
@@ -14509,12 +14741,251 @@ function drawSparklineSVG(valores, cor, idxPeriodo){
   </svg>`;
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   VALE-TRANSPORTE · card da grade do DP e seu detalhamento.
+   Tudo reutiliza o que a aba já tem: .kpi-spark-card, .kpi-spark-label,
+   .kpi-spark-value, .kpi-spark-delta, drawSparklineSVG, montarDelta,
+   alert-box, a mesma lupa 🔍 e o mesmo contêiner `detalhe-dp`.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+// Janela do filtro global, em índices 0-11 + ano. Atualizada antes do render.
+let VT_FILTRO = {aIni:2026, i0:0, aFim:2026, i1:8};
+function vtSetJanela(mIni, aIni, mFim, aFim){
+  VT_FILTRO = {aIni:aIni, i0:mIni-1, aFim:aFim, i1:mFim-1};
+}
+// Mês imediatamente anterior ao início da janela que TENHA dado na base.
+function vtMesAnterior(){
+  let a=VT_FILTRO.aIni, m=VT_FILTRO.i0-1;
+  for(let k=0; k<24; k++){
+    if(m<0){ m=11; a--; }
+    if(a < +VT_ANOS[0]) return null;
+    const x = vtMes(a,m);
+    if(x) return {ano:a, m, ...x};
+    m--;
+  }
+  return null;
+}
+
+function vtRotuloPeriodo(){
+  const ag = vtAgrega(VT_FILTRO.aIni, VT_FILTRO.i0, VT_FILTRO.aFim, VT_FILTRO.i1);
+  if(!ag) return 'sem competência no período';
+  const a = VT_MES_EXT[ag.primeiro.m]+'/'+ag.primeiro.a, b = VT_MES_EXT[ag.ultimo.m]+'/'+ag.ultimo.a;
+  return (ag.n===1 ? a : a+' a '+b) + (ag.n>1 ? ' · '+ag.n+' meses' : '');
+}
+
+// Minigráfico de tendência: SEMPRE os 12 meses que antecedem o fim da janela,
+// com os meses do recorte em destaque — mesma leitura dos outros cards do DP,
+// que mostram a série inteira e realçam o período filtrado.
+function vtSerieSpark(){
+  const F=VT_FILTRO; const out=[]; const dentro=[];
+  let a=F.aFim, m=F.i1;
+  for(let k=0; k<12; k++){
+    const x=vtMes(a,m);
+    out.unshift(x ? x.r : null);
+    const depoisDoInicio = (a>F.aIni) || (a===F.aIni && m>=F.i0);
+    const antesDoFim = (a<F.aFim) || (a===F.aFim && m<=F.i1);
+    dentro.unshift(!!x && depoisDoInicio && antesDoFim);
+    m--; if(m<0){ m=11; a--; }
+  }
+  return {vals:out, idx:dentro.map((v,i)=>v?i:null).filter(i=>i!==null)};
+}
+
+function cardVTGrade(grupo, chave, ind){
+  const F = VT_FILTRO;
+  const ag = vtAgrega(F.aIni, F.i0, F.aFim, F.i1);
+  const serie = vtSerie(F.aIni, F.i0, F.aFim, F.i1);
+
+  if(!ag){
+    return `
+    <div class="kpi-spark-card" style="cursor:pointer;" onclick="abrirDetalheIndicador('${grupo}','${chave}')" id="card-${grupo}-${chave}">
+      <div class="kpi-spark-label">${ind.label} <span style="float:right; opacity:.5;">🔍</span></div>
+      <div class="kpi-spark-value" style="color:var(--muted); font-size:19px;">sem competência</div>
+      <div class="kpi-spark-delta"><span class="muted">a base cobre Ago/2019 a Out/2026</span></div>
+    </div>`;
+  }
+
+  // Delta contra o mês anterior quando o recorte é de um mês só — mesma regra
+  // dos demais cards. Em período, o rótulo diz o que o número representa.
+  let deltaHtml;
+  if(ag.n === 1){
+    const ant = vtMesAnterior();
+    deltaHtml = ant ? montarDelta(ag.ret - ant.r, ind, `vs. ${VT_MES_ABREV[ant.m]}/${String(ant.ano).slice(2)}`)
+                    : '<span class="muted">sem mês anterior na base</span>';
+  } else {
+    deltaHtml = `<span class="muted">somado · ${ag.n} ${ag.n===1?'mês':'meses'}</span>`;
+  }
+  const aprTxt = ag.apr==null ? '—' : ag.apr.toFixed(2).replace('.',',')+'%';
+  const sub = `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; font-size:11.5px;">`
+    + `<span style="color:#3d7bff;">Solicitado: <b>${fmtIndicadorCurto(ag.sol,'moeda')}</b></span>`
+    + `<span style="color:#00e5a0;">Creditado: <b>${fmtIndicadorCurto(ag.cre,'moeda')}</b></span>`
+    + `<span style="color:#a855f7;">Aproveit.: <b>${aprTxt}</b></span></div>`;
+
+  return `
+    <div class="kpi-spark-card" style="cursor:pointer;" onclick="abrirDetalheIndicador('${grupo}','${chave}')" id="card-${grupo}-${chave}">
+      <div class="kpi-spark-label">${ind.label} <span style="float:right; opacity:.5;">🔍</span></div>
+      <div class="kpi-spark-value" style="color:${ind.cor};">${fmtIndicador(ag.ret, ind.formato)}</div>
+      <div class="kpi-spark-delta">${deltaHtml}</div>
+      ${sub}
+      ${(()=>{ const sp=vtSerieSpark(); return drawSparklineSVG(sp.vals, ind.cor, sp.idx); })()}
+    </div>`;
+}
+
+// Leitura executiva, no mesmo tom das demais (gerarLeituraExecutiva etc.)
+function vtLeitura(ag){
+  const F = VT_FILTRO;
+  const cmpA = (F.aIni===F.aFim) ? vtAgrega(F.aFim, F.i0, F.aFim, F.i1) : null;
+  const cmpB = (F.aIni===F.aFim) ? vtAgrega(F.aFim-1, F.i0, F.aFim-1, F.i1) : null;
+  let txt = `No período, foram solicitados <b>${fmtBRL(ag.sol)}</b> em vale-transporte e creditados `
+    + `<b>${fmtBRL(ag.cre)}</b>, com <b style="color:var(--gold);">${fmtBRL(ag.ret)} retidos</b> — `
+    + `aproveitamento de <b>${ag.apr.toFixed(2).replace('.',',')}%</b>, calculado sobre a soma dos componentes.`;
+  if(cmpA && cmpB){
+    const d = cmpA.ret - cmpB.ret, pct = cmpB.ret ? d/cmpB.ret*100 : null;
+    const pp = (cmpA.apr!=null && cmpB.apr!=null) ? cmpA.apr-cmpB.apr : null;
+    txt += ` Contra o <b>mesmo intervalo de ${F.aFim-1}</b> (${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]}), a retenção `
+      + `<b style="color:var(--gold);">${d>=0?'subiu':'caiu'} ${fmtBRL(Math.abs(d))}</b>`
+      + (pct==null?'':` (${d>=0?'+':'−'}${Math.abs(pct).toFixed(1).replace('.',',')}%)`)
+      + (pp==null?'':`, com o aproveitamento ${pp>=0?'+':'−'}${Math.abs(pp).toFixed(2).replace('.',',')} p.p.`)
+      + ` — períodos equivalentes, mês a mês.`;
+  }
+  return txt;
+}
+
+// Detalhamento do VT: blocos A a E, dentro do mesmo cartão de detalhe do DP.
+function vtDetalheHTML(grupo, chave, ind){
+  const F = VT_FILTRO;
+  const ag = vtAgrega(F.aIni, F.i0, F.aFim, F.i1);
+  if(!ag){
+    return `<div class="alert-box"><span>🚫</span><div><b>Não há competências de Vale-Transporte no período selecionado.</b> `
+      + `A base cobre <b>Agosto/2019 a Outubro/2026</b>; novembro e dezembro de 2026 ainda não têm valores — `
+      + `e meses sem competência <b>não entram como zero</b>. A série histórica abaixo tem controle próprio.</div></div>`
+      + `<div class="card-label" style="margin-top:18px;">Série histórica — retido por ano</div>`
+      + vtControleHistorico()
+      + `<div id="vtChartHistorico" class="scrollx" style="margin-top:10px;"></div><div id="vtLegHistorico" style="margin-top:8px;"></div>`;
+  }
+  const aprTxt = ag.apr.toFixed(2).replace('.',',')+'%';
+  const mini = (cor,label,valor,meta)=>`
+    <div class="kpi-spark-card" style="padding:14px 16px;">
+      <div class="kpi-spark-label">${label}</div>
+      <div class="kpi-spark-value" style="color:${cor}; font-size:22px;">${valor}</div>
+      <div class="kpi-spark-delta"><span class="muted">${meta}</span></div>
+    </div>`;
+
+  // C · comparativo com o mesmo intervalo do ano anterior
+  const umAno = (F.aIni===F.aFim);
+  const cA = umAno ? vtAgrega(F.aFim, F.i0, F.aFim, F.i1) : null;
+  const cB = umAno ? vtAgrega(F.aFim-1, F.i0, F.aFim-1, F.i1) : null;
+  let compHtml;
+  if(!umAno){
+    compHtml = `<div class="alert-box" style="border-color:var(--blue);"><span>ℹ️</span><div>O comparativo anual exige um recorte dentro de <b>um único ano</b>. O período selecionado atravessa ${F.aFim-F.aIni+1} anos.</div></div>`;
+  } else if(!cA || !cB){
+    compHtml = `<div class="alert-box"><span>🚫</span><div>Não há competências equivalentes em <b>${F.aFim-1}</b> para comparar com este intervalo.</div></div>`;
+  } else {
+    const d = +(cA.ret-cB.ret).toFixed(2), pct = cB.ret ? d/cB.ret*100 : null;
+    const pp = (cA.apr!=null&&cB.apr!=null) ? cA.apr-cB.apr : null;
+    const cor = d>0 ? 'var(--gold)' : 'var(--blue)';
+    compHtml = `<div class="kpi-spark-grid">`
+      + mini('#b0b0d0', `Retido ${F.aFim-1}`, fmtIndicador(cB.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${cB.n} meses`)
+      + mini(ind.cor,   `Retido ${F.aFim}`,   fmtIndicador(cA.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${cA.n} meses`)
+      + mini(cor, 'Variação', (d<0?'− ':'+ ')+fmtIndicador(Math.abs(d),'moeda'), pct==null?'—':`${d>=0?'+':'−'}${Math.abs(pct).toFixed(1).replace('.',',')}% sobre ${F.aFim-1}`)
+      + mini('#a855f7','Aproveitamento', cA.apr.toFixed(2).replace('.',',')+'%', pp==null?'—':`${pp>=0?'+':'−'}${Math.abs(pp).toFixed(2).replace('.',',')} p.p. contra ${cB.apr.toFixed(2).replace('.',',')}%`)
+      + `</div>`;
+  }
+
+  // E · tabela mês a mês do ano filtrado contra o anterior
+  let tabHtml;
+  if(!umAno){
+    tabHtml = `<div class="card-meta">Selecione um intervalo dentro de um único ano para comparar mês a mês.</div>`;
+  } else {
+    let linhas='';
+    for(let m=F.i0; m<=F.i1; m++){
+      const A=vtMes(F.aFim,m), B=vtMes(F.aFim-1,m);
+      if(!A && !B) continue;
+      const dR=(A&&B)?+(A.r-B.r).toFixed(2):null;
+      const dP=(A&&B&&B.r)?dR/B.r*100:null;
+      const dPP=(A&&B&&A.a!=null&&B.a!=null)?+(A.a-B.a).toFixed(2):null;
+      const cor = dR==null?'var(--muted)':(dR>0?'var(--gold)':'var(--blue)');
+      const sg=v=>(v>0?'+':'');
+      linhas += `<tr><td><b>${VT_MES_EXT[m]}</b></td>`
+        + `<td class="num" style="color:var(--muted)">${B?fmtBRL(B.r):'—'}</td>`
+        + `<td class="num">${A?fmtBRL(A.r):'—'}</td>`
+        + `<td class="num" style="color:${cor}">${dR==null?'—':sg(dR)+fmtBRL(dR)}</td>`
+        + `<td class="num" style="color:${cor}">${dP==null?'—':sg(dP)+dP.toFixed(1).replace('.',',')+'%'}</td>`
+        + `<td class="num" style="color:var(--muted)">${B&&B.a!=null?B.a.toFixed(2).replace('.',',')+'%':'—'}</td>`
+        + `<td class="num">${A&&A.a!=null?A.a.toFixed(2).replace('.',',')+'%':'—'}</td>`
+        + `<td class="num" style="color:${cor}">${dPP==null?'—':sg(dPP)+dPP.toFixed(2).replace('.',',')+' p.p.'}</td></tr>`;
+    }
+    tabHtml = `<div class="scrollx"><table style="width:100%; border-collapse:collapse;">
+      <thead><tr><th>Mês</th><th class="num">Retido ${F.aFim-1}</th><th class="num">Retido ${F.aFim}</th>
+      <th class="num">Δ R$</th><th class="num">Δ %</th><th class="num">Aprov. ${F.aFim-1}</th>
+      <th class="num">Aprov. ${F.aFim}</th><th class="num">Δ p.p.</th></tr></thead>
+      <tbody>${linhas || '<tr><td colspan="8" class="card-meta">Sem meses comparáveis no intervalo.</td></tr>'}</tbody></table></div>`;
+  }
+
+  return `
+    <div class="kpi-spark-grid" style="margin-top:4px;">
+      ${mini('#3d7bff','Solicitado', fmtIndicador(ag.sol,'moeda'), 'passes pedidos no período')}
+      ${mini('#00e5a0','Creditado',  fmtIndicador(ag.cre,'moeda'), 'creditado aos colaboradores')}
+      ${mini(ind.cor,  'Retido',     fmtIndicador(ag.ret,'moeda'), 'coluna RETIDO da planilha')}
+      ${mini('#a855f7','Aproveitamento', aprTxt, ag.n===1 ? 'percentual da planilha' : 'Σ retido ÷ Σ solicitado')}
+    </div>
+
+    <div class="card-label" style="margin-top:20px;">Evolução mensal — solicitado × creditado × retido</div>
+    <div id="vtChartMensal" class="scrollx" style="margin-top:10px;"></div>
+    <div id="vtLegMensal" style="margin-top:8px;"></div>
+
+    <div class="card-label" style="margin-top:20px;">Comparativo com ${F.aFim-1} — mesmo intervalo de meses</div>
+    <div style="margin-top:10px;">${compHtml}</div>
+
+    <div class="card-label" style="margin-top:20px;">Comparativo mensal — retido ${F.aFim-1} × ${F.aFim}</div>
+    <div style="margin-top:10px;">${tabHtml}</div>
+
+    <div class="card-label" style="margin-top:20px;">Série histórica — retido por ano</div>
+    ${vtControleHistorico()}
+    <div id="vtChartHistorico" class="scrollx" style="margin-top:10px;"></div>
+    <div id="vtLegHistorico" style="margin-top:8px;"></div>`;
+}
+
+// Controle LOCAL do histórico — não toca no filtro global do painel.
+function vtControleHistorico(){
+  const ops = VT_ANOS.slice(0,-1).map(a=>`<option value="${a}"${+a===VT_HIST_DESDE?' selected':''}>${a}</option>`).join('');
+  return `<div style="display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap;">
+    <span class="card-meta">Histórico desde</span>
+    <select id="vtHistDesde" onchange="VT_HIST_DESDE=+this.value; vtRenderHistorico();"
+      style="height:34px; min-width:92px; font-size:13px; padding:0 10px;">${ops}</select>
+    <span class="card-meta">· anos parciais ficam marcados e não se comparam com anos fechados</span>
+  </div>`;
+}
+
+// Desenha os gráficos do detalhamento depois que o HTML entra no DOM.
+function vtDesenharDetalhe(){
+  const F = VT_FILTRO;
+  const serie = vtSerie(F.aIni, F.i0, F.aFim, F.i1);
+  if(serie.length && document.getElementById('vtChartMensal')){
+    vtBarras('vtChartMensal', serie.map(x=>x.rot), [
+      {nome:'Solicitado', v:serie.map(x=>x.s), cor:'#3d7bff'},
+      {nome:'Creditado',  v:serie.map(x=>x.c), cor:'#00e5a0'},
+      {nome:'Retido',     v:serie.map(x=>x.r), cor:'#f2b705'},
+    ], 250);
+    const ag = vtAgrega(F.aIni,F.i0,F.aFim,F.i1);
+    document.getElementById('vtLegMensal').innerHTML =
+      `<div class="legend-row"><span class="dot" style="background:#3d7bff"></span> Solicitado — ${fmtBRL(ag.sol)}</div>`
+     +`<div class="legend-row"><span class="dot" style="background:#00e5a0"></span> Creditado — ${fmtBRL(ag.cre)}</div>`
+     +`<div class="legend-row"><span class="dot" style="background:#f2b705"></span> Retido — ${fmtBRL(ag.ret)}</div>`;
+  }
+  vtRenderHistorico();
+}
+
 function renderIndicadoresGrid(elId, indicadores, pendentes, grupo){
   const el = document.getElementById(elId);
   const idxP = RH_PERIODO_IDX;                // meses do período filtrado
   const multi = idxP.length > 1;
   const cards = Object.keys(indicadores).map(chave=>{
     const ind = indicadores[chave];
+    // Vale-Transporte: mesmo cartão, mesma classe, mesma lupa — só a FONTE do
+    // número é a base própria (ago/2019 a out/2026), para que o card acompanhe
+    // o filtro global inclusive em outubro, mês que a régua do RH ainda não tem.
+    if(ind.vt) return cardVTGrade(grupo, chave, ind);
     // valor agregado do período (soma/média/foto conforme a regra do indicador)
     const valorAgg = agregarIndicadorRH(chave, ind.valores);
     const regra = RH_AGG_REGRA[chave] || 'soma';
@@ -15097,6 +15568,7 @@ function abrirDetalheIndicador(grupo, chave){
   const ehFolha = !!ind.folha;
   const ehJornada = !!ind.jornada;
   const ehHE = !!ind.he;
+  const ehVT = !!ind.vt;
 
   // Horas Extras: abre o bloco completo de HE que já existe na aba
   if(ehHE){
@@ -15114,10 +15586,14 @@ function abrirDetalheIndicador(grupo, chave){
   let titulo = ind.label;
   if(ehFolha)   titulo = 'Custo de Folha — Bruto × Líquido × Projeto Olímpico × Desencaixe';
   if(ehJornada) titulo = 'Jornada — Horas Trabalhadas × Horas Falta';
+  if(ehVT)      titulo = 'Vale-Transporte — solicitado, creditado e retido';
 
+  const agVT = ehVT ? vtAgrega(VT_FILTRO.aIni, VT_FILTRO.i0, VT_FILTRO.aFim, VT_FILTRO.i1) : null;
   const leitura = ehFolha
     ? gerarLeituraFolha()
-    : (ehJornada ? gerarLeituraJornada() : gerarLeituraExecutiva(ind));
+    : (ehJornada ? gerarLeituraJornada()
+    : (ehVT ? (agVT ? vtLeitura(agVT) : 'Não há competências de Vale-Transporte no período selecionado. A base cobre <b>Agosto/2019 a Outubro/2026</b>.')
+    : gerarLeituraExecutiva(ind)));
 
   const notas = (ehJornada
       ? ['horasTrabalhadas','horasFalta'].map(k=>DP_INDICADORES[k]).filter(x=>x.nota).map(x=>`<b>${x.label}:</b> ${x.nota}`)
@@ -15128,7 +15604,7 @@ function abrirDetalheIndicador(grupo, chave){
   detalheEl.innerHTML = `
     <div class="card full" style="margin-top:16px; border-left:4px solid ${ind.cor};">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-        <div class="card-label" style="font-size:15px;">${ind.icone||'📈'} ${titulo} — ${rhPeriodoLabel()}</div>
+        <div class="card-label" style="font-size:15px;">${ind.icone||'📈'} ${titulo} — ${ehVT ? vtRotuloPeriodo() : rhPeriodoLabel()}</div>
         <button onclick="window._detalheRHAberto['${grupo}']=null; document.getElementById('detalhe-${grupo}').innerHTML=''" style="background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;">✕</button>
       </div>
       <div class="alert-box" style="margin-top:12px;"><span>💡</span><div>${leitura}</div></div>
@@ -15147,11 +15623,13 @@ function abrirDetalheIndicador(grupo, chave){
         <span><span style="color:#3d7bff;">■</span> <b style="color:var(--text);">Horas Trabalhadas</b> — escala à esquerda</span>
         <span><span style="color:#fb923c;">■</span> <b style="color:var(--text);">Horas Falta</b> — escala à direita</span>
       </div>` : ''}
-      <div id="chartDetalhe-${grupo}-${chave}" class="scrollx" style="margin-top:16px;"></div>
+      ${ehVT ? vtDetalheHTML(grupo, chave, ind) : `<div id="chartDetalhe-${grupo}-${chave}" class="scrollx" style="margin-top:16px;"></div>`}
       ${ehFolha ? `<div id="tabelaComparativoFolha" style="margin-top:16px;"></div>` : ''}
       ${ehJornada ? `<div id="tabelaJornada" style="margin-top:16px;"></div>` : ''}
     </div>`;
-  if(ehFolha){
+  if(ehVT){
+    vtDesenharDetalhe();
+  } else if(ehFolha){
     drawComparativoFolhaChart(`chartDetalhe-${grupo}-${chave}`);
     renderTabelaComparativoFolha('tabelaComparativoFolha');
   } else if(ehJornada){
