@@ -1126,6 +1126,7 @@
         <div class="card">
           <div class="card-label">Negociação — Recuperação por Faixa de Atraso</div>
           <div class="card-meta" style="margin-bottom:12px;">Os quatro cards e as colunas mostram sempre o <b>último mês do período filtrado</b> — regra de estoque.</div>
+          <div id="vgAvisoPosicao"></div>
           <div id="vgFaixaKpis" class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); margin-bottom:14px;"></div>
           <div id="vgFaixaChart" class="scrollx"></div>
           <div id="vgFaixaLegenda" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
@@ -1504,6 +1505,7 @@
           Os quatro cards e as colunas mostram sempre o <b>último mês do período filtrado</b> —
           regra de estoque, igual à de sócios ativos.
         </div>
+        <div id="negAvisoPosicao"></div>
         <div id="negFaixaKpis" class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-bottom:16px;"></div>
         <div id="negFaixaChart" class="scrollx"></div>
         <div id="negFaixaLegenda" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);"></div>
@@ -4593,16 +4595,45 @@ function renderNegFaixas(meses, pfx){
   const recSomado = p.totRec;   // estoque: o mês exibido no gráfico, não a soma
   const CORES=['#00e5a0','#00e5a0','#00e5a0','#00e5a0'];
 
+  // Identificação da posição exibida — competência + data-base em TODOS os cards.
+  // Sem isso, quem abre o painel com o filtro em outro mês não tem como saber
+  // de que posição de cobrança os quatro números vieram.
+  // A data-base é SEMPRE a da própria posição. Antes de existir o campo
+  // `dataBase`, as posições antigas só registram `importadoEm` — nesses casos o
+  // card diz "importado em", e nunca empresta a data de outra competência
+  // (NEG_ATUALIZACAO, que é a data da carga mais recente).
+  const _comp = p.competencia || p.label;
+  const _db   = p.dataBase ? `posição de ${p.dataBase}`
+              : (p.importadoEm ? `importado em ${p.importadoEm}` : 'data-base não informada');
+  const _ref  = `${_comp} · ${_db}`;
+
   kEl.innerHTML =
-    cardKpi('Inadimplência na abertura', fmtBRL0(p.base), `estoque no início de ${p.label.toLowerCase()}`) +
-    cardKpi('Recuperado', fmtBRL0(recSomado), `recuperado em ${p.label.toLowerCase()}`, '#00e5a0') +
-    cardKpi('Em aberto', fmtBRL0(p.totAb), 'envelhece uma faixa no mês seguinte', '#9b86ff') +
+    cardKpi('Inadimplência na abertura', fmtBRL0(p.base), `estoque na abertura · ${_ref}`) +
+    cardKpi('Recuperado', fmtBRL0(recSomado), `recuperado · ${_ref}`, '#00e5a0') +
+    cardKpi('Em aberto', fmtBRL0(p.totAb), `em aberto · ${_ref} · envelhece uma faixa no mês seguinte`, '#9b86ff') +
     cardKpi('Taxa de recuperação',
       p.taxaOficial != null ? p.taxaOficial + '%' : fmtPct(p.totRec/p.base*100),
+      // Taxa OFICIAL só quando a Cobrança declarou uma. Sem isso, o número é
+      // explicitamente um percentual CALCULADO sobre aquela posição — nunca a
+      // taxa oficial de outra competência.
       p.taxaOficial != null
-        ? `taxa oficial da Cobrança · competência ${p.competencia||p.label} · posição de ${p.dataBase||NEG_ATUALIZACAO} (derivada ${fmtPct(p.totRec/p.base*100)})`
-        : `recuperado ÷ abertura · competência ${p.competencia||p.label} · posição de ${p.dataBase||NEG_ATUALIZACAO}`,
+        ? `taxa oficial da Cobrança · ${_ref} (derivada ${fmtPct(p.totRec/p.base*100)})`
+        : `percentual calculado · ${_ref} — recuperado ÷ abertura; a Cobrança não declarou taxa oficial para esta posição`,
       '#f2b705');
+
+  // Existe posição MAIS RECENTE do que a exibida? Avisa, sem trocar nada: a
+  // regra de estoque (último mês do recorte) continua mandando no que aparece.
+  const _avisoEl = document.getElementById(pfx+'AvisoPosicao');
+  if(_avisoEl){
+    const _ult = NEG_FAIXAS[NEG_FAIXAS.length-1];
+    _avisoEl.innerHTML = (_ult && _ult.mes !== p.mes)
+      ? `<div class="alert-box" style="border-color:var(--gold); margin-top:0; margin-bottom:14px;"><span>🗓️</span><div>`
+        + `Exibindo <b>${_comp}</b> (${_db}), que é o último mês do período filtrado. `
+        + `<b style="color:var(--gold);">Já existe posição mais recente:</b> ${_ult.competencia||_ult.label}, `
+        + `${_ult.dataBase ? 'abertura de '+_ult.dataBase : 'importada em '+(_ult.importadoEm||'—')}, com ${fmtBRL0(_ult.base)} na abertura. `
+        + `Selecione esse mês no filtro de período para vê-la — os números não se misturam entre competências.</div></div>`
+      : '';
+  }
 
   const cols=[...p.faixas.map(f=>({...f, tot:f.abertura})),
     {fx:'TOTAL', idade:'todas as faixas', ref:'', abertura:p.base, rec:p.totRec, ab:p.totAb, tot:p.base, total:true}];
