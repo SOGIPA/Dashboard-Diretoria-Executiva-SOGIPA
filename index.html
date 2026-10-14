@@ -2991,6 +2991,9 @@ const NEGOCIACOES = [
   {mes:'Jul/26', valor:402369, contatos:804},
   {mes:'Ago/26', valor:375041, contatos:null},
   {mes:'Set/26', valor:354401, contatos:null},   // posição de 07/10 — mesma coluna RECUPERADO da tabela por faixa
+  // Out/26 sai da MESMA coluna RECUPERADO do quadro por faixa da abertura de
+  // 02/10. Contatos não vieram no relatório: fica null, nunca zero.
+  {mes:'Out/26', valor:244618, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -3018,7 +3021,7 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':601528};   // abertura do mês; não muda com o avanço da cobrança
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':601528, 'Out/26':685312};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -4027,6 +4030,40 @@ const NEG_FAIXAS = [
       {fx:'FX3',   idade:'3 meses',   ref:'jun/26',     abertura:106320, rec:29000,  ab:77330, pctOficial:27},
       {fx:'FORA',  idade:'4+ meses',  ref:'<= mai/26',  abertura:117130, rec:27627,  ab:89483, pctOficial:24},
     ], selo:180456600 },
+  // ── OUTUBRO/26 · ABERTURA 02/10/2026 (relatorio de cobranca) ───────────────
+  // COMPETENCIA NOVA, nao e outra posicao de setembro: a regua avancou um mes.
+  // Em set/26 a FX1 era a divida de ago/26; aqui a FX1 e a de set/26, a FX2 a de
+  // ago/26, a FX3 a de jul/26 e "fora da faixa" e tudo ate jun/26.
+  //
+  // FOTOGRAFIA DA ABERTURA, NAO FECHAMENTO: o quadro e a posicao de 02/10/26 e
+  // NAO deve ser lido como o resultado consolidado de outubro. Por isso
+  // `fechado:false` — com outubro ainda correndo, o painel rotula a posicao
+  // como "EM CURSO" em vez de tratar como mes encerrado.
+  //
+  // RESIDUOS DE R$ 1 DA PROPRIA FONTE, PRESERVADOS SEM AJUSTE:
+  //   FX1        328.044 - 168.117 = 159.927, mas o declarado e 159.928 (+1)
+  //   coluna INICIO      faixas somam 685.311, declarado 685.312 (+1)
+  //   coluna ABERTO      faixas somam 440.693, declarado 440.694 (+1)
+  //   coluna RECUPERADO  faixas somam 244.619, declarado 244.618 (-1)
+  // O total declarado fecha exato entre si: 440.694 + 244.618 = 685.312.
+  // Nada foi distribuido entre as faixas e nada foi somado a nenhum total.
+  //
+  // PERCENTUAL: a fonte publica a coluna "%" como REDUCAO DO SALDO EM ABERTO
+  // (-49% / -27% / -16% / -24% e -36% no total). E a mesma razao que o painel ja
+  // mostra como taxa de recuperacao, com o sinal trocado: 159.928/328.044 =
+  // 48,75% na FX1 e 244.618/685.312 = 35,69% no total. O painel segue calculando
+  // a taxa a partir dos valores, sem numero digitado.
+  { mes:'Out/26', label:'Outubro/2026', fechado:false,
+    fonte:'Relatório de cobrança — ABERTURA 02/10/2026',
+    importadoEm:'14/10/2026', dataBase:'02/10/2026', competencia:'Outubro/2026',
+    inicio:685312, base:685312, totRec:244618, totAb:440694,
+    divergenciaFonte:{teto:50, motivo:'resíduo de R$ 1 da própria fonte no quadro de abertura de 02/10/2026'},
+    faixas:[
+      {fx:'FX1',   idade:'1 mês',     ref:'set/26',     abertura:328044, rec:159928, ab:168117},
+      {fx:'FX2',   idade:'2 meses',   ref:'ago/26',     abertura:90193,  rec:24768,  ab:65425},
+      {fx:'FX3',   idade:'3 meses',   ref:'jul/26',     abertura:50653,  rec:8059,   ab:42594},
+      {fx:'FORA',  idade:'4+ meses',  ref:'<= jun/26',  abertura:216421, rec:51864,  ab:164557},
+    ], selo:205593600 },
   // ── ATUALIZAÇÃO DE 07/10 · SETEMBRO/26 (nova posição oficial de cobrança) ──
   // SUBSTITUI a posição de 05/10 (base 576.700 · recuperado 329.577 · aberto
   // 247.124 · 57,15%). Não é mês novo nem soma: é a mesma competência relida.
@@ -4564,7 +4601,7 @@ function renderNegFaixas(meses, pfx){
       p.taxaOficial != null ? p.taxaOficial + '%' : fmtPct(p.totRec/p.base*100),
       p.taxaOficial != null
         ? `taxa oficial da Cobrança · competência ${p.competencia||p.label} · posição de ${p.dataBase||NEG_ATUALIZACAO} (derivada ${fmtPct(p.totRec/p.base*100)})`
-        : `recuperado ÷ abertura · dados de ${NEG_ATUALIZACAO}`,
+        : `recuperado ÷ abertura · competência ${p.competencia||p.label} · posição de ${p.dataBase||NEG_ATUALIZACAO}`,
       '#f2b705');
 
   const cols=[...p.faixas.map(f=>({...f, tot:f.abertura})),
