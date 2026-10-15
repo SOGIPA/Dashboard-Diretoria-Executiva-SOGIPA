@@ -1568,6 +1568,11 @@
         <button class="rh-subtab-btn" id="subtabBtnVendasCamp" onclick="mudarSubAbaVendas('camp')">🎯 Campanha</button>
       </div>
 
+      <!-- AVISO TEMPORÁRIO DE ATUALIZAÇÃO PENDENTE.
+           Controlado por AVISO_VENDAS.ativo — ver bloco de configuração no JS.
+           Para desligar: AVISO_VENDAS.ativo = false. Nada mais precisa mudar. -->
+      <div id="vendasAvisoAtualizacao"></div>
+
       <div id="vendasSubDesemp">
         <div class="section-title">Vendas — Associações Novas<div class="line"></div></div>
         <div id="vendasConteudo"></div>
@@ -7771,6 +7776,88 @@ const COBERTURA_RH = {
 
 // Vendas tem cobertura própria (Jan a Jul/26) — a planilha de ENTRADAS tem os 6 meses,
 // enquanto o Fluxo de Caixa (COBERTURA_MES) só tem Jun/Jul. Nunca unificar as duas.
+// ══════════════════════════════════════════════════════════════════════════
+// AVISO TEMPORÁRIO — ATUALIZAÇÃO DOS INDICADORES DE VENDAS
+// ══════════════════════════════════════════════════════════════════════════
+// PONTO ÚNICO DE CONTROLE. Quando a base revisada chegar, for validada e
+// importada, basta trocar `ativo` para false — o card some da aba Vendas e
+// nenhum outro trecho do HTML precisa ser tocado. Para remover de vez, apague
+// este bloco, a função renderAvisoVendas() e a <div id="vendasAvisoAtualizacao">
+// do markup da aba.
+//
+// A competência exibida NÃO é digitada: sai de COBERTURA_VENDAS e da última
+// data de venda efetivamente registrada na base. Quando a nova carga entrar,
+// o texto acompanha sozinho — não há data fixa para esquecer de atualizar.
+const AVISO_VENDAS = {
+  ativo: true,
+  titulo: 'Atualização dos indicadores de Vendas',
+  mensagem: 'Os indicadores de Vendas permanecem com a última base disponibilizada. '
+          + 'A atualização do período está pendente do recebimento da planilha revisada pelo setor responsável.',
+  complemento: 'Os dados serão atualizados após o recebimento e a validação da nova base.',
+  status: 'Aguardando dados',
+};
+
+// Última competência com dado de verdade, lida da própria base.
+function ultimaCompetenciaVendas(){
+  try{
+    const u = ultimoMesCobertura(COBERTURA_VENDAS);
+    if(!u) return null;
+    const cob = COBERTURA_VENDAS[u.key] || {};
+    // Última data de venda registrada no mês — a posição real da base, que pode
+    // ser anterior ao fim do mês quando a competência ainda não fechou.
+    let ultima = null;
+    const d = getVendasMes(u.key);
+    if(d && Array.isArray(d.registros)){
+      d.registros.forEach(r=>{ if(r && r.data && (!ultima || r.data > ultima)) ultima = r.data; });
+    }
+    if(!ultima && cob.fim) ultima = cob.fim;
+    const fmt = iso => { if(!iso) return null; const p=String(iso).split('-'); return p.length===3? `${p[2]}/${p[1]}/${p[0]}` : null; };
+    return {competencia:`${FMES_EXT[u.mes]}/${u.ano}`, posicao:fmt(ultima)};
+  }catch(e){ return null; }
+}
+
+function renderAvisoVendas(){
+  const el = document.getElementById('vendasAvisoAtualizacao');
+  if(!el) return;
+  if(!AVISO_VENDAS.ativo){ el.innerHTML = ''; return; }
+  const c = ultimaCompetenciaVendas();
+  // Sem conseguir identificar a competência na base, o card não inventa uma:
+  // informa que está pendente e omite a linha.
+  const linhaComp = c
+    ? `<div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:flex; flex-wrap:wrap; gap:26px;">
+         <div>
+           <div class="card-meta" style="margin:0; text-transform:uppercase; letter-spacing:.4px; font-size:11px;">Última competência disponível</div>
+           <div style="font-size:17px; font-weight:800; color:var(--text); margin-top:3px;">${c.competencia}</div>
+         </div>
+         ${c.posicao ? `<div>
+           <div class="card-meta" style="margin:0; text-transform:uppercase; letter-spacing:.4px; font-size:11px;">Posição da base</div>
+           <div style="font-size:17px; font-weight:800; color:var(--text); margin-top:3px;">${c.posicao}</div>
+         </div>` : ''}
+       </div>`
+    : '';
+  el.innerHTML =
+    `<div class="card" style="border-left:4px solid var(--blue); background:linear-gradient(90deg, rgba(61,123,255,.07), rgba(61,123,255,.02) 55%, transparent); margin-bottom:20px;">
+       <div style="display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;">
+         <div style="width:34px; height:34px; min-width:34px; border-radius:9px; background:rgba(61,123,255,.16);
+                     display:flex; align-items:center; justify-content:center; color:var(--blue);">
+           <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.1"
+                stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="7.6" x2="12" y2="7.7"/></svg>
+         </div>
+         <div style="flex:1; min-width:260px;">
+           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+             <div style="font-size:16px; font-weight:800; color:var(--text);">${AVISO_VENDAS.titulo}</div>
+             <span style="font-size:11px; font-weight:800; letter-spacing:.5px; text-transform:uppercase;
+                          color:var(--blue); background:rgba(61,123,255,.13); border:1px solid rgba(61,123,255,.3);
+                          padding:3px 10px; border-radius:999px; white-space:nowrap;">${AVISO_VENDAS.status}</span>
+           </div>
+           <div style="font-size:14.5px; color:var(--muted); line-height:1.55; margin-top:8px;">${AVISO_VENDAS.mensagem}</div>
+           <div style="font-size:13.5px; color:var(--muted); line-height:1.5; margin-top:6px;">${AVISO_VENDAS.complemento}</div>
+           ${linhaComp}
+         </div>
+       </div>
+     </div>`;
+}
+
 const COBERTURA_VENDAS = {
   jan2026: {ini:'2026-01-01', fim:'2026-01-31'},
   fev2026: {ini:'2026-02-01', fim:'2026-02-28'},
@@ -7961,6 +8048,7 @@ function agregarVendas(meses){
            alerta: alertas.length ? alertas.join(' ') : null, metas };
 }
 function renderVendasMeses(meses){
+  try{ renderAvisoVendas(); }catch(e){}
   let lista = meses, aviso = null;
   if(!lista.length){
     const u = ultimoMesCobertura(COBERTURA_VENDAS);
@@ -9413,79 +9501,111 @@ function mudarSubAbaRet(qual){
 // Taxa de Retenção do CRA = retidos ÷ (desligados + retidos); licença não é
 // retido e não entra nessa fórmula.
 // ══════════════════════════════════════════════════════════════════════════
+// ── RETENÇÕES DO CRA ───────────────────────────────────────────────────────
+// Fonte: Retenção 2026, aba "Retenção & licenças", linhas 3 a 67.
+//
+// MUDANÇA DE CRITÉRIO DE COMPETÊNCIA (auditoria de 14/10/2026) — justificada:
+// até a v360 o mês de cada acordo vinha do INÍCIO DO BENEFÍCIO (coluna G).
+// Esse campo não fecha com o consolidado da própria gestora e deixa registros
+// órfãos. Conferência dos dois critérios sobre as MESMAS 65 linhas:
+//   por DATA DO REGISTRO (col A): 39 retenções + 26 licenças = 65 · 0 sem mês
+//   por INÍCIO (col G):           38 retenções + 23 licenças = 61 · 4 sem mês
+//   declarado pela gestora:       39 retenções + 26 licenças = 65
+// Só a data do registro reproduz o bloco consolidado e aloca todas as linhas.
+// Prova adicional: por data de registro, setembro dá 3 retenções e 1 licença —
+// exatamente a correção oficial da gestora de 07/10/2026, que antes precisava
+// da camada CRA_OFICIAL para aparecer. Agora ela sai sozinha do dado.
+// O INÍCIO continua gravado em cada registro, como informação, e não define mês.
+//
+// VALORES — os três totais declarados no bloco da planilha NÃO fecham com as
+// colunas, e a causa de cada um foi localizada. Nada foi alterado na origem:
+//   "Valor retido"    declara R$ 150.114,50 · colunas somam R$ 103.909,50
+//        A diferença é EXATAMENTE R$ 46.205,00 = o número de série da data
+//        02/07/2026, que está na coluna de VALOR da linha 67 (linha colada no
+//        layout da planilha de Desligamento) e entra no SUM como se fosse
+//        dinheiro. O painel usa R$ 103.909,50, que é o somatório monetário real.
+//   "Valor negociado" declara R$ 5.499,96  · coluna soma R$ 7.511,96
+//        A fórmula é SUM(O3:O34) e os dados vão até a linha 67; fica de fora o
+//        parcelamento de R$ 2.012,00 da linha 51. O painel usa R$ 7.511,96.
+//   "Valor ofertado"  declara R$ 13.991,97 · confere com a coluna K.
 const RETENCAO_CRA = [
- {"nome": "M.P.D.A.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mai2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 420.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "A.P.D.A.", "cat": "Contribuinte", "perm": "7 meses", "mes": "abr2026", "inicio": "01/04/2026", "valor": 3507.0, "beneficios": ["1 mensalidade"], "vBeneficio": 501.0, "negociacao": "parcelamento 10x", "vNegociacao": 1169.0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.D.A.D.S.", "cat": "Veterano", "perm": "6 meses", "mes": "mar2026", "inicio": "01/03/2026", "valor": 1452.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.C.P.", "cat": "Patrimonial", "perm": "6 meses", "mes": "mar2026", "inicio": "01/03/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "M.B.D.O.V.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mai2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 420.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.B.D.M.", "cat": "Patrimonial", "perm": "6 meses", "mes": "mar2026", "inicio": "01/03/2026", "valor": 3006.0, "beneficios": ["3m vôlei"], "vBeneficio": 570.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "C.D.C.B.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "abr2026", "inicio": "01/04/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.C.F.C.S.", "cat": "Contribuinte", "perm": "6 meses", "mes": "abr2026", "inicio": "01/04/2026", "valor": 3006.0, "beneficios": [], "vBeneficio": 0, "negociacao": "parcelamento 10x", "vNegociacao": 2239.0, "sucesso": true, "beneficioUsado": false},
- {"nome": "L.A.K.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mai2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": [], "vBeneficio": 0, "negociacao": "parcelamento 12x", "vNegociacao": 2091.96, "sucesso": true, "beneficioUsado": false},
- {"nome": "B.G.", "cat": "Patrimonial individual", "perm": "6 meses", "mes": "mai2026", "inicio": "01/05/2026", "valor": 2154.0, "beneficios": [], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false},
- {"nome": "D.T.F.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 3006.0, "beneficios": ["athletic isento"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "R.D.C.C.", "cat": "Senior", "perm": "6 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 1596.0, "beneficios": ["troca de categoria", "3m academia"], "vBeneficio": 420.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "G.S.B.", "cat": "Patrimonial individual", "perm": "12 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 4308.0, "beneficios": ["athletic isento"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "C.J.J.", "cat": "Contribuinte individual", "perm": "12 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 4308.0, "beneficios": ["6m de academia", "fitness"], "vBeneficio": 1740.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "F.B.S.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 2154.0, "beneficios": ["troca de categoria", "3m academia"], "vBeneficio": 420.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "L.F.M.S.", "cat": "Univertsitário", "perm": "6 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 1503.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.Z.R.P.D.O.", "cat": "Plano teen", "perm": "6 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "E.L.D.S.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "T.E.C.", "cat": "Contribuinte", "perm": "6 meses", "mes": "jun2026", "inicio": "01/06/2026", "valor": 2254.5, "beneficios": ["2m natação"], "vBeneficio": 1020.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "A.D.R.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["isenção babá"], "vBeneficio": 1002.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "B.C.A.", "cat": "Contribuinte", "perm": "6 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "J.M.D.O.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 2154.0, "beneficios": ["troca titularidade", "yoga"], "vBeneficio": 525.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "R.R.F.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 1503.0, "beneficios": ["isenção dependentes"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "C.B.T.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["6m academia"], "vBeneficio": 840.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "M.M.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["isenção mensalidade"], "vBeneficio": 359.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "M.L.S.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m ginastica"], "vBeneficio": 519.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "R.M.P.", "cat": "Patrimonial", "perm": "12 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 6012.0, "beneficios": ["isenção dependente"], "vBeneficio": 334.0, "negociacao": "parcelamento 12x", "vNegociacao": 2012.0, "sucesso": true, "beneficioUsado": true},
- {"nome": "K.B.C.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m ginastica", "3m academia"], "vBeneficio": 825.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "D.K.B.", "cat": "Contribuinte", "perm": "10 meses", "mes": "jul2026", "inicio": "01/07/2026", "valor": 5010.0, "beneficios": ["isenção babá"], "vBeneficio": 1670.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "A.C.C.", "cat": "Contribuinte individual", "perm": "12 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 4308.0, "beneficios": ["6m academia"], "vBeneficio": 840.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "U.K.", "cat": "Contribuinte senior", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "P.M.D.F.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["isenção dependente"], "vBeneficio": 1002.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "C.D.C.B.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "T.V.G.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 840.0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "L.D.D.", "cat": "Patrimonial individual", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "D.M.C.W.", "cat": "Senior", "perm": "6 meses", "mes": "ago2026", "inicio": "01/08/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "A.B.E.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "M.C.M.M.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
- {"nome": "A.C.C.", "cat": "Contribuinte individual", "perm": null, "mes": null, "inicio": null, "valor": 0, "beneficios": ["2026-08-01 00:00:00", "s"], "vBeneficio": 0.97, "negociacao": null, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true}
+ {"nome": "M.P.D.A.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mar2026", "registro": "01/03/2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 420.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "A.P.D.A.", "cat": "Contribuinte", "perm": "7 meses", "mes": "mar2026", "registro": "06/03/2026", "inicio": "01/04/2026", "valor": 3507.0, "beneficios": ["1 mensalidade"], "vBeneficio": 501.0, "negociacao": "parcelamento 10x", "vNegociacao": 1169.0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.D.A.D.S.", "cat": "Veterano", "perm": "6 meses", "mes": "mar2026", "registro": "09/03/2026", "inicio": "01/03/2026", "valor": 1452.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.C.P.", "cat": "Patrimonial", "perm": "6 meses", "mes": "mar2026", "registro": "09/03/2026", "inicio": "01/03/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "M.B.D.O.V.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mar2026", "registro": "10/03/2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 420.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.B.D.M.", "cat": "Patrimonial", "perm": "6 meses", "mes": "mar2026", "registro": "10/03/2026", "inicio": "01/03/2026", "valor": 3006.0, "beneficios": ["3m vôlei"], "vBeneficio": 570.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "C.D.C.B.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "mar2026", "registro": "15/03/2026", "inicio": "01/04/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.C.F.C.S.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mar2026", "registro": "19/03/2026", "inicio": "01/04/2026", "valor": 3006.0, "beneficios": [], "vBeneficio": 0, "negociacao": "parcelamento 10x", "vNegociacao": 2239.0, "sucesso": true, "beneficioUsado": false},
+ {"nome": "L.A.K.", "cat": "Contribuinte", "perm": "6 meses", "mes": "mai2026", "registro": "13/05/2026", "inicio": "01/05/2026", "valor": 3006.0, "beneficios": [], "vBeneficio": 0, "negociacao": "parcelamento 12x", "vNegociacao": 2091.96, "sucesso": true, "beneficioUsado": false},
+ {"nome": "B.G.", "cat": "Patrimonial individual", "perm": "6 meses", "mes": "mai2026", "registro": "20/05/2026", "inicio": "01/05/2026", "valor": 2154.0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false},
+ {"nome": "D.T.F.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jun2026", "registro": "08/06/2026", "inicio": "01/06/2026", "valor": 3006.0, "beneficios": ["athletic isento"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "R.D.C.C.", "cat": "Senior", "perm": "6 meses", "mes": "jun2026", "registro": "08/06/2026", "inicio": "01/06/2026", "valor": 1596.0, "beneficios": ["troca de categoria", "3m academia"], "vBeneficio": 420.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "G.S.B.", "cat": "Patrimonial individual", "perm": "12 meses", "mes": "jun2026", "registro": "17/06/2026", "inicio": "01/06/2026", "valor": 4308.0, "beneficios": ["athletic isento"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "C.J.J.", "cat": "Contribuinte individual", "perm": "12 meses", "mes": "jun2026", "registro": "23/06/2026", "inicio": "01/07/2026", "valor": 4308.0, "beneficios": ["6m de academia", "fitness"], "vBeneficio": 1740.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "F.B.S.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "jun2026", "registro": "29/06/2026", "inicio": "01/06/2026", "valor": 2154.0, "beneficios": ["troca de categoria", "3m academia"], "vBeneficio": 420.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "L.F.M.S.", "cat": "Univertsitário", "perm": "6 meses", "mes": "jul2026", "registro": "01/07/2026", "inicio": "01/06/2026", "valor": 1503.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.Z.R.P.D.O.", "cat": "Plano teen", "perm": "6 meses", "mes": "jul2026", "registro": "08/07/2026", "inicio": "01/07/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "E.L.D.S.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "jul2026", "registro": "17/07/2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "T.E.C.", "cat": "Contribuinte", "perm": "6 meses", "mes": "jul2026", "registro": "21/07/2026", "inicio": "01/06/2026", "valor": 2254.5, "beneficios": ["2m natação"], "vBeneficio": 1020.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "A.D.R.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jul2026", "registro": "22/07/2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["isenção babá"], "vBeneficio": 1002.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "B.C.A.", "cat": "Contribuinte", "perm": "6 meses", "mes": "jul2026", "registro": "23/07/2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["3m natação"], "vBeneficio": 765.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "J.M.D.O.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "jul2026", "registro": "23/07/2026", "inicio": "01/07/2026", "valor": 2154.0, "beneficios": ["troca titularidade", "yoga"], "vBeneficio": 525.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "R.R.F.", "cat": "Contribuinte", "perm": "6 meses", "mes": "jul2026", "registro": "29/07/2026", "inicio": "01/08/2026", "valor": 1503.0, "beneficios": ["isenção dependentes"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "C.B.T.", "cat": "Patrimonial", "perm": "6 meses", "mes": "jul2026", "registro": "30/07/2026", "inicio": "01/07/2026", "valor": 3006.0, "beneficios": ["6m academia"], "vBeneficio": 840.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "M.M.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "ago2026", "registro": "03/08/2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["isenção mensalidade"], "vBeneficio": 359.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "M.L.S.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "registro": "10/08/2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m ginastica"], "vBeneficio": 519.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "R.M.P.", "cat": "Patrimonial", "perm": "12 meses", "mes": "ago2026", "registro": "14/08/2026", "inicio": "01/08/2026", "valor": 6012.0, "beneficios": ["isenção dependente"], "vBeneficio": 334.0, "negociacao": "parcelamento 12x", "vNegociacao": 2012.0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
+ {"nome": "K.B.C.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "registro": "17/08/2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m ginastica", "3m academia"], "vBeneficio": 825.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "D.K.B.", "cat": "Contribuinte", "perm": "10 meses", "mes": "ago2026", "registro": "18/08/2026", "inicio": "01/07/2026", "valor": 5010.0, "beneficios": ["isenção babá"], "vBeneficio": 1670.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "A.C.C.", "cat": "Contribuinte individual", "perm": "12 meses", "mes": "ago2026", "registro": "19/08/2026", "inicio": "01/08/2026", "valor": 4308.0, "beneficios": ["6m academia"], "vBeneficio": 840.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
+ {"nome": "U.K.", "cat": "Contribuinte senior", "perm": "6 meses", "mes": "ago2026", "registro": "19/08/2026", "inicio": "01/08/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "P.M.D.F.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "registro": "22/08/2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["isenção dependente"], "vBeneficio": 1002.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "C.D.C.B.", "cat": "Contribuinte individual", "perm": "6 meses", "mes": "ago2026", "registro": "24/08/2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "T.V.G.", "cat": "Contribuinte", "perm": "6 meses", "mes": "ago2026", "registro": "26/08/2026", "inicio": "01/08/2026", "valor": 3006.0, "beneficios": ["3m academia"], "vBeneficio": 840.0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "L.D.D.", "cat": "Patrimonial individual", "perm": "6 meses", "mes": "ago2026", "registro": "26/08/2026", "inicio": "01/08/2026", "valor": 2154.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "D.M.C.W.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "03/09/2026", "inicio": "01/08/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
+ {"nome": "A.B.E.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "24/09/2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
+ {"nome": "M.C.M.M.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "25/09/2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
+ {"nome": "A.C.C.", "cat": "Contribuinte individual", "mes": "ago2026", "registro": "19/08/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "linha colada no layout da planilha de Desligamento; duplica a linha 54"}
 ]
 // 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
 // vazia. A planilha revisada tem só uma. Bate com o resumo (23).
 // ── CRA · LICENÇAS — substituição integral em 07/10/2026 (mesma fonte) ──────
 // 26 licenças (a carga anterior tinha 25; o total antigo NÃO foi preservado).
 // 3 delas sem INÍCIO válido ficam com mes:null.
+// ── LICENÇAS DO CRA ────────────────────────────────────────────────────────
+// Mesma fonte e mesmo critério de competência das retenções: DATA DO REGISTRO
+// (coluna A). Licença NÃO entra no numerador de retenção efetiva — são dois
+// indicadores separados, como a gestora determinou. 26 licenças em 2026,
+// idêntico ao COUNTIF(E3:E992;"licença") do bloco da planilha.
 const LICENCAS_CRA = [
- {"nome": "F.N.", "cat": "Contribuinte individual", "mes": "fev2026", "inicio": "01/02/2026", "fim": "30/04/2026"},
- {"nome": "M.T.L.D.V.O.", "cat": "Contribuinte", "mes": "mai2026", "inicio": "25/05/2026", "fim": null},
- {"nome": "A.M.C.", "cat": "Patrimonial", "mes": "abr2026", "inicio": "10/04/2026", "fim": "10/06/2026"},
- {"nome": "S.A.", "cat": "Contribuinte", "mes": "abr2026", "inicio": "29/04/2026", "fim": "28/02/2027"},
- {"nome": "L.W.D.S.", "cat": "Patrimonial", "mes": "mai2026", "inicio": "15/05/2026", "fim": "15/04/2027"},
- {"nome": "V.P.M.", "cat": "Patrimonial", "mes": "mai2026", "inicio": "16/05/2026", "fim": "28/02/2027"},
- {"nome": "T.M.D.S.", "cat": "Contribuinte", "mes": "jun2026", "inicio": "01/06/2026", "fim": "31/05/2030"},
- {"nome": "E.R.D.A.", "cat": "Contribuinte individual", "mes": "mai2026", "inicio": "21/05/2026", "fim": "31/12/2026"},
- {"nome": "N.T.B.M.", "cat": "Contribuinte", "mes": "jun2026", "inicio": "01/06/2026", "fim": "01/06/2030"},
- {"nome": "G.M.S.", "cat": "Patrimonial individual", "mes": "jun2026", "inicio": "01/06/2026", "fim": "31/12/2026"},
- {"nome": "M.D.S.G.", "cat": "Patrimonial", "mes": "jun2026", "inicio": "01/06/2026", "fim": "31/12/2026"},
- {"nome": "C.D.M.W.", "cat": "Contribuinte", "mes": "jun2026", "inicio": "01/06/2026", "fim": "31/08/2026"},
- {"nome": "C.M.", "cat": "Contribuinte individual", "mes": "jul2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
- {"nome": "M.M.", "cat": "Patrimonial individual", "mes": "jul2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
- {"nome": "L.T.S.", "cat": "Contribuinte individual", "mes": "jun2026", "inicio": "26/06/2026", "fim": "01/07/2030"},
- {"nome": "B.C.M.", "cat": "Contribuinte individual", "mes": "jul2026", "inicio": "02/07/2026", "fim": "30/09/2026"},
- {"nome": "T.F.", "cat": "Contribuinte", "mes": "jul2026", "inicio": "03/07/2026", "fim": "31/12/2026"},
- {"nome": "L.T.L.", "cat": "Contribuinte derivado", "mes": "jul2026", "inicio": "15/07/2026", "fim": "31/03/2027"},
- {"nome": "L.G.D.S.", "cat": "Contribuinte", "mes": "jul2026", "inicio": "28/07/2026", "fim": "01/12/2026"},
- {"nome": "M.P.S.", "cat": "Patrimonial", "mes": "jul2026", "inicio": "30/07/2026", "fim": "01/12/2026"},
- {"nome": "M.S.V.", "cat": "Patrimonial", "mes": null, "inicio": null, "fim": null},
- {"nome": "M.B.D.S.", "cat": "Contribuinte", "mes": null, "inicio": null, "fim": null},
- {"nome": "E.D.M.", "cat": "Patrimonial individual", "mes": null, "inicio": null, "fim": null},
- {"nome": "J.A.P.", "cat": "Contribuinte", "mes": "abr2026", "inicio": "30/04/2026", "fim": "31/12/2026"},
- {"nome": "M.P.", "cat": "Patrimonial", "mes": "jul2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
- {"nome": "H.A.C.D.F.", "cat": "Contribuinte", "mes": "abr2026", "inicio": "27/04/2026", "fim": "30/11/2026"}
+ {"nome": "F.N.", "cat": "Contribuinte individual", "mes": "fev2026", "registro": "01/02/2026", "inicio": "01/02/2026", "fim": "30/04/2026"},
+ {"nome": "M.T.L.D.V.O.", "cat": "Contribuinte", "mes": "mar2026", "registro": "09/03/2026", "inicio": "25/05/2026", "fim": "31/10/206", "alerta": "ano da data FIM inválido na fonte (206)"},
+ {"nome": "A.M.C.", "cat": "Patrimonial", "mes": "mar2026", "registro": "20/03/2026", "inicio": "10/04/2026", "fim": "10/06/2026"},
+ {"nome": "S.A.", "cat": "Contribuinte", "mes": "abr2026", "registro": "11/04/2026", "inicio": "29/04/2026", "fim": "28/02/2027"},
+ {"nome": "L.W.D.S.", "cat": "Patrimonial", "mes": "mai2026", "registro": "14/05/2026", "inicio": "15/05/2026", "fim": "15/04/2027"},
+ {"nome": "V.P.M.", "cat": "Patrimonial", "mes": "mai2026", "registro": "16/05/2026", "inicio": "16/05/2026", "fim": "28/02/2027"},
+ {"nome": "T.M.D.S.", "cat": "Contribuinte", "mes": "mai2026", "registro": "20/05/2026", "inicio": "01/06/2026", "fim": "31/05/2030"},
+ {"nome": "E.R.D.A.", "cat": "Contribuinte individual", "mes": "mai2026", "registro": "21/05/2026", "inicio": "21/05/2026", "fim": "31/12/2026"},
+ {"nome": "N.T.B.M.", "cat": "Contribuinte", "mes": "mai2026", "registro": "21/05/2026", "inicio": "01/06/2026", "fim": "01/06/2030"},
+ {"nome": "G.M.S.", "cat": "Patrimonial individual", "mes": "jun2026", "registro": "01/06/2026", "inicio": "01/06/2026", "fim": "31/12/2026"},
+ {"nome": "M.D.S.G.", "cat": "Patrimonial", "mes": "jun2026", "registro": "01/06/2026", "inicio": "01/06/2026", "fim": "31/12/2026"},
+ {"nome": "C.D.M.W.", "cat": "Contribuinte", "mes": "jun2026", "registro": "22/06/2026", "inicio": "01/06/2026", "fim": "31/08/2026"},
+ {"nome": "C.M.", "cat": "Contribuinte individual", "mes": "jun2026", "registro": "25/06/2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
+ {"nome": "M.M.", "cat": "Patrimonial individual", "mes": "jun2026", "registro": "25/06/2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
+ {"nome": "L.T.S.", "cat": "Contribuinte individual", "mes": "jun2026", "registro": "26/06/2026", "inicio": "26/06/2026", "fim": "01/07/2030"},
+ {"nome": "B.C.M.", "cat": "Contribuinte individual", "mes": "jul2026", "registro": "02/07/2026", "inicio": "02/07/2026", "fim": "30/09/2026"},
+ {"nome": "T.F.", "cat": "Contribuinte", "mes": "jul2026", "registro": "03/07/2026", "inicio": "03/07/2026", "fim": "31/12/2026"},
+ {"nome": "L.T.L.", "cat": "Contribuinte derivado", "mes": "jul2026", "registro": "15/07/2026", "inicio": "15/07/2026", "fim": "31/03/2027"},
+ {"nome": "L.G.D.S.", "cat": "Contribuinte", "mes": "jul2026", "registro": "28/07/2026", "inicio": "28/07/2026", "fim": "01/12/2026"},
+ {"nome": "M.P.S.", "cat": "Patrimonial", "mes": "jul2026", "registro": "30/07/2026", "inicio": "30/07/2026", "fim": "01/12/2026"},
+ {"nome": "M.S.V.", "cat": "Patrimonial", "mes": "ago2026", "registro": "01/08/2026"},
+ {"nome": "M.B.D.S.", "cat": "Contribuinte", "mes": "jul2026", "registro": "17/07/2026"},
+ {"nome": "E.D.M.", "cat": "Patrimonial individual", "mes": "ago2026", "registro": "25/08/2026"},
+ {"nome": "J.A.P.", "cat": "Contribuinte", "mes": "abr2026", "registro": "06/04/2026", "inicio": "30/04/2026", "fim": "31/12/2026"},
+ {"nome": "M.P.", "cat": "Patrimonial", "mes": "jul2026", "registro": "30/07/2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
+ {"nome": "H.A.C.D.F.", "cat": "Contribuinte", "mes": "set2026", "registro": "15/09/2026", "inicio": "27/04/2026", "fim": "30/11/2026"}
 ]
 
 // ═══════════════════════════════════════════════════════════
@@ -9679,16 +9799,17 @@ function mesesRetencaoAtuais(){
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// CRA · POSIÇÃO OFICIAL DA GESTORA — correção de 07/10/2026
-// A gestora confirmou SETEMBRO/2026 com 3 retenções e 1 licença. A planilha
-// "Retenção 2026(4)" identifica, por INÍCIO, apenas 2 retenções e nenhuma
-// licença em setembro — e NÃO há como apontar quais registros individuais
-// completam a diferença sem inventar informação (existem 1 retenção e 3
-// licenças sem INÍCIO válido, mas nada na fonte diz que sejam de setembro).
-// Por isso a base individual foi PRESERVADA intacta e a posição oficial entra
-// aqui, como camada de totais gerenciais. O delta é aplicado MÊS A MÊS, então
-// o acumulado de qualquer recorte que inclua setembro se recalcula sozinho —
-// não existe número de acumulado digitado em lugar nenhum.
+// CRA · POSIÇÃO OFICIAL DA GESTORA — de remendo a TRAVA DE CONFERÊNCIA
+// Até a v360 esta camada SOMAVA um delta aos totais: a competência vinha do
+// INÍCIO do benefício e setembro só mostrava 2 retenções e 0 licença, então os
+// 3 e 1 confirmados pela gestora precisavam ser injetados por fora.
+// Com a competência corrigida para a DATA DO REGISTRO (ver cabeçalho de
+// RETENCAO_CRA), setembro passa a dar 3 retenções e 1 licença lendo APENAS os
+// registros individuais. O número oficial deixou de precisar de remendo.
+// A declaração da gestora continua aqui, mas agora com a função inversa: ela
+// CONFERE a base. Se um dia a leitura deixar de bater com o que foi declarado,
+// o delta volta a ser diferente de zero e a divergência aparece em
+// __AUDIT_CRA.oficial em vez de ser silenciosamente compensada.
 const CRA_OFICIAL = {
   set2026: {retencoes:3, licencas:1, fonte:'gestora do CRA, confirmação de 07/10/2026'},
 };
@@ -9699,12 +9820,72 @@ function deltaOficialCRA(keys){
     const r = RETENCAO_CRA.filter(x=>x.mes===k).length;
     const l = LICENCAS_CRA.filter(x=>x.mes===k).length;
     if(o.retencoes!=null && o.retencoes!==r){ dRet += o.retencoes-r;
-      notas.push(`${k}: ${o.retencoes} retenções confirmadas pela gestora, ${r} identificadas por INÍCIO na planilha`); }
+      notas.push(`${k}: ${o.retencoes} retenções confirmadas pela gestora, ${r} identificadas na planilha por DATA DO REGISTRO`); }
     if(o.licencas!=null && o.licencas!==l){ dLic += o.licencas-l;
-      notas.push(`${k}: ${o.licencas} licença(s) confirmada(s) pela gestora, ${l} identificada(s) por INÍCIO na planilha`); }
+      notas.push(`${k}: ${o.licencas} licença(s) confirmada(s) pela gestora, ${l} identificada(s) na planilha por DATA DO REGISTRO`); }
   });
   return {dRet, dLic, notas};
 }
+
+// ── TRAVA ASSINADA DO CRA ──────────────────────────────────────────────────
+// Confere, no menor nível disponível, o que o painel carrega contra o que as
+// quatro planilhas declaram. Nada aqui corrige nada: só acusa.
+const CRA_TRAVAS = {
+  retencoes:     {painel:39,  fonte:39,  origem:'COUNTIF(E3:E992;"retenção") — Retenção 2026'},
+  licencas:      {painel:26,  fonte:26,  origem:'COUNTIF(E3:E992;"licença") — Retenção 2026'},
+  somaRetLic:    {painel:65,  fonte:65,  origem:'bloco S7 da planilha Retenção 2026'},
+  ocorrencias:   {painel:122, fonte:122, origem:'linhas válidas de Ocorrências 2026'},
+  manifestacoes: {painel:231, fonte:231, origem:'linhas válidas de Satisfação 2026'},
+  reclamacoes:   {painel:184, fonte:184, origem:'Satisfação 2026, Status = Reclamação'},
+  sugestoes:     {painel:44,  fonte:44,  origem:'Satisfação 2026, Status = Sugestão'},
+  elogios:       {painel:3,   fonte:3,   origem:'Satisfação 2026, Status = Elogio'},
+};
+function conferirCRA(){
+  const d=[], obs=[];
+  try{
+    const bate=(rot,calc,esp)=>{ if(calc!==esp) d.push(`${rot}: painel calcula ${calc}, fonte declara ${esp}`); };
+    bate('retenções (base individual)', RETENCAO_CRA.length, CRA_TRAVAS.retencoes.fonte);
+    bate('licenças (base individual)',  LICENCAS_CRA.length, CRA_TRAVAS.licencas.fonte);
+    bate('retenções + licenças', RETENCAO_CRA.length+LICENCAS_CRA.length, CRA_TRAVAS.somaRetLic.fonte);
+    bate('ocorrências',   OCORRENCIAS.length,   CRA_TRAVAS.ocorrencias.fonte);
+    bate('manifestações', MANIFESTACOES.length, CRA_TRAVAS.manifestacoes.fonte);
+    bate('reclamações',   MANIFESTACOES.filter(m=>m.tipo==='Reclamação').length, CRA_TRAVAS.reclamacoes.fonte);
+    bate('sugestões',     MANIFESTACOES.filter(m=>m.tipo==='Sugestão').length,   CRA_TRAVAS.sugestoes.fonte);
+    bate('elogios',       MANIFESTACOES.filter(m=>m.tipo==='Elogio').length,     CRA_TRAVAS.elogios.fonte);
+    // todo registro de retenção/licença precisa cair em ALGUM mês
+    const orf = RETENCAO_CRA.filter(x=>!x.mes).length + LICENCAS_CRA.filter(x=>!x.mes).length;
+    if(orf) d.push(`${orf} registro(s) de retenção/licença sem mês de competência`);
+    // o delta oficial precisa ser ZERO agora que a competência está correta
+    const of = deltaOficialCRA(Object.keys(CRA_OFICIAL));
+    if(of.dRet!==0 || of.dLic!==0) d.push('posição oficial da gestora deixou de bater com a base: '+of.notas.join(' | '));
+  }catch(e){ d.push('erro ao conferir CRA: '+e.message); }
+  window.__AUDIT_CRA = {ok:d.length===0, divergencias:d, observacoes:CRA_OBS};
+  return window.__AUDIT_CRA;
+}
+
+// ── DIVERGÊNCIAS DA PRÓPRIA FONTE, PRESERVADAS E REGISTRADAS ───────────────
+// Nenhuma destas foi corrigida na origem nem compensada no painel.
+const CRA_OBS = [
+  'Retenção 2026, linha 67: registro colado no layout da planilha de Desligamento e duplicando a linha 54 (mesma matrícula). Suas colunas de VALOR contêm DATAS. O SUM(I3:I992) do bloco soma a data 02/07/2026 como número e infla o "Valor retido" em exatamente R$ 46.205,00 (150.114,50 declarado × 103.909,50 real). O painel usa o somatório monetário real e não importou a linha como dinheiro.',
+  'Retenção 2026: "Valor negociado" declarado (R$ 5.499,96) vem de SUM(O3:O34), mas os dados vão até a linha 67 — fica de fora o parcelamento de R$ 2.012,00 da linha 51. O painel usa R$ 7.511,96, a soma da coluna inteira.',
+  'Retenção 2026, linha 8: ano da data FIM inválido na fonte ("31/10/206"). Preservado como está; não foi corrigido para 2026 por suposição.',
+  'Retenção 2026, linhas 51, 54, 64 e 65: data FIM anterior à data de INÍCIO. Valores preservados exatamente como informados.',
+  'Retenção 2026, linhas 45 e 60: mesma matrícula (110099) com duas licenças de períodos diferentes. Pode ser renovação ou duplicidade — não é possível decidir com a fonte. Ambas preservadas.',
+  'Desligamento 2026, aba Evolução: a coluna 2026 é inteiramente DIGITADA, sem nenhuma fórmula ligando-a às abas mensais. Bate com a contagem de linhas de janeiro a julho e descola a partir de agosto (46×47 linhas), setembro (10×12 com saída) e outubro (26×29 com saída).',
+  'Desligamento 2026: a coluna DESLIGADO não está preenchida de forma homogênea. Preenchimento por mês — jan 75%, fev 70%, MAR 6%, abr 73%, mai–jul 100%, ago 98%, set 92%, out 97%. Indicador de desligamento EFETIVO só é mensurável a partir de maio; março com 2 saídas confirmadas em 32 solicitações é coluna em branco, não queda real.',
+  'Desligamento 2026, abas mensais: o quadro-resumo lateral usa COUNTIF com texto exato de categoria, então toda linha com grafia divergente some da contagem. Em outubro isso tira 3 linhas ("Contribuinte " com espaço, "Contibuinte individual" com erro de digitação e "Veterano " com espaço) e inclui 1 solicitação sem saída — por isso o quadro declara 27 enquanto as linhas com data de desligamento somam 29.',
+  'Desligamento 2026, aba Outubro: as fórmulas Q32 e T21 do quadro lateral estão quebradas (#REF!) e os campos "Solicitações totais", "quantos são deste mês?" e "quantos foram desligados" devolvem 0. Só "quantos são residuais?" (13) e "quantos retidos?" (2) carregam valor real, e ambos conferem com a contagem linha a linha.',
+  'Desligamento 2026, aba Novembro: 2 registros com desligamento PROGRAMADO para 01/11/2026, data futura. Não foram contabilizados como desligamentos realizados.',
+  'Setembro/2026, linha 11, e Março/2026, linha 5: data de desligamento gravada como TEXTO ("04/09/2026" e "31.03.2026") e não como data. Tratadas como data na leitura — é o que faz setembro fechar nos 12 oficiais da gestora.',
+  'Desligamento 2026, aba Abril, linha 82 (matrícula 118800): registro sem CATEGORIA, sem DEPENDENTE, sem TICKET e sem data de desligamento, com motivo "sem motivo". Era a razão de a soma das categorias de abril dar 137 contra 138 no total. Nenhuma categoria foi atribuída a ele: aparece como "Sem classificação", que é o que a fonte informa, e com isso a soma das classificações volta a fechar com o total do indicador.',
+  'Satisfação 2026: 5 registros sem número de protocolo. Nenhum protocolo duplicado entre os 231.',
+  'Ocorrências 2026: 7 registros marcados com ressarcimento "sim", mas só 6 trazem valor. 3 ocorrências seguem sem data de fechamento, todas do tipo Sindicância.',
+  'Ocorrências 2026: "Comportamento de Funcionário" aparece com 3 registros e "Comportamento de funcionário" com 1 — mesma classificação, grafia diferente. 2 registros sem assunto. Grafias preservadas como na fonte.',
+  'Ocorrências e Satisfação 2026: o campo "Prazo" da fonte é DURAÇÃO em dias (fechamento − abertura), conferido linha a linha. Não existe prazo-alvo nas planilhas. O SLA de 5 dias úteis usado nos indicadores de desempenho é regra do painel e NÃO vem da fonte — PENDENTE DE VALIDAÇÃO pela gestora.',
+  'CÓDIGO MORTO COM NÚMEROS CONFLITANTES — DADOS_MES.jun2026.retencao e DADOS_MES.jul2026.retencao guardam uma SEGUNDA cópia dos KPIs de desligamento, sobra de versões antigas. Julho declara 63 solicitações ali contra 62 na base viva. Nenhuma tela lê esses blocos: todo acesso passa por getRetencaoMes(), que só devolve DESLIGAMENTOS_MESES. Preservados nesta carga para não mexer em estrutura fora do escopo, mas são armadilha para a próxima importação e deveriam ser removidos.',
+  'Retenção 2026: as bases de Ocorrências e Satisfação chegaram em 14/10 byte a byte idênticas às de 07/10, e a de Retenção só teve uma linha vazia removida. Das quatro planilhas, apenas Desligamento trouxe dado novo (Outubro 25→32 linhas, Novembro 3→2).',
+];
+if(typeof window!=='undefined') window.addEventListener('load', ()=>{ try{ conferirCRA(); }catch(e){} });
 
 function renderRetencaoCRA(mesesSel){
   const el = document.getElementById('retencaoConteudo');
@@ -9716,12 +9897,14 @@ function renderRetencaoCRA(mesesSel){
   const noPeriodo = keys.length ? RETENCAO_CRA.filter(r=>r.mes && keys.includes(r.mes))
                   : (filtroAtivo0 ? [] : RETENCAO_CRA);
   const semData = RETENCAO_CRA.filter(r=>!r.mes);
-  // Acordo sem data de início na planilha (hoje só B.G.) não cabe em nenhum mês,
-  // então ficava fora de TODO filtro — inclusive "ano inteiro", onde o painel
-  // mostrava 24 e a planilha 25. A gestora estranhou, com razão: com o período
-  // cobrindo o ano, o número tem de ser o total. Quando o filtro abrange todos
-  // os meses cobertos, os sem data entram; num recorte menor, continuam fora
-  // (não há como saber a que mês pertencem) e o aviso no topo explica.
+  // RESOLVIDO em 14/10/2026. Enquanto a competência vinha do INÍCIO do benefício,
+  // 1 retenção e 3 licenças não tinham data válida e ficavam fora de TODO filtro —
+  // era por isso que o "ano inteiro" mostrava 24 onde a planilha dizia 25, e a
+  // gestora estranhou com razão. Com a competência pela DATA DO REGISTRO (coluna A),
+  // que é preenchida em todas as 65 linhas, não existe mais registro órfão:
+  // semData.length é 0 e o aviso abaixo deixa de aparecer sozinho.
+  // A lógica foi mantida de propósito — se uma carga futura voltar a trazer
+  // registro sem competência, o aviso reaparece em vez de o número sumir calado.
   const cobertos = Object.keys(COBERTURA_RETENCAO_CRA);
   const periodoTotal = keys.length && cobertos.every(k=>keys.includes(k));
   const base = periodoTotal ? noPeriodo.concat(semData) : noPeriodo;
@@ -9800,6 +9983,21 @@ function renderRetencaoCRA(mesesSel){
         <div class="card-label">📊 % Taxa de Retenção</div>
         <div class="card-value" style="color:${corTaxa};">${taxaRet.toFixed(0)}%</div>
         <div class="card-meta">retenções sobre retenções + desligamentos${baseTaxa ? ` · ${nRet} de ${baseTaxa}` : ''}</div>
+        ${(()=>{
+          // jan-abr/2026: a coluna DESLIGADO da planilha esta quase toda vazia
+          // (75%, 70%, 6% e 73% de preenchimento), entao o numero de
+          // desligamentos desses meses e o total DECLARADO pela gestora, que
+          // ali equivale a SOLICITACOES. Misturado ao denominador, achata a taxa.
+          const INCOMPAT = ['jan2026','fev2026','mar2026','abr2026'];
+          const afetados = (mesesTaxa||[]).filter(k=>INCOMPAT.includes(k));
+          if(!afetados.length) return '';
+          return `<div class="card-meta" style="margin-top:8px; color:var(--gold);">
+            ⚠ Denominador não é da mesma natureza do numerador neste recorte:
+            em <b>${afetados.length} mês${afetados.length===1?'':'es'}</b> (jan–abr/2026) o painel usa o
+            total declarado pela gestora, que ali corresponde a <b>solicitações</b> — a coluna de data de
+            saída da planilha está quase toda em branco nesses meses. A taxa sai <b>subestimada</b>.
+            Fórmula preservada; <b>pende validação da gestora</b> sobre qual base usar.</div>`;
+        })()}
       </div>
     </div>
 `;   // o aviso de registros sem data já existe abaixo nesta mesma tela
@@ -10017,7 +10215,7 @@ function renderRetencaoCRA(mesesSel){
     <div class="section-title" style="margin-top:26px;">Licenças<div class="line"></div></div>
     <div class="card full">
       <div class="card-label">${LICENCAS_CRA.length} licenças registradas em 2026</div>
-      <div class="card-meta" style="margin-top:8px;">Suspensão temporária do vínculo — alternativa ao desligamento, tratada pelo mesmo processo do CRA. ${LICENCAS_CRA.filter(l=>!l.mes).length} sem data de início na planilha. Se a gestora preferir, dá para mover as licenças para uma sub-aba própria.</div>
+      <div class="card-meta" style="margin-top:8px;">Suspensão temporária do vínculo — alternativa ao desligamento, tratada pelo mesmo processo do CRA. Licença <b>não</b> entra no numerador de retenção efetiva: são dois indicadores separados.${(()=>{const o=LICENCAS_CRA.filter(l=>!l.mes).length; return o? ` <b style="color:var(--gold);">${o} sem mês de competência na planilha.</b>` : '';})()} Se a gestora preferir, dá para mover as licenças para uma sub-aba própria.</div>
     </div>
     <div class="section-title" style="margin-top:26px;">Histórico de Retenção<div class="line"></div></div>
     <div class="card full">
@@ -11268,8 +11466,8 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
       </div>
     </div>
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
-      ${cardKpi('🎫 Ticket Médio', r.ticketMedio, 'das solicitações de desligamento')}
-      ${cardKpi('👨‍👩‍👧 Média de Dependentes', r.dependentes, 'por solicitação')}
+      ${cardKpi('🎫 Ticket Médio', r.ticketMedio, 'dos registros com desligamento')}
+      ${cardKpi('👨‍👩‍👧 Média de Dependentes', r.dependentes, 'por desligamento')}
       ${cardKpi('🔁 ' + r.residualLabel, r.residual, 'pendentes de períodos anteriores')}
       ${r.desligadosComTaxa ? cardKpi('💲 Taxa de Desligamento', r.desligadosComTaxa,
           r.taxaQtd!=null ? `cobrada de ${r.taxaQtd} desligado${r.taxaQtd===1?'':'s'} no período` : 'valor de taxa cobrada') : ''}
@@ -11653,17 +11851,25 @@ function computarTendenciaCaixa(){
 // planilha Desligamento 2026(5). É a referência de conferência — não substitui
 // os registros, confere com eles. Em 8 dos 9 meses o número de linhas
 // preenchidas da aba mensal bate exatamente com o declarado aqui.
-const DESLIGAMENTO_EVOLUCAO = {jan2026:48, fev2026:67, mar2026:32, abr2026:138, mai2026:83, jun2026:52, jul2026:44, ago2026:46, set2026:10};
-// Conferência linhas preenchidas na aba × declarado na Evolução:
-//   jan2026  declarado 48   · linhas 48   · preenchidas 48  
-//   fev2026  declarado 67   · linhas 67   · preenchidas 67  
-//   mar2026  declarado 32   · linhas 32   · preenchidas 32  
-//   abr2026  declarado 138  · linhas 138  · preenchidas 138 
-//   mai2026  declarado 83   · linhas 83   · preenchidas 83  
-//   jun2026  declarado 52   · linhas 52   · preenchidas 52  
-//   jul2026  declarado 44   · linhas 44   · preenchidas 44  
-//   ago2026  declarado 46   · linhas 47   · preenchidas 46  
-//   set2026  declarado 10   · linhas 13   · preenchidas 12     <<< DIVERGÊNCIA DA PRÓPRIA FONTE, preservada
+const DESLIGAMENTO_EVOLUCAO = {jan2026:48, fev2026:67, mar2026:32, abr2026:138, mai2026:83, jun2026:52, jul2026:44, ago2026:46, set2026:10, out2026:26};
+// Conferência de 14/10/2026 — declarado na Evolução × linhas da aba mensal ×
+// linhas COM DATA DE SAÍDA. A terceira coluna é a única que corresponde ao
+// rótulo "desligado"; onde ela difere do declarado, a divergência é da fonte e
+// está preservada. A taxa de preenchimento da coluna DESLIGADO explica tudo:
+//   mês      declarado   linhas   com data de saída   preenchimento
+//   jan2026      48        48            36               75%
+//   fev2026      67        67            47               70%
+//   mar2026      32        32             2                6%   <<< coluna em branco, não é queda real
+//   abr2026     138       138           101               73%
+//   mai2026      83        83            83              100%
+//   jun2026      52        52            52              100%
+//   jul2026      44        44            44              100%
+//   ago2026      46        47            46               98%
+//   set2026      10        13            12               92%   <<< gestora validou 12 em 07/10
+//   out2026      26        32            29               97%   <<< 2 retenções e 1 solicitação sem saída à parte
+// Indicador de desligamento EFETIVO só é mensurável de MAIO em diante. Para
+// jan–abr o painel continua exibindo o total declarado pela gestora, que é a
+// referência oficial da série, com o rótulo dizendo exatamente isso.
 function conferirEvolucaoDesligamento(){
   const d=[];
   Object.keys(DESLIGAMENTO_EVOLUCAO).forEach(k=>{
@@ -11684,7 +11890,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'48', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'23', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'25', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'48', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'48', sub:'total declarado pela gestora (36 com data de saída)', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'nenhuma retenção no mês', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11708,7 +11914,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'67', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'34', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'33', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'67', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'67', sub:'total declarado pela gestora (47 com data de saída)', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'0', sub:'nenhuma retenção no mês', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11732,7 +11938,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'41', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'0', sub:'nenhuma de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'32', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'32', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'32', sub:'total declarado pela gestora (2 com data de saída)', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'9', sub:'9 retenções', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11756,11 +11962,11 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'143', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'95', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'45', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'138', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'138', sub:'total declarado pela gestora (101 com data de saída)', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'3', sub:'3 retenções', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'}, {nome:'Patrimonial', qtd:33, cor:'#00e5a0'}, {nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'}, {nome:'Contribuinte Universitário', qtd:4, cor:'#f2b705'}, {nome:'Patrimonial Individual', qtd:3, cor:'#06b6d4'}, {nome:'Veterano Contribuinte', qtd:3, cor:'#fb923c'}, {nome:'Veterano (isento)', qtd:2, cor:'#e8192c'}, {nome:'Contribuinte Individual Derivado', qtd:1, cor:'#b0b0d0'}, {nome:'Laureado (isento)', qtd:1, cor:'#5a5c78'}],
+    categorias:[{nome:'Contribuinte', qtd:73, cor:'#3d7bff'}, {nome:'Patrimonial', qtd:33, cor:'#00e5a0'}, {nome:'Contribuinte Individual', qtd:17, cor:'#a855f7'}, {nome:'Contribuinte Universitário', qtd:4, cor:'#f2b705'}, {nome:'Patrimonial Individual', qtd:3, cor:'#06b6d4'}, {nome:'Veterano Contribuinte', qtd:3, cor:'#fb923c'}, {nome:'Veterano (isento)', qtd:2, cor:'#e8192c'}, {nome:'Contribuinte Individual Derivado', qtd:1, cor:'#b0b0d0'}, {nome:'Laureado (isento)', qtd:1, cor:'#5a5c78'}, {nome:'Sem classificação', qtd:1, cor:'#6b6d85'}],
     motivos:[{motivo:'Não utilização', qtd:42, pct:30.43, cor:'#3d7bff'}, {motivo:'Financeiro', qtd:27, pct:19.57, cor:'#00e5a0'}, {motivo:'Não informado', qtd:26, pct:18.84, cor:'#a855f7'}, {motivo:'Mudança', qtd:22, pct:15.94, cor:'#f2b705'}, {motivo:'Pessoal', qtd:8, pct:5.80, cor:'#06b6d4'}, {motivo:'Saúde', qtd:6, pct:4.35, cor:'#fb923c'}, {motivo:'Desemprego', qtd:4, pct:2.90, cor:'#e8192c'}, {motivo:'Insatisfação', qtd:2, pct:1.45, cor:'#b0b0d0'}, {motivo:'Viagem', qtd:1, pct:0.72, cor:'#5a5c78'}],
     totalDesligamentos:138,
     ticketMedio:'R$ 546,78', dependentes:'2,2', residual:'95', residualLabel:'Residual Acumulado',
@@ -11789,7 +11995,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'91', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'42', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'41', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'83', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'83', sub:'com data de saída · confere com o declarado', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'8', sub:'2 retenções + 6 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11813,7 +12019,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'62', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'18', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'34', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'52', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'52', sub:'com data de saída · confere com o declarado', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'10', sub:'5 retenções + 5 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11837,7 +12043,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'62', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'19', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'24', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'44', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'44', sub:'com data de saída · confere com o declarado', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'18', sub:'10 retenções + 8 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'ainda a processar', valorCor:'#fb923c'},
     ],
@@ -11861,7 +12067,7 @@ const DESLIGAMENTOS_MESES = {
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'60', sub:'no período'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'de períodos anteriores', valorCor:'#ffd32a'},
         {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'21', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'46', sub:'com data de desligamento', valorCor:'#e8192c'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'46', sub:'com data de saída · confere com o declarado', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'13', sub:'10 retenções + 3 licenças', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'10', sub:'com data futura marcada', valorCor:'#fb923c'},
     ],
@@ -11906,7 +12112,7 @@ const DESLIGAMENTOS_MESES = {
     // por titular saem dessas 12 linhas, não de número digitado.
     correcaoOficial: '07/10/2026 — gestora do CRA',
     periodoTag: 'Setembro/2026',
-    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "28", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "2", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "10", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "12", "sub": "com data de desligamento", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "3", "sub": "retenções no mês", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "13", "sub": "ainda a processar", "valorCor": "#fb923c"}],
+    kpis: [{"icone": "📋", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Solicitações Totais", "valor": "28", "sub": "no período"}, {"icone": "📁", "cor": "#ffd32a", "bg": "rgba(255,211,42,.15)", "label": "Residuais", "valor": "2", "sub": "de períodos anteriores", "valorCor": "#ffd32a"}, {"icone": "🆕", "cor": "#3d7bff", "bg": "rgba(61,123,255,.15)", "label": "Deste Mês", "valor": "10", "sub": "novas solicitações"}, {"icone": "❌", "cor": "#e8192c", "bg": "rgba(232,25,44,.15)", "label": "Desligados", "valor": "12", "sub": "com data de saída · validado pela gestora em 07/10", "valorCor": "#e8192c"}, {"icone": "✅", "cor": "#00e5a0", "bg": "rgba(0,229,160,.15)", "label": "Retidos", "valor": "3", "sub": "retenções no mês", "valorCor": "#00e5a0"}, {"icone": "🚫", "cor": "#fb923c", "bg": "rgba(251,146,60,.15)", "label": "Programados", "valor": "13", "sub": "ainda a processar", "valorCor": "#fb923c"}],
     // Recalculados das 25 linhas. "Contribuinte Universitário" e "Não
     // utilização"/"Troca de categoria" passam a usar a MESMA grafia dos outros
     // meses — sem isso a agregacao de varios meses criava duas entradas para a
@@ -11926,24 +12132,41 @@ const DESLIGAMENTOS_MESES = {
     analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Posição parcial de 28/09 — setembro já encerrou e esta base não recebeu o fechamento do mês.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
-    periodoTag:'Outubro/2026 (parcial · posição de 01/10)',
+    // RECARGA DE 14/10/2026 — 'Desligamento 2026(6).xlsx', aba Outubro.
+    // A carga anterior (07/10) leu 13 registros. ERRO DE LEITURA MINHA: a aba
+    // já trazia 25 linhas naquela data e eu considerei apenas as 13 com
+    // desligamento em 01/10, tratando as demais como fora da competência.
+    // Agora a aba tem 32 linhas e a contagem é feita por natureza do registro:
+    //   32 linhas = 29 desligamentos efetivos + 2 retenções + 1 solicitação
+    //               ainda sem data de saída (14/10, motivo saúde)
+    // Os 29 têm data de desligamento entre 01/10 e 13/10/2026.
+    // Residuais (13) e retidos (2) conferem com o quadro lateral da própria aba
+    // ("quantos são residuais?" e "quantos retidos?"). Os demais campos do
+    // quadro voltam 0 porque as fórmulas estão quebradas (#REF!) — por isso
+    // "Programados" sai como "—" e não como zero.
+    // A aba Evolução declara 26 à mão para outubro; a contagem linha a linha dá
+    // 29. Divergência registrada, sem correção silenciosa — mesmo padrão de
+    // setembro, onde a gestora validou a contagem individual (12) contra o 10
+    // digitado na Evolução.
+    periodoTag:'Outubro/2026 (parcial · posição de 14/10)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'13', sub:'registros na aba de Outubro'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'—', sub:'a aba de Outubro não traz esse quadro', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'solicitados em setembro, desligados em 01/10'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'13', sub:'com data de desligamento 01/10/2026', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'—', sub:'não informado na aba de Outubro', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'não informado na aba de Outubro', valorCor:'#fb923c'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'32', sub:'registros na aba de Outubro'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'13', sub:'solicitados em setembro, desligados em outubro', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'16', sub:'solicitados e desligados em outubro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'29', sub:'com data de saída entre 01/10 e 13/10', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'2', sub:'retenções no mês', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'quadro da aba com fórmula quebrada', valorCor:'#fb923c'},
     ],
-    categorias: [{"nome": "Contribuinte", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Contribuinte Individual", "qtd": 4, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 2, "cor": "#a855f7"}, {"nome": "Contibuinte Individual", "qtd": 1, "cor": "#f2b705"}],
-    motivos: [{"motivo": "Mudança", "qtd": 4, "pct": 30.77, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 3, "pct": 23.08, "cor": "#00e5a0"}, {"motivo": "Não Utilização", "qtd": 3, "pct": 23.08, "cor": "#a855f7"}, {"motivo": "Saúde", "qtd": 2, "pct": 15.38, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 7.69, "cor": "#06b6d4"}],
-    totalDesligamentos: 13,
-    ticketMedio: 'R$ 445,33', dependentes: '1,7',
-    residual: '—', residualLabel: 'Residual Acumulado',
-    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:1, nao:6},
+    categorias: [{"nome": "Contribuinte", "qtd": 11, "cor": "#3d7bff"}, {"nome": "Contribuinte Individual", "qtd": 10, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 3, "cor": "#a855f7"}, {"nome": "Patrimonial", "qtd": 2, "cor": "#f2b705"}, {"nome": "Veterano (isento)", "qtd": 2, "cor": "#06b6d4"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}],
+    motivos: [{"motivo": "Mudança", "qtd": 11, "pct": 37.93, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 7, "pct": 24.14, "cor": "#00e5a0"}, {"motivo": "Não utilização", "qtd": 5, "pct": 17.24, "cor": "#a855f7"}, {"motivo": "Saúde", "qtd": 4, "pct": 13.79, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 3.45, "cor": "#06b6d4"}, {"motivo": "Falecimento", "qtd": 1, "pct": 3.45, "cor": "#fb923c"}],
+    totalDesligamentos: 29,
+    ticketMedio: 'R$ 477,33', dependentes: '1,0',
+    residual: 13, residualLabel: 'Residual Acumulado',
+    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:5, nao:23},
     quadroSocial: null,
     negociacoesDesligados: 'R$ 0,00',
-    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>. <b style="color:var(--gold);">Mês recém-aberto, posição de 01/10.</b> A aba traz <b>13 registros</b>, todos com <b>Data de Desligamento em 01/10/2026</b> — as solicitações são de setembro, mas a saída se efetivou em outubro, e é a data de desligamento que define a competência. <b>Mudança lidera com 4</b>, seguida de financeiro e não utilização. Ticket médio de <b>R$ 445,33</b> (12 dos 13 com ticket informado) e 1,7 dependente por titular (7 informados). Não há valor negociado nem taxa de desligamento nestes registros. <b style="color:var(--gold);">Atenção à leitura:</b> a aba de Outubro ainda não traz o quadro de residuais, retidos e programados nem o quadro social do mês — esses campos aparecem como "—" em vez de zero, porque ausência de informação não é ausência de evento. O quadro-resumo lateral da aba declara <b>11</b> em categorias pagantes enquanto as linhas somam <b>13</b>: a diferença está em duas linhas cuja categoria foi digitada fora do padrão do quadro. Aqui vale a linha.',
+    evolucaoDeclarada: 26, registrosNaAba: 29, linhasNaAba: 32,
+    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, conferida linha a linha. <b style="color:var(--gold);">Mês em curso — posição de 14/10, não é fechamento de outubro.</b> A aba traz <b>32 registros</b>, que não são todos desligamento: <b style="color:var(--red);">29 têm data de saída</b> (entre 01/10 e 13/10), <b style="color:var(--green);">2 são retenções</b> e <b>1 é solicitação de 14/10 ainda sem saída confirmada</b> — essa última não entra como desligamento, porque pedido não é saída. Dos 29, <b>13 foram solicitados em setembro</b> e saíram em outubro (residuais) e <b>16 foram solicitados e desligados dentro do mês</b>; ambos os números conferem com o quadro lateral da própria aba. <b>Mudança lidera com 11</b> (38% das saídas), seguida de financeiro (7) e não utilização (5). Contribuinte e Contribuinte Individual respondem por 21 dos 29. Ticket médio de <b>R$ 477,33</b> com os 29 informados e 1,0 dependente por titular. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>13</b> desligamentos em outubro. Era leitura incompleta minha de 07/10 — a aba já tinha 25 linhas e só as 13 com saída em 01/10 foram importadas. O número correto da base é 29. <b style="color:var(--gold);">Divergência preservada:</b> a aba Evolução declara <b>26</b> para outubro, digitado à mão, sem fórmula ligando às abas mensais; as linhas com data de saída somam <b>29</b>. A diferença não foi compensada — <b>pende validação da gestora</b>, como ocorreu em setembro, quando ela confirmou a contagem individual contra o número digitado. O quadro lateral da aba declara ainda <b>27</b> em categorias: o COUNTIF usa texto exato e perde três linhas com grafia divergente, além de incluir a solicitação sem saída. <b style="color:var(--gold);">Olhando adiante:</b> a aba de Novembro já registra <b>2 saídas programadas para 01/11</b>; são data futura e <b>não entram como realizadas</b> em nenhum indicador.',
   },
 };
 
