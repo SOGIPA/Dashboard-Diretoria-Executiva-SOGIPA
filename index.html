@@ -2941,21 +2941,35 @@ const REINGRESSO_HISTORICO = [
       {nome:'Contribuinte Universitário', qtd:1, cor:'#5a5c78'},
     ],
     alerta: '<b style=\"color:var(--green);\">Setembro fechado — 97 reingressos e R$ 51.416,34</b>, contra 54 e R$ 30.881,49 na posição de 28/09. <b style=\"color:var(--green);\">Meta de 50 batida com 194%</b> — 97 realizados. É o <b>maior volume do ano</b>, acima de agosto (68) e de janeiro (75). Ticket médio de R$ 530,07, abaixo dos R$ 548,96 de agosto e dos R$ 571,88 da posição parcial: o fechamento trouxe volume com valor menor por reingresso. <b>Taxa reduzida (45) e RBN (39) respondem por 84 dos 97</b>, com benefício patrimonial (6), promoção aniversário (5) e lista de excluídos (2) completando o mês. <b style=\"color:var(--gold);\">Ajustado em 01/10:</b> a peça de fechamento trazia 96 reingressos e 44 na Taxa reduzida; a Secretaria Administrativa registrou acréscimo na campanha depois dela e o total validado do mês é <b>97</b>, com 45 na Taxa reduzida. <b style=\"color:var(--gold);\">Ressalva de origem:</b> a peça traz a quantidade por campanha, mas <b>não informa o valor financeiro de cada uma</b>, e o valor do mês <b>não acompanhou esse acréscimo</b> — por isso os R$ 51.416,34 seguem como o total informado, sem rateio nem ticket por campanha. A abertura por categoria também não veio.'},
-  // ── OUTUBRO/2026 · informado pela Secretaria Administrativa em 13/10 ──────
-  // MES EM ANDAMENTO. Total consolidado: 13 reingressos e R$ 8.699,08.
-  // A gestao informou SO o total. Nao veio abertura por campanha, por categoria
-  // nem o numero de contatos — e nada foi distribuido ou estimado: as duas
-  // quebras ficam num unico bloco de "aguardando detalhamento", com a mesma
-  // quantidade do total, e `contatos` fica null (sem dado nao e zero).
-  // `ticketMedio` nao esta aqui: sai do forEach abaixo, valor/total.
-  {mesKey:'out2026', periodoTag:'Outubro/2026 (em andamento, posição de 13/10)', total:13, valor:8699.08, contatos:null,
+  // ── OUTUBRO/2026 · informado pela Secretaria Administrativa em 16/10 ──────
+  // MES EM ANDAMENTO. SUBSTITUI a posicao de 13/10 (13 reingressos e
+  // R$ 8.699,08) — nao soma a ela. Competencia CONFIRMADA pelo diretor em
+  // 16/10/2026: a informacao chegou sem competencia escrita, e outubro e o
+  // unico mes aberto da serie (jan a set estao fechados e publicados).
+  //
+  // ARITMETICA CONFERIDA, nada digitado por fora:
+  //   4 (Campanha de Aniversario) + 15 (normais) = 19  ✔ fecha com o total
+  //   12.231,54 / 19 = 643,7653  -> R$ 643,77         ✔ fecha com o informado
+  //   4/19 = 21,05%  ·  15/19 = 78,95%                 ✔ fecha com o informado
+  // `ticketMedio` NAO esta aqui: sai do forEach abaixo (valor/total).
+  // Os percentuais tambem nao sao digitados — saem de qtd/total no render.
+  //
+  // VALOR: R$ 12.231,54 e o VALOR TOTAL INFORMADO do mes. Nao foi tratado como
+  // receita efetivamente recebida nem como mensalidade recorrente, e NAO foi
+  // rateado entre os dois grupos: a Sec. Adm. nao enviou os valores individuais,
+  // entao nao existe ticket por grupo nem valor por campanha nesta carga.
+  //
+  // CATEGORIA DE SOCIO: continua sem abertura. Os 19 ficam num unico bloco de
+  // "aguardando detalhamento" — sem dado nao e zero e nao se distribui.
+  {mesKey:'out2026', periodoTag:'Outubro/2026 (em andamento, posição de 16/10)', total:19, valor:12231.54, contatos:null,
     campanhas:[
-      {nome:'Aguardando detalhamento da Sec. Adm.', qtd:13, cor:'#4a4c68'},
+      {nome:'Campanha de Aniversário', qtd:4,  cor:'#00e5a0'},
+      {nome:'Reingressos normais',     qtd:15, cor:'#5a5c78'},
     ],
     categorias:[
-      {nome:'Aguardando detalhamento da Sec. Adm.', qtd:13, cor:'#4a4c68'},
+      {nome:'Aguardando detalhamento da Sec. Adm.', qtd:19, cor:'#4a4c68'},
     ],
-    alerta: '<b>Mês em andamento — posição de 13/10.</b> <b>13 reingressos</b> somando <b>R$ 8.699,08</b>, ticket médio de <b>R$ 669,16</b> — o maior ticket do ano, acima dos R$ 530,07 de setembro e dos R$ 548,96 de agosto, ainda que sobre uma base de 13 contra os 97 do mês fechado anterior. <b style=\"color:var(--gold);\">Ressalva de origem:</b> a gestão informou apenas o total consolidado do mês. Não vieram a abertura por campanha nem por categoria, e também não veio o número de contatos — por isso os 13 aparecem num único bloco de \"aguardando detalhamento\", sem rateio e sem nenhum registro individual criado. O ticket é calculado (8.699,08 ÷ 13), não digitado.'},
+    alerta: '<b>Mês em andamento — posição de 16/10.</b> <b>19 reingressos</b> somando <b>R$ 12.231,54</b> de valor total informado, com ticket médio calculado de <b>R$ 643,77</b> (12.231,54 ÷ 19). <b style=\"color:var(--green);\">Substitui a posição de 13/10</b>, que trazia 13 reingressos e R$ 8.699,08 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. A separação informada pela gestão: <b>4 da Campanha de Aniversário</b> (21,05%) e <b>15 reingressos normais</b> (78,95%). <b style=\"color:var(--gold);\">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 12.231,54 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -5209,6 +5223,11 @@ function agregarReingresso(meses){
           alerta: alertas.length ? alertas.join(' ') : null};
 }
 
+// Reconhece os blocos que NÃO representam uma campanha: o grupo residual de
+// reingressos sem campanha e os marcadores de detalhamento ainda não recebido.
+// Sem isso o donut chamaria de "com campanha" quem entrou sem nenhuma.
+function _reiEhResidual(nome){ return /aguardando|normais|sem campanha|a informar/i.test(String(nome||'')); }
+
 function renderReingressoMeses(meses){
   const el = document.getElementById('reingressoConteudo');
   let lista = meses, aviso = null;
@@ -5232,7 +5251,7 @@ function renderReingressoMeses(meses){
   html += `
     <div class="grid-3">
       <div class="card"><div class="card-label">↩️ Total de Reingressos</div><div class="card-value" style="color:var(--green)">${qtdTxt}</div><div class="card-meta">${r.qtdCompleta?'no período':'no período (parcial)'}</div></div>
-      <div class="card"><div class="card-label">💰 Valor Arrecadado</div><div class="card-value">${fmtBRL(r.valor)}</div><div class="card-meta">total do período</div></div>
+      <div class="card"><div class="card-label">💰 Valor Arrecadado</div><div class="card-value">${fmtBRL(r.valor)}</div><div class="card-meta">valor total informado no período</div></div>
       <div class="card"><div class="card-label">🎯 Ticket Médio</div><div class="card-value">${tkTxt}</div><div class="card-meta">por reingresso</div></div>
     </div>`;
   if(r.campanhas){
@@ -5267,7 +5286,15 @@ function renderReingressoMeses(meses){
     <div class="card" style="margin-top:16px;">
       <div class="card-label">Por Categoria de Sócio</div>
       ${linhasCat}
-      <div class="card-meta" style="margin-top:8px;">${totCat} reingresso${totCat===1?'':'s'} com categoria informada no período.</div>
+      ${(()=>{
+        // "com categoria informada" não pode incluir o bloco de aguardando —
+        // ele existe justamente porque a categoria NÃO foi informada.
+        const semCat = r.categorias.filter(c=>_reiEhResidual(c.nome)).reduce((s,c)=>s+c.qtd,0);
+        const comCat = totCat - semCat;
+        return `<div class="card-meta" style="margin-top:8px;">${comCat} de ${totCat} reingresso${totCat===1?'':'s'} com categoria informada no período`
+             + (semCat ? `. <b style="color:var(--gold);">${semCat} aguardam o detalhamento da Secretaria</b> e não foram distribuídos entre as categorias.` : '.')
+             + `</div>`;
+      })()}
     </div>`;
   }
   if(r.campTexto){
@@ -5282,7 +5309,11 @@ function renderReingressoMeses(meses){
   if(r.campanhas){
     renderSimpleBars('reingressoChart', r.campanhas.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})));
     const totalCamp = r.campanhas.reduce((s,c)=>s+c.qtd,0);
-    drawDonut('reingressoDonut', r.campanhas.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(totalCamp), 'com campanha');
+    // Só chama de "com campanha" o que realmente tem campanha vinculada.
+    const comCamp = r.campanhas.filter(c=>!_reiEhResidual(c.nome)).reduce((s,c)=>s+c.qtd,0);
+    const rotuloDonut = comCamp === totalCamp ? 'com campanha'
+                      : (comCamp > 0 ? `${comCamp} com campanha` : 'reingressos');
+    drawDonut('reingressoDonut', r.campanhas.map(c=>({nome:c.nome, valor:c.qtd, cor:c.cor})), String(totalCamp), rotuloDonut);
   }
 
   document.getElementById('tabelaHistoricoReingresso').innerHTML = REINGRESSO_HISTORICO.map(h=>`
@@ -7893,9 +7924,10 @@ const COBERTURA_REINGRESSO = {
   // Setembro em andamento: fim = 28/09, data da informação da Sec. Adm. que
   // trouxe os 54 reingressos (a posição anterior era de 21/09).
   set2026: {ini:'2026-09-01', fim:'2026-09-28'},
-  // Outubro em andamento: fim = 13/10, data da informação da Sec. Adm. que
-  // trouxe os 13 reingressos e os R$ 8.699,08.
-  out2026: {ini:'2026-10-01', fim:'2026-10-13'},
+  // Outubro em andamento: fim = 16/10, data da informação da Sec. Adm. que
+  // trouxe os 19 reingressos e os R$ 12.231,54 (substituiu a posição de 13/10,
+  // que tinha 13 e R$ 8.699,08).
+  out2026: {ini:'2026-10-01', fim:'2026-10-16'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
