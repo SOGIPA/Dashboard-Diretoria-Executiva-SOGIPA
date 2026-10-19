@@ -1550,10 +1550,11 @@
       <div class="card full">
         <div class="card-label">Comparativo por Período</div>
         <table>
-          <thead><tr><th>Período</th><th class="num">Total</th><th class="num">Valor Arrecadado</th><th class="num">Ticket Médio</th></tr></thead>
+          <thead><tr><th>Período</th><th>Status</th><th class="num">Total</th><th class="num">Valor Arrecadado</th><th class="num">Ticket Médio</th></tr></thead>
           <tbody id="tabelaHistoricoReingresso"></tbody>
         </table>
-        <div class="card-meta" style="margin-top:10px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior.</div>
+        <div class="card-meta" style="margin-top:10px;" id="reingressoRodapeStatus"></div>
+        <div class="card-meta" style="margin-top:6px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior. <b>Fechado</b> = base consolidada e validada pela gestão; o encerramento do calendário sozinho não fecha a competência.</div>
       </div>
     </div>
 
@@ -2859,16 +2860,27 @@ const RETENCAO_EXTRA_MESES = {
   },
 };
 
-// Histórico de reingressos 2026 — Jan a Jul. Ticket médio é calculado (valor ÷ quantidade).
+// Histórico de reingressos 2026. Ticket médio é calculado (valor ÷ quantidade).
+//
+// CAMPO `fechado` — adicionado em 16/10/2026 para padronizar os status da tabela.
+// É uma DECLARAÇÃO da gestão sobre a base, não uma dedução do calendário: um mês
+// só é "Fechado" porque alguém confirmou que os dados estão consolidados e
+// validados, nunca porque a data já passou. Jan a Set entraram como fechados por
+// orientação do diretor em 16/10; Outubro segue aberto, com `posicao` registrando
+// a data-base da última informação recebida.
+// Ao fechar outubro: trocar para `fechado:true` e remover `posicao`. Ao abrir
+// novembro: nova linha com `fechado:false` e a `posicao` daquela carga.
+// O rótulo exibido NÃO está escrito aqui — sai de statusReingresso() no render,
+// para não haver texto fixo envelhecendo dentro do dado.
 const REINGRESSO_HISTORICO = [
-  {mesKey:'jan2026', periodoTag:'Janeiro/2026',   total:75, valor:89169.42, campanhas:null, alerta:null},
-  {mesKey:'fev2026', periodoTag:'Fevereiro/2026', total:39, valor:30672.67, campanhas:null, alerta:null},
-  {mesKey:'mar2026', periodoTag:'Março/2026',     total:36, valor:34640.90, campanhas:null, alerta:null},
-  {mesKey:'abr2026', periodoTag:'Abril/2026',     total:21, valor:17203.41, campanhas:null, alerta:null},
-  {mesKey:'mai2026', periodoTag:'Maio/2026',      total:46, valor:33172.24, campanhas:null, alerta:null},
-  {mesKey:'jun2026', periodoTag:'Junho/2026',     total:28, valor:15167.35,
+  {mesKey:'jan2026', periodoTag:'Janeiro/2026',   fechado:true, total:75, valor:89169.42, campanhas:null, alerta:null},
+  {mesKey:'fev2026', periodoTag:'Fevereiro/2026', fechado:true, total:39, valor:30672.67, campanhas:null, alerta:null},
+  {mesKey:'mar2026', periodoTag:'Março/2026',     fechado:true, total:36, valor:34640.90, campanhas:null, alerta:null},
+  {mesKey:'abr2026', periodoTag:'Abril/2026',     fechado:true, total:21, valor:17203.41, campanhas:null, alerta:null},
+  {mesKey:'mai2026', periodoTag:'Maio/2026',      fechado:true, total:46, valor:33172.24, campanhas:null, alerta:null},
+  {mesKey:'jun2026', periodoTag:'Junho/2026',     fechado:true, total:28, valor:15167.35,
     campanhas: REINGRESSO_CAMPANHAS, alerta: null},
-  {mesKey:'jul2026', periodoTag:'Julho/2026', total:37, valor:23876.06,
+  {mesKey:'jul2026', periodoTag:'Julho/2026', fechado:true, total:37, valor:23876.06,
     campanhas: REINGRESSO_CAMPANHAS_JUL, alerta: 'Mês fechado (01 a 31/07): 37 reingressos e R$ 23.876,06, com aproximadamente 588 contatos enviados. As campanhas identificadas somam 31 reingressos — os outros 6 entraram sem campanha vinculada.'},
   // Agosto/26 — MÊS FECHADO, atualizado em 02/09 (peça "Entradas de Reingresso,
   //   01 a 31 de agosto" + correção do diretor).
@@ -2883,7 +2895,7 @@ const REINGRESSO_HISTORICO = [
   // CATEGORIAS: a peça não traz abertura por categoria. As cinco abaixo são as
   //   apuradas até 28/08 e somam 55; os outros 13 entram como "Categoria a
   //   informar". Pedir a abertura do mês fechado.
-  {mesKey:'ago2026', periodoTag:'Agosto/2026 (fechado)', total:68, valor:37329.06, contatos:980,
+  {mesKey:'ago2026', periodoTag:'Agosto/2026', fechado:true, total:68, valor:37329.06, contatos:980,
     campanhas:[
       {nome:'Taxa reduzida', qtd:39, cor:'#06b6d4'},
       {nome:'Lista de excluídos', qtd:14, cor:'#3d7bff'},
@@ -2913,7 +2925,7 @@ const REINGRESSO_HISTORICO = [
   // Continua sem abertura por campanha e por categoria — ficam como
   // "aguardando registro" para os graficos fecharem sem inventar distribuicao.
   // ticketMedio NAO e digitado: sai de valor/total no forEach abaixo (R$ 571,88).
-  {mesKey:'set2026', periodoTag:'Setembro/2026 (fechado · 01 a 30/09)', total:97, valor:51416.34, contatos:null,
+  {mesKey:'set2026', periodoTag:'Setembro/2026', fechado:true, total:97, valor:51416.34, contatos:null,
     campanhas:[
       {nome:'Taxa reduzida', qtd:45, cor:'#06b6d4'},
       {nome:'RBN', qtd:39, cor:'#3d7bff'},
@@ -2961,7 +2973,7 @@ const REINGRESSO_HISTORICO = [
   //
   // CATEGORIA DE SOCIO: continua sem abertura. Os 19 ficam num unico bloco de
   // "aguardando detalhamento" — sem dado nao e zero e nao se distribui.
-  {mesKey:'out2026', periodoTag:'Outubro/2026 (em andamento, posição de 16/10)', total:19, valor:12231.54, contatos:null,
+  {mesKey:'out2026', periodoTag:'Outubro/2026', fechado:false, posicao:'16/10/2026', total:19, valor:12231.54, contatos:null,
     campanhas:[
       {nome:'Campanha de Aniversário', qtd:4,  cor:'#00e5a0'},
       {nome:'Reingressos normais',     qtd:15, cor:'#5a5c78'},
@@ -5226,6 +5238,36 @@ function agregarReingresso(meses){
 // Reconhece os blocos que NÃO representam uma campanha: o grupo residual de
 // reingressos sem campanha e os marcadores de detalhamento ainda não recebido.
 // Sem isso o donut chamaria de "com campanha" quem entrou sem nenhuma.
+// ── STATUS DA COMPETÊNCIA ────────────────────────────────────────────────
+// Derivado do dado, nunca escrito à mão em nenhuma linha da série:
+//   fechado === true                      -> Fechado
+//   aberto E é a última competência carregada -> Em andamento (com a data-base)
+//   aberto E já existe competência posterior  -> Aguardando fechamento
+// A terceira regra é o que impede o rótulo de envelhecer: quando novembro
+// entrar, outubro deixa de ser "em andamento" sozinho, sem ninguém editar texto.
+// Encerramento do CALENDÁRIO não fecha nada aqui — só a flag `fechado` fecha.
+function statusReingresso(h){
+  if(!h) return null;
+  if(h.fechado === true)
+    return {texto:'Fechado', cor:'var(--green)', bg:'rgba(0,229,160,.12)', bd:'rgba(0,229,160,.38)'};
+  const ultimo = REINGRESSO_HISTORICO[REINGRESSO_HISTORICO.length-1];
+  const eUltimo = ultimo && ultimo.mesKey === h.mesKey;
+  if(eUltimo)
+    return {texto:'Em andamento', cor:'var(--gold)', bg:'rgba(242,183,5,.12)', bd:'rgba(242,183,5,.40)',
+            detalhe: h.posicao ? 'posição de '+h.posicao : null};
+  return {texto:'Aguardando fechamento', cor:'var(--muted)', bg:'rgba(176,176,208,.10)', bd:'var(--border)',
+          detalhe: h.posicao ? 'última posição em '+h.posicao : null};
+}
+function seloStatusReingresso(h, comDetalhe){
+  const s = statusReingresso(h);
+  if(!s) return '';
+  return `<span style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800;
+      letter-spacing:.4px; text-transform:uppercase; color:${s.cor}; background:${s.bg};
+      border:1px solid ${s.bd}; padding:3px 10px; border-radius:999px; white-space:nowrap;">
+      <span style="width:6px; height:6px; border-radius:50%; background:${s.cor};"></span>${s.texto}</span>`
+    + (comDetalhe && s.detalhe ? ` <span style="font-size:12px; color:var(--muted); margin-left:9px; white-space:nowrap;">${s.detalhe}</span>` : '');
+}
+
 function _reiEhResidual(nome){ return /aguardando|normais|sem campanha|a informar/i.test(String(nome||'')); }
 
 function renderReingressoMeses(meses){
@@ -5242,7 +5284,12 @@ function renderReingressoMeses(meses){
     aviso = `Sem dados de Reingresso no intervalo selecionado — exibindo o último fechamento disponível.`;
   }
   const r = agregarReingresso(lista);
-  document.getElementById('reingressoPeriodoTag').textContent = r.periodoTag;
+  // Com um único mês no recorte, o título leva o mesmo selo da tabela — assim a
+  // situação da competência não se perde ao limpar o texto do periodoTag.
+  const _tagEl = document.getElementById('reingressoPeriodoTag');
+  const _umMes = lista.length === 1 ? REINGRESSO_HISTORICO.find(x=>x.mesKey === lista[0].key) : null;
+  if(_umMes){ _tagEl.innerHTML = `${r.periodoTag} &nbsp;${seloStatusReingresso(_umMes, true)}`; }
+  else { _tagEl.textContent = r.periodoTag; }
   const qtdTxt = r.qtdCompleta ? r.total : (r.total > 0 ? r.total + '*' : '—');
   const tkTxt  = r.ticketMedio != null ? fmtBRL(r.ticketMedio) : '—';
   let html = '';
@@ -5317,7 +5364,23 @@ function renderReingressoMeses(meses){
   }
 
   document.getElementById('tabelaHistoricoReingresso').innerHTML = REINGRESSO_HISTORICO.map(h=>`
-    <tr><td>${h.periodoTag}</td><td class="num">${h.total != null ? h.total : '—'}</td><td class="num">${fmtBRL(h.valor)}</td><td class="num">${h.ticketMedio != null ? fmtBRL(h.ticketMedio) : '—'}</td></tr>`).join('');
+    <tr><td>${h.periodoTag}</td><td>${seloStatusReingresso(h, true)}</td><td class="num">${h.total != null ? h.total : '—'}</td><td class="num">${fmtBRL(h.valor)}</td><td class="num">${h.ticketMedio != null ? fmtBRL(h.ticketMedio) : '—'}</td></tr>`).join('');
+  // Rodapé: competências do ano que ainda não têm carga nenhuma. Não viram
+  // linha na tabela — linha com "—" seria confundida com zero, e o padrão do
+  // painel é não listar mês sem base. Ficam declaradas aqui, em texto.
+  const _rodapeRei = document.getElementById('reingressoRodapeStatus');
+  if(_rodapeRei){
+    const MESES_ANO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const ABR = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const anos = [...new Set(REINGRESSO_HISTORICO.map(h=>h.mesKey.slice(3)))];
+    const faltam = [];
+    anos.forEach(ano=>{
+      ABR.forEach((a,i)=>{ if(!REINGRESSO_HISTORICO.some(h=>h.mesKey === a+ano)) faltam.push(`${MESES_ANO[i]}/${ano}`); });
+    });
+    _rodapeRei.innerHTML = faltam.length
+      ? `<b style="color:var(--muted);">Aguardando dados:</b> ${faltam.join(', ')} — competências sem nenhuma carga recebida, por isso não aparecem como linha na tabela.`
+      : '';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -7017,6 +7080,16 @@ const PAGAMENTOS_POR_PERIODO = {
     dias:[{data:'05/10/2026',qtd:51,total:110797.43},{data:'06/10/2026',qtd:44,total:654407.77},{data:'07/10/2026',qtd:25,total:71457.65},{data:'08/10/2026',qtd:16,total:126484.09},{data:'09/10/2026',qtd:45,total:134889.97}],
     top:[{nome:"Folha Pagamento",qtd:10,valor:593681.21,pct:54.07},{nome:"Tondo Cia Ltda",qtd:1,valor:53635.00,pct:4.88},{nome:"Capitale Energia Comercializadora Ltda.",qtd:1,valor:33513.72,pct:3.05},{nome:"Alx Eventos Esportivos",qtd:1,valor:21098.72,pct:1.92},{nome:"Mercadopago.com Representacoes Ltda.",qtd:19,valor:20861.08,pct:1.90},{nome:"Galbo Engenharia Ltda - Epp",qtd:1,valor:20298.25,pct:1.85},{nome:"Lobl Cenografia Ltda",qtd:1,valor:19000.00,pct:1.73},{nome:"Comite Brasileiro de Clubes",qtd:1,valor:17842.50,pct:1.62},{nome:"Soji Centro de Capacitacao de Idiomas Ltda",qtd:1,valor:15470.74,pct:1.41},{nome:"3S Solucoes em Servicos e Seguranca Ltda",qtd:1,valor:14138.79,pct:1.29},{nome:"Minuzzi Faccin e Simon Sociedade de Advogados",qtd:2,valor:13500.23,pct:1.23},{nome:"JB Esporte e Marketing Ltda",qtd:1,valor:13471.79,pct:1.23},{nome:"Beckenkamp Vestuario Ltda",qtd:1,valor:12760.02,pct:1.16},{nome:"Escritorio Central de Distribuição e Arrecadação",qtd:1,valor:12617.36,pct:1.15},{nome:"Ponto do Turismo Ag de Viagens Ltda",qtd:1,valor:10232.03,pct:0.93}],
     bancos:[{nome:"BANRISUL",qtd:173,total:947078.93},{nome:"PROJETO OLIM",qtd:3,total:67967.25},{nome:"CBC EDIT 11 R",qtd:1,total:50082.48},{nome:"ÍNDICES CONS",qtd:1,total:20298.25},{nome:"ALTO RENDIME",qtd:1,total:7500.00},{nome:"PROJ SOGIPA",qtd:1,total:3360.00},{nome:"PATROCÍNIO A",qtd:1,total:1750.00}]},
+  // Relatório "PAGAMENTOS 13 - 16 OUTUBRO" (Controladoria), aba "13.10 - 16.10".
+  // 10/10 foi sábado, 11/10 domingo e 12/10 feriado (N. Sra. Aparecida): o corte
+  // começa na terça, dia 13, e por isso há um intervalo entre 09/10 e 13/10.
+  // Conferência: a planilha declara TOTAL GERAL 813.008,90 na linha 206 e a soma
+  // linha a linha dos 194 lançamentos dá exatamente o mesmo valor. Acréscimos e
+  // descontos são zero em todos os registros. Nenhuma duplicidade.
+  '13-16out': {label:'13 a 16/10/2026', qtd:194, total:813008.90, maiorQtd:42, maiorTotal:582863.31, menorQtd:152, menorTotal:230145.59,
+    dias:[{data:'13/10/2026',qtd:62,total:282015.79},{data:'14/10/2026',qtd:14,total:93255.77},{data:'15/10/2026',qtd:92,total:366256.79},{data:'16/10/2026',qtd:26,total:71480.55}],
+    top:[{nome:"Unimed Porto Alegre Soc. Coop. De Trabalho M",qtd:6,valor:100333.54,pct:12.34},{nome:"Departamento Municipal De Agua E Esgotos",qtd:6,valor:89168.69,pct:10.97},{nome:"Vitale Restaurantes Empresariais Ltda",qtd:3,valor:57892.39,pct:7.12},{nome:"Cl Solucoes Em Engenharia Ltda",qtd:1,valor:42197.43,pct:5.19},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:2,valor:22496.32,pct:2.77},{nome:"Lonnatac Coberturas Ltda",qtd:1,valor:21000.00,pct:2.58},{nome:"Lobl Cenografia Ltda",qtd:1,valor:19000.00,pct:2.34},{nome:"D.B.C. (pessoa física)",qtd:2,valor:19000.00,pct:2.34},{nome:"Stv Seguranca Tecnologia E Vigilancia",qtd:2,valor:18815.47,pct:2.31},{nome:"Prospection Producoes E Eventos Ltda",qtd:1,valor:18540.00,pct:2.28},{nome:"Drogaria Benjamin",qtd:1,valor:18013.78,pct:2.22},{nome:"Postura Fitness Ltda",qtd:1,valor:14787.63,pct:1.82},{nome:"G.C.S. (pessoa física)",qtd:1,valor:11000.00,pct:1.35},{nome:"N.L.P. (pessoa física)",qtd:1,valor:10000.00,pct:1.23},{nome:"R.G.D.M. (pessoa física)",qtd:1,valor:10000.00,pct:1.23}],
+    bancos:[{nome:"BANRISUL",qtd:137,total:594399.72},{nome:"PROJETO OLIM",qtd:49,total:151000.00},{nome:"ÍNDICES CONS",qtd:1,total:42197.43},{nome:"PATROCÍNIO A",qtd:6,total:25261.75},{nome:"PROJ SOGIPA",qtd:1,total:150.00}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -7047,7 +7120,11 @@ const PERIODOS = [
   // 03/10 foi sábado e 04/10 domingo: o corte começa na segunda, dia 05.
   // É um CORTE SEMANAL, não o fechamento de outubro — a base mensal de
   // pagamentos segue terminando em setembro e não foi tocada.
-  {key:'05-09out',     temDados:{pagamentos:true}, ini:'2026-10-05', fim:'2026-10-09', atual:true},
+  {key:'05-09out',     temDados:{pagamentos:true}, ini:'2026-10-05', fim:'2026-10-09'},
+  // Relatório "PAGAMENTOS 13 - 16 OUTUBRO" (Controladoria), aba "13.10 - 16.10".
+  // 10/10 sábado, 11/10 domingo e 12/10 feriado (N. Sra. Aparecida): o corte
+  // retoma na terça, dia 13 — por isso existe o intervalo entre 09/10 e 13/10.
+  {key:'13-16out',     temDados:{pagamentos:true}, ini:'2026-10-13', fim:'2026-10-16', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -7737,6 +7814,88 @@ const VENDAS_EXTRA_MESES = {
       taxaAdesao:32347.50, taxaReingresso:51416.34, taxaTotal:83763.84,
     },
   },
+  // ── OUTUBRO/2026 · aba "Outubro - 2026" da ENTRADAS REALIZADAS V6 (4)(1) ──
+  // MES EM ANDAMENTO — posicao de 19/10/2026, ultima data de venda da aba.
+  // CONCILIACAO: o painel NAO tinha nenhum registro de outubro em Vendas
+  //   (out2026 ausente de VENDAS_EXTRA_MESES, CAMPANHAS, FUNIL, MOTIVOS e
+  //   EM PROCESSO). Logo: 0 preexistentes, 28 novos, 0 corrigidos, 0 duplicados.
+  // CONFERENCIA: 28 linhas com nome, batendo com o '28' declarado no topo da
+  //   aba; soma da coluna Adesao = R$ 17.858,27, identica a 'Taxa de Adesao'
+  //   declarada. Nenhuma matricula ou nome repetido.
+  // CRITERIO FINANCEIRO: 'valor' e a coluna VALOR CONTRIBUICAO (R$ 14.607,75),
+  //   que e a serie historica do painel; 'adesao' guarda a coluna ADESAO
+  //   (R$ 17.858,27). Os dois NAO se somam nem se substituem.
+  // DATAS: tres registros vinham como '02/102026'/'01/102026' — DD/MM colado ao
+  //   ano. Reconstruidos como 02/10 e 01/10/2026; nenhuma data foi inventada.
+  //   Dois registros estao SEM data na origem (data:null) e sao preservados
+  //   assim: entram na contagem e no valor, mas ficam fora da serie diaria.
+  out2026: {
+    registros:[
+      {"nome": "G.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
+      {"nome": "K.T.C.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
+      {"nome": "D.M.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 985.80},
+      {"nome": "F.T.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
+      {"nome": "V.D.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
+      {"nome": "R.B.", "data": "2026-10-02", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
+      {"nome": "C.L.M.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 953.00},
+      {"nome": "G.H.B.", "data": "2026-10-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 937.32},
+      {"nome": "J.C.B.", "data": "2026-10-08", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 889.00},
+      {"nome": "A.B.V.", "data": "2026-10-05", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 905.00},
+      {"nome": "L.H.P.D.S.", "data": "2026-10-06", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 905.00},
+      {"nome": "L.Q.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
+      {"nome": "C.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Visita", "valor": 699.00, "adesao": 699.00},
+      {"nome": "A.D.S.P.", "data": "2026-10-07", "cons": "Nicole", "cat": "Convênio OAB", "canal": "Campanha + Tour", "valor": 375.75, "adesao": 763.59},
+      {"nome": "S.D.", "data": "2026-10-07", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 653.84},
+      {"nome": "F.M.A.", "data": "2026-10-08", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + Tour", "valor": 499.00, "adesao": 499.00},
+      {"nome": "D.K.", "data": "2026-10-06", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + Tour", "valor": 499.00, "adesao": 499.00},
+      {"nome": "V.R.B.", "data": "2026-10-14", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
+      {"nome": "M.A.D.A.", "data": null, "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": null},
+      {"nome": "A.V.Z.Z.", "data": "2026-10-14", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 633.72},
+      {"nome": "M.I.D.S.", "data": "2026-10-15", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
+      {"nome": "G.S.D.", "data": "2026-10-15", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 775.00},
+      {"nome": "E.P.G.", "data": null, "cons": "Helena", "cat": "Combo Família", "canal": "Campanha + Tour", "valor": 999.00, "adesao": 999.00},
+      {"nome": "L.D.L.S.", "data": "2026-10-16", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
+      {"nome": "R.C.D.E.S.", "data": "2026-10-16", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
+      {"nome": "P.B.B.", "data": "2026-10-19", "cons": "Nicole", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
+      {"nome": "H.R.M.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
+      {"nome": "D.D.V.E.B.B.D.O.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
+    ],
+    periodoTag:'Outubro/2026 (em andamento · 01 a 19/10)',
+    associacoesNovas:'28', valorArrecadado:'R$ 14.607,75', ticketMedio:'R$ 521,71',
+    campanhas:[
+      {nome:'Campanha + Tour', qtd:21, cor:'#3d7bff'},
+      {nome:'Visita', qtd:4, cor:'#00e5a0'},
+      {nome:'Oktober', qtd:3, cor:'#f2b705'},
+    ],
+    consultores:[
+      {nome:'Helena', qtd:18, valor:10700.00},
+      {nome:'Nicole', qtd:10, valor:3907.75},
+    ],
+    categorias:[
+      {nome:'Contribuinte Familiar', qtd:12},
+      {nome:'Duo', qtd:7},
+      {nome:'Teen', qtd:3},
+      {nome:'Sênior', qtd:2},
+      {nome:'Plano Single', qtd:2},
+      {nome:'Convênio OAB', qtd:1},
+      {nome:'Combo Família', qtd:1},
+    ],
+    alerta: '<b style=\"color:var(--gold);\">Outubro em andamento — posição de 19/10/2026.</b> <b>28 associações novas</b> somando <b>R$ 14.607,75</b> em Valor Contribuição, ticket médio de <b>R$ 521,71</b>, acima dos R$ 497,65 do fechamento de setembro. <b>Helena responde por 18 das 28</b> e R$ 10.700,00, contra 10 e R$ 3.907,75 de Nicole — a divisão ao meio que marcou setembro não se repete nesta posição parcial. O canal <b>Campanha + Tour concentra 21 das 28</b>, com Visita (4) e a campanha <b>Oktober (3)</b>, que aparece pela primeira vez. <b>Contribuinte Familiar lidera com 12</b>, seguida de Duo (7). Contra a meta: <b>28 de 83 vendas orçadas</b> (34%) e 28 do desafio de 90 (31%) — mês ainda em curso, não é resultado de fechamento. <b style=\"color:var(--gold);\">Ressalvas de origem:</b> três registros traziam a data colada ao ano (&quot;02/102026&quot;) e foram reconstruídos como 02/10 e 01/10; <b>dois registros estão sem data</b> na planilha e entram na contagem e no valor, mas ficam fora da série diária — nenhuma data foi arbitrada. Um deles também está sem Adesão. A aba abrevia as categorias que setembro escreve por extenso; a correspondência foi feita pelo <b>Valor Contribuição</b>, que em setembro é exclusivo de cada categoria (501 = Contribuinte Familiar, 499 = Plano Single, 375,75 = Convênio OAB). <b>Combo Família</b> e <b>Oktober</b> não existem em nenhum mês anterior e foram preservados como a planilha os declara. <b style=\"color:var(--gold);\">Pende validação:</b> a aba registra <b>83</b> tanto em &quot;Meta Vendas&quot; quanto em &quot;TOTAL VENDAS/REINGRESSOS&quot;, sem separar uma meta de reingresso — por isso a meta de reingresso fica sem valor em vez de ser deduzida.',
+    metas:{
+      // Direto do topo da aba Outubro: orcado 83 (linha 'Meta Vendas') e
+      // desafio 90 (linha 'META DESAFIO VENDA NOVA').
+      vendas:{orcado:83, real:28}, reingressos:{orcado:null, real:19},
+      // A aba repete 83 na linha 'TOTAL VENDAS/REINGRESSOS' e nao traz meta de
+      // reingresso separada. O 83 entra como esta; nada foi deduzido.
+      totalVR:{orcado:83, real:47}, desafioVenda:90, desafioReingresso:null,
+      total:{orcado:90, real:47, gap:-43},
+      // Mesmo criterio de setembro: 'taxaAdesao' guarda a serie do painel, que e
+      // o VALOR CONTRIBUICAO (R$ 14.607,75) — nao a coluna Adesao (R$ 17.858,27).
+      // taxaReingresso repete REINGRESSO_HISTORICO.out2026 (19 / R$ 12.231,54);
+      // nao ha derivacao automatica entre as duas estruturas.
+      taxaAdesao:14607.75, taxaReingresso:12231.54, taxaTotal:26839.29,
+    },
+  },
 };
 
 const VENDAS_FUNIL_DIARIO = [
@@ -7820,7 +7979,10 @@ const COBERTURA_RH = {
 // data de venda efetivamente registrada na base. Quando a nova carga entrar,
 // o texto acompanha sozinho — não há data fixa para esquecer de atualizar.
 const AVISO_VENDAS = {
-  ativo: true,
+  // DESATIVADO em 19/10/2026: a planilha revisada da Gerência de Vendas chegou
+  // e outubro foi importado. O mecanismo fica intacto — basta voltar a true
+  // quando houver nova espera por base.
+  ativo: false,
   titulo: 'Atualização dos indicadores de Vendas',
   mensagem: 'Os indicadores de Vendas permanecem com a última base disponibilizada. '
           + 'A atualização do período está pendente do recebimento da planilha revisada pelo setor responsável.',
@@ -7901,6 +8063,9 @@ const COBERTURA_VENDAS = {
   // Setembro EM ANDAMENTO: fim = 26/09, ultima data de venda registrada na aba
   // Setembro da planilha. Nao usar 30/09 — o mes ainda nao fechou.
   set2026: {ini:'2026-09-01', fim:'2026-09-26'},
+  // Outubro EM ANDAMENTO: fim = 19/10, última data de venda registrada na aba
+  // "Outubro - 2026". Não usar 31/10 — o mês não fechou.
+  out2026: {ini:'2026-10-01', fim:'2026-10-19'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
@@ -18220,7 +18385,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v134</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v138</div>
     </div>
   </div>
 </header>
@@ -18231,7 +18396,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v134</div>
+">SOGIPA · PAINEL 01 · v138</div>
 
 <main>
 
@@ -18648,14 +18813,14 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
   <!-- STATUS CARDS -->
   <div class="status-grid">
 
-    <div class="status-card green">
+    <div class="status-card {{RESULTADO_CLASS}}">
       <div class="glow"></div>
       <div class="status-icon">💰</div>
       <div class="status-label">Resultado Operacional</div>
       <div class="status-value">{{RESULTADO_VALOR}}</div>
       <div class="status-meta">{{RESULTADO_META}}</div>
-      <div class="status-desc">Clube operando com superávit — geramos mais do que gastamos no período.</div>
-      <div class="status-trend trend-up-good">▲ Positivo no período</div>
+      <div class="status-desc">{{RESULTADO_DESC}}</div>
+      <div class="status-trend {{RESULTADO_TRENDCLASS}}">{{RESULTADO_TREND}}</div>
     </div>
 
     <div class="status-card green">
@@ -18678,14 +18843,14 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <div class="status-trend trend-up-good">▲ Engajamento saudável</div>
     </div>
 
-    <div class="status-card yellow">
+    <div class="status-card {{SALDO_CLASS}}">
       <div class="glow"></div>
       <div class="status-icon">👥</div>
       <div class="status-label">Saldo do Quadro Social</div>
       <div class="status-value">{{SALDO_VALOR}}</div>
       <div class="status-meta">{{SALDO_META}}</div>
-      <div class="status-desc">Saídas superam entradas no período — tendência típica do 1º semestre que precisa de acompanhamento.</div>
-      <div class="status-trend trend-neutral">⚠ Atenção necessária</div>
+      <div class="status-desc">{{SALDO_DESC}}</div>
+      <div class="status-trend {{SALDO_TRENDCLASS}}">{{SALDO_TREND}}</div>
     </div>
 
     <div class="status-card yellow">
@@ -18720,8 +18885,8 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <div class="diag-item">
         <div class="diag-dot green"></div>
         <div class="diag-text">
-          <strong>Resultado financeiro positivo</strong>
-          <span>R$ 1,5 milhão de superávit operacional em 5 meses. O clube está gerando mais receita do que gastando — base sólida para investimentos.</span>
+          <strong>Recuperação do quadro social em setembro</strong>
+          <span>Setembro fechou com saldo de movimentação positivo (entradas superando saídas), sinal de recuperação após meses de saldo negativo. Manter o ritmo de captação é essencial para reduzir a perda acumulada do ano.</span>
         </div>
       </div>
       <div class="diag-item">
@@ -18760,8 +18925,8 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <div class="diag-item">
         <div class="diag-dot yellow"></div>
         <div class="diag-text">
-          <strong>Saldo social negativo (−249 sócios)</strong>
-          <span>Saídas superam entradas. Parte é natural (sazonalidade do 1° semestre), mas a inadimplência alta amplifica o problema com exclusões.</span>
+          <strong>Saldo social acumulado ainda negativo</strong>
+          <span>No acumulado do ano as saídas superam as entradas; setembro trouxe recuperação (saldo mensal positivo). A inadimplência amplifica o problema via exclusões — sustentar a captação é essencial para reverter.</span>
         </div>
       </div>
       <div class="diag-item">
@@ -18818,7 +18983,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 
   <div class="highlight">
     <h3>💡 Mensagem-chave para a Diretoria</h3>
-    <p>O clube está <strong style="color:var(--green)">financeiramente saudável</strong> — resultado positivo, ticket acima da meta e alta frequência mostram que a operação funciona bem. O desafio central é o <strong style="color:var(--yellow)">quadro social</strong>: precisamos frear a inadimplência e criar programas que mantenham os sócios engajados e frequentando o clube, pois quem frequenta, fica.</p>
+    <p>O resultado operacional acumulado está <strong style="color:var(--red)">negativo (déficit)</strong> — a receita líquida ficou abaixo do orçado e as despesas operacionais acima do orçado, o que exige contenção de custos e recomposição de receita. No <strong style="color:var(--yellow)">quadro social</strong>, setembro trouxe recuperação (saldo mensal positivo), mas o acumulado do ano ainda é negativo; frear a inadimplência e manter os sócios engajados e frequentando o clube segue sendo prioridade, pois quem frequenta, fica.</p>
   </div>
 
 </div>
@@ -18963,9 +19128,9 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
   <div class="msg-card yellow">
     <div class="msg-icon">📉</div>
     <div>
-      <div class="msg-title">ATENÇÃO — Quadro social em redução</div>
+      <div class="msg-title">ATENÇÃO — Quadro social com saldo acumulado negativo</div>
       <div class="msg-body">
-        <strong>−249 sócios no período. Parte é sazonal (normal no 1° semestre), parte é estrutural.</strong>
+        <strong>No acumulado do ano o saldo de movimentação é negativo, embora setembro tenha fechado positivo. Parte é sazonal, parte é estrutural.</strong>
         O motivo principal de saída é "não utilização" (46%) — sócios que pagam mas não vêm.
         Ação: programa de boas-vindas reforçado, comunicação proativa com sócios que não frequentam há
         mais de 30 dias, e eventos de reativação.
@@ -18991,7 +19156,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
     <div>
       <div class="msg-title">OPORTUNIDADE — Captação precisa ser acelerada</div>
       <div class="msg-body">
-        <strong>Apenas 57 entradas em Maio — menor volume do período.</strong>
+        <strong>A captação precisa ser sustentada para compensar as saídas e reverter o saldo acumulado negativo.</strong>
         Para compensar as saídas naturais do 2° semestre, é fundamental intensificar a captação
         agora. Canais sugeridos: indicação de sócio (programa de embaixadores), campanhas sazonais
         (inverno / férias escolares), e parcerias com empresas para planos coletivos.
@@ -19040,7 +19205,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
       <tr>
         <td><strong>Quadro social</strong></td>
         <td><span class="badge yellow">⚠ Atenção</span></td>
-        <td>−249 sócios</td>
+        <td>−141 sócios (acum.)</td>
         <td>Crescimento</td>
         <td>Queda</td>
         <td>Captação + reativação</td>
@@ -19069,7 +19234,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
     <p>
       1. <strong style="color:var(--red)">Reduzir inadimplência</strong> abaixo de 13% — é a alavanca que mais impacta o quadro social e a receita.<br>
       2. <strong style="color:var(--yellow)">Reativar sócios inativos</strong> — 46% saem por não utilização. Um programa de engajamento pode reter dezenas de sócios/mês.<br>
-      3. <strong style="color:var(--green)">Manter o ticket médio</strong> em crescimento — o resultado financeiro positivo deve ser protegido.<br>
+      3. <strong style="color:var(--green)">Manter o ticket médio</strong> em crescimento e conter as despesas operacionais — essenciais para recompor o resultado e reduzir o déficit.<br>
       4. <strong style="color:var(--blue)">Intensificar captação</strong> — o 2° semestre historicamente tem mais entradas. Preparar campanhas agora.
     </p>
   </div>
@@ -19078,7 +19243,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v134 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v138 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -19155,8 +19320,49 @@ const DADOS = {
     8:  { rl:3400.98, orcRL:3344.24, rl_ant:3091.39, do_:3986.43, orcDO:3751.39, do_ant:3162.59,  // DRE oficial Ago/2026 (planilha DRE_AGOSTO2026)
           compRL:{ 'Associações':1803.90, 'Esporte':921.10, 'Proj. Criança':235.30, 'Venda Serviços':107.30, 'Eventos':240.68, 'Outras Receitas':151.70, 'Outras / Ajustes':-59.00 },
           compDO:{ 'Pessoal de Apoio':1977.16, 'Funcionamento':958.70, 'Esporte':284.69, 'Proj. Criança':39.50, 'Eventos':435.75, 'Tributárias':2.10, 'Financeiras':34.80, 'Contingências':7.40, 'Outras / Ajustes':246.33 } },
+    9:  { rl:3339, orcRL:3499, rl_ant:3191, do_:3539, orcDO:3525, do_ant:3033,  // DRE oficial Set/2026 (Controladoria — R$ mil, arredondado; RO = -201 na fonte, -200 por arredondamento das rubricas → corrigido pela camada DRE_OFICIAL)
+          compRL:{ 'Associações':1778, 'Esporte':878, 'Proj. Criança':217, 'Venda Serviços':252, 'Eventos':119, 'Outras Receitas':151, 'Outras / Ajustes':-56 },
+          compDO:{ 'Pessoal de Apoio':1861, 'Funcionamento':923, 'Esporte':152, 'Proj. Criança':51, 'Eventos':235, 'Tributárias':3, 'Financeiras':15, 'Contingências':0, 'Outras / Ajustes':299 } },  // Outras/Ajustes = Conservação/manutenção 183 + Outras despesas 116 (estrutura de 9 chaves do painel)
   },
 };
+
+// ═══════════════════════════════════════════════════════════
+//  DRE_OFICIAL — valores oficiais da Controladoria (R$ mil).
+//  A soma das rubricas arredondadas (DADOS) pode divergir do oficial em poucos R$ mil,
+//  pois a Controladoria calcula sobre valores exatos e arredonda o total.
+//  REGRA INSTITUCIONAL: o painel exibe EXATAMENTE o oficial para os cortes publicados
+//  (mês isolado com fonte oficial e acumulado Jan→mês fechado). As rubricas (compRL/compDO)
+//  permanecem como detalhe rastreável; o TOTAL exibido é o oficial.
+//  ro/orcRO/roAnt são armazenados explicitamente (não derivados), pois RL−DO arredondado
+//  pode diferir do RO oficial em 1 unidade (ex.: Set −201 vs 3.339−3.539=−200; acum. −456 vs −457).
+// ═══════════════════════════════════════════════════════════
+const DRE_OFICIAL = {
+  mensal: {
+    2026: {
+      9: { rl:3339, do_:3539, ro:-201, orcRL:3499, orcDO:3525, orcRO:-26, rlAnt:3191, doAnt:3033, roAnt:158 }
+    }
+  },
+  acumulado: {
+    2026: {
+      9: { rl:29645, do_:30102, ro:-456, orcRL:30318, orcDO:29760, orcRO:558, rlAnt:29133, doAnt:25186, roAnt:3947 }
+    }
+  }
+};
+
+// Retorna o snapshot oficial aplicável ao conjunto de meses, ou null.
+// Casa dois cortes: (a) mês isolado; (b) acumulado desde Janeiro do mesmo ano até o último mês.
+function oficialDRE(meses) {
+  if (!meses || meses.length === 0) return null;
+  const last = meses[meses.length - 1];
+  if (meses.length === 1) {
+    return (DRE_OFICIAL.mensal[last.ano] && DRE_OFICIAL.mensal[last.ano][last.mes]) || null;
+  }
+  const first = meses[0];
+  if (first.mes === 1 && first.ano === last.ano) {
+    return (DRE_OFICIAL.acumulado[last.ano] && DRE_OFICIAL.acumulado[last.ano][last.mes]) || null;
+  }
+  return null;
+}
 
 // ═══════════════════════════════════════════════════════════
 //  ÚLTIMO PERÍODO COM DADOS — fonte canônica: DRE (objeto DADOS)
@@ -19230,11 +19436,13 @@ function somaPeriodoSust(meses) {
   let metaSoma  = 0;
   let tkRealSoma = 0;  // soma dos tkReal mensais para média do período
 
+  let nSust = 0;  // meses COM base de ticket (ex.: Set/26 não tem → fica de fora)
   meses.forEach(({ano,mes}) => {
-    const d = SUST[ano][mes];
+    const d = SUST[ano] && SUST[ano][mes];
+    if (!d) return;  // competência sem ticket médio por categoria — preserva indisponibilidade
+    nSust++;
     ['F','I','G','N'].forEach(cat => {
-      cats[cat].g      += d[cat].g;
-      cats[cat].pesoTk += d[cat].tk * d[cat].g;
+      if (d[cat]) { cats[cat].g += d[cat].g; cats[cat].pesoTk += d[cat].tk * d[cat].g; }
     });
     metaSoma   += d.meta;
     tkRealSoma += d.tkReal;  // acumula o tkReal (SUBTOTAL F+I+G+N da planilha)
@@ -19246,12 +19454,12 @@ function somaPeriodoSust(meses) {
   });
 
   const geracaoTotal = Object.values(cats).reduce((a,c) => a + c.g, 0);
-  // ticket médio geral = média dos tkReal mensais (linha SUBTOTAL F+I+G+N da planilha)
-  const ticketMedio  = meses.length > 0 ? tkRealSoma / meses.length : 0;
-  const metaMedia    = meses.length > 0 ? metaSoma / meses.length : 0;
+  // ticket médio geral = média dos tkReal dos meses COM dado (não dilui com meses sem ticket)
+  const ticketMedio  = nSust > 0 ? tkRealSoma / nSust : 0;
+  const metaMedia    = nSust > 0 ? metaSoma / nSust : 0;
   const atingimento  = metaMedia > 0 ? (ticketMedio / metaMedia) * 100 : 0;
 
-  return { cats, geracaoTotal, ticketMedio, metaMedia, atingimento };
+  return { cats, geracaoTotal, ticketMedio, metaMedia, atingimento, nSust };
 }
 
 function fmtReal(v) {
@@ -19410,8 +19618,8 @@ const QS = {
     5:  { vendR:11, reingR:46, conv:1, entrOrc:35.54,  exclR:56, deslR:94,  saiOrc:120.00, titOrc:3747.06, titReal:3595 },
     6:  { vendR:23, reingR:31, conv:7, entrOrc:33.00,  exclR:54,  deslR:55,  saiOrc:47.00,  titOrc:3695.00, titReal:3540 },
     7:  { vendR:32, reingR:39, conv:3, entrOrc:71.00, exclR:39, deslR:48, saiOrc:87.00, titOrc:3667.00, titReal:3524 },  // conv/orçado-mov. pendentes (Painel do Diretor)
-    8:  { vendR:64, reingR:68, conv:1, entrOrc:132.00, exclR:37, deslR:46, saiOrc:83.00, titOrc:3681.00, titReal:3573 },  // fechamento Ago/26 (Quadro Social oficial); conv/orçado-mov. pendentes
-    9:  { vendR:null, reingR:null, conv:null, entrOrc:null, exclR:null, deslR:null, saiOrc:null, titOrc:null, titReal:3719 },  // Set/26: só snapshot de sócios (Pagantes 3.719). Movimento (vendas/reing./excl./desl./orçado) vem de fonte separada — pendente (null = sem dado, não zero)
+    8:  { vendR:64, reingR:68, conv:1, entrOrc:132.00, exclR:28, deslR:46, saiOrc:83.00, titOrc:3681.00, titReal:3582 },  // Ago/26 RETIFICADO pela Controladoria (relatório Set/26): exclR 37→28 e titReal 3.573→3.582; conv/orçado-mov. pendentes
+    9:  { vendR:67, reingR:97, conv:null, entrOrc:null, exclR:18, deslR:25, saiOrc:null, titOrc:3728, titReal:3703 },  // Set/26 fechamento oficial (Controladoria): titReal corrigido 3.719→3.703; movimento real (vend67/reing97/excl18/desl25); conv e orçado-mov. (entrOrc/saiOrc) não constam na fonte — null
   }
 };
 
@@ -20711,11 +20919,23 @@ function somaPeriodo(meses) {
     Object.entries(d.compRL).forEach(([k,v]) => { compRL[k]=(compRL[k]||0)+v; });
     Object.entries(d.compDO).forEach(([k,v]) => { compDO[k]=(compDO[k]||0)+v; });
   });
-  // RO calculado sempre como RL - DO (garantido matematicamente)
-  const ro     = +(rl - do_).toFixed(2);
-  const orcRO  = +(orcRL - orcDO).toFixed(2);
-  const ro_ant = +(rl_ant - do_ant).toFixed(2);
-  return { rl, orcRL, rl_ant, do_, orcDO, do_ant, ro, orcRO, ro_ant, compRL, compDO };
+  // RO calculado como RL - DO (rubricas arredondadas)
+  let RL=rl, DO=do_, RLA=rl_ant, ORL=orcRL, ODO=orcDO, DOA=do_ant;
+  let ro     = +(rl - do_).toFixed(2);
+  let orcRO  = +(orcRL - orcDO).toFixed(2);
+  let ro_ant = +(rl_ant - do_ant).toFixed(2);
+  // Camada oficial: para cortes publicados pela Controladoria, prevalece o valor oficial.
+  const of = oficialDRE(meses);
+  if (of) {
+    RL = of.rl; DO = of.do_; ro = of.ro;
+    if (of.orcRL != null) ORL = of.orcRL;
+    if (of.orcDO != null) ODO = of.orcDO;
+    if (of.orcRO != null) orcRO = of.orcRO;
+    if (of.rlAnt != null) RLA = of.rlAnt;
+    if (of.doAnt != null) DOA = of.doAnt;
+    if (of.roAnt != null) ro_ant = of.roAnt;
+  }
+  return { rl:RL, orcRL:ORL, rl_ant:RLA, do_:DO, orcDO:ODO, do_ant:DOA, ro, orcRO, ro_ant, compRL, compDO, oficial: !!of };
 }
 
 // ── Arrow badge ──
@@ -21252,14 +21472,30 @@ function gerarDiagnostico() {
   const atingTicket = sustData.atingimento > 0 ? sustData.atingimento.toFixed(1) : '\u2014';
   const ticketMeta = `Meta: ${metaTicketValor} \u00b7 Atingimento: ${atingTicket}%`;
 
-  let rlSoma = 0, doSoma = 0, hasDRE = false;
-  meses.forEach(({ano,mes}) => {
-    const d = SUST[ano] && SUST[ano][mes];
-    if (d && d.rlReal) { rlSoma += d.rlReal; doSoma += d.doReal; hasDRE = true; }
+  // DRE do per\u00edodo: fonte can\u00f4nica \u00e9 DADOS (inclui Set/26). Camada DRE_OFICIAL prevalece
+  // nos cortes publicados (mesmo c\u00e1lculo dos cards). Valores em R$ mil \u2192 fmtMil converte p/ "mi".
+  let rlSoma = 0, doSoma = 0, orcRLSoma = 0, orcDOSoma = 0, hasDRE = false;
+  const mesesDRE = meses.filter(({ano,mes}) => DADOS[ano] && DADOS[ano][mes] && DADOS[ano][mes].rl != null);
+  mesesDRE.forEach(({ano,mes}) => {
+    const d = DADOS[ano][mes];
+    rlSoma += d.rl; doSoma += d.do_; orcRLSoma += (d.orcRL||0); orcDOSoma += (d.orcDO||0); hasDRE = true;
   });
-  const resultado = rlSoma - doSoma;
-  const resultadoValor = hasDRE ? `${resultado>=0?'+':''}R$ ${Math.abs(resultado).toFixed(1).replace('.',',')} mi` : '\u2014';
-  const resultadoMeta = hasDRE ? `Receita R$ ${rlSoma.toFixed(1).replace('.',',')} mi \u00b7 Despesa R$ ${doSoma.toFixed(1).replace('.',',')} mi` : 'Dados DRE n\u00e3o dispon\u00edveis no per\u00edodo';
+  let resultado = rlSoma - doSoma;
+  const ofDiag = oficialDRE(mesesDRE);
+  if (ofDiag) { rlSoma = ofDiag.rl; doSoma = ofDiag.do_; resultado = ofDiag.ro;
+    if (ofDiag.orcRL != null) orcRLSoma = ofDiag.orcRL; if (ofDiag.orcDO != null) orcDOSoma = ofDiag.orcDO; }
+  const rlVsOrc = rlSoma - orcRLSoma;   // < 0 \u2192 receita abaixo do or\u00e7ado
+  const doVsOrc = doSoma - orcDOSoma;   // > 0 \u2192 despesa acima do or\u00e7ado
+  const resultadoValor = hasDRE ? `${resultado>=0?'+':'\u2212'}${fmtMil(Math.abs(resultado))}` : '\u2014';
+  const resultadoMeta = hasDRE ? `Receita ${fmtMil(rlSoma)} \u00b7 Despesa ${fmtMil(doSoma)}` : 'Dados DRE n\u00e3o dispon\u00edveis no per\u00edodo';
+  const resultadoClass = !hasDRE ? 'yellow' : (resultado >= 0 ? 'green' : 'red');
+  const resultadoTrendClass = !hasDRE ? 'trend-neutral' : (resultado >= 0 ? 'trend-up-good' : 'trend-up-bad');
+  const resultadoTrend = !hasDRE ? '\u2014' : (resultado >= 0 ? '\u25b2 Positivo no per\u00edodo' : '\u25bc Negativo no per\u00edodo');
+  const resultadoDesc = !hasDRE ? 'Sem dados de DRE no per\u00edodo selecionado.'
+    : (resultado >= 0
+        ? 'Receita l\u00edquida supera as despesas operacionais no per\u00edodo selecionado.'
+        : 'Despesas operacionais superam a receita l\u00edquida no per\u00edodo'
+          + ((rlVsOrc < 0 && doVsOrc > 0) ? ' \u2014 receita abaixo do or\u00e7ado e despesas acima do or\u00e7ado.' : '.'));
 
   let entradas = 0, saidas = 0, vendR=0, reingR=0, exclR=0, deslR=0;
   meses.forEach(({ano,mes}) => {
@@ -21271,6 +21507,12 @@ function gerarDiagnostico() {
   const saldoEntSai = `${fmtInt(entradas)} entradas \u00b7 ${fmtInt(saidas)} sa\u00eddas`;
   const saldoTend = saldoQS >= 0 ? '\u2197 Quadro em crescimento' : saldoQS > -100 ? '\u26a0\ufe0f Redu\u00e7\u00e3o controlada' : '\u2198 Redu\u00e7\u00e3o acelerada \u2014 aten\u00e7\u00e3o';
   const saldoMeta = `${saldoEntSai} \u00b7 Tend\u00eancia: ${saldoTend}`;
+  const saldoClass = saldoQS >= 0 ? 'green' : 'yellow';
+  const saldoTrendClass = saldoQS >= 0 ? 'trend-up-good' : 'trend-neutral';
+  const saldoTrend = saldoQS >= 0 ? '\u25b2 Saldo positivo no per\u00edodo' : '\u26a0 Aten\u00e7\u00e3o necess\u00e1ria';
+  const saldoDesc = saldoQS >= 0
+    ? 'Entradas superam sa\u00eddas no per\u00edodo selecionado \u2014 quadro social em recupera\u00e7\u00e3o.'
+    : 'Sa\u00eddas superam entradas no acumulado do per\u00edodo \u2014 saldo ainda negativo, com acompanhamento m\u00eas a m\u00eas.';
 
   let inadimValor = '\u2014', inadimMeta = '\u2014', inadimMes = '';
   // Calcular tendência de inadimplência (crescendo/estável/caindo)
@@ -21388,13 +21630,15 @@ function gerarDiagnostico() {
   const retSvgT = miniBarSVG(retValsT, retLbls||[], retHex, 300, 80);
 
   // Projeções narrativas
-  const projFinanceiro = (tkSlope > 0 && hasDRE)
-    ? `Com o ticket médio em alta (+R$${tkSlope.toFixed(0)}/mês) e receita crescente, a tendência financeira é positiva para o 2º semestre. Manter controle de despesas é fundamental para sustentar o resultado.`
-    : `Ticket médio estável. Atenção às despesas operacionais para manter resultado positivo no 2º semestre.`;
-  const projFinanceiroCor = tkSlope > 0 ? 'green' : 'yellow';
+  const projFinanceiro = !hasDRE
+    ? `Sem dados de DRE no período selecionado.`
+    : (resultado < 0
+        ? `Resultado operacional negativo no período${(rlVsOrc<0&&doVsOrc>0)?' — receita líquida abaixo do orçado e despesas operacionais acima do orçado':''}. Prioridade: contenção de despesas e recomposição de receita para reduzir o déficit no restante do ano.`
+        : `Resultado operacional positivo no período. Manter o controle de despesas é fundamental para sustentar o superávit no restante do ano.`);
+  const projFinanceiroCor = !hasDRE ? 'yellow' : (resultado < 0 ? 'red' : 'green');
 
   const projSocial = qsSlope > 0
-    ? `Saldo social melhorando. Se a tendência continuar, o clube pode recuperar parte das perdas do 1º semestre já em julho/agosto.`
+    ? `Saldo social em recuperação no período. Se a tendência de entradas se mantiver, o clube tende a reduzir a perda acumulada do quadro social.`
     : `Saídas ainda superam entradas. Para reverter, é necessário intensificar captação e reduzir desligamentos por inadimplência. Projeção: ${Math.round(Math.abs(saldoQS) + qsSlope * 3 * -1)} sócios adicionais em risco nos próximos 3 meses se não houver ação.`;
   const projSocialCor = qsSlope > 0 ? 'green' : 'red';
 
@@ -21411,19 +21655,27 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v134');
+  html = html.split('{{VERSAO}}').join('v138');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
   html = html.split('{{PERIODO_EXTENSO}}').join(periodoExtenso);
   html = html.split('{{RESULTADO_VALOR}}').join(resultadoValor);
   html = html.split('{{RESULTADO_META}}').join(resultadoMeta);
+  html = html.split('{{RESULTADO_CLASS}}').join(resultadoClass);
+  html = html.split('{{RESULTADO_DESC}}').join(resultadoDesc);
+  html = html.split('{{RESULTADO_TRENDCLASS}}').join(resultadoTrendClass);
+  html = html.split('{{RESULTADO_TREND}}').join(resultadoTrend);
   html = html.split('{{TICKET_VALOR}}').join(ticketValor);
   html = html.split('{{TICKET_META}}').join(ticketMeta);
   html = html.split('{{ACESSOS_VALOR}}').join(acessosValor);
   html = html.split('{{ACESSOS_META}}').join(mediaAcessoStr);
   html = html.split('{{SALDO_VALOR}}').join(saldoValor);
   html = html.split('{{SALDO_META}}').join(saldoMeta);
+  html = html.split('{{SALDO_CLASS}}').join(saldoClass);
+  html = html.split('{{SALDO_DESC}}').join(saldoDesc);
+  html = html.split('{{SALDO_TRENDCLASS}}').join(saldoTrendClass);
+  html = html.split('{{SALDO_TREND}}').join(saldoTrend);
   html = html.split('{{RETENCAO_VALOR}}').join(retValor);
   html = html.split('{{RETENCAO_META}}').join(retMeta);
   html = html.split('{{INADIM_MES}}').join(inadimMes);
@@ -21594,7 +21846,10 @@ function renderPizza(s) {
   }
 
   const slices = entries.map(([name,v],i) => ({ label: name, value: v, color: PIZZA_COLORS[i % PIZZA_COLORS.length] }));
-  drawDonut('pizzaCanvas', slices, fmtMil(total), 'TOTAL');
+  // Centro do donut = TOTAL OFICIAL (igual ao card e ao subtítulo). As fatias são a composição
+  // (rubricas arredondadas); seu somatório pode diferir do oficial em poucos R$ mil.
+  const centroTotal = isRL ? s.rl : isDO ? s.do_ : total;
+  drawDonut('pizzaCanvas', slices, fmtMil(centroTotal), 'TOTAL');
 
   // Legend — 2 colunas quando há mais de 4 itens
   const legEl = document.getElementById('pizzaLegend');
