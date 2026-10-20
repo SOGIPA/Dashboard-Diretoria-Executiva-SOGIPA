@@ -16814,7 +16814,17 @@ function drawFunilVendasDiario(elId, dias){
 // é o que preserva o contexto histórico. Vazio = tudo derivado da base.
 // ── Meses com PREVISÃO oficial, ainda não fechados ───────────────────────
 // Receita, despesa e resultado vêm da tabela do "Resumo Executivo do Fluxo de
-// Caixa" da Controladoria (base 10/09). Caixa livre e fundo NÃO são digitados:
+// Caixa" da Controladoria. ATUALIZADO em 20/10/2026 pela tabela "SOGIPA |
+// FLUXO DE CAIXA 2026 — JULHO A DEZEMBRO", que substitui a base 10/09:
+//   out  3588/3792/-204  ->  3560/3828/-268
+//   nov  3402/3623/-221  ->  3447/3609/-162
+//   dez  3613/4016/-403  ->  3613/3907/-294
+// Jul/Ago/Set NAO foram tocados: a fonte traz exatamente os numeros que ja
+// estavam em DADOS_MES, apenas arredondados ao milhar. Outubro em DADOS_MES
+// tambem nao foi tocado: la o dado e REALIZADO parcial (posicao 08/10), de
+// outra fonte, e a tabela nova traz PROJECAO de mes inteiro.
+//
+// Caixa livre e fundo NÃO são digitados:
 // saem do último dia de cada mês na PROJECAO, que já está no painel.
 // Campo sem fonte fica null e a tabela mostra "—". Zero seria mentira: zero é
 // valor conhecido, traço é dado indisponível.
@@ -16823,9 +16833,9 @@ function drawFunilVendasDiario(elId, dias){
 // projeção não entre em total, média, acumulado ou comparativo de realizado.
 // Quando o mês for importado em DADOS_MES, a linha vira fechamento sozinha.
 const FLUXO_PREVISAO = {
-  out2026: {label:'Outubro/2026',   ultimoDia:'30/out', receita:3588, despesa:3792, resultadoOper:-204},
-  nov2026: {label:'Novembro/2026',  ultimoDia:'30/nov', receita:3402, despesa:3623, resultadoOper:-221},
-  dez2026: {label:'Dezembro/2026',  ultimoDia:'30/dez', receita:3613, despesa:4016, resultadoOper:-403},
+  out2026: {label:'Outubro/2026',   ultimoDia:'30/out', receita:3560, despesa:3828, resultadoOper:-268},
+  nov2026: {label:'Novembro/2026',  ultimoDia:'30/nov', receita:3447, despesa:3609, resultadoOper:-162},
+  dez2026: {label:'Dezembro/2026',  ultimoDia:'30/dez', receita:3613, despesa:3907, resultadoOper:-294},
 };
 // Monta a linha de previsão derivando caixa e fundo da PROJECAO.
 function flxPrevisao(k){
