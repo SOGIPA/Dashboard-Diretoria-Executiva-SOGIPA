@@ -2953,35 +2953,43 @@ const REINGRESSO_HISTORICO = [
       {nome:'Contribuinte Universitário', qtd:1, cor:'#5a5c78'},
     ],
     alerta: '<b style=\"color:var(--green);\">Setembro fechado — 97 reingressos e R$ 51.416,34</b>, contra 54 e R$ 30.881,49 na posição de 28/09. <b style=\"color:var(--green);\">Meta de 50 batida com 194%</b> — 97 realizados. É o <b>maior volume do ano</b>, acima de agosto (68) e de janeiro (75). Ticket médio de R$ 530,07, abaixo dos R$ 548,96 de agosto e dos R$ 571,88 da posição parcial: o fechamento trouxe volume com valor menor por reingresso. <b>Taxa reduzida (45) e RBN (39) respondem por 84 dos 97</b>, com benefício patrimonial (6), promoção aniversário (5) e lista de excluídos (2) completando o mês. <b style=\"color:var(--gold);\">Ajustado em 01/10:</b> a peça de fechamento trazia 96 reingressos e 44 na Taxa reduzida; a Secretaria Administrativa registrou acréscimo na campanha depois dela e o total validado do mês é <b>97</b>, com 45 na Taxa reduzida. <b style=\"color:var(--gold);\">Ressalva de origem:</b> a peça traz a quantidade por campanha, mas <b>não informa o valor financeiro de cada uma</b>, e o valor do mês <b>não acompanhou esse acréscimo</b> — por isso os R$ 51.416,34 seguem como o total informado, sem rateio nem ticket por campanha. A abertura por categoria também não veio.'},
-  // ── OUTUBRO/2026 · informado pela Secretaria Administrativa em 16/10 ──────
-  // MES EM ANDAMENTO. SUBSTITUI a posicao de 13/10 (13 reingressos e
-  // R$ 8.699,08) — nao soma a ela. Competencia CONFIRMADA pelo diretor em
-  // 16/10/2026: a informacao chegou sem competencia escrita, e outubro e o
-  // unico mes aberto da serie (jan a set estao fechados e publicados).
+  // ── OUTUBRO/2026 · informado pela Secretaria Administrativa em 03/11 ──────
+  // RESULTADO MENSAL DE OUTUBRO. SUBSTITUI a posicao de 16/10 (19 reingressos
+  // e R$ 12.231,54) — nao soma a ela. Competencia CONFIRMADA expressamente
+  // pelo diretor: "os dados informados correspondem exclusivamente a
+  // competencia OUTUBRO DE 2026" e "os 89 sao o resultado mensal de outubro,
+  // nao o acumulado de janeiro a outubro".
   //
   // ARITMETICA CONFERIDA, nada digitado por fora:
-  //   4 (Campanha de Aniversario) + 15 (normais) = 19  ✔ fecha com o total
-  //   12.231,54 / 19 = 643,7653  -> R$ 643,77         ✔ fecha com o informado
-  //   4/19 = 21,05%  ·  15/19 = 78,95%                 ✔ fecha com o informado
+  //   19 (Campanha Aniversario) + 70 (normais) = 89   OK fecha com o total
+  //   75.073,44 / 89 = 843,5218  -> R$ 843,52          OK ticket calculado
+  //   19/89 = 21,35%  ·  70/89 = 78,65%                OK saem de qtd/total
   // `ticketMedio` NAO esta aqui: sai do forEach abaixo (valor/total).
-  // Os percentuais tambem nao sao digitados — saem de qtd/total no render.
   //
-  // VALOR: R$ 12.231,54 e o VALOR TOTAL INFORMADO do mes. Nao foi tratado como
+  // ACUMULADO: o filtro Jan-Out SOMA os meses preservados com o outubro novo e
+  // da 536 reingressos / R$ 407.720,89. O 89 NAO substitui o acumulado — e o
+  // mes isolado. Jan a set nao foram tocados.
+  //
+  // FECHADO: outubro ja terminou e a informacao chegou como resultado mensal.
+  // Se ainda for posicao parcial, trocar `fechado:true` por
+  // `fechado:false, posicao:'<data>'` — o rotulo da tabela acompanha sozinho.
+  //
+  // VALOR: R$ 75.073,44 e o VALOR TOTAL INFORMADO do mes. Nao foi tratado como
   // receita efetivamente recebida nem como mensalidade recorrente, e NAO foi
-  // rateado entre os dois grupos: a Sec. Adm. nao enviou os valores individuais,
-  // entao nao existe ticket por grupo nem valor por campanha nesta carga.
+  // rateado entre os dois grupos: a Sec. Adm. nao enviou os valores
+  // individuais, entao nao existe ticket por grupo nem valor por campanha.
   //
-  // CATEGORIA DE SOCIO: continua sem abertura. Os 19 ficam num unico bloco de
+  // CATEGORIA DE SOCIO: continua sem abertura. Os 89 ficam num unico bloco de
   // "aguardando detalhamento" — sem dado nao e zero e nao se distribui.
-  {mesKey:'out2026', periodoTag:'Outubro/2026', fechado:false, posicao:'16/10/2026', total:19, valor:12231.54, contatos:null,
+  {mesKey:'out2026', periodoTag:'Outubro/2026', fechado:true, total:89, valor:75073.44, contatos:null,
     campanhas:[
-      {nome:'Campanha de Aniversário', qtd:4,  cor:'#00e5a0'},
-      {nome:'Reingressos normais',     qtd:15, cor:'#5a5c78'},
+      {nome:'Campanha de Aniversário', qtd:19, cor:'#00e5a0'},
+      {nome:'Reingressos normais',     qtd:70, cor:'#5a5c78'},
     ],
     categorias:[
-      {nome:'Aguardando detalhamento da Sec. Adm.', qtd:19, cor:'#4a4c68'},
+      {nome:'Aguardando detalhamento da Sec. Adm.', qtd:89, cor:'#4a4c68'},
     ],
-    alerta: '<b>Mês em andamento — posição de 16/10.</b> <b>19 reingressos</b> somando <b>R$ 12.231,54</b> de valor total informado, com ticket médio calculado de <b>R$ 643,77</b> (12.231,54 ÷ 19). <b style=\"color:var(--green);\">Substitui a posição de 13/10</b>, que trazia 13 reingressos e R$ 8.699,08 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. A separação informada pela gestão: <b>4 da Campanha de Aniversário</b> (21,05%) e <b>15 reingressos normais</b> (78,95%). <b style=\"color:var(--gold);\">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 12.231,54 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
+    alerta: '<b style="color:var(--green);">Outubro — 89 reingressos e R$ 75.073,44</b> de valor total informado, com ticket médio calculado de <b>R$ 843,52</b> (75.073,44 ÷ 89). <b style="color:var(--green);">Substitui a posição de 16/10</b>, que trazia 19 reingressos e R$ 12.231,54 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. É o <b>maior volume do ano</b>, acima de setembro (97 em quantidade, mas R$ 51.416,34) em valor, e o <b>maior ticket médio da série</b>: R$ 843,52 contra R$ 530,07 de setembro e R$ 548,96 de agosto — outubro trouxe menos volume que setembro com valor bem maior por reingresso. A separação informada pela gestão: <b>19 da Campanha de Aniversário</b> (21,35%) e <b>70 reingressos normais</b> (78,65%). <b style="color:var(--gold);">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 75.073,44 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -4086,17 +4094,40 @@ const NEG_FAIXAS = [
   // mostra como taxa de recuperacao, com o sinal trocado: 159.928/328.044 =
   // 48,75% na FX1 e 244.618/685.312 = 35,69% no total. O painel segue calculando
   // a taxa a partir dos valores, sem numero digitado.
+  // ── ATUALIZAÇÃO DE 03/11/2026 · OUTUBRO/26 (nova posição de cobrança) ─────
+  // SUBSTITUI a posição de 02/10 — mesma competência relida, NÃO é mês novo e
+  // NÃO soma. A COORTE E A MESMA: as quatro aberturas sao identicas as de 02/10
+  // (328.044 · 90.193 · 50.653 · 216.421), o que muda e so quanto ja foi
+  // recuperado de cada uma. Por isso nada foi distribuido entre outubro e
+  // novembro: o quadro e a divida que abriu em outubro, medida em 03/11.
+  //            02/10 -> 03/11   (recuperado)        em aberto 02/10 -> 03/11
+  //   FX1      159.928 -> 281.917  (+121.989)        168.117 ->  46.127
+  //   FX2       24.768 ->  57.672  (+ 32.904)         65.425 ->  32.521
+  //   FX3        8.059 ->  46.670  (+ 38.611)         42.594 ->   3.983
+  //   FORA      51.864 -> 182.827  (+130.963)        164.557 ->  33.594
+  //   TOTAL    244.618 -> 569.086  (+324.468)        440.694 -> 116.226
+  //   taxa      35,69% -> 83% (oficial declarada)
+  // Percentuais oficiais declarados pela Cobranca: 86 / 64 / 92 / 84 e 83 no
+  // total. Guardados em `pctOficial`/`taxaOficial`; os percentuais com duas
+  // casas do detalhamento seguem derivados dos valores, como nos demais meses.
+  // DIVERGENCIA DA FONTE, PRESERVADA: cada faixa fecha exata (abertura = rec +
+  // ab), mas a SOMA das quatro da R$ 685.311 de inicio e R$ 116.225 em aberto,
+  // contra R$ 685.312 e R$ 116.226 declarados na linha de TOTAL. Sao R$ 1,00 em
+  // cada um. O recuperado fecha no centavo (569.086). A linha de total declarada
+  // e internamente coerente (685.312 - 116.226 = 569.086), entao vale o
+  // declarado e os R$ 1,00 ficam registrados, sem compensacao.
   { mes:'Out/26', label:'Outubro/2026', fechado:false,
-    fonte:'Relatório de cobrança — ABERTURA 02/10/2026',
-    importadoEm:'14/10/2026', dataBase:'02/10/2026', competencia:'Outubro/2026',
-    inicio:685312, base:685312, totRec:244618, totAb:440694,
-    divergenciaFonte:{teto:50, motivo:'resíduo de R$ 1 da própria fonte no quadro de abertura de 02/10/2026'},
+    fonte:'Relatório de cobrança — POSIÇÃO 03/11/2026',
+    importadoEm:'03/11/2026', dataBase:'03/11/2026', competencia:'Outubro/2026',
+    inicio:685312, base:685312, totRec:569086, totAb:116226,
+    taxaOficial:83,
+    divergenciaFonte:{teto:50, motivo:'resíduo de R$ 1 da própria fonte na posição de 03/11/2026 — as quatro faixas somam R$ 685.311 de início e R$ 116.225 em aberto, contra R$ 685.312 e R$ 116.226 declarados na linha de total'},
     faixas:[
-      {fx:'FX1',   idade:'1 mês',     ref:'set/26',     abertura:328044, rec:159928, ab:168117},
-      {fx:'FX2',   idade:'2 meses',   ref:'ago/26',     abertura:90193,  rec:24768,  ab:65425},
-      {fx:'FX3',   idade:'3 meses',   ref:'jul/26',     abertura:50653,  rec:8059,   ab:42594},
-      {fx:'FORA',  idade:'4+ meses',  ref:'<= jun/26',  abertura:216421, rec:51864,  ab:164557},
-    ], selo:205593600 },
+      {fx:'FX1',   idade:'1 mês',     ref:'set/26',     abertura:328044, rec:281917, ab:46127, pctOficial:86},
+      {fx:'FX2',   idade:'2 meses',   ref:'ago/26',     abertura:90193,  rec:57672,  ab:32521, pctOficial:64},
+      {fx:'FX3',   idade:'3 meses',   ref:'jul/26',     abertura:50653,  rec:46670,  ab:3983,  pctOficial:92},
+      {fx:'FORA',  idade:'4+ meses',  ref:'<= jun/26',  abertura:216421, rec:182827, ab:33594, pctOficial:84},
+    ], selo:205593500 },
   // ── ATUALIZAÇÃO DE 07/10 · SETEMBRO/26 (nova posição oficial de cobrança) ──
   // SUBSTITUI a posição de 05/10 (base 576.700 · recuperado 329.577 · aberto
   // 247.124 · 57,15%). Não é mês novo nem soma: é a mesma competência relida.
@@ -7903,16 +7934,20 @@ const VENDAS_EXTRA_MESES = {
     metas:{
       // Direto do topo da aba Outubro: orcado 83 (linha 'Meta Vendas') e
       // desafio 90 (linha 'META DESAFIO VENDA NOVA').
-      vendas:{orcado:83, real:28}, reingressos:{orcado:null, real:19},
+      vendas:{orcado:83, real:28}, reingressos:{orcado:null, real:89},
       // A aba repete 83 na linha 'TOTAL VENDAS/REINGRESSOS' e nao traz meta de
       // reingresso separada. O 83 entra como esta; nada foi deduzido.
-      totalVR:{orcado:83, real:47}, desafioVenda:90, desafioReingresso:null,
-      total:{orcado:90, real:47, gap:-43},
+      totalVR:{orcado:83, real:117}, desafioVenda:90, desafioReingresso:null,
+      total:{orcado:90, real:117, gap:27},
       // Mesmo criterio de setembro: 'taxaAdesao' guarda a serie do painel, que e
       // o VALOR CONTRIBUICAO (R$ 14.607,75) — nao a coluna Adesao (R$ 17.858,27).
-      // taxaReingresso repete REINGRESSO_HISTORICO.out2026 (19 / R$ 12.231,54);
-      // nao ha derivacao automatica entre as duas estruturas.
-      taxaAdesao:14607.75, taxaReingresso:12231.54, taxaTotal:26839.29,
+      // ATUALIZADO em 03/11: taxaReingresso repete REINGRESSO_HISTORICO.out2026,
+      // que passou de 19 / R$ 12.231,54 para 89 / R$ 75.073,44. NAO ha derivacao
+      // automatica entre as duas estruturas — se uma mudar, a outra TEM de ser
+      // atualizada junto, senao a aba Vendas e a Sec. Adm. divergem no mesmo
+      // numero. taxaTotal = 14.607,75 + 75.073,44 = 89.681,19.
+      // real de vendas (28) NAO mudou; so a parcela de reingresso.
+      taxaAdesao:14607.75, taxaReingresso:75073.44, taxaTotal:89681.19,
     },
   },
 };
@@ -7998,13 +8033,13 @@ const COBERTURA_RH = {
 // data de venda efetivamente registrada na base. Quando a nova carga entrar,
 // o texto acompanha sozinho — não há data fixa para esquecer de atualizar.
 const AVISO_VENDAS = {
-  // DESATIVADO em 19/10/2026: a planilha revisada da Gerência de Vendas chegou
-  // e outubro foi importado. O mecanismo fica intacto — basta voltar a true
-  // quando houver nova espera por base.
-  ativo: false,
-  titulo: 'Atualização dos indicadores de Vendas',
-  mensagem: 'Os indicadores de Vendas permanecem com a última base disponibilizada. '
-          + 'A atualização do período está pendente do recebimento da planilha revisada pelo setor responsável.',
+  // REATIVADO em 03/11/2026: nova espera por base de Vendas. O mecanismo e o
+  // mesmo criado em 15/10 e desligado em 19/10 — nenhum componente novo foi
+  // criado. Para desligar de novo: ativo = false. Nada mais precisa mudar.
+  ativo: true,
+  titulo: 'Atualização de dados — Vendas',
+  mensagem: 'Os indicadores apresentados refletem a última base de dados recebida. '
+          + 'A atualização do período está pendente de recebimento das informações de Vendas.',
   complemento: 'Os dados serão atualizados após o recebimento e a validação da nova base.',
   status: 'Aguardando dados',
 };
@@ -8108,10 +8143,10 @@ const COBERTURA_REINGRESSO = {
   // Setembro em andamento: fim = 28/09, data da informação da Sec. Adm. que
   // trouxe os 54 reingressos (a posição anterior era de 21/09).
   set2026: {ini:'2026-09-01', fim:'2026-09-28'},
-  // Outubro em andamento: fim = 16/10, data da informação da Sec. Adm. que
-  // trouxe os 19 reingressos e os R$ 12.231,54 (substituiu a posição de 13/10,
-  // que tinha 13 e R$ 8.699,08).
-  out2026: {ini:'2026-10-01', fim:'2026-10-16'},
+  // 03/11: outubro FECHADO — a Sec. Adm. informou o resultado mensal (89
+  // reingressos e R$ 75.073,44), substituindo a posição de 16/10 (19 e
+  // R$ 12.231,54). A janela passa a cobrir o mês inteiro.
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
@@ -9842,6 +9877,10 @@ const RETENCAO_CRA = [
  {"nome": "D.M.C.W.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "03/09/2026", "inicio": "01/08/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true},
  {"nome": "A.B.E.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "24/09/2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
  {"nome": "M.C.M.M.", "cat": "Senior", "perm": "6 meses", "mes": "set2026", "registro": "25/09/2026", "inicio": "01/09/2026", "valor": 1596.0, "beneficios": ["troca de categoria"], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": true, "alerta": "FIM anterior ao INÍCIO na fonte"},
+ {"nome": "I.M.V.", "cat": "Não informado", "mes": "out2026", "registro": "06/10/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "campos CATEGORIA, PERMANÊNCIA, INÍCIO e VALOR em branco na fonte — a planilha registra apenas data, nome, matrícula e tipo"},
+ {"nome": "B.P.M.B.", "cat": "Não informado", "mes": "out2026", "registro": "06/10/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "campos CATEGORIA, PERMANÊNCIA, INÍCIO e VALOR em branco na fonte — a planilha registra apenas data, nome, matrícula e tipo"},
+ {"nome": "J.C.P.S.", "cat": "Não informado", "mes": "out2026", "registro": "15/10/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "campos CATEGORIA, PERMANÊNCIA, INÍCIO e VALOR em branco na fonte — a planilha registra apenas data, nome, matrícula e tipo"},
+ {"nome": "B.S.", "cat": "Não informado", "mes": "out2026", "registro": "16/10/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "campos CATEGORIA, PERMANÊNCIA, INÍCIO e VALOR em branco na fonte — a planilha registra apenas data, nome, matrícula e tipo"},
  {"nome": "A.C.C.", "cat": "Contribuinte individual", "mes": "ago2026", "registro": "19/08/2026", "valor": 0, "beneficios": [], "vBeneficio": 0, "vNegociacao": 0, "sucesso": true, "beneficioUsado": false, "alerta": "linha colada no layout da planilha de Desligamento; duplica a linha 54"}
 ]
 // 23 licenças (eram 24): havia uma L.T.S. duplicada, uma com datas e outra
@@ -9880,7 +9919,8 @@ const LICENCAS_CRA = [
  {"nome": "E.D.M.", "cat": "Patrimonial individual", "mes": "ago2026", "registro": "25/08/2026"},
  {"nome": "J.A.P.", "cat": "Contribuinte", "mes": "abr2026", "registro": "06/04/2026", "inicio": "30/04/2026", "fim": "31/12/2026"},
  {"nome": "M.P.", "cat": "Patrimonial", "mes": "jul2026", "registro": "30/07/2026", "inicio": "01/07/2026", "fim": "31/12/2026"},
- {"nome": "H.A.C.D.F.", "cat": "Contribuinte", "mes": "set2026", "registro": "15/09/2026", "inicio": "27/04/2026", "fim": "30/11/2026"}
+ {"nome": "H.A.C.D.F.", "cat": "Contribuinte", "mes": "set2026", "registro": "15/09/2026", "inicio": "27/04/2026", "fim": "30/11/2026"},
+ {"nome": "J.H.S.J.", "cat": "Não informado", "mes": "out2026", "registro": "28/10/2026", "inicio": null, "fim": null, "alerta": "CATEGORIA, INÍCIO e FIM em branco na fonte"}
 ]
 
 // ═══════════════════════════════════════════════════════════
@@ -9902,6 +9942,9 @@ const COBERTURA_RETENCAO_CRA = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  // 03/11: entrou out2026 — a planilha passou a trazer 4 retencoes e 1 licenca
+  // com DATA DO REGISTRO em outubro (linhas 68 a 72).
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','#e8192c','#b0b0d0','#5a5c78','#22d3ee','#f472b6','#facc15','#8b8fa8'];
 
@@ -10106,9 +10149,9 @@ function deltaOficialCRA(keys){
 // Confere, no menor nível disponível, o que o painel carrega contra o que as
 // quatro planilhas declaram. Nada aqui corrige nada: só acusa.
 const CRA_TRAVAS = {
-  retencoes:     {painel:39,  fonte:39,  origem:'COUNTIF(E3:E992;"retenção") — Retenção 2026'},
-  licencas:      {painel:26,  fonte:26,  origem:'COUNTIF(E3:E992;"licença") — Retenção 2026'},
-  somaRetLic:    {painel:65,  fonte:65,  origem:'bloco S7 da planilha Retenção 2026'},
+  retencoes:     {painel:43,  fonte:43,  origem:'COUNTIF(E3:E992;"retenção") — Retenção 2026 (bloco S6 declara 43)'},
+  licencas:      {painel:27,  fonte:27,  origem:'COUNTIF(E3:E992;"licença") — Retenção 2026 (bloco S5 declara 27)'},
+  somaRetLic:    {painel:70,  fonte:70,  origem:'bloco S7 da planilha Retenção 2026'},
   ocorrencias:   {painel:122, fonte:122, origem:'linhas válidas de Ocorrências 2026'},
   manifestacoes: {painel:231, fonte:231, origem:'linhas válidas de Satisfação 2026'},
   reclamacoes:   {painel:184, fonte:184, origem:'Satisfação 2026, Status = Reclamação'},
@@ -10141,16 +10184,19 @@ function conferirCRA(){
 // ── DIVERGÊNCIAS DA PRÓPRIA FONTE, PRESERVADAS E REGISTRADAS ───────────────
 // Nenhuma destas foi corrigida na origem nem compensada no painel.
 const CRA_OBS = [
+  'Desligamento 2026, aba Outubro — RESOLVIDO em 03/11/2026. A gestora do CRA confirmou expressamente 37 desligamentos, 42 solicitações totais, 16 residuais, 21 deste mês, 5 retidos e 0 programados. O 37 é o número de LINHAS da aba: a leitura da carga da manhã parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, tudo fecha com o quadro lateral da própria aba — ticket médio R$ 460,63 idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. As duas identidades fecham exatas: 37 = 16 + 21 e 42 = 37 + 5. Nada foi redistribuído.',
+  'Desligamento 2026 × Retenção 2026 (carga de 03/11): as duas bases fecham entre si em outubro — o quadro da aba de Desligamento declara 5 retidos (4 retenções + 1 licença) e a planilha de Retenção traz exatamente 4 retenções e 1 licença com data de registro em outubro.',
+  'Desligamento 2026, aba Evolução (carga de 03/11): o bloco lateral declara "Licenças 25" e "Retenções 65", números que não batem com a planilha de Retenção 2026 (27 licenças e 43 retenções, somando 70). O 65 corresponde ao total retenções+licenças da carga ANTERIOR. É um resumo desatualizado dentro da planilha de Desligamento; o painel usa a planilha de Retenção como fonte desses indicadores e não importou esses dois números.',
   'Retenção 2026, linha 67: registro colado no layout da planilha de Desligamento e duplicando a linha 54 (mesma matrícula). Suas colunas de VALOR contêm DATAS. O SUM(I3:I992) do bloco soma a data 02/07/2026 como número e infla o "Valor retido" em exatamente R$ 46.205,00 (150.114,50 declarado × 103.909,50 real). O painel usa o somatório monetário real e não importou a linha como dinheiro.',
   'Retenção 2026: "Valor negociado" declarado (R$ 5.499,96) vem de SUM(O3:O34), mas os dados vão até a linha 67 — fica de fora o parcelamento de R$ 2.012,00 da linha 51. O painel usa R$ 7.511,96, a soma da coluna inteira.',
   'Retenção 2026, linha 8: ano da data FIM inválido na fonte ("31/10/206"). Preservado como está; não foi corrigido para 2026 por suposição.',
   'Retenção 2026, linhas 51, 54, 64 e 65: data FIM anterior à data de INÍCIO. Valores preservados exatamente como informados.',
   'Retenção 2026, linhas 45 e 60: mesma matrícula (110099) com duas licenças de períodos diferentes. Pode ser renovação ou duplicidade — não é possível decidir com a fonte. Ambas preservadas.',
-  'Desligamento 2026, aba Evolução: a coluna 2026 é inteiramente DIGITADA, sem nenhuma fórmula ligando-a às abas mensais. Bate com a contagem de linhas de janeiro a julho e descola a partir de agosto (46×47 linhas), setembro (10×12 com saída) e outubro (26×29 com saída).',
-  'Desligamento 2026: a coluna DESLIGADO não está preenchida de forma homogênea. Preenchimento por mês — jan 75%, fev 70%, MAR 6%, abr 73%, mai–jul 100%, ago 98%, set 92%, out 97%. Indicador de desligamento EFETIVO só é mensurável a partir de maio; março com 2 saídas confirmadas em 32 solicitações é coluna em branco, não queda real.',
-  'Desligamento 2026, abas mensais: o quadro-resumo lateral usa COUNTIF com texto exato de categoria, então toda linha com grafia divergente some da contagem. Em outubro isso tira 3 linhas ("Contribuinte " com espaço, "Contibuinte individual" com erro de digitação e "Veterano " com espaço) e inclui 1 solicitação sem saída — por isso o quadro declara 27 enquanto as linhas com data de desligamento somam 29.',
-  'Desligamento 2026, aba Outubro: as fórmulas Q32 e T21 do quadro lateral estão quebradas (#REF!) e os campos "Solicitações totais", "quantos são deste mês?" e "quantos foram desligados" devolvem 0. Só "quantos são residuais?" (13) e "quantos retidos?" (2) carregam valor real, e ambos conferem com a contagem linha a linha.',
-  'Desligamento 2026, aba Novembro: 2 registros com desligamento PROGRAMADO para 01/11/2026, data futura. Não foram contabilizados como desligamentos realizados.',
+  'Desligamento 2026, aba Evolução: a coluna 2026 é inteiramente DIGITADA, sem nenhuma fórmula ligando-a às abas mensais. Bate com a contagem de linhas de janeiro a julho e descola a partir de agosto (46×47 linhas) e setembro (10×12 com saída). Em outubro a aba pode seguir trazendo 30 e o quadro lateral 30 ou 35: ambos foram SUPERADOS pela confirmação expressa da gestora em 03/11 (37 desligamentos, 42 solicitações). Divergência documental registrada; prevalece a gestora.',
+  'Desligamento 2026: a coluna DESLIGADO não está preenchida de forma homogênea. Preenchimento por mês — jan 75%, fev 70%, MAR 6%, abr 73%, mai–jul 100%, ago 98%, set 92%, out 92% (34 de 37 — as 3 em branco SÃO desligamento, conforme a gestora confirmou em 03/11, e por isso outubro conta 37). Indicador de desligamento EFETIVO só é mensurável a partir de maio; março com 2 saídas confirmadas em 32 solicitações é coluna em branco, não queda real.',
+  'Desligamento 2026, abas mensais: o quadro-resumo lateral usa COUNTIF com texto exato de categoria, então toda linha com grafia divergente some da contagem. Na carga de 03/11 o quadro de outubro passou a somar 37 (34 em categorias pagantes + 3 em isentas), ou seja, conta TODAS as linhas da aba, inclusive as 3 solicitações sem data de saída — por isso não serve como contagem de desligamento efetivo.',
+  'Desligamento 2026, aba Outubro: o quadro lateral voltou a calcular, mas com números que a gestora depois corrigiu — trazia "Solicitações totais" 35, "deste mês" 14 e "desligados" 30, contra os 42, 21 e 37 confirmados em 03/11. "Residuais" (16), "retidos" (5) e "programados" (0) já estavam certos. Só "Desligado · Com taxa" segue quebrado (#REF!), e por isso o card de taxa sai como "—" e não como zero.',
+  'Desligamento 2026, aba Novembro: 2 registros com desligamento PROGRAMADO para 01/11/2026. A aba Evolução não declara nada para novembro e o quadro lateral da aba está todo zerado — novembro NÃO foi criado no painel, porque ausência de dado não é zero.',
   'Setembro/2026, linha 11, e Março/2026, linha 5: data de desligamento gravada como TEXTO ("04/09/2026" e "31.03.2026") e não como data. Tratadas como data na leitura — é o que faz setembro fechar nos 12 oficiais da gestora.',
   'Desligamento 2026, aba Abril, linha 82 (matrícula 118800): registro sem CATEGORIA, sem DEPENDENTE, sem TICKET e sem data de desligamento, com motivo "sem motivo". Era a razão de a soma das categorias de abril dar 137 contra 138 no total. Nenhuma categoria foi atribuída a ele: aparece como "Sem classificação", que é o que a fonte informa, e com isso a soma das classificações volta a fechar com o total do indicador.',
   'Satisfação 2026: 5 registros sem número de protocolo. Nenhum protocolo duplicado entre os 231.',
@@ -10158,7 +10204,7 @@ const CRA_OBS = [
   'Ocorrências 2026: "Comportamento de Funcionário" aparece com 3 registros e "Comportamento de funcionário" com 1 — mesma classificação, grafia diferente. 2 registros sem assunto. Grafias preservadas como na fonte.',
   'Ocorrências e Satisfação 2026: o campo "Prazo" da fonte é DURAÇÃO em dias (fechamento − abertura), conferido linha a linha. Não existe prazo-alvo nas planilhas. O SLA de 5 dias úteis usado nos indicadores de desempenho é regra do painel e NÃO vem da fonte — PENDENTE DE VALIDAÇÃO pela gestora.',
   'CÓDIGO MORTO COM NÚMEROS CONFLITANTES — DADOS_MES.jun2026.retencao e DADOS_MES.jul2026.retencao guardam uma SEGUNDA cópia dos KPIs de desligamento, sobra de versões antigas. Julho declara 63 solicitações ali contra 62 na base viva. Nenhuma tela lê esses blocos: todo acesso passa por getRetencaoMes(), que só devolve DESLIGAMENTOS_MESES. Preservados nesta carga para não mexer em estrutura fora do escopo, mas são armadilha para a próxima importação e deveriam ser removidos.',
-  'Retenção 2026: as bases de Ocorrências e Satisfação chegaram em 14/10 byte a byte idênticas às de 07/10, e a de Retenção só teve uma linha vazia removida. Das quatro planilhas, apenas Desligamento trouxe dado novo (Outubro 25→32 linhas, Novembro 3→2).',
+  'Na carga de 03/11, Ocorrências (122 registros) e Satisfação (231: 184 reclamações, 44 sugestões, 3 elogios) chegaram com contagem e composição idênticas às da carga anterior, mês a mês e categoria a categoria — nenhuma delas tem registro em outubro. Só duas planilhas trouxeram dado novo: Retenção (65→70 linhas: 4 retenções e 1 licença de outubro) e Desligamento (Outubro 32→37 linhas, Evolução de outubro 26→30 e, na correção da gestora no mesmo dia, 30→37).',
 ];
 if(typeof window!=='undefined') window.addEventListener('load', ()=>{ try{ conferirCRA(); }catch(e){} });
 
@@ -12126,7 +12172,18 @@ function computarTendenciaCaixa(){
 // planilha Desligamento 2026(5). É a referência de conferência — não substitui
 // os registros, confere com eles. Em 8 dos 9 meses o número de linhas
 // preenchidas da aba mensal bate exatamente com o declarado aqui.
-const DESLIGAMENTO_EVOLUCAO = {jan2026:48, fev2026:67, mar2026:32, abr2026:138, mai2026:83, jun2026:52, jul2026:44, ago2026:46, set2026:10, out2026:26};
+const DESLIGAMENTO_EVOLUCAO = {jan2026:48, fev2026:67, mar2026:32, abr2026:138, mai2026:83, jun2026:52, jul2026:44, ago2026:46, set2026:10, out2026:37};
+// 03/11 (2a carga): outubro FECHADO em 37 pela gestora do CRA, que confirmou
+// expressamente os nove numeros do mes. O 30 da carga da manha vinha do quadro
+// lateral da aba e da Evolucao; a gestora corrigiu para 37 — que e exatamente o
+// numero de LINHAS da aba de Outubro. A coluna DESLIGADO nao esta preenchida em
+// 3 dessas linhas, e foi so isso que fez a leitura anterior parar em 34/30.
+// A aba Evolucao da planilha pode seguir mostrando 30: divergencia DOCUMENTAL
+// registrada, prevalece a confirmacao da gestora.
+// NOVEMBRO NAO ENTRA: a
+// aba existe com 2 registros (saidas programadas para 01/11), mas a Evolucao
+// nao declara nada para novembro e o quadro lateral da aba esta todo zerado.
+// Sem dado nao e zero — novembro so entra quando a gestora declarar.
 // Conferência de 14/10/2026 — declarado na Evolução × linhas da aba mensal ×
 // linhas COM DATA DE SAÍDA. A terceira coluna é a única que corresponde ao
 // rótulo "desligado"; onde ela difere do declarado, a divergência é da fonte e
@@ -12407,41 +12464,45 @@ const DESLIGAMENTOS_MESES = {
     analise: 'Fonte: planilha Desligamento 2026, aba de Setembro, conferida contra o quadro-resumo da própria aba. <b style=\"color:var(--gold);\">Posição parcial de 28/09 — setembro já encerrou e esta base não recebeu o fechamento do mês.</b> São <b>39 solicitações no período</b>, somadas a <b>15 residuais</b> de meses anteriores. Dessas, <b style=\"color:var(--red);\">25 resultaram em desligamento</b>, <b style=\"color:var(--green);\">4 em retenção</b> e <b>11 ficaram programadas</b> — pedidos com data futura marcada, que ainda não saíram do quadro. O quadro social contabiliza <b>26</b> no período. A aba traz <b>25 registros individuais</b>, todos de desligamento, que alimentam a composição abaixo: <b>mudança lidera com 9</b>, seguida de financeiro e não utilização (5 cada). Contribuinte responde por 12 dos 25. Ticket médio de <b>R$ 602,66</b> e 1,8 dependente por titular. <b style=\"color:var(--gold);\">Movimento da semana:</b> entre 21/09 e 28/09 as solicitações passaram de 31 para 39, as retenções de 2 para 4 e os programados de 5 para 11 — os desligamentos efetivados passaram a 25, ou seja, <b>o que cresceu foi a fila, não a saída</b>. <b style=\"color:var(--gold);\">Atenção à leitura:</b> \"Solicitações Totais\" é o fluxo do período (39), enquanto os 26 do quadro social incluem os processos herdados. São medidas diferentes e não devem ser somadas. O quadro-resumo da aba declarava 24 desligados enquanto a aba lista <b>25 registros individuais</b>; em 01/10/2026 a gestora da CRA validou os 25 como o número correto, e é esse que o painel usa. As <b>novas solicitações do mês</b> também foram corrigidas de 8 para <b>10</b> pela mesma validação.',
   },
   out2026: {
-    // RECARGA DE 14/10/2026 — 'Desligamento 2026(6).xlsx', aba Outubro.
-    // A carga anterior (07/10) leu 13 registros. ERRO DE LEITURA MINHA: a aba
-    // já trazia 25 linhas naquela data e eu considerei apenas as 13 com
-    // desligamento em 01/10, tratando as demais como fora da competência.
-    // Agora a aba tem 32 linhas e a contagem é feita por natureza do registro:
-    //   32 linhas = 29 desligamentos efetivos + 2 retenções + 1 solicitação
-    //               ainda sem data de saída (14/10, motivo saúde)
-    // Os 29 têm data de desligamento entre 01/10 e 13/10/2026.
-    // Residuais (13) e retidos (2) conferem com o quadro lateral da própria aba
-    // ("quantos são residuais?" e "quantos retidos?"). Os demais campos do
-    // quadro voltam 0 porque as fórmulas estão quebradas (#REF!) — por isso
-    // "Programados" sai como "—" e não como zero.
-    // A aba Evolução declara 26 à mão para outubro; a contagem linha a linha dá
-    // 29. Divergência registrada, sem correção silenciosa — mesmo padrão de
-    // setembro, onde a gestora validou a contagem individual (12) contra o 10
-    // digitado na Evolução.
-    periodoTag:'Outubro/2026 (parcial · posição de 14/10)',
+    // FECHAMENTO OFICIAL DE OUTUBRO — confirmado pela gestora do CRA em
+    // 03/11/2026 (planilha 'Desligamento 2026(9).xlsx' + print de confirmacao).
+    // OS NOVE NUMEROS OFICIAIS, e como fecham entre si:
+    //   solicitacoes totais .. 42  = 37 desligamentos + 5 retidos
+    //   desligamentos ........ 37  = 16 residuais + 21 deste mes
+    //   retidos ............... 5  = 4 retencoes + 1 licenca
+    //   programados ........... 0
+    // As duas identidades fecham exatas — nada foi redistribuido para fechar.
+    // POR QUE 37 E NAO 30: 37 e o numero de LINHAS da aba de Outubro. A leitura
+    // da carga da manha parou em 34 porque a coluna DESLIGADO esta em branco em
+    // 3 linhas; elas sao desligamento do mesmo jeito. Recalculado sobre as 37,
+    // TUDO fecha com o quadro lateral da propria aba: ticket medio R$ 460,63
+    // (identico ao declarado), dependentes 1,65 contra 1,647 declarado, e as
+    // sete categorias e seis motivos batem um a um com o COUNTIF do quadro.
+    // Os 5 retidos NAO sao linhas desta aba: estao na planilha Retencao 2026,
+    // com 4 retencoes e 1 licenca registradas em outubro. Por isso 42 = 37 + 5
+    // e nao ha dupla contagem entre as duas bases.
+    // DIVERGENCIA DOCUMENTAL REMANESCENTE: a aba Evolucao da planilha pode
+    // seguir trazendo 30. Prevalece a confirmacao expressa da gestora.
+    periodoTag:'Outubro/2026 (fechado)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'32', sub:'registros na aba de Outubro'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'13', sub:'solicitados em setembro, desligados em outubro', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'16', sub:'solicitados e desligados em outubro'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'29', sub:'com data de saída entre 01/10 e 13/10', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'2', sub:'retenções no mês', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'quadro da aba com fórmula quebrada', valorCor:'#fb923c'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'42', sub:'37 desligamentos + 5 retidos'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'solicitados antes de outubro', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'21', sub:'solicitados e desligados em outubro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'37', sub:'confirmado pela gestora do CRA', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'5', sub:'4 retenções + 1 licença', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'confirmado pela gestora do CRA', valorCor:'#fb923c'},
     ],
-    categorias: [{"nome": "Contribuinte", "qtd": 11, "cor": "#3d7bff"}, {"nome": "Contribuinte Individual", "qtd": 10, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 3, "cor": "#a855f7"}, {"nome": "Patrimonial", "qtd": 2, "cor": "#f2b705"}, {"nome": "Veterano (isento)", "qtd": 2, "cor": "#06b6d4"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}],
-    motivos: [{"motivo": "Mudança", "qtd": 11, "pct": 37.93, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 7, "pct": 24.14, "cor": "#00e5a0"}, {"motivo": "Não utilização", "qtd": 5, "pct": 17.24, "cor": "#a855f7"}, {"motivo": "Saúde", "qtd": 4, "pct": 13.79, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 3.45, "cor": "#06b6d4"}, {"motivo": "Falecimento", "qtd": 1, "pct": 3.45, "cor": "#fb923c"}],
-    totalDesligamentos: 29,
-    ticketMedio: 'R$ 477,33', dependentes: '1,0',
-    residual: 13, residualLabel: 'Residual Acumulado',
-    desligadosComTaxa: 'R$ 0,00', taxaQtd: 0, modalidadeTaxa: {sim:5, nao:23},
-    quadroSocial: null,
+    categorias: [{"nome": "Contribuinte Individual", "qtd": 14, "cor": "#3d7bff"}, {"nome": "Contribuinte", "qtd": 12, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 4, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 3, "cor": "#f2b705"}, {"nome": "Patrimonial", "qtd": 2, "cor": "#06b6d4"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#e8192c"}],
+    motivos: [{"motivo": "Mudança", "qtd": 13, "pct": 35.14, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 10, "pct": 27.03, "cor": "#00e5a0"}, {"motivo": "Saúde", "qtd": 7, "pct": 18.92, "cor": "#a855f7"}, {"motivo": "Não utilização", "qtd": 5, "pct": 13.51, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 2.70, "cor": "#06b6d4"}, {"motivo": "Falecimento", "qtd": 1, "pct": 2.70, "cor": "#fb923c"}],
+    totalDesligamentos: 37,
+    ticketMedio: 'R$ 460,63', dependentes: '1,6',
+    residual: 16, residualLabel: 'Residual Acumulado',
+    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:5, nao:24},
+    quadroSocial: 38,
     negociacoesDesligados: 'R$ 0,00',
-    evolucaoDeclarada: 26, registrosNaAba: 29, linhasNaAba: 32,
-    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, conferida linha a linha. <b style="color:var(--gold);">Mês em curso — posição de 14/10, não é fechamento de outubro.</b> A aba traz <b>32 registros</b>, que não são todos desligamento: <b style="color:var(--red);">29 têm data de saída</b> (entre 01/10 e 13/10), <b style="color:var(--green);">2 são retenções</b> e <b>1 é solicitação de 14/10 ainda sem saída confirmada</b> — essa última não entra como desligamento, porque pedido não é saída. Dos 29, <b>13 foram solicitados em setembro</b> e saíram em outubro (residuais) e <b>16 foram solicitados e desligados dentro do mês</b>; ambos os números conferem com o quadro lateral da própria aba. <b>Mudança lidera com 11</b> (38% das saídas), seguida de financeiro (7) e não utilização (5). Contribuinte e Contribuinte Individual respondem por 21 dos 29. Ticket médio de <b>R$ 477,33</b> com os 29 informados e 1,0 dependente por titular. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>13</b> desligamentos em outubro. Era leitura incompleta minha de 07/10 — a aba já tinha 25 linhas e só as 13 com saída em 01/10 foram importadas. O número correto da base é 29. <b style="color:var(--gold);">Divergência preservada:</b> a aba Evolução declara <b>26</b> para outubro, digitado à mão, sem fórmula ligando às abas mensais; as linhas com data de saída somam <b>29</b>. A diferença não foi compensada — <b>pende validação da gestora</b>, como ocorreu em setembro, quando ela confirmou a contagem individual contra o número digitado. O quadro lateral da aba declara ainda <b>27</b> em categorias: o COUNTIF usa texto exato e perde três linhas com grafia divergente, além de incluir a solicitação sem saída. <b style="color:var(--gold);">Olhando adiante:</b> a aba de Novembro já registra <b>2 saídas programadas para 01/11</b>; são data futura e <b>não entram como realizadas</b> em nenhum indicador.',
+    evolucaoDeclarada: 37, registrosNaAba: 37, linhasNaAba: 37,
+    correcaoOficial: '03/11/2026 — gestora do CRA confirmou expressamente 42 solicitações, 37 desligamentos, 16 residuais, 21 deste mês, 5 retidos e 0 programados',
+    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, com os números <b style="color:var(--green);">confirmados expressamente pela gestora do CRA em 03/11/2026</b>. <b>Outubro fechou com 37 desligamentos</b>, dentro de <b>42 solicitações totais</b>. As duas identidades da fonte fecham exatas e nada foi redistribuído: <b>37 = 16 residuais + 21 deste mês</b> e <b>42 = 37 desligamentos + 5 retidos</b>. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>30</b> pela manhã. O 37 é o número de linhas da aba — a leitura anterior parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, <b>tudo passou a fechar com o quadro lateral da própria aba</b>: ticket médio de <b>R$ 460,63</b>, idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. <b style="color:var(--green);">Sem dupla contagem entre as bases:</b> os 5 retidos não são linhas desta aba — estão na planilha de Retenção, com 4 retenções e 1 licença registradas em outubro, e é por isso que 42 = 37 + 5. <b>Mudança lidera com 13</b> saídas (35%), seguida de financeiro (10) e saúde (7); as três explicam 81% do mês. Contribuinte Individual e Contribuinte respondem por 26 das 37. <b style="color:var(--gold);">Divergência documental remanescente:</b> a aba Evolução da planilha pode seguir trazendo 30 — prevalece a confirmação expressa da gestora, e a diferença fica registrada. <b>Novembro não foi criado</b>: a aba tem 2 saídas com data de 01/11, mas a Evolução não declara nada e o quadro está zerado.',
   },
 };
 
