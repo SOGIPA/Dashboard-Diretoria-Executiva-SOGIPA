@@ -16764,7 +16764,13 @@ function pintarVendas(v, aviso){
     html += `
     <div class="section-title" style="margin-top:26px;">Equipe &amp; Perfil do Associado<div class="line"></div></div>
     <div class="grid-2">
-      <div class="card">
+      <div class="card" style="align-self:start;">
+        <!-- align-self:start — sem isto o card e esticado pelo card do donut ao
+             lado, porque o grid-2 iguala a altura da linha, e sobrava um vazio
+             grande no rodape depois que o paragrafo saiu: 154px em Outubro e
+             726px em Jan->Out. Com align-self:start o card passa a ter a altura
+             do proprio conteudo. Vale SO para este card — o grid-2 e os demais
+             cards do painel nao foram tocados. -->
         <!-- 04/11/2026 — EQUIPE DE VENDAS. A tabela de ranking por consultora
              foi substituida por este resultado consolidado. Os numeros continuam
              vindo de v.consultores (ja consolidado na origem) e somados do mesmo
@@ -16815,11 +16821,14 @@ function pintarVendas(v, aviso){
             origem, não do cálculo, e nenhum valor foi ajustado para fechar.
           </div>`;
         })()}
-        <div class="muted" style="font-size:11.5px; margin-top:16px; line-height:1.5;">
-          Resultado consolidado da equipe. Por determinação do Gerente Geral, os
-          resultados de Vendas não são apresentados por consultora — não há
-          ranking nem comparação individual em nenhum período do filtro.
-        </div>
+        <!-- 04/11/2026 — o paragrafo explicativo "Resultado consolidado da
+             equipe..." foi REMOVIDO a pedido do Gerente Geral. Nada o
+             substitui: o bloco inteiro saiu, com a margem de 16px que ele
+             trazia, para nao deixar espaco vazio no rodape do card.
+             A consolidacao em si NAO mudou — continua garantida pelos dados
+             (um unico {nome:'EQUIPE DE VENDAS'} por mes) e pela trava
+             __AUDIT_VENDAS, que rejeita qualquer nome individual. O que saiu
+             foi o texto, nao a regra. -->
       </div>
       <div class="card"><div class="card-label">Categoria do Associado</div><div id="vendasDonutCategoria" class="donut-wrap"></div></div>
     </div>`;
@@ -18123,13 +18132,22 @@ function renderTabelaBancosPeriodo(bancos, totalGeral){
 // INDICADOR DE ATUALIZAÇÃO DOS DADOS (pill do cabeçalho)
 // ═══════════════════════════════════════════════════════════
 // 01/10/2026: fixado em "DADOS EM ATUALIZAÇÃO" enquanto as bases do painel
-// estão sendo atualizadas — mesma solução já adotada no Painel do Presidente,
+// estavam sendo atualizadas — mesma solução já adotada no Painel do Presidente,
 // com a mesma estrutura de retorno { texto, atualizando }.
 // Até aqui o texto vinha cravado no HTML do pill, sem regra nenhuma.
 // Para voltar ao comportamento automático, basta descomentar o bloco abaixo
 // e remover o return fixo: nada mais precisa mudar.
+//
+// 04/11/2026: RESTAURADO para "DADOS ATUALIZADOS" (verde), a pedido do Gerente
+// Geral. Mudou SÓ este retorno: `atualizando: false` faz setStatusPill() tirar
+// a classe .fechamento (amarela) e pôr .atualizado (verde). Borda, fundo e cor
+// vêm de .status-pill.atualizado; a bolinha .blink usa currentColor, então
+// acompanha sozinha; e o pulso volta a ser pulseGreenBox, porque o keyframe
+// amarelo só vale na combinação .fechamento.pulsando. Nenhuma regra de CSS,
+// tamanho, posição ou responsividade foi tocada.
+// O painel continua em modo FIXO — a regra automática por data segue inativa.
 function getStatusDados(){
-  return { texto: 'DADOS EM ATUALIZAÇÃO', atualizando: true };
+  return { texto: 'DADOS ATUALIZADOS', atualizando: false };
 
   /* REGRA AUTOMÁTICA POR DATA — INATIVA DESDE 01/10/2026
      (mesma do Painel do Presidente: até o dia 24 os dados ainda estão
