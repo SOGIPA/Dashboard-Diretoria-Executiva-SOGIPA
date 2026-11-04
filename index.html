@@ -7276,26 +7276,65 @@ function mesKeyParaRetencao(de, ate){
 // JULHO/2026 — preservado. A planilha traz 32 vendas e R$ 20.262,25, idêntico
 //   ao que já estava publicado.
 // ──────────────────────────────────────────────────────────────────────────
-// Trava das vendas de Setembro/2026: os agregados têm de fechar com os 65
-// registros individuais. Não é tolerância — é igualdade exata.
+// Trava dos meses de Vendas com registro individual: os agregados tem de
+// fechar com os registros, um a um. Nao e tolerancia — e igualdade exata.
+//
+// 04/11/2026: a trava passou a cobrir OUTUBRO/2026 tambem, alem de setembro.
+// As verificacoes de setembro sao exatamente as mesmas de antes — nenhuma foi
+// afrouxada e nenhum valor esperado foi alterado para fazer a trava passar.
+// O que mudou foi a COBERTURA: outubro entrou com os 85 registros da carga de
+// 04/11 e e checado pelo mesmo criterio. Para incluir um novo mes, basta
+// acrescentar a chave em MESES_TRAVADOS — desde que ele tenha `registros`.
+//
+// A soma por EQUIPE (`consultores`) continua sendo checada contra os registros.
+// Depois da consolidacao da equipe o array tem uma linha so, e e justamente
+// isso que a trava prova: a linha unica soma a MESMA quantidade e o MESMO valor
+// que as linhas individuais somavam — a consolidacao nao perdeu nem criou nada.
+const MESES_TRAVADOS_VENDAS = [['set2026','Setembro/2026'], ['out2026','Outubro/2026']];
 function conferirVendasSet(){
-  const d = (typeof VENDAS_EXTRA_MESES!=='undefined') ? VENDAS_EXTRA_MESES.set2026 : null;
   const q = [];
-  if(d && d.registros){
+  MESES_TRAVADOS_VENDAS.forEach(([k, rotulo])=>{
+    const d = (typeof VENDAS_EXTRA_MESES!=='undefined') ? VENDAS_EXTRA_MESES[k] : null;
+    if(!(d && d.registros)) return;
+    const p = m => q.push(`${rotulo}: ${m}`);
     const R = d.registros, n = R.length;
     const val = Math.round(R.reduce((s,x)=>s+(x.valor||0),0)*100)/100;
     const soma = a => (a||[]).reduce((s,x)=>s+x.qtd,0);
-    if(String(n) !== String(d.associacoesNovas)) q.push(`vendas: card diz ${d.associacoesNovas}, a base tem ${n} registros`);
-    if(soma(d.consultores)!==n) q.push(`consultoras somam ${soma(d.consultores)} contra ${n} registros`);
-    if(soma(d.categorias)!==n)  q.push(`categorias somam ${soma(d.categorias)} contra ${n} registros`);
-    if(soma(d.campanhas)!==n)   q.push(`campanhas somam ${soma(d.campanhas)} contra ${n} registros`);
+    if(String(n) !== String(d.associacoesNovas)) p(`vendas: card diz ${d.associacoesNovas}, a base tem ${n} registros`);
+    if(soma(d.consultores)!==n) p(`equipe soma ${soma(d.consultores)} contra ${n} registros`);
+    if(soma(d.categorias)!==n)  p(`categorias somam ${soma(d.categorias)} contra ${n} registros`);
+    if(soma(d.campanhas)!==n)   p(`campanhas somam ${soma(d.campanhas)} contra ${n} registros`);
     const vc = Math.round((d.consultores||[]).reduce((s,x)=>s+(x.valor||0),0)*100)/100;
-    if(Math.abs(vc-val)>0.01) q.push(`valor por consultora ${vc} contra ${val} dos registros`);
+    if(Math.abs(vc-val)>0.01) p(`valor da equipe ${vc} contra ${val} dos registros`);
     const tk = Math.round(val/n*100)/100;
     const tkCard = Number(String(d.ticketMedio).replace(/[^\d,]/g,'').replace(',','.'));
-    if(Math.abs(tk-tkCard)>0.01) q.push(`ticket do card ${tkCard} contra ${tk} calculado`);
+    if(Math.abs(tk-tkCard)>0.01) p(`ticket do card ${tkCard} contra ${tk} calculado`);
     const nomes = new Set(R.map(x=>x.nome+'|'+x.data+'|'+x.valor));
-    if(nomes.size !== n) q.push(`há registros duplicados: ${n-nomes.size}`);
+    if(nomes.size !== n) p(`ha registros duplicados: ${n-nomes.size}`);
+    // A apresentacao nao pode voltar a segmentar por pessoa: o unico nome
+    // admitido em `consultores` e o da equipe.
+    (d.consultores||[]).forEach(c=>{ if(c.nome!=='EQUIPE DE VENDAS')
+      p(`consultores traz nome individual "${c.nome}" — a apresentacao deve ser consolidada`); });
+  });
+  // Varredura de TODOS os meses de Vendas, inclusive os que nao tem registro
+  // individual: nenhum deles pode trazer nome de consultora em `consultores`.
+  // E esta a trava que garante a exigencia do Gerente Geral de que nomes
+  // individuais nao reaparecam quando o filtro de mes ou periodo mudar — a
+  // agregacao multi-mes agrupa por `nome`, entao se todo mes traz so a equipe,
+  // qualquer recorte do filtro tambem traz so a equipe.
+  if(typeof VENDAS_EXTRA_MESES!=='undefined'){
+    Object.keys(VENDAS_EXTRA_MESES).forEach(k=>{
+      ((VENDAS_EXTRA_MESES[k]||{}).consultores||[]).forEach(c=>{
+        if(c.nome!=='EQUIPE DE VENDAS')
+          q.push(`${k}: consultores traz nome individual "${c.nome}"`);
+      });
+    });
+  }
+  if(typeof VENDAS_EM_PROCESSO!=='undefined'){
+    VENDAS_EM_PROCESSO.forEach(x=>{
+      if(x.consultor && x.consultor!=='EQUIPE DE VENDAS' && x.consultor!=='—' && x.consultor!=='?')
+        q.push(`vendas em processo: consultor individual "${x.consultor}"`);
+    });
   }
   window.__AUDIT_VENDAS = {ok:q.length===0, quebras:q};
   return window.__AUDIT_VENDAS;
@@ -7333,9 +7372,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp / OAB', qtd:1, cor:'#b0b0d0'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:44, valor:35848.25},
-      {nome:'Roberta', qtd:24, valor:18803.5},
-      {nome:'Nathy', qtd:1, valor:1002.0},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 3 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (69 vendas / R$ 55653.75). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:69, valor:55653.75},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:30},
@@ -7377,8 +7419,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Visita / Interesse Academia', qtd:1, cor:'#00e5a0'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:26, valor:20624.0},
-      {nome:'Roberta', qtd:13, valor:9736.0},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (39 vendas / R$ 30360.00). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:39, valor:30360.00},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:15},
@@ -7415,9 +7461,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp / Visita', qtd:1, cor:'#06b6d4'},
     ],
     consultores:[
-      {nome:'Roberta', qtd:18, valor:14787.5},
-      {nome:'Sabrina', qtd:7, valor:6659.0},
-      {nome:'Gabe', qtd:1, valor:718.0},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 3 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (26 vendas / R$ 22164.50). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:26, valor:22164.50},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:11},
@@ -7450,8 +7499,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp / La Salle', qtd:1, cor:'#00e5a0'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:12, valor:11385.0},
-      {nome:'Roberta', qtd:4, valor:3118.5},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (16 vendas / R$ 14503.50). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:16, valor:14503.50},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:5},
@@ -7482,8 +7535,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp / Visita', qtd:1, cor:'#e8192c'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:8, valor:8159.0},
-      {nome:'Roberta', qtd:3, valor:3006.0},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (11 vendas / R$ 11165.00). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:11, valor:11165.00},
     ],
     categorias:[
       {nome:'Patrimonial', qtd:6},
@@ -7522,8 +7579,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp / Visita', qtd:1, cor:'#00e5a0'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:17, valor:13534.0},
-      {nome:'Roberta', qtd:6, valor:4439.0},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (23 vendas / R$ 17973.00). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:23, valor:17973.00},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:9},
@@ -7562,8 +7623,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'WhatsApp/Visita', qtd:1, cor:'#a855f7'},
     ],
     consultores:[
-      {nome:'Sabrina', qtd:29, valor:18994.25},
-      {nome:'Claudia', qtd:3, valor:1268.00},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (32 vendas / R$ 20262.25). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:32, valor:20262.25},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:13},
@@ -7575,7 +7640,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Contribuinte Individual Convênio', qtd:1},
       {nome:'Contribuinte Teen', qtd:1},
     ],
-    alerta: 'Julho fechado com 32 associações novas (R$ 20.262,25) — meta de 23 superada em 39%. A campanha "Promo o Melhor das Férias" respondeu por 10 das 32 vendas, e o ticket médio ficou em R$ 633,20 porque boa parte das entradas veio de planos promocionais e de convênio. Sabrina fechou 29 das 32 associações do mês.',
+    alerta: 'Julho fechado com 32 associações novas (R$ 20.262,25) — meta de 23 superada em 39%. A campanha "Promo o Melhor das Férias" respondeu por 10 das 32 vendas, e o ticket médio ficou em R$ 633,20 porque boa parte das entradas veio de planos promocionais e de convênio. O resultado do mês é apresentado de forma consolidada pela EQUIPE DE VENDAS.',
     metas:{
       vendas:{orcado:23, real:32}, reingressos:{orcado:32, real:null},
       totalVR:{orcado:55, real:32}, desafioVenda:26, desafioReingresso:40,
@@ -7656,10 +7721,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Teen', qtd:1, cor:'#5a5c78'},
     ],
     consultores:[
-      {nome:'Helena', qtd:34, valor:14428.50},
-      {nome:'Nicole', qtd:25, valor:11598.00},
-      {nome:'Claudia', qtd:4, valor:1862.00},
-      {nome:'Sabrina', qtd:2, valor:767.00},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 4 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (65 vendas / R$ 28655.50). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:65, valor:28655.50},
     ],
     categorias:[
       {nome:'Contribuinte', qtd:46},
@@ -7670,7 +7737,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Convênio OAB', qtd:2},
       {nome:'Sênior', qtd:1},
     ],
-    alerta: '<b>🤝 O setor de Vendas fechou parceria com a Secretária de Cultura.</b> É um ganho importante para o setor e para o clube, e abre um canal novo de captação.<br><br><b>Mês fechado</b> — <b>65 associações novas</b> somando <b>R$ 28.655,50</b>, conforme a planilha oficial de Vendas auditada registro a registro. <b style=\"color:var(--green);\">155% da meta de 42</b> e 65% do desafio de 100. <b>Helena fecha com 34 vendas e R$ 14.428,50</b> e <b>Nicole com 25 e R$ 11.598,00</b> — as duas somam 59 das 65. A <b>campanha de aniversário responde por 40 vendas</b> e as visitas por 12. Ticket médio de <b>R$ 440,85</b>. Somando os 68 reingressos, <b>vendas + reingressos chegam a 133</b> contra 82 orçados, e a R$ 65.984,56 de taxa total. <b style=\"color:var(--gold);\">O valor foi corrigido de R$ 37.047,60 para R$ 28.655,50</b> na carga de 08/09: a planilha revisou os valores de adesão registro a registro. A quantidade não mudou.',
+    alerta: '<b>🤝 O setor de Vendas fechou parceria com a Secretária de Cultura.</b> É um ganho importante para o setor e para o clube, e abre um canal novo de captação.<br><br><b>Mês fechado</b> — <b>65 associações novas</b> somando <b>R$ 28.655,50</b>, conforme a planilha oficial de Vendas auditada registro a registro. <b style=\"color:var(--green);\">155% da meta de 42</b> e 65% do desafio de 100. <b>A EQUIPE DE VENDAS fecha o mês com 65 vendas e R$ 28.655,50</b>. A <b>campanha de aniversário responde por 40 vendas</b> e as visitas por 12. Ticket médio de <b>R$ 440,85</b>. Somando os 68 reingressos, <b>vendas + reingressos chegam a 133</b> contra 82 orçados, e a R$ 65.984,56 de taxa total. <b style=\"color:var(--gold);\">O valor foi corrigido de R$ 37.047,60 para R$ 28.655,50</b> na carga de 08/09: a planilha revisou os valores de adesão registro a registro. A quantidade não mudou.',
     metas:{
       // Meta de reingresso de agosto = 40 e desafio = 45, informados pela
       // Sec. Adm. TOTAL da tabela = desafioVenda + desafioReingresso (26+45).
@@ -7822,8 +7889,12 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Indicação', qtd:1, cor:'#e879f9'},
     ],
     consultores:[
-      {nome:'Nicole', qtd:33, valor:16899.50},
-      {nome:'Helena', qtd:32, valor:15448.00},
+      // CONSOLIDADO em 04/11/2026 por determinacao do Gerente Geral: os
+      // 2 resultados individuais foram SOMADOS num unico resultado de
+      // equipe (65 vendas / R$ 32347.50). Nao e troca de rotulo — as linhas
+      // individuais deixaram de existir nesta estrutura. Quantidades e
+      // valores somam exatamente o que somavam antes.
+      {nome:'EQUIPE DE VENDAS', qtd:65, valor:32347.50},
     ],
     categorias:[
       {nome:'Contribuinte Familiar', qtd:28},
@@ -7838,7 +7909,7 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Plano Single', qtd:1},
       {nome:'Convênio OAB', qtd:1},
     ],
-    alerta: '<b style=\"color:var(--green);\">Setembro fechado — 65 associações novas somando R$ 32.347,50</b>, contra 54 e R$ 25.497,00 na posição parcial de 26/09. <b style=\"color:var(--green);\">A meta de 52 foi batida com 125%</b> e o desafio de 60 chegou a 108%. Ticket médio de <b>R$ 497,65</b>, acima dos R$ 472,17 da posição parcial de 26/09 e dos R$ 440,85 de agosto: o fechamento trouxe volume <i>e</i> valor maior por venda. <b>Nicole fecha com 33 vendas e R$ 16.899,50</b> e <b>Helena com 32 e R$ 15.448,00</b>: as duas dividem o mês praticamente ao meio, e nenhuma outra consultora registra venda em setembro. O canal combinado <b>Campanha + Tour responde por 18 das 65</b>, à frente de Tour (11), Campanha (10) e WhatsApp (9). <b>Contribuinte Familiar concentra 28 das 65</b>. Somando os <b>97 reingressos do fechamento de setembro</b>, vendas + reingressos chegam a <b>162</b> contra 102 orçados, e a R$ 83.763,84 de taxa total. <b style=\"color:var(--gold);\">Ressalvas de origem:</b> 10 dos 65 registros estão sem categoria e 10 sem canal na planilha, e entram como aguardando registro — sem serem atribuídos a nenhum grupo. A série do painel é a de <b>Valor Contribuição</b>; a coluna \"Adesão\" somaria R$ 37.986,23 em setembro e não foi incorporada.',
+    alerta: '<b style=\"color:var(--green);\">Setembro fechado — 65 associações novas somando R$ 32.347,50</b>, contra 54 e R$ 25.497,00 na posição parcial de 26/09. <b style=\"color:var(--green);\">A meta de 52 foi batida com 125%</b> e o desafio de 60 chegou a 108%. Ticket médio de <b>R$ 497,65</b>, acima dos R$ 472,17 da posição parcial de 26/09 e dos R$ 440,85 de agosto: o fechamento trouxe volume <i>e</i> valor maior por venda. <b>A EQUIPE DE VENDAS fecha o mês com 65 vendas e R$ 32.347,50</b>. O canal combinado <b>Campanha + Tour responde por 18 das 65</b>, à frente de Tour (11), Campanha (10) e WhatsApp (9). <b>Contribuinte Familiar concentra 28 das 65</b>. Somando os <b>97 reingressos do fechamento de setembro</b>, vendas + reingressos chegam a <b>162</b> contra 102 orçados, e a R$ 83.763,84 de taxa total. <b style=\"color:var(--gold);\">Ressalvas de origem:</b> 10 dos 65 registros estão sem categoria e 10 sem canal na planilha, e entram como aguardando registro — sem serem atribuídos a nenhum grupo. A série do painel é a de <b>Valor Contribuição</b>; a coluna \"Adesão\" somaria R$ 37.986,23 em setembro e não foi incorporada.',
     metas:{
       // orcado 52 e desafio 60 vem do topo da propria aba Setembro da planilha.
       // A meta de REINGRESSO nunca veio na planilha — em jul/ago ela foi
@@ -7880,74 +7951,155 @@ const VENDAS_EXTRA_MESES = {
   //   Dois registros estao SEM data na origem (data:null) e sao preservados
   //   assim: entram na contagem e no valor, mas ficam fora da serie diaria.
   out2026: {
+    // ── OUTUBRO/2026 FECHADO · carga de 04/11/2026 ────────────────────────
+    // SUBSTITUI a posicao de 19/10 (28 vendas / R$ 14.607,75). Mesma
+    // competencia relida com o mes fechado — nao soma, substitui.
+    //
+    // A DIFERENCA QUE O DIRETOR PEDIU PARA INVESTIGAR, RESOLVIDA:
+    // o resumo da aba declara 85 vendas e R$ 59.363,79 de adesao; a conferencia
+    // preliminar achou 81 registros e R$ 57.377,79. Os 4 que faltavam sao as
+    // linhas com DATA EM TEXTO, no formato irregular DD/MMAAAA:
+    //   L11 '02/102026' R$   501,00    L12 '01/102026' R$ 501,00
+    //   L13 '02/102026' R$   266,00    L75 '30/102026' R$ 718,00
+    //                                  soma  R$ 1.986,00  <- a diferenca exata
+    // 81 + 4 = 85 e 57.377,79 + 1.986,00 = 59.363,79. Nenhum registro foi
+    // inventado e nenhum valor foi forcado. As quatro datas foram lidas como
+    // 02/10, 01/10, 02/10 e 30/10 — o padrao e inequivoco (dia/mesano).
+    //
+    // CRITERIO FINANCEIRO: `valorArrecadado` e a soma de VALOR CONTRIBUICAO
+    // (R$ 41.602,75), nao de Adesao (R$ 59.363,79). E a mesma regra ja
+    // verificada em agosto (28.655,50 contra 30.127,50 de adesao) e setembro
+    // (32.347,50 contra 37.986,23). O resumo da aba rotula as duas colunas como
+    // "Taxa de Adesao" em meses diferentes — em agosto o valor declarado e o da
+    // CONTRIBUICAO, em outubro e o da ADESAO. O rotulo da fonte oscila; o
+    // criterio do painel nao.
+    //
+    // EQUIPE DE VENDAS: por determinacao do Gerente Geral, `consultores` traz um
+    // unico resultado consolidado. O campo "cons" de cada registro foi mantido
+    // na base para auditoria e NAO alimenta nenhuma apresentacao.
     registros:[
-      {"nome": "G.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
-      {"nome": "K.T.C.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
-      {"nome": "D.M.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 985.80},
-      {"nome": "F.T.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
-      {"nome": "V.D.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 501.00},
-      {"nome": "R.B.", "data": "2026-10-02", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
-      {"nome": "C.L.M.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 953.00},
-      {"nome": "G.H.B.", "data": "2026-10-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 937.32},
-      {"nome": "J.C.B.", "data": "2026-10-08", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 889.00},
-      {"nome": "A.B.V.", "data": "2026-10-05", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 905.00},
-      {"nome": "L.H.P.D.S.", "data": "2026-10-06", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.00, "adesao": 905.00},
-      {"nome": "L.Q.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
-      {"nome": "C.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Visita", "valor": 699.00, "adesao": 699.00},
-      {"nome": "A.D.S.P.", "data": "2026-10-07", "cons": "Nicole", "cat": "Convênio OAB", "canal": "Campanha + Tour", "valor": 375.75, "adesao": 763.59},
-      {"nome": "S.D.", "data": "2026-10-07", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 653.84},
-      {"nome": "F.M.A.", "data": "2026-10-08", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + Tour", "valor": 499.00, "adesao": 499.00},
-      {"nome": "D.K.", "data": "2026-10-06", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + Tour", "valor": 499.00, "adesao": 499.00},
-      {"nome": "V.R.B.", "data": "2026-10-14", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
-      {"nome": "M.A.D.A.", "data": null, "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": null},
-      {"nome": "A.V.Z.Z.", "data": "2026-10-14", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 633.72},
-      {"nome": "M.I.D.S.", "data": "2026-10-15", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
-      {"nome": "G.S.D.", "data": "2026-10-15", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.00, "adesao": 775.00},
-      {"nome": "E.P.G.", "data": null, "cons": "Helena", "cat": "Combo Família", "canal": "Campanha + Tour", "valor": 999.00, "adesao": 999.00},
-      {"nome": "L.D.L.S.", "data": "2026-10-16", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + Tour", "valor": 266.00, "adesao": 266.00},
-      {"nome": "R.C.D.E.S.", "data": "2026-10-16", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.00, "adesao": 699.00},
-      {"nome": "P.B.B.", "data": "2026-10-19", "cons": "Nicole", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
-      {"nome": "H.R.M.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
-      {"nome": "D.D.V.E.B.B.D.O.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober", "valor": 699.00, "adesao": 699.00},
+      {"nome": "G.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "K.T.C.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "D.M.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 985.8},
+      {"nome": "F.T.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "V.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "R.B.", "data": "2026-10-02", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "C.L.M.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 953.0},
+      {"nome": "G.H.B.", "data": "2026-10-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 937.32},
+      {"nome": "J.C.B.", "data": "2026-10-08", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 889.0},
+      {"nome": "A.B.V.", "data": "2026-10-05", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 905.0},
+      {"nome": "L.H.P.S.", "data": "2026-10-06", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 905.0},
+      {"nome": "L.Q.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "C.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Visita + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "A.S.P.", "data": "2026-10-07", "cons": "Nicole", "cat": "Convênio OAB", "canal": "Campanha + WhatsApp", "valor": 375.75, "adesao": 763.59},
+      {"nome": "S.D.", "data": "2026-10-07", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 653.84},
+      {"nome": "F.M.A.", "data": "2026-10-08", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
+      {"nome": "D.K.", "data": "2026-10-06", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
+      {"nome": "V.R.B.", "data": "2026-10-14", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
+      {"nome": "M.A.D.A.", "data": "2026-10-14", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 775.0},
+      {"nome": "A.V.Z.Z.", "data": "2026-10-14", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Campanha + WhatsApp", "valor": 359.0, "adesao": 633.72},
+      {"nome": "M.I.S.", "data": "2026-10-15", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "G.S.D.", "data": "2026-10-15", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 775.0},
+      {"nome": "E.P.G.", "data": "2026-10-15", "cons": "Helena", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999.0, "adesao": 999.0},
+      {"nome": "L.L.S.", "data": "2026-10-16", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "R.C.E.S.", "data": "2026-10-16", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
+      {"nome": "P.B.B.", "data": "2026-10-19", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "H.R.M.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "D.V.B.B.O.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "C.A.S.", "data": "2026-10-19", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 501.0},
+      {"nome": "J.S.S.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 501.0},
+      {"nome": "W.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359.0, "adesao": 359.0},
+      {"nome": "M.D.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "S.B.L.", "data": "2026-10-20", "cons": "Nicole", "cat": "Teen", "canal": "Visita + Tour", "valor": 266.0, "adesao": 266.0},
+      {"nome": "E.W.O.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Oktober + Tour", "valor": 266.0, "adesao": 266.0},
+      {"nome": "J.V.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "F.T.D.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + Tour", "valor": 266.0, "adesao": 427.52},
+      {"nome": "M.F.W.", "data": "2026-10-21", "cons": "Nicole", "cat": "Duo", "canal": "Amigo Indica", "valor": 699.0, "adesao": 699.0},
+      {"nome": "S.M.F.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Projeto Escola", "valor": 501.0, "adesao": 501.0},
+      {"nome": "V.E.P.", "data": "2026-10-19", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 695.0},
+      {"nome": "A.B.R.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 661.0},
+      {"nome": "N.A.H.W.", "data": "2026-10-23", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 615.0},
+      {"nome": "G.C.A.S.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
+      {"nome": "D.C.C.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
+      {"nome": "R.C.L.R.", "data": "2026-10-26", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "L.G.A.", "data": "2026-10-26", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "M.T.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
+      {"nome": "B.C.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
+      {"nome": "A.A.B.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "N.M.S.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "M.N.P.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
+      {"nome": "C.A.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 581.0},
+      {"nome": "M.I.S.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "C.R.L.S.", "data": "2026-10-28", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "B.S.H.", "data": "2026-10-28", "cons": "Nicole", "cat": "Teen", "canal": "Sócio Atleta", "valor": 266.0, "adesao": 266.0},
+      {"nome": "R.M.B.J.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "B.B.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "O.L.B.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "D.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "C.T.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Amigo Indica", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "L.S.O.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "C.S.S.", "data": "2026-10-29", "cons": "Nicole", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999.0, "adesao": 999.0},
+      {"nome": "M.A.U.A.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "J.D.L.G.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "T.S.A.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "M.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "J.F.S.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "J.A.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "R.M.D.L.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359.0, "adesao": 718.0},
+      {"nome": "G.E.R.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "F.C.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "P.G.N.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "A.S.B.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "L.B.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "D.M.C.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "P.G.J.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "E.C.G.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "A.S.T.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "D.S.D.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "A.P.O.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "L.L.B.", "data": "2026-10-31", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
+      {"nome": "J.D.Z.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Amigo Indica", "valor": 266.0, "adesao": 266.0},
+      {"nome": "V.K.", "data": "2026-10-31", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "R.V.M.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "F.P.O.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
+      {"nome": "M.A.B.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0}
     ],
-    periodoTag:'Outubro/2026 (em andamento · 01 a 19/10)',
-    associacoesNovas:'28', valorArrecadado:'R$ 14.607,75', ticketMedio:'R$ 521,71',
+    periodoTag:'Outubro/2026 (fechado)',
+    associacoesNovas:'85', valorArrecadado:'R$ 41.602,75', ticketMedio:'R$ 489,44',
     campanhas:[
-      {nome:'Campanha + Tour', qtd:21, cor:'#3d7bff'},
-      {nome:'Visita', qtd:4, cor:'#00e5a0'},
-      {nome:'Oktober', qtd:3, cor:'#f2b705'},
+      {nome:'Campanha + WhatsApp', qtd:43, cor:'#3d7bff'},
+      {nome:'Visita + Tour', qtd:16, cor:'#00e5a0'},
+      {nome:'Campanha + Tour', qtd:10, cor:'#f2b705'},
+      {nome:'Oktober + Tour', qtd:9, cor:'#a855f7'},
+      {nome:'Amigo Indica', qtd:3, cor:'#06b6d4'},
+      {nome:'Visita', qtd:2, cor:'#fb923c'},
+      {nome:'Projeto Escola', qtd:1, cor:'#e8192c'},
+      {nome:'Sócio Atleta', qtd:1, cor:'#b0b0d0'},
     ],
     consultores:[
-      {nome:'Helena', qtd:18, valor:10700.00},
-      {nome:'Nicole', qtd:10, valor:3907.75},
+      {nome:'EQUIPE DE VENDAS', qtd:85, valor:41602.75},
     ],
     categorias:[
-      {nome:'Contribuinte Familiar', qtd:12},
-      {nome:'Duo', qtd:7},
-      {nome:'Teen', qtd:3},
-      {nome:'Sênior', qtd:2},
-      {nome:'Plano Single', qtd:2},
-      {nome:'Convênio OAB', qtd:1},
-      {nome:'Combo Família', qtd:1},
+      {nome:'Contribuinte Familiar', qtd:46}, {nome:'Duo', qtd:13}, {nome:'Teen', qtd:10},
+      {nome:'Universitário', qtd:5}, {nome:'Plano Single', qtd:3}, {nome:'Contribuinte Individual', qtd:3},
+      {nome:'Sênior', qtd:2}, {nome:'Combo Família', qtd:2}, {nome:'Convênio OAB', qtd:1},
     ],
-    alerta: '<b style=\"color:var(--gold);\">Outubro em andamento — posição de 19/10/2026.</b> <b>28 associações novas</b> somando <b>R$ 14.607,75</b> em Valor Contribuição, ticket médio de <b>R$ 521,71</b>, acima dos R$ 497,65 do fechamento de setembro. <b>Helena responde por 18 das 28</b> e R$ 10.700,00, contra 10 e R$ 3.907,75 de Nicole — a divisão ao meio que marcou setembro não se repete nesta posição parcial. O canal <b>Campanha + Tour concentra 21 das 28</b>, com Visita (4) e a campanha <b>Oktober (3)</b>, que aparece pela primeira vez. <b>Contribuinte Familiar lidera com 12</b>, seguida de Duo (7). Contra a meta: <b>28 de 83 vendas orçadas</b> (34%) e 28 do desafio de 90 (31%) — mês ainda em curso, não é resultado de fechamento. <b style=\"color:var(--gold);\">Ressalvas de origem:</b> três registros traziam a data colada ao ano (&quot;02/102026&quot;) e foram reconstruídos como 02/10 e 01/10; <b>dois registros estão sem data</b> na planilha e entram na contagem e no valor, mas ficam fora da série diária — nenhuma data foi arbitrada. Um deles também está sem Adesão. A aba abrevia as categorias que setembro escreve por extenso; a correspondência foi feita pelo <b>Valor Contribuição</b>, que em setembro é exclusivo de cada categoria (501 = Contribuinte Familiar, 499 = Plano Single, 375,75 = Convênio OAB). <b>Combo Família</b> e <b>Oktober</b> não existem em nenhum mês anterior e foram preservados como a planilha os declara. <b style=\"color:var(--gold);\">Pende validação:</b> a aba registra <b>83</b> tanto em &quot;Meta Vendas&quot; quanto em &quot;TOTAL VENDAS/REINGRESSOS&quot;, sem separar uma meta de reingresso — por isso a meta de reingresso fica sem valor em vez de ser deduzida.',
+    alerta: '<b style="color:var(--green);">Outubro fechou com 85 associações novas</b> e <b>R$ 41.602,75</b> de valor contribuição, com ticket médio de <b>R$ 489,44</b>. <b style="color:var(--green);">É o melhor mês do ano em volume</b> — acima das 66 de agosto e das 65 de setembro — e <b>bateu a meta de 83 (102%)</b>, embora fique 5 abaixo do desafio de 90. Substitui a posição parcial de 19/10, que trazia 28 vendas. <b>Contribuinte Familiar concentra 46 das 85</b> (54%), seguida de Duo (13) e Teen (10). Na origem, <b>Campanha + WhatsApp responde por 43</b> (51%) e Visita + Tour por 16 — os dois canais juntos explicam 69% do mês. <b style="color:var(--gold);">Conferência da diferença apontada:</b> o resumo da aba declara 85 vendas e R$ 59.363,79 de adesão, contra 81 registros e R$ 57.377,79 na contagem preliminar. Os 4 que faltavam têm <b>data gravada como texto</b> no formato irregular DD/MMAAAA e somam exatamente <b>R$ 1.986,00</b> — 81 + 4 = 85 e 57.377,79 + 1.986,00 = 59.363,79. Nada foi inventado nem forçado. <b style="color:var(--gold);">Ressalva de origem:</b> a matrícula 1104518 aparece em dois registros diferentes (19/10 e 29/10, pessoas e valores distintos) — é erro de cadastro na planilha, não venda duplicada, e os dois registros foram preservados.',
     metas:{
-      // Direto do topo da aba Outubro: orcado 83 (linha 'Meta Vendas') e
-      // desafio 90 (linha 'META DESAFIO VENDA NOVA').
-      vendas:{orcado:83, real:28}, reingressos:{orcado:null, real:89},
+      vendas:{orcado:83, real:85}, reingressos:{orcado:null, real:89},
       // A aba repete 83 na linha 'TOTAL VENDAS/REINGRESSOS' e nao traz meta de
       // reingresso separada. O 83 entra como esta; nada foi deduzido.
-      totalVR:{orcado:83, real:117}, desafioVenda:90, desafioReingresso:null,
-      total:{orcado:90, real:117, gap:27},
-      // Mesmo criterio de setembro: 'taxaAdesao' guarda a serie do painel, que e
-      // o VALOR CONTRIBUICAO (R$ 14.607,75) — nao a coluna Adesao (R$ 17.858,27).
-      // ATUALIZADO em 03/11: taxaReingresso repete REINGRESSO_HISTORICO.out2026,
-      // que passou de 19 / R$ 12.231,54 para 89 / R$ 75.073,44. NAO ha derivacao
-      // automatica entre as duas estruturas — se uma mudar, a outra TEM de ser
-      // atualizada junto, senao a aba Vendas e a Sec. Adm. divergem no mesmo
-      // numero. taxaTotal = 14.607,75 + 75.073,44 = 89.681,19.
-      // real de vendas (28) NAO mudou; so a parcela de reingresso.
-      taxaAdesao:14607.75, taxaReingresso:75073.44, taxaTotal:89681.19,
+      // A propria aba declara TOTAL real 85 e gap -5, contando SO vendas. O
+      // painel mantem o criterio ja adotado desde agosto: a linha se chama
+      // VENDAS/REINGRESSOS, entao soma as duas (85 + 89 = 174). As duas
+      // leituras ficam registradas; nenhuma foi compensada.
+      totalVR:{orcado:83, real:174}, desafioVenda:90, desafioReingresso:null,
+      total:{orcado:90, real:174, gap:84},
+      // taxaAdesao guarda a serie do painel, que e o VALOR CONTRIBUICAO
+      // (R$ 41.602,75) — nao a coluna Adesao (R$ 59.363,79).
+      // taxaReingresso repete REINGRESSO_HISTORICO.out2026 (89 / R$ 75.073,44).
+      // taxaTotal = 41.602,75 + 75.073,44 = 116.676,19.
+      taxaAdesao:41602.75, taxaReingresso:75073.44, taxaTotal:116676.19,
     },
   },
 };
@@ -8033,10 +8185,11 @@ const COBERTURA_RH = {
 // data de venda efetivamente registrada na base. Quando a nova carga entrar,
 // o texto acompanha sozinho — não há data fixa para esquecer de atualizar.
 const AVISO_VENDAS = {
-  // REATIVADO em 03/11/2026: nova espera por base de Vendas. O mecanismo e o
-  // mesmo criado em 15/10 e desligado em 19/10 — nenhum componente novo foi
-  // criado. Para desligar de novo: ativo = false. Nada mais precisa mudar.
-  ativo: true,
+  // DESATIVADO em 04/11/2026: a base de Vendas chegou e outubro foi importado
+  // e conciliado (85 vendas, R$ 59.363,79 de adesao batendo no centavo com o
+  // resumo da aba). O mecanismo fica intacto — basta voltar a true na proxima
+  // espera por base.
+  ativo: false,
   titulo: 'Atualização de dados — Vendas',
   mensagem: 'Os indicadores apresentados refletem a última base de dados recebida. '
           + 'A atualização do período está pendente de recebimento das informações de Vendas.',
@@ -8119,7 +8272,9 @@ const COBERTURA_VENDAS = {
   set2026: {ini:'2026-09-01', fim:'2026-09-26'},
   // Outubro EM ANDAMENTO: fim = 19/10, última data de venda registrada na aba
   // "Outubro - 2026". Não usar 31/10 — o mês não fechou.
-  out2026: {ini:'2026-10-01', fim:'2026-10-19'},
+  // 04/11: outubro FECHADO — a planilha trouxe o mês inteiro, 85 vendas de
+  // 01 a 31/10. A janela deixa de ser parcial.
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
@@ -9957,17 +10112,17 @@ const CORES_CRA = ['#3d7bff','#00e5a0','#a855f7','#f2b705','#06b6d4','#fb923c','
 // arrecadado — só viram venda realizada quando a Gestoria de Vendas confirmar
 // e elas aparecerem na planilha de ENTRADAS.
 // Para acrescentar: uma linha por venda, com mes no formato 'ago2026'.
-// ATUALIZADO EM 24/08: 4 vendas em efetivação, R$ 2.004,00 (4 × R$ 501,00),
-// sendo 2 da Nicole e 2 da Helena — informado pelo diretor em 24/08. Antes eram
-// 6 (R$ 3.006,00) sem consultora identificada; duas não se efetivaram.
-// Cada linha é uma consultora, para o total por consultora sair do próprio bloco.
+// ATUALIZADO EM 24/08: 4 vendas em efetivação, R$ 2.004,00 (4 × R$ 501,00)
+// — informado pelo diretor em 24/08. Antes eram 6 (R$ 3.006,00); duas não se
+// efetivaram.
+// CONSOLIDADO em 04/11/2026: as duas linhas (2 + 2, mesma categoria e mesmo
+// valor unitário) foram somadas numa única linha de equipe, 4 × R$ 501,00 =
+// R$ 2.004,00. O total do bloco não mudou.
 // Elas NÃO entram nos cards de agosto — os cards trazem as 24 da planilha e os
 // R$ 15.731,31, exatamente como a Vendas registra. Entram aqui, no bloco próprio,
 // e passam para os cards quando a adesão/contrato for confirmada.
 const VENDAS_EM_PROCESSO = [
-  {mes:'ago2026', qtd:2, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'Nicole',
-   pendencia:'Em efetivação', conferir:true},
-  {mes:'ago2026', qtd:2, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'Helena',
+  {mes:'ago2026', qtd:4, categoria:'Contribuinte Familiar', valorUnit:501.00, consultor:'EQUIPE DE VENDAS',
    pendencia:'Em efetivação', conferir:true},
 ];
 const COBERTURA_VENDAS_PROCESSO = {
@@ -10014,7 +10169,7 @@ function renderVendasEmProcesso(mesesSel){
 
     ${aConferir.length ? `<div class="alert-box" style="border-color:var(--gold);"><span>⚠️</span><div>
       <b>Confirmar antes de tratar como pipeline.</b> São <b>${aConferir.reduce((s,x)=>s+x.qtd,0)} vendas em efetivação</b>
-      informadas pelo diretor em 24/08 (Nicole 2 · Helena 2). Verificar se já foram
+      informadas pelo diretor em 24/08 pela EQUIPE DE VENDAS. Verificar se já foram
       lançadas na planilha de entradas — se tiverem sido, saem daqui, senão o mesmo negócio conta duas vezes.
     </div></div>` : ''}
 
@@ -10027,22 +10182,24 @@ function renderVendasEmProcesso(mesesSel){
         // Agora: nomes conhecidos aparecem como "Nome: n"; os sem consultor
         // entram como "n sem consultor informado". Se NENHUM tem consultor,
         // o card mostra só o traço e explica na linha de baixo.
+        // 04/11: a origem passou a ser 'EQUIPE DE VENDAS' — a mesma logica
+        // continua valendo, o rotulo e que deixou de ser individual.
         const conhecidos = Object.entries(porConsultor).filter(([k])=>k && k!=='—' && k!=='?');
         const semNome = Object.entries(porConsultor)
           .filter(([k])=>!k || k==='—' || k==='?')
           .reduce((t,[,v])=>t+v, 0);
         const partes = conhecidos.map(([k,v])=>`${k}: ${v}`);
         if(semNome) partes.push(`${semNome} sem consultor informado`);
-        return cardKpi('👤 Por Consultor', partes.length?partes.join(' · '):'—',
+        return cardKpi('👥 Equipe Responsável', partes.length?partes.join(' · '):'—',
           conhecidos.length ? 'origem das negociações'
-                            : 'consultor não informado na origem');
+                            : 'origem não informada');
       })()}
     </div>
 
     <div class="card full" style="margin-top:16px;">
       <div class="card-label">Detalhamento</div>
       <div class="scrollx" style="margin-top:12px;"><table>
-        <thead><tr><th>Categoria</th><th class="num">Qtd</th><th class="num">Valor unit.</th><th class="num">Total</th><th>Consultor</th><th>Pendência</th><th>Status</th></tr></thead>
+        <thead><tr><th>Categoria</th><th class="num">Qtd</th><th class="num">Valor unit.</th><th class="num">Total</th><th>Equipe</th><th>Pendência</th><th>Status</th></tr></thead>
         <tbody>${linhas}
           <tr style="border-top:2px solid var(--border); font-weight:800;">
             <td>Total em processo</td><td class="num">${qtd}</td><td class="num">—</td>
@@ -16608,24 +16765,60 @@ function pintarVendas(v, aviso){
     <div class="section-title" style="margin-top:26px;">Equipe &amp; Perfil do Associado<div class="line"></div></div>
     <div class="grid-2">
       <div class="card">
-        <div class="card-label">Desempenho por Consultor</div>
-        <div class="scrollx" style="margin-top:12px;">
-          <table>
-            <thead><tr><th>Consultor</th><th class="num">Vendas</th><th class="num">Valor</th><th class="num">Ticket</th><th class="num">% do total</th></tr></thead>
-            <tbody>
-              ${v.consultores.map((c,i)=>`<tr>
-                <td><span class="dot" style="background:${CORES_SERIE[i%CORES_SERIE.length]}; margin-right:8px;"></span>${c.nome}</td>
-                <td class="num">${c.qtd}</td>
-                <td class="num">${fmtBRL(c.valor)}</td>
-                <td class="num">${fmtBRL(c.valor/c.qtd)}</td>
-                <td class="num muted">${(c.qtd/totC*100).toFixed(1).replace('.',',')}%</td></tr>`).join('')}
-              <tr class="total-highlight" style="font-weight:800;">
-                <td style="color:var(--green);">TOTAL</td><td class="num" style="color:var(--green);">${totC}</td>
-                <td class="num" style="color:var(--green);">${fmtBRL(totV)}</td>
-                <td class="num" style="color:var(--green);">${fmtBRL(totV/totC)}</td>
-                <td class="num" style="color:var(--green);">100,0%</td></tr>
-            </tbody>
-          </table>
+        <!-- 04/11/2026 — EQUIPE DE VENDAS. A tabela de ranking por consultora
+             foi substituida por este resultado consolidado. Os numeros continuam
+             vindo de v.consultores (ja consolidado na origem) e somados do mesmo
+             jeito: totC e totV sao as MESMAS somas que alimentavam a linha TOTAL
+             da tabela anterior. Nao ha ranking, comparacao nem % individual
+             porque nao existe mais segmentacao por pessoa — e consolidacao de
+             fato, nao troca de rotulo. -->
+        <div class="card-label">Resultado da Equipe de Vendas</div>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:14px;">
+          <span class="dot" style="background:var(--green); width:11px; height:11px;"></span>
+          <span style="font-size:14.5px; font-weight:800; letter-spacing:.4px;">EQUIPE DE VENDAS</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:16px;">
+          <div style="flex:1 1 120px; min-width:120px; border-left:3px solid var(--blue); padding-left:12px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase;">Vendas</div>
+            <div style="font-size:26px; font-weight:900; color:var(--blue); line-height:1.2;">${totC}</div>
+            <div style="font-size:11.5px; color:var(--muted);">no período</div>
+          </div>
+          <div style="flex:1 1 140px; min-width:140px; border-left:3px solid var(--gold); padding-left:12px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase;">Valor</div>
+            <div style="font-size:22px; font-weight:900; color:var(--gold); line-height:1.2;">${fmtBRL(totV)}</div>
+            <div style="font-size:11.5px; color:var(--muted);">valor contribuição</div>
+          </div>
+          <div style="flex:1 1 130px; min-width:130px; border-left:3px solid var(--green); padding-left:12px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.5px; color:var(--muted); text-transform:uppercase;">Ticket médio</div>
+            <div style="font-size:22px; font-weight:900; color:var(--green); line-height:1.2;">${fmtBRL(totV/totC)}</div>
+            <div style="font-size:11.5px; color:var(--muted);">por associação nova</div>
+          </div>
+        </div>
+        ${(()=>{
+          // Honestidade de origem: o quadro da equipe soma as vendas que TEM
+          // origem registrada na planilha. Quando o periodo filtrado inclui
+          // vendas sem origem identificada, este total fica ABAIXO das
+          // "Associacoes Novas" da Visao Geral — e nao e erro de calculo nem
+          // divergencia nova: e o que a planilha de origem traz.
+          // Hoje isso vem de FEVEREIRO/2026, com 4 vendas e R$ 2.095,75 sem
+          // consultora registrada. Ja era assim antes da consolidacao (na v376
+          // a linha TOTAL da tabela por consultora mostrava os mesmos 39 de
+          // fevereiro contra 43 do card). NADA foi ajustado para fechar: a
+          // diferenca e declarada aqui, na tela.
+          const totPer = Number(String(v.associacoesNovas||'').replace(/\D/g,''));
+          if(!totPer || totPer === totC) return '';
+          const d = totPer - totC;
+          return `<div style="margin-top:14px; font-size:11.5px; line-height:1.5; color:var(--gold);">
+            ⚠ <b>${d} ${d===1?'venda':'vendas'}</b> do período ${d===1?'não tem':'não têm'} origem
+            registrada na planilha e por isso ${d===1?'não entra':'não entram'} neste quadro da equipe.
+            O total de associações novas do período é <b>${totPer}</b> — a diferença é da base de
+            origem, não do cálculo, e nenhum valor foi ajustado para fechar.
+          </div>`;
+        })()}
+        <div class="muted" style="font-size:11.5px; margin-top:16px; line-height:1.5;">
+          Resultado consolidado da equipe. Por determinação do Gerente Geral, os
+          resultados de Vendas não são apresentados por consultora — não há
+          ranking nem comparação individual em nenhum período do filtro.
         </div>
       </div>
       <div class="card"><div class="card-label">Categoria do Associado</div><div id="vendasDonutCategoria" class="donut-wrap"></div></div>
