@@ -2001,48 +2001,63 @@ const PROJECAO = [
   {d:'26/out', mov:-49929, banco:-744288, indices:2267302, total:7923014.01},
   {d:'27/out', mov:6079, banco:-738209, indices:2267302, total:7929093.13},
   {d:'28/out', mov:-11439, banco:-749648, indices:2267302, total:7917654.59},
-  {d:'29/out', mov:-56455, banco:-806103, indices:2108102, total:7701999.69},
-  {d:'30/out', mov:-104297, banco:-910400, indices:2068307, total:7557907.31},
-  {d:'03/nov', mov:40065, banco:-870335, indices:2068307, total:7597971.93},
-  {d:'04/nov', mov:103900, banco:-766435, indices:2068307, total:7701871.93},
-  {d:'05/nov', mov:-43796, banco:-810231, indices:2068307, total:7658076.12},
-  {d:'06/nov', mov:-426595, banco:-1236826, indices:2068307, total:7231481.62},
-  {d:'09/nov', mov:87700, banco:-1149126, indices:2068307, total:7319181.62},
-  {d:'10/nov', mov:-113683, banco:-1262808, indices:2060315, total:7197507.02},
-  {d:'11/nov', mov:1425000, banco:162192, indices:2060315, total:8622507.02},
-  {d:'12/nov', mov:177645, banco:339837, indices:2060315, total:8800152.42},
-  {d:'13/nov', mov:-196450, banco:143387, indices:2060315, total:8603702.42},
-  {d:'16/nov', mov:26000, banco:169387, indices:2060315, total:8629702.42},
-  {d:'17/nov', mov:23051, banco:192438, indices:2060315, total:8652753.76},
-  {d:'18/nov', mov:85000, banco:277438, indices:2060315, total:8737753.76},
-  {d:'19/nov', mov:-986600, banco:-709162, indices:2060315, total:7751153.76},
-  {d:'23/nov', mov:-30100, banco:-739262, indices:2060315, total:7721053.76},
-  {d:'24/nov', mov:-41518, banco:-780779, indices:2060315, total:7679536.26},
-  {d:'25/nov', mov:10000, banco:-770779, indices:2060315, total:7689536.26},
-  {d:'26/nov', mov:24475, banco:-746304, indices:2060315, total:7714011.26},
-  {d:'27/nov', mov:-40300, banco:-786604, indices:2015015, total:7628411.26},
-  {d:'30/nov', mov:-286110, banco:-1072714, indices:1994015, total:7321301.26},
-  {d:'01/dez', mov:31254, banco:-1041460, indices:1961763, total:7320302.46},
-  {d:'02/dez', mov:2500, banco:-1038960, indices:1961763, total:7322802.46},
-  {d:'03/dez', mov:-95700, banco:-1134660, indices:1961763, total:7227102.46},
-  {d:'04/dez', mov:-383079, banco:-1517739, indices:1961763, total:6844023.46},
-  {d:'07/dez', mov:165754, banco:-1351985, indices:1961763, total:7009777.46},
-  {d:'08/dez', mov:85663, banco:-1266322, indices:1961763, total:7095440.76},
-  {d:'09/dez', mov:70885, banco:-1195437, indices:1961763, total:7166325.92},
-  {d:'10/dez', mov:-55800, banco:-1251237, indices:1614971, total:6763733.92},
-  {d:'11/dez', mov:961466, banco:-289771, indices:1614971, total:7725199.42},
-  {d:'14/dez', mov:234472, banco:-55299, indices:1614971, total:7959671.42},
-  {d:'15/dez', mov:35923, banco:-19376, indices:1614971, total:7995594.42},
-  {d:'16/dez', mov:-5086, banco:-24463, indices:1614971, total:7990508.14},
-  {d:'17/dez', mov:12929, banco:-11533, indices:1614971, total:8003437.24},
-  {d:'18/dez', mov:-1291578, banco:-1303112, indices:1614971, total:6711859.06},
-  {d:'21/dez', mov:68481, banco:-1234631, indices:1569671, total:6735039.96},
-  {d:'22/dez', mov:-51, banco:-1234682, indices:1569671, total:6734989.07},
-  {d:'23/dez', mov:-20587, banco:-1255268, indices:1569671, total:6714402.35},
-  {d:'24/dez', mov:-119000, banco:-1374268, indices:1569671, total:6595402.35},
-  {d:'28/dez', mov:-34200, banco:-1408468, indices:1569671, total:6561202.35},
-  {d:'29/dez', mov:16841, banco:-1391627, indices:1569671, total:6578043.81},
-  {d:'30/dez', mov:24000, banco:-1367627, indices:1537418, total:6569791.22},
+  // ── RELAÇÃO DE NECESSIDADES · posição 30/10/2026 (Controladoria) ─────────
+  // SUBSTITUI a trajetória de 29/out em diante, que vinha da posição de 28/10.
+  // 01/out a 28/out NÃO foi tocado: são dias já realizados e esta fonte começa
+  // justamente em 29/out. As 42 linhas cobrem 29/out a 30/dez, sem data repetida.
+  // EMENDA CONFERIDA: o painel fecha 28/out em -749.648; a fonte nova abre com
+  // movimento de -22.265 em 29/out, o que daria -771.913 contra os -771.912
+  // declarados. R$ 1 de arredondamento, abaixo da tolerância de R$ 2 do
+  // validador — não é degrau e não entrou em QUEBRAS_CONHECIDAS.
+  // Dentro da fonte há 6 resíduos de R$ 1 (03/nov, 05/nov, 10/nov, 24/nov,
+  // 16/dez, 29/dez): banco e índices vêm arredondados em reais inteiros,
+  // enquanto o total carrega centavos. Nenhum foi compensado.
+  // A coluna 'Não Operacionais' do documento vem vazia nas 42 linhas — os
+  // pagamentos dos Índices Construtivos aparecem na própria coluna de saldo
+  // dos Índices, que cai nas datas de pagamento. Não são somados de novo.
+  // O limite de R$ 6,4 milhões é crédito, não entrada.
+  {d:'29/out', mov:-22265, banco:-771912, indices:2267302, total:7895389.86},
+  {d:'30/out', mov:-45656, banco:-817568, indices:2268464, total:7850895.67},
+  {d:'03/nov', mov:40065, banco:-777504, indices:2268464, total:7890960.29},
+  {d:'04/nov', mov:103900, banco:-673604, indices:2268464, total:7994860.29},
+  {d:'05/nov', mov:-43796, banco:-717399, indices:2243748, total:7926348.72},
+  {d:'06/nov', mov:-441595, banco:-1158994, indices:2127066, total:7368072.27},
+  {d:'09/nov', mov:87700, banco:-1071294, indices:2106768, total:7435474.02},
+  {d:'10/nov', mov:-113683, banco:-1184976, indices:2092358, total:7307381.92},
+  {d:'11/nov', mov:1425000, banco:240024, indices:1928363, total:8568386.92},
+  {d:'12/nov', mov:177645, banco:417669, indices:1928363, total:8746032.32},
+  {d:'13/nov', mov:-196450, banco:221219, indices:1928363, total:8549582.32},
+  {d:'16/nov', mov:26000, banco:247219, indices:1928363, total:8575582.32},
+  {d:'17/nov', mov:23051, banco:270270, indices:1928363, total:8598633.66},
+  {d:'18/nov', mov:85000, banco:355270, indices:1928363, total:8683633.66},
+  {d:'19/nov', mov:-986600, banco:-631330, indices:1921232, total:7689902.69},
+  {d:'23/nov', mov:-30100, banco:-661430, indices:1921232, total:7659802.69},
+  {d:'24/nov', mov:-41518, banco:-702947, indices:1921232, total:7618285.19},
+  {d:'25/nov', mov:10000, banco:-692947, indices:1921232, total:7628285.19},
+  {d:'26/nov', mov:24475, banco:-668472, indices:1921232, total:7652760.19},
+  {d:'27/nov', mov:-40300, banco:-708772, indices:1875932, total:7567160.19},
+  {d:'30/nov', mov:-286110, banco:-994882, indices:1854932, total:7260050.19},
+  {d:'01/dez', mov:31254, banco:-963628, indices:1822680, total:7259051.39},
+  {d:'02/dez', mov:2500, banco:-961128, indices:1822680, total:7261551.39},
+  {d:'03/dez', mov:-95700, banco:-1056828, indices:1822680, total:7165851.39},
+  {d:'04/dez', mov:-383079, banco:-1439907, indices:1822680, total:6782772.39},
+  {d:'07/dez', mov:165754, banco:-1274153, indices:1792163, total:6918009.43},
+  {d:'08/dez', mov:85663, banco:-1188490, indices:1792163, total:7003672.73},
+  {d:'09/dez', mov:70885, banco:-1117605, indices:1792163, total:7074557.89},
+  {d:'10/dez', mov:-55800, banco:-1173405, indices:1445371, total:6671965.89},
+  {d:'11/dez', mov:961466, banco:-211939, indices:1445371, total:7633431.39},
+  {d:'14/dez', mov:234472, banco:22533, indices:1445371, total:7867903.39},
+  {d:'15/dez', mov:35923, banco:58456, indices:1445371, total:7903826.39},
+  {d:'16/dez', mov:-5086, banco:53369, indices:1445371, total:7898740.11},
+  {d:'17/dez', mov:12929, banco:66298, indices:1445371, total:7911669.21},
+  {d:'18/dez', mov:-1291578, banco:-1225280, indices:1445371, total:6620091.03},
+  {d:'21/dez', mov:68481, banco:-1156799, indices:1400071, total:6643271.93},
+  {d:'22/dez', mov:-51, banco:-1156850, indices:1400071, total:6643221.04},
+  {d:'23/dez', mov:-20587, banco:-1177437, indices:1400071, total:6622634.32},
+  {d:'24/dez', mov:-119000, banco:-1296437, indices:1400071, total:6503634.32},
+  {d:'28/dez', mov:-34200, banco:-1330637, indices:1400071, total:6469434.32},
+  {d:'29/dez', mov:16841, banco:-1313795, indices:1400071, total:6486275.78},
+  {d:'30/dez', mov:24000, banco:-1289795, indices:1367818, total:6478023.19},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -5430,7 +5445,7 @@ drawDonut('pagDonutFaixa', [
 // PALCO INTERATIVO — Fluxo de Caixa
 // ═══════════════════════════════════════════════════════════
 let CURRENT_MES_KEY = 'jul2026';
-const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" do período completo (06/fev). A Relação de Necessidades de 28/10/26 cobre 26/out a 30/dez e tem mínimo de R$ 6.561.202,35 (28/dez) — acima deste piso, que segue vindo de fevereiro.
+const DISPONIVEL_MINIMO = 6164521.73; // menor "Disponível ou Necessidade" do período completo (06/fev). A Relação de Necessidades de 30/10/26 cobre 29/out a 30/dez e tem mínimo de R$ 6.469.434,32 (28/dez) — calculado sobre as 42 linhas da fonte, não estimado. Fica acima deste piso, que segue vindo de fevereiro.
 
 const VIEWS = {
   operacional: {
@@ -7137,6 +7152,51 @@ const PAGAMENTOS_POR_PERIODO = {
     dias:[{data:"19/10/2026",qtd:34,total:131992.98},{data:"20/10/2026",qtd:52,total:1059648.89},{data:"21/10/2026",qtd:19,total:52248.45},{data:"22/10/2026",qtd:29,total:269144.44},{data:"23/10/2026",qtd:58,total:182396.76}],
     top:[{nome:"Secretaria Da Receita Federal",qtd:3,valor:547347.32,pct:32.28},{nome:"Cl Solucoes Em Engenharia Ltda",qtd:1,valor:182000.00,pct:10.73},{nome:"Folha Pagamento",qtd:4,valor:149595.95,pct:8.82},{nome:"Caixa Economica Federal",qtd:2,valor:130013.77,pct:7.67},{nome:"Prefeitura Municipal De Porto Alegre",qtd:1,valor:51000.00,pct:3.01},{nome:"Companhia Estadual De Distribuição De Energi",qtd:1,valor:48711.94,pct:2.87},{nome:"Mtx Solutions - Lic011 Ltda",qtd:1,valor:45333.38,pct:2.67},{nome:"Vt Solucoes Administracao E Servicos Ltda",qtd:2,valor:42516.42,pct:2.51},{nome:"R.C.F. (pessoa física)",qtd:1,valor:31493.04,pct:1.86},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:2,valor:31003.10,pct:1.83},{nome:"L.A.S. (pessoa física)",qtd:2,valor:26280.78,pct:1.55},{nome:"Percorrer Atividades Fisicas Ltda-Me",qtd:1,valor:26198.56,pct:1.55},{nome:"Cooperativa Agroindustrial Alianca Ltda",qtd:1,valor:24989.80,pct:1.47},{nome:"A.R.K. (pessoa física)",qtd:3,valor:22750.00,pct:1.34},{nome:"A.D.G. (pessoa física)",qtd:1,valor:17444.22,pct:1.03}],
     bancos:[{nome:"BANRISUL",qtd:170,total:1392559.74},{nome:"ÍNDICES CONS",qtd:5,total:236956.75},{nome:"PROJETO OLIM",qtd:4,total:39280.95},{nome:"ALTO RENDIME",qtd:4,total:17043.20},{nome:"Caixa Sogipa",qtd:9,total:9590.88}]},
+  // ── CORTE 03 a 06/11/2026 · importado em 09/11 ────────────────────────────
+  // Fonte: "RELATORIO PAGAMENTOS - 03.11 a 06.11.26.xlsx", aba "03.11 - 06.11".
+  // As abas historicas do arquivo (DEZEMBRO 2025 e 01-21 JAN) NAO foram lidas,
+  // conforme instrucao — o painel ja traz janeiro fechado em PAGAMENTOS_MESES.
+  //
+  // RECONCILIACAO — os 148 lancamentos fecham em TODOS os cortes declarados
+  // pelo QUADRO RESUMO do proprio relatorio, conferidos registro a registro:
+  //   total         R$ 1.208.197,76 · ticket R$ 8.163,50 (1.208.197,76 / 148)
+  //   >= R$ 5.000    24 · R$ 1.050.331,87
+  //   <  R$ 5.000   124 · R$   157.865,89
+  //   24 + 124 = 148  e  1.050.331,87 + 157.865,89 = 1.208.197,76
+  //   participacao dos maiores: 86,93% — identica a declarada
+  //   os 4 dias somam 148 pagamentos e os 8 bancos somam 148 · R$ 1.208.197,76
+  // Nenhuma duplicidade interna (titulo|parcela|fornecedor|data|banco|valor).
+  // 8 registros vem SEM numero de titulo; sao pagamentos legitimos e foram
+  // identificados pelos demais campos, como manda a instrucao.
+  //
+  // CORTE SEMANAL, nao fechamento: PAGAMENTOS_MESES segue terminando em
+  // setembro e NAO foi tocada. COBERTURA_PAGAMENTOS tambem nao mudou.
+  //
+  // LACUNA REGISTRADA: nao houve relatorio para 26 a 30/10 nem para 02/11.
+  // O corte anterior termina em 23/10 e este comeca em 03/11 — ha 7 dias uteis
+  // sem importacao. Nao foi preenchido por estimativa.
+  //
+  // DIA 06/11 CONCENTRA 67,5% do valor do corte (R$ 815.548,16 em 48 pagtos),
+  // puxado pela folha e pelos dois pagamentos de Indices Construtivos.
+  //
+  // INDICES CONSTRUTIVOS — 5 pagamentos, R$ 141.847,71, CONFRONTADOS um a um
+  // com a programacao de 30/10 que esta em DADOS_MES.out2026.obras:
+  //   realizado 06/11  85.945,00 Santori    × programado 06/11  85.495,00  +450,00
+  //   realizado 06/11  30.516,95 WTEC       × programado 06/11  30.516,95    0,00
+  //   realizado 05/11  18.215,76 M.A.G.F.   × programado 05/11  18.215,00   +0,76
+  //   realizado 05/11   6.500,00 M.A.G.F.   × programado 05/11   6.500,00    0,00
+  //   realizado 06/11     670,00 Pro Eletro × programado 06/11     670,00    0,00
+  // Os cinco sao COMPROMISSOS JA LIQUIDADOS. A programacao NAO foi alterada:
+  // ela e a posicao oficial de 30/10 e so muda com documento que a substitua.
+  // As duas diferencas (450,76 no total) ficam registradas e NAO foram
+  // compensadas. O WTEC casa com a parcela 1/3 exatamente; as parcelas 2/3 e
+  // 3/3 valem 30.516,96 — um centavo a mais — e NAO foram forcadas a casar.
+  // Estes desembolsos NAO sao somados ao fluxo operacional: saem da conta de
+  // Indices Construtivos e ja estao refletidos na coluna de saldo do diario.
+  '03-06nov': {label:'03 a 06/11/2026', qtd:148, total:1208197.76, maiorQtd:24, maiorTotal:1050331.87, menorQtd:124, menorTotal:157865.89,
+    dias:[{data:"03/11/2026",qtd:45,total:225842.74},{data:"04/11/2026",qtd:19,total:63870.53},{data:"05/11/2026",qtd:36,total:102936.33},{data:"06/11/2026",qtd:48,total:815548.16}],
+    top:[{nome:"Folha Pagamento",qtd:12,valor:630200.86,pct:52.16},{nome:"Gba Brasil Administracao De Pessoas Ltda",qtd:1,valor:162739.8,pct:13.47},{nome:"Santori Moveis",qtd:1,valor:85945,pct:7.11},{nome:"Wtec",qtd:1,valor:30516.95,pct:2.53},{nome:"5 Continentes Viagens E Assessoria Ltda",qtd:4,valor:26343.43,pct:2.18},{nome:"M.A.G.F. (pessoa física)",qtd:2,valor:24715.76,pct:2.05},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:1,valor:16849.13,pct:1.39},{nome:"Centro De Integração Empresa Escola",qtd:1,valor:16125.67,pct:1.33},{nome:"Mercadopago.com Representacoes Ltda.",qtd:6,valor:12982.34,pct:1.07},{nome:"Teletex Sul Tecnologia E Automacao Ltda",qtd:1,valor:12500,pct:1.03},{nome:"Contabilizi Consultoria Ltda",qtd:2,valor:11881.6,pct:0.98},{nome:"Escola Racing Futsal Porto Alegre",qtd:1,valor:10889.77,pct:0.90},{nome:"Beckenkamp Vestuario Ltda",qtd:1,valor:10208.02,pct:0.84},{nome:"Fabricio Serviços De Divulgação De Eventos Ei",qtd:1,valor:8603.6,pct:0.71},{nome:"Mogi & Mogi Consultorias, Treinamentos E Proj",qtd:1,valor:7967.48,pct:0.66}],
+    bancos:[{nome:"BANRISUL",qtd:136,total:930782.86},{nome:"ÍNDICES CONS",qtd:5,total:141847.71},{nome:"PROJETO OLIM",qtd:1,total:58783.22},{nome:"CBC EDIT 11 R",qtd:1,total:50082.48},{nome:"PATROCÍNIO A",qtd:2,total:13371.6},{nome:"ALTO RENDIME",qtd:1,total:7500},{nome:"PROJ SOGIPA",qtd:1,total:4500},{nome:"Caixa Sogipa",qtd:1,total:1329.89}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -7174,7 +7234,12 @@ const PERIODOS = [
   {key:'13-16out',     temDados:{pagamentos:true}, ini:'2026-10-13', fim:'2026-10-16'},
   // Relatorio "PAGAMENTOS 19 - 23 OUTUBRO" (Controladoria), aba "19.10 - 23.10".
   // 18/10 foi sabado: o corte vai de segunda (19) a sexta (23).
-  {key:'19-23out',     temDados:{pagamentos:true}, ini:'2026-10-19', fim:'2026-10-23', atual:true},
+  {key:'19-23out',     temDados:{pagamentos:true}, ini:'2026-10-19', fim:'2026-10-23'},
+  // Relatorio "RELATORIO PAGAMENTOS - 03.11 a 06.11.26" (Controladoria),
+  // aba "03.11 - 06.11". HA UMA LACUNA ANTES DESTE CORTE: 26 a 30/10 e 02/11
+  // nao foram enviados. O intervalo nao foi preenchido por estimativa — o
+  // grafico semanal passa de 19-23/out direto para 03-06/nov.
+  {key:'03-06nov',     temDados:{pagamentos:true}, ini:'2026-11-03', fim:'2026-11-06', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -9130,97 +9195,156 @@ const DADOS_MES = {
   },
   out2026: {
     label: 'Outubro/2026',
-    // ── POSICAO 28/10/2026 · "Resumo Fluxo de Caixa OUT2026" ───────────────
-    // CARGA DE 30/10/2026. Substitui integralmente a posicao de 22/10.
-    // MES EM ANDAMENTO, NAO FECHADO. Tendencia e realizado sao numeros
-    // diferentes de proposito: o realizado cobre so os oito primeiros dias.
-    // Setembro NAO foi tocado por esta carga.
-    // RECONCILIACAO entre os dois documentos: o mensal declara SALDO FINAL
-    // BANCOS 28/10/2026 = 1.517,7 e a Relacao de Necessidades traz, em 28/out,
-    // banco -749.648 + indices 2.267.302 = 1.517.654. As duas fontes dao a
-    // mesma posicao; nao ha mistura.
-    // NAO OPERACIONAIS conferidos contra o diario: a conta Indices caiu de
-    // 2.616.414 (30/set) para 2.267.302 (28/out) = 349.112 -> os (349,1)
-    // declarados como realizado. Ate 30/out projeta 2.068.307 = 548.107 ->
-    // os (548,1) de tendencia. Nenhum dos dois foi digitado a mao.
-    // ROTULO DEFASADO NA FONTE, NAO CORRIGIDO: o relatorio traz "SALDO BANCO
-    // 31/07/2026 = 1.157,9". Esse valor NAO e de julho: e a posicao projetada
-    // de 30/out (banco -910.400 + indices 2.068.307 = 1.157.907). E a TERCEIRA
-    // carga seguida com o mesmo defeito: 1.207,2 em 13/10, 1.143,5 em 27/10 e
-    // 1.157,9 agora, sempre batendo com o ultimo dia util de outubro da
-    // projecao vigente. O valor fica como veio.
-    // HIERARQUIA DE TRES NIVEIS na fonte: "Outros gastos c/pessoal de apoio"
-    // (275,7 na tendencia) JA CONTEM Alimentacao (105,0) + Assistencia Medica
-    // (106,2) + VT (42,5) + Estagiarios (21,9) = 275,6. Somar tudo daria
-    // 1.861,9 contra a sintetica de 1.586,3. O painel usa so as 9 sinteticas:
-    // 642,5 + 552,6 + 115,5 + 275,7 = 1.586,3 exato.
+    // ── POSICAO 30/10/2026 · "Resumo Fluxo de Caixa OUT2026" ───────────────
+    // CARGA DE 09/11/2026. Substitui integralmente a posicao de 28/10.
+    //
+    // MUDANCA DE ESTADO: nesta carga TENDENCIA e JA REALIZADO sao IGUAIS em
+    // TODAS as rubricas, receitas e despesas. Nas cargas anteriores eram
+    // numeros diferentes, porque o realizado cobria so parte do mes. Outubro
+    // chegou ao fim: 30/10 foi o ultimo dia util. As tres colunas continuam
+    // separadas na estrutura, como manda a instrucao, mesmo coincidindo.
+    // O mes NAO foi marcado como fechado: o documento foi entregue como
+    // POSICAO de 30/10 e nao declara fechamento. Ver nota em `fechado`.
+    //
+    // RECONCILIACAO ENTRE OS DOIS DOCUMENTOS — fecha no numero declarado:
+    // o mensal traz SALDO FINAL BANCOS = 1.450,9 e a Relacao de Necessidades
+    // traz, em 30/out, banco -817.568 + indices 2.268.464 = 1.450.896.
+    //
+    // NAO OPERACIONAIS DERIVADOS, NAO DIGITADOS: a conta Indices Construtivos
+    // caiu de 2.616.414 (30/set) para 2.268.464 (30/out) = 347.950, que e o
+    // (348,0) declarado. Previsto e (476,8). Nenhum dos dois foi arbitrado.
+    //
+    // ROTULO DEFASADO NA FONTE, 4a CARGA SEGUIDA, NAO CORRIGIDO: o relatorio
+    // traz "SALDO BANCO 31/07/2026 = 1.450,9". Desta vez o valor coincide com
+    // o do cabecalho (31/10), entao o defeito e so no rotulo da data. Nas tres
+    // cargas anteriores o valor tambem batia com o ultimo dia util de outubro
+    // da projecao vigente (1.207,2 em 13/10, 1.143,5 em 27/10, 1.157,9 em
+    // 28/10). Fica como veio.
+    //
+    // DUAS DATAS NO MESMO RELATORIO: o cabecalho diz 31/10/2026 e o documento
+    // foi encaminhado como posicao de 30/10/2026. A serie diaria termina em
+    // 30/out, que e o ultimo dia util do mes. `dataReferencia` fica 30/10.
+    //
+    // HIERARQUIA DE TRES NIVEIS na fonte, nao somada em duplicidade:
+    //   "Pessoal de Apoio" (1.596,3 tend) JA CONTEM Salarios 660,7 + Encargos
+    //   552,6 + Rescisoes 115,5 + Outros gastos 267,5;
+    //   "Outros gastos c/pessoal" (267,5) JA CONTEM Alimentacao 96,8 +
+    //   Assistencia 106,2 + VT 42,5 + Estagiarios 21,9 = 267,4 (0,1 da fonte);
+    //   "Despesas de Funcionamento" (1.088,3) JA CONTEM limpeza 264,9 +
+    //   Contratos 240,8 + Fornecedores 582,6 = 1.088,3 exato;
+    //   "Despesas Fixas" (315,1) JA CONTEM agua 89,9 + Energia 111,1 + Gas
+    //   85,1 + Comunicacoes 21,0 + Combustivel 8,0 = 315,1 exato.
+    // O painel usa SO as 9 sinteticas de topo. Somar os niveis daria 6.129,8
+    // contra os 3.805,1 corretos.
     despesas: [
-      {nome:'Pessoal de Apoio', prev:1578.6, tend:1586.3, real:1527.3},
-      {nome:'Despesas de Funcionamento', prev:1168.8, tend:1112.4, real:997.4},
-      {nome:'Despesas Fixas', prev:326.8, tend:314.4, real:314.4},
-      {nome:'Eventos', prev:306.4, tend:299.2, real:252.5},
-      {nome:'Esporte', prev:240.9, tend:293.9, real:293.9},
+      {nome:'Pessoal de Apoio', prev:1578.6, tend:1596.3, real:1596.3},
+      {nome:'Despesas de Funcionamento', prev:1168.8, tend:1088.3, real:1088.3},
+      {nome:'Despesas Fixas', prev:326.8, tend:315.1, real:315.1},
+      {nome:'Esporte', prev:240.9, tend:349.9, real:349.9},
+      {nome:'Eventos', prev:306.4, tend:266.5, real:266.5},
       {nome:'Taxas e Impostos', prev:114.0, tend:108.6, real:108.6},
-      {nome:'Imobilizado', prev:72.3, tend:71.5, real:61.5},
+      {nome:'Imobilizado', prev:72.3, tend:61.5, real:61.5},
+      {nome:'Tarifas e Desp. Bancárias', prev:9.6, tend:10.0, real:10.0},
       {nome:'Contingências (Indenizações)', prev:23.0, tend:8.9, real:8.9},
-      {nome:'Tarifas e Desp. Bancárias', prev:9.6, tend:9.8, real:9.8},
     ],
     receitas: [
-      {nome:'Boletos', prev:1530.0, tend:1524.5, real:1494.5},
+      {nome:'Boletos', prev:1530.0, tend:1503.5, real:1503.5},
       {nome:'Débito em Conta', prev:715.0, tend:717.9, real:717.9},
-      {nome:'Receitas Diversas', prev:650.0, tend:622.7, real:597.7},
-      {nome:'Cartões Crédito', prev:490.0, tend:524.8, real:519.8},
-      {nome:'Cartões Débito', prev:187.0, tend:175.8, real:165.8},
+      {nome:'Receitas Diversas', prev:650.0, tend:713.9, real:713.9},
+      {nome:'Cartões Crédito', prev:490.0, tend:548.3, real:548.3},
+      {nome:'Cartões Débito', prev:187.0, tend:175.0, real:175.0},
       {nome:'Cheque pré-datados', prev:0, tend:0, real:0},
       {nome:'Rendimento Aplicação', prev:0, tend:0.2, real:0.2},
       {nome:'Patrocínios', prev:0, tend:0, real:0},
     ],
     // Totais como o documento DECLARA. Arredondamentos da PROPRIA fonte,
     // conferidos linha a linha e NAO compensados:
-    //   despesa previsto : linhas somam 3.840,4 / declarado 3.840,2  (+0,2)
-    //   receita tendencia: linhas somam 3.565,9 / declarado 3.565,8  (+0,1)
-    //   receita realizado: linhas somam 3.495,9 / declarado 3.495,8  (+0,1)
-    //   despesa realizado: linhas somam 3.574,3 / declarado 3.574,2  (+0,1)
-    // A despesa de tendencia fecha exata (3.805,0). O resultado de tendencia
-    // pelas linhas daria -239,2 contra os -239,1 declarados — fica o declarado.
+    //   despesa previsto: as 9 linhas somam 3.840,4 / declarado 3.840,2 (+0,2)
+    //   receita previsto, receita tend/real e despesa tend/real fecham EXATO
+    //   (3.572,0 · 3.658,8 · 3.805,1).
     totaisReceitaDespesa: {
       previsto:  {receita:3572.0, despesa:3840.2},
-      tendencia: {receita:3565.8, despesa:3805.0},
-      realizado: {receita:3495.8, despesa:3574.2},
+      tendencia: {receita:3658.8, despesa:3805.1},
+      realizado: {receita:3658.8, despesa:3805.1},
     },
-    // ── Relacao de Necessidades, pagina 2 · posicao 28/10/2026 ───────────
-    // 25 pagamentos somando R$ 1.306.216,27 — exatamente o TOTAL declarado.
-    // A carga anterior tinha 29 linhas e R$ 1.553.091,58. A variacao esta
-    // inteiramente explicada e foi conferida:
-    //   1.553.091,58 - 343.633,08 (sete pagamentos executados entre 23 e
-    //   28/10, que sairam da programacao) + 96.757,77 (fornecedor novo)
-    //   = 1.306.216,27
-    // FORNECEDOR NOVO: Biccateca — Locker, R$ 32.252,59 em 3 parcelas
-    // (01/12/2026, 30/12/2026 e 30/01/2027). E o que fez 2027 subir de
-    // R$ 543.600,00 para R$ 575.852,59 (+32.252,59, a parcela 03/03).
-    //   compromissos em 2026 = R$ 730.363,68
-    //   compromissos em 2027 = R$ 575.852,59
+    // ── Relacao de Necessidades, pagina 2 · posicao 30/10/2026 ───────────
+    // 38 pagamentos somando R$ 1.602.693,82 — exatamente o TOTAL declarado.
+    // A carga anterior tinha 25 linhas e R$ 1.306.216,27.
+    //
+    // ACHADO: NENHUM pagamento foi executado entre 29/10 e 30/10. Os quatro
+    // que a programacao anterior punha nessas datas (R$ 199.439,50) NAO
+    // sairam — foram REPROGRAMADOS para novembro e dezembro:
+    //   Salao Panoramico      145.200,00  29/10 -> 11/11
+    //   Caminho Alternativo    18.795,00  30/10 -> 11/11
+    //   Espaco Infinity        14.409,50  29/10 -> 10/11
+    //   Quadro Eletr. Piscina  21.035,00  30/10 -> 09/11, revisado p/ 20.298,25
+    // A conta dos Indices confirma de forma independente: subiu de 2.267.302
+    // (29/out) para 2.268.464 (30/out). Se tivesse havido pagamento, teria
+    // caido. A projecao anterior esperava a queda e ela nao aconteceu.
+    //
+    // RECONCILIACAO DA VARIACAO, fechada no centavo:
+    //   1.306.216,27 (25 linhas da carga de 28/10)
+    //   + 325.504,55  10 compromissos novos, em 15 parcelas
+    //   -  21.035,00  GALBO de 30/10 substituido pelo de 09/11 (20.298,25)
+    //   -   7.992,00  Luminaria Tenis de 10/11 retirada; fica so a de 10/12
+    //   = 1.602.693,82
+    // COMPROMISSOS NOVOS: Terreno Dom Pedro (2 pagtos, 24.715,00), Playground
+    // Piscina (85.495,00 + 4 parcelas de 21.372,00), Armarios Inteligentes
+    // (3 parcelas, 91.550,87), Passarela Sl. Panoram. (3 parcelas, 17.287,43),
+    // Aquec. Piscina Baby (670,00) e o Quadro Eletr. de 09/11 (20.298,25).
+    //   compromissos em 2026 = R$ 900.679,81
+    //   compromissos em 2027 = R$ 702.014,01
     // Estes pagamentos JA estao refletidos na coluna "Saldo Indices
     // Construtivos" do diario — a conta cai nas datas de pagamento. NAO sao
-    // somados de novo ao fluxo, ao resultado nem ao total disponivel.
-    // NAO sao despesa operacional: saem da conta de Indices Construtivos.
+    // somados de novo ao fluxo, ao resultado nem ao total disponivel, e NAO
+    // sao despesa operacional: saem da conta de Indices Construtivos.
+    //
+    // ── 09/11/2026 · CINCO DESTES COMPROMISSOS JA FORAM LIQUIDADOS ──────────
+    // O relatorio de pagamentos 03 a 06/11 confirma a execucao de cinco linhas
+    // desta programacao, pela conta ÍNDICES CONS, somando R$ 141.847,71:
+    //   06/11  85.945,00 Santori Moveis    (programado 85.495,00  -> +450,00)
+    //   06/11  30.516,95 WTEC parc 1/3     (programado 30.516,95  ->    0,00)
+    //   05/11  18.215,76 Terreno Dom Pedro (programado 18.215,00  ->   +0,76)
+    //   05/11   6.500,00 Terreno Dom Pedro (programado  6.500,00  ->    0,00)
+    //   06/11     670,00 Pro Eletro        (programado    670,00  ->    0,00)
+    // A LISTA ABAIXO NAO FOI ALTERADA de proposito: ela e a posicao oficial de
+    // 30/10 e so muda com documento da Controladoria que a substitua. Baixar
+    // linhas por conta propria faria o painel divergir da fonte assinada.
+    // As duas diferencas (R$ 450,76 no total) ficam registradas e NAO foram
+    // compensadas. O realizado de WTEC casa com a parcela 1/3 exatamente; as
+    // parcelas 2/3 e 3/3 valem 30.516,96 e NAO foram forcadas a corresponder.
+    // Os valores REALIZADOS estao em PAGAMENTOS_POR_PERIODO['03-06nov'], que e
+    // base de realizado; esta lista e base de PROJETADO. As duas nao se somam.
     obras: [
-      {data:'29/10/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Espaço Infinity', valor:14409.50},
-      {data:'29/10/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:145200.00},
-      {data:'30/10/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
-      {data:'30/10/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Caminho Alternativo', valor:18795.00},
-      {data:'10/11/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'05/11/2026', fornecedor:'Marcelo Antonio Guimaraes flach', projeto:'Terreno Dom Pedro', valor:18215.00},
+      {data:'05/11/2026', fornecedor:'Marcelo Antonio Guimaraes flach', projeto:'Terreno Dom Pedro', valor:6500.00},
+      {data:'06/11/2026', fornecedor:'Pro Eletro Comercial ltda', projeto:'Aquec. Piscina Baby', valor:670.00},
+      {data:'06/11/2026', fornecedor:'Santori Comerci de Móveis', projeto:'Playground Piscina', valor:85495.00},
+      {data:'06/11/2026', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 1/3', projeto:'Armários Inteligentes', valor:30516.95},
+      {data:'09/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
+      {data:'10/11/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Espaço Infinity', valor:14409.50},
+      {data:'11/11/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Salão Panorâmico', valor:145200.00},
+      {data:'11/11/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Caminho Alternativo', valor:18795.00},
+      {data:'19/11/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:7130.97},
       {data:'27/11/2026', fornecedor:'MTX Parc 2/15', projeto:'Muscul. dos Atletas', valor:45300.00},
       {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
       {data:'01/12/2026', fornecedor:'Biccateca Parc 01/03', projeto:'Locker', valor:32252.59},
-      {data:'10/12/2026', fornecedor:'CL Soluções em Engenharia Ltda', projeto:'Salão Panorâmico', valor:338800.00},
-      {data:'10/12/2026', fornecedor:'Cesar V. da Luz e Merelo Cia Ltda', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'07/12/2026', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 2/3', projeto:'Armários Inteligentes', valor:30516.96},
+      {data:'10/12/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Salão Panorâmico', valor:338800.00},
+      {data:'10/12/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Luminária Tênis', valor:7992.00},
       {data:'21/12/2026', fornecedor:'MTX Parc 3/15', projeto:'Aparelh. Musculação', valor:45300.00},
       {data:'30/12/2026', fornecedor:'Biccateca Parc 02/03', projeto:'Locker', valor:32252.59},
+      {data:'04/01/2027', fornecedor:'Santori Comerci de Móveis Parc 1/4', projeto:'Playground Piscina', valor:21372.00},
+      {data:'06/01/2027', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 3/3', projeto:'Armários Inteligentes', valor:30516.96},
       {data:'20/01/2027', fornecedor:'MTX Parc 4/15', projeto:'Aparelh. Musculação', valor:45300.00},
+      {data:'25/01/2027', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:5078.23},
       {data:'30/01/2027', fornecedor:'Biccateca Parc 03/03', projeto:'Locker', valor:32252.59},
+      {data:'03/02/2027', fornecedor:'Santori Comerci de Móveis Parc 2/4', projeto:'Playground Piscina', valor:21372.00},
       {data:'20/02/2027', fornecedor:'MTX Parc 5/15', projeto:'Aparelh. Musculação', valor:45300.00},
+      {data:'25/02/2027', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:5078.23},
+      {data:'03/03/2027', fornecedor:'Santori Comerci de Móveis Parc 3/4', projeto:'Playground Piscina', valor:21372.00},
       {data:'20/03/2027', fornecedor:'MTX Parc 6/15', projeto:'Aparelh. Musculação', valor:45300.00},
+      {data:'05/04/2027', fornecedor:'Santori Comerci de Móveis Parc 4/4', projeto:'Playground Piscina', valor:21372.00},
       {data:'20/04/2027', fornecedor:'MTX Parc 7/15', projeto:'Aparelh. Musculação', valor:45300.00},
       {data:'20/05/2027', fornecedor:'MTX Parc 8/15', projeto:'Aparelh. Musculação', valor:45300.00},
       {data:'20/06/2027', fornecedor:'MTX Parc 9/15', projeto:'Aparelh. Musculação', valor:45300.00},
@@ -9231,29 +9355,34 @@ const DADOS_MES = {
       {data:'20/11/2027', fornecedor:'MTX Parc 14/15', projeto:'Aparelh. Musculação', valor:45300.00},
       {data:'20/12/2027', fornecedor:'MTX Parc 15/15', projeto:'Aparelh. Musculação', valor:45300.00},
     ],
-    obrasTotal: 1306216.27,
-    // Posicao 28/10: banco -749.648 + indices 2.267.302 = 1.517.654.
-    // Percentuais derivados do proprio saldo: -749,6/1.517,7 = -49,4% e
-    // 2.267,3/1.517,7 = 149,4% (somam 100%).
-    // resultadoOper e o operacional REALIZADO ate 28/10: 3.495,8 - 3.574,2 = -78,4.
-    // Voltou ao negativo: em 22/10 marcava +36,6 porque a receita de
-    // mensalidade entra no inicio do mes e parte da despesa ainda nao tinha
-    // sido lancada. A tendencia da fonte fecha outubro em -239,1 — melhor que
-    // os -254,4 da posicao anterior e que os -268,2 previstos.
-    // resultadoLiquido soma as nao operacionais REALIZADAS: -78,4 + (-349,1) = -427,5.
-    // resultadoLiquidoTendencia e o que a fonte declara para o mes inteiro:
-    // -239,1 + (-548,11) = -787,2. Sao bases diferentes e nao se misturam.
-    caixaLivre: -749.6, fundoObras: 2267.3, resultadoOper: -78.4, saldoTotal: 1517.7,
-    caixaLivrePct: -49.4, fundoObrasPct: 149.4, negativo: true,
-    receitaReal: 3495.8, despesaReal: 3574.2,
-    resultadoLiquido: -427.5,
-    resultadoOperTendencia: -239.1, resultadoOperPrevisto: -268.2,
-    naoOperacionais: {previsto:-476.79, tendencia:-548.11, realizado:-349.1},
-    resultadoLiquidoTendencia: -787.2,
-    saldoBancoObservacaoFonte: 'O relatório de OUT2026 traz também uma linha "SALDO BANCO 31/07/2026 = R$ 1.157,9 mil". O rótulo de data está errado na origem pela terceira carga seguida: esse valor é a posição projetada de 30/10/2026 (banco -910.400 + índices 2.068.307 = 1.157.907). Mantido como veio, sem correção por suposição.',
-    dataReferencia: '28/10/2026',
+    obrasTotal: 1602693.82,
+    // Posicao 30/10: banco -817.568 + indices 2.268.464 = 1.450.896.
+    // Percentuais derivados do proprio saldo: -817,6/1.450,9 = -56,3% e
+    // 2.268,5/1.450,9 = 156,3% (somam 100%).
+    // resultadoOper = 3.658,8 - 3.805,1 = -146,3. Como tendencia e realizado
+    // coincidem nesta carga, resultadoOperTendencia e o MESMO numero — nao e
+    // repeticao por falta de dado, e a fonte declarando os dois iguais.
+    // Melhorou frente a posicao de 28/10, que marcava -78,4 realizado com
+    // tendencia de -239,1, e frente aos -268,2 previstos.
+    // resultadoLiquido: a fonte DECLARA (494,2). Pelas linhas daria -494,3
+    // (-146,3 - 348,0). Os 0,1 de diferenca sao arredondamento da propria
+    // fonte e ficam registrados, sem compensacao: vale o declarado.
+    caixaLivre: -817.6, fundoObras: 2268.5, resultadoOper: -146.3, saldoTotal: 1450.9,
+    caixaLivrePct: -56.3, fundoObrasPct: 156.3, negativo: true,
+    receitaReal: 3658.8, despesaReal: 3805.1,
+    resultadoLiquido: -494.2,
+    resultadoOperTendencia: -146.3, resultadoOperPrevisto: -268.2,
+    naoOperacionais: {previsto:-476.8, tendencia:-348.0, realizado:-348.0},
+    resultadoLiquidoTendencia: -494.2,
+    saldoBancoObservacaoFonte: 'O relatório de OUT2026 traz também uma linha "SALDO BANCO 31/07/2026 = R$ 1.450,9 mil". O rótulo de data está errado na origem pela quarta carga seguida; desta vez o valor coincide com o do cabeçalho (31/10/2026), então o defeito está apenas na data. O cabeçalho, por sua vez, diz 31/10/2026 enquanto o documento foi encaminhado como posição de 30/10/2026 — a série diária termina em 30/out, último dia útil do mês. Mantido como veio, sem correção por suposição.',
+    dataReferencia: '30/10/2026',
+    // Mantido FALSE de proposito. A fonte traz tendencia = realizado em todas
+    // as rubricas e um saldo rotulado 31/10, o que sugere mes encerrado, mas
+    // o documento foi entregue como POSICAO de 30/10 e em nenhum ponto declara
+    // fechamento. Marcar true mudaria a contagem de recorrencia e as
+    // comparacoes mes a mes. Fica como esta ate haver documento de fechamento.
     fechado: false,
-    ptoAtencao: '<b>Mês em andamento — posição de 28/10.</b> O operacional <b>realizado</b> de outubro fechou a posição em <b style="color:var(--red);">-R$ 78,4 mil</b> (receita R$ 3.495,8 mil contra despesa R$ 3.574,2 mil). <b>Voltou ao negativo</b>: em 22/10 marcava +R$ 36,6 mil, porque a receita de mensalidade entra no início do mês e parte da despesa ainda não tinha sido lançada — seis dias depois, com mais despesa registrada, o sinal se inverteu. <b style="color:var(--green);">A tendência melhorou</b>: a Controladoria projeta fechar outubro em <b>-R$ 239,1 mil</b>, contra -R$ 254,4 mil da posição anterior e -R$ 268,2 mil do previsto, puxada por uma despesa de tendência de R$ 3.805,0 mil, R$ 35,2 mil abaixo do orçado. <b style="color:var(--red);">O resultado líquido de tendência é -R$ 787,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 548,1 mil, que são a conta dos Índices Construtivos: dela já saíram R$ 349,1 mil até 28/10. O saldo em banco na posição é de <b>R$ 1.517,7 mil</b>, com <b>-R$ 749,6 mil de caixa livre</b> — R$ 114,9 mil pior que os -R$ 634,7 mil de 22/10. As duas fontes da semana fecham entre si: o mensal declara 1.517,7 e a Relação de Necessidades traz, em 28/out, banco -749.648 + índices 2.267.302 = 1.517.654. Detalhes na aba <b>Fluxo de Caixa</b>.',
+    ptoAtencao: '<b>Posição de 30/10 — último dia útil de outubro.</b> O operacional fechou a posição em <b style="color:var(--red);">-R$ 146,3 mil</b> (receita R$ 3.658,8 mil contra despesa R$ 3.805,1 mil). <b style="color:var(--green);">É o melhor número de outubro em todas as cargas</b>: a posição de 28/10 trazia -R$ 78,4 mil de realizado com tendência de -R$ 239,1 mil, e o previsto era -R$ 268,2 mil — o mês terminou <b>R$ 121,9 mil melhor que o orçado</b>. A receita superou o previsto em R$ 86,8 mil (puxada por Receitas Diversas, R$ 713,9 mil contra R$ 650,0 mil, e Cartões Crédito, R$ 548,3 mil contra R$ 490,0 mil) e a despesa ficou R$ 35,1 mil abaixo. <b style="color:var(--gold);">Nesta carga tendência e realizado são iguais em todas as rubricas</b> — outubro chegou ao fim. <b style="color:var(--red);">O resultado líquido é -R$ 494,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 348,0 mil, que são a conta dos Índices Construtivos: ela caiu de R$ 2.616.414 em 30/set para R$ 2.268.464 em 30/out. O saldo em banco na posição é de <b>R$ 1.450,9 mil</b>, com <b>-R$ 817,6 mil de caixa livre</b> — R$ 68,0 mil pior que os -R$ 749,6 mil de 28/10. <b style="color:var(--gold);">Atenção à programação de obras:</b> nenhum dos quatro pagamentos previstos para 29 e 30/10 (R$ 199,4 mil) foi executado — todos foram reprogramados para novembro, e a programação dos Índices subiu de R$ 1.306,2 mil para <b>R$ 1.602,7 mil</b> com dez compromissos novos. Detalhes na aba <b>Fluxo de Caixa</b>.',
   },
 };
 
