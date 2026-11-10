@@ -3183,16 +3183,30 @@ const HE_HISTORICO_MENSAL = [
 // revisados pela própria área em 24/08, segundo a nota abaixo; jul é novo.
 // Jan–ago não foi alterado, conforme a instrução da carga. Confirmar com o RH
 // qual das duas versões vale antes de mexer no histórico.
-const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26'];
+// 10/11/2026: OUTUBRO/2026 importado da planilha "Indicadores Outubro.xlsx -
+// INDICADORES DO RH" (Gerencia de RH), abas GERAL, Pessoal de Apoio,
+// Comparativo Terceiros e QLX3XFOLHA. Todas as series alinhadas a esta regua
+// ganharam a 10a posicao. setRHPeriodo() deriva o mapa de meses DESTA lista,
+// entao nada mais precisou ser editado para o filtro reconhecer outubro.
+// Novembro e dezembro NAO entraram: a planilha os traz em branco.
+const MESES_RH = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26','Out/26'];
 
 const RH_INDICADORES = {
-  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247, 241], meta:null, formato:'int'},
-  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47, 4.15], meta:null, formato:'pct', invertido:true,
+  ql:          {label:'Quadro de Lotação (QL)', unidade:'colab.', cor:'#3d7bff', valores:[217,214,222,233,239,241,248, 247, 241, 241], meta:null, formato:'int'},
+  turnover:    {label:'Turnover', unidade:'%', cor:'#e8192c', // A planilha guarda turnover e absenteismo com precisao cheia (jun = 3,5269709...).
+// O painel segue armazenando com 2 casas, como desde a primeira carga —
+// arredondar 3,526971 da exatamente os 3,53 ja publicados. Nao ha divergencia
+// historica aqui: e a mesma serie, so que arredondada. Outubro = 4,15%.
+// ATENCAO: a fonte traz 4,15 em SETEMBRO e em OUTUBRO — valores repetidos.
+// Nao e copia deste import: setembro ja estava 4,15 no painel desde a carga
+// anterior e a planilha confirma o mesmo numero. Fica registrado como
+// coincidencia da fonte, nao conferida junto a Gerencia de RH.
+                valores:[2.53,4.67,5.18,4.72,5.02,3.53,3.43, 5.47, 4.15, 4.15], meta:null, formato:'pct', invertido:true,
                 nota:'A elevação do turnover no período reflete a <b>adequação da força de trabalho</b> em curso, não uma perda espontânea de pessoal.'},
-  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13, 7], meta:null, formato:'int'},
-  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14, 13], meta:null, formato:'int', invertido:true},
-  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24, 2.66], meta:null, formato:'pct', invertido:true},
-  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25, 345.25], meta:null, formato:'int',
+  admitidos:   {label:'Admitidos', unidade:'pessoas', cor:'#00e5a0', valores:[5,9,16,16,15,9,12, 13, 7, 11], meta:null, formato:'int'},
+  desligamentos:{label:'Desligamentos', unidade:'pessoas', cor:'#fb923c', valores:[6,11,7,6,9,8,5, 14, 13, 9], meta:null, formato:'int', invertido:true},
+  absenteismo: {label:'Absenteísmo', unidade:'%', cor:'#f2b705', valores:[1.88,2.71,1.52,2.10,2.24,2.35,1.86, 2.24, 2.66, 2.79], meta:null, formato:'pct', invertido:true},
+  hht:         {label:'HHT (Horas de Treinamento)', unidade:'h', cor:'#a855f7', valores:[30,41,107,240,104,189,40, 180.25, 345.25, 125.25], meta:null, formato:'int',
                 nota:'Pela base estratégica do clube, é um indicador de <b>tendência sempre a melhorar</b>. Ainda não há meta definida.'},
 };
 // Avisos de pendências removidos a pedido da diretoria (não haverá esses dados até a apresentação)
@@ -3208,10 +3222,10 @@ RH_INDICADORES.saldoLiquido = {
 
 // Séries do custo de folha — exibidas juntas num único card interativo
 const FOLHA_DADOS = {
-  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91, 1242400.33]},
-  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92, 534023.17]},
-  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null, null]},   // jul: não vem nesta planilha
-  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83, 477787.95]},
+  bruto:      {nome:'Bruto',             cor:'#5c6370', vals:[1098330.57,1053585.41,1050373.01,1100209.29,1173367.33,1136222.27,1197872.57, 1269145.91, 1242400.33, 1195307.56]},
+  liquido:    {nome:'Líquido',           cor:'#00e5a0', vals:[393679.89,422287.91,468012.16,533063.30,568958.27,534681.54,533138.04, 525985.92, 534023.17, 552818.22]},
+  olimpico:   {nome:'Projeto Olímpico',  cor:'#a855f7', vals:[43808.77,48291.52,52841.18,60000.63,59108.83,58660.81,null, null, null, null]},   // jul em diante: nao vem nesta planilha; outubro tambem nao traz Projeto Olimpico
+  desencaixe: {nome:'Desencaixe SOGIPA', cor:'#f2b705', vals:[356125.74,379400.68,421914.29,473062.67,509849.44,476020.73,480551.65, 470619.83, 477787.95, 494035.00]},
 };
 
 // ── Custo com Terceiros · série comparativa de 2025 ────────────────────────
@@ -3226,14 +3240,37 @@ const TERCEIROS_2025_MESES = ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/
                               'Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'];
 
 const DP_INDICADORES = {
-  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', valores:[91,105,116,78,77,73,84, 84, null], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
+  infracoesPonto:   {label:'Infrações de Ponto', unidade:'ocorr.', cor:'#e8192c', // SEM DADO EM SETEMBRO E OUTUBRO — a planilha traz as duas celulas vazias.
+// Entram como null, nao como zero: o painel ja sabe tratar null como
+// "sem informacao no mes" e nao reaproveita o valor de agosto.
+                     // DIVERGENCIA HISTORICA NAO RESOLVIDA, deixada INTACTA de proposito:
+                     // a planilha de outubro traz mar=111, mai=73 e jul=80, contra os
+                     // 116, 77 e 84 que o painel publica desde a carga anterior. Nao ha
+                     // no arquivo nenhum total ou cruzamento que permita provar qual das
+                     // duas versoes esta certa — e contagem avulsa, sem conciliacao
+                     // possivel. Como a regra do projeto manda atualizar SO o que estiver
+                     // comprovado, os tres meses ficam como estao ate a Gerencia de RH
+                     // confirmar qual serie vale. Diferenca total: 13 ocorrencias.
+                     valores:[91,105,116,78,77,73,84, 84, null, null], meta:null, formato:'int', invertido:true,   // jan-jul completos (planilha "Gráficos até julho", 24/08). Março 111->116 e maio 73->77 foram REVISADOS pela área; jun/jul deixaram de estar AGUARDANDO RH. Soma 624, igual ao total declarado na planilha.
                      nota:'O indicador é impactado principalmente por <b>demandas não planejadas</b> — reuniões, serviços e atividades que surgem em cima da hora e acabam afetando a carga horária. <b>Jan–jul somam 624 infrações</b>, com pico em março (116) e o menor volume em junho (73). Por duração, as ocorrências longas dominam: <b>mais de 10h (248) e mais de 2h (248) respondem por 82%</b> das que têm faixa informada, contra 61 de menos de 1h e 46 de interjornada. Essas quatro faixas somam 603, <b>21 a menos que as 624 do fechamento mensal</b> — a planilha não traz a faixa das 21 restantes. Os setores com mais ocorrências são Central de Eventos (97), Manutenção (71), Diretoria (42), Projeto Criança (37) e Sede Social (28), que somam 275; a planilha lista apenas esses cinco, então os outros 349 casos estão distribuídos em setores não detalhados.'},
-  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38, 43184.96], meta:null, formato:'num', jornada:true},
-  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15, 284.87], meta:null, formato:'num', invertido:true, jornada:true,
+  horasTrabalhadas: {label:'Horas Trabalhadas', unidade:'h', cor:'#3d7bff', valores:[32935.79,34517.48,38265.98,40388.40,41355.21,42222.26,42814.16, 43700.38, 43184.96, 43660.28], meta:null, formato:'num', jornada:true},
+  horasFalta:       {label:'Horas Falta', unidade:'h', cor:'#fb923c', valores:[391.70,337.06,141.87,359.00,572.00,396.77,139.77, 319.15, 284.87, 467.35], meta:null, formato:'num', invertido:true, jornada:true,
                      nota:'Quanto menor, melhor.'},
-  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33, 865.09], meta:null, formato:'num', invertido:true},
-  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', valores:[28354.98,23094.10,15546.18,40724.35,56288.44,42038.99,44513.20, 22843.14, 28061.94], meta:null, formato:'moeda', invertido:true, he:true},
-  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06, 53230.60], meta:null, formato:'moeda', invertido:true,
+  atestados:        {label:'Atestados', unidade:'h', cor:'#06b6d4', valores:[227.04,597.01,438.23,487.68,356.21,594.05,658.62, 658.33, 865.09, 749.04], meta:null, formato:'num', invertido:true},
+  horasExtras:      {label:'Horas Extras', unidade:'R$', cor:'#e8192c', // CORRECAO HISTORICA DE ABRIL, com prova: o painel trazia 40.724,35 e a
+// planilha traz 40.714,35 (R$ 10,00 a menos, digitos 24/14 trocados na
+// carga anterior). Nao foi aceito "porque a planilha e mais nova": a aba
+// Pessoal de Apoio declara o total de abril em 1.244.624,78 e
+// 1.100.209,29 + 103.701,14 + 40.714,35 = 1.244.624,78 EXATO. Com os
+// 40.724,35 antigos daria 1.244.634,78, que contradiz o total declarado.
+// A propria fonte prova o numero; por isso este foi corrigido e as
+// Infracoes de Ponto, que nao tem cruzamento, nao foram.
+                     valores:[28354.98,23094.10,15546.18,40714.35,56288.44,42038.99,44513.20, 22843.14, 28061.94, 38203.16], meta:null, formato:'moeda', invertido:true, he:true},
+  custoTerceiros:   {label:'Custo Terceiros', unidade:'R$', cor:'#fb923c', // A aba GERAL grava MAIO como TEXTO malformado ("R$ 98.160.89", com ponto
+// no lugar da virgula decimal). As outras tres abas trazem 98160.89 como
+// numero e o painel ja publicava esse valor — nao ha divergencia de valor,
+// so defeito de digitacao na aba GERAL. Fonte nao alterada.
+                     valores:[191232.95,157011.13,180470.29,103701.14,98160.89,87734.63,67782.19, 81136.06, 53230.60, 78927.45], meta:null, formato:'moeda', invertido:true,
                      valores2025:TERCEIROS_2025, gerencial:'terceiros'},
   custoFolha:       {label:'Custo de Folha', unidade:'R$', cor:'#3d7bff', valores:FOLHA_DADOS.bruto.vals, meta:null, formato:'moeda', folha:true,
                      subvalores:['liquido','olimpico','desencaixe']},
@@ -3243,7 +3280,10 @@ const DP_INDICADORES = {
   // que cobre ago/2019 a out/2026 — assim outubro aparece quando o filtro o
   // inclui, sem mexer na régua de meses dos demais indicadores.
   valeTransporte:   {label:'Vale-Transporte', unidade:'R$', cor:'#f2b705', meta:null, formato:'moeda', vt:true,
-                     valores:[7327.85,9389.75,9686.85,6349.37,14284.14,10217.20,10110.91,11115.31,11165.92],
+                     // Outubro = 11.200,63, lido da propria base VALE_TRANSPORTE (2026, mes 10,
+// campo r/retido), que ja cobria o mes. Nao e numero novo: e o alinhamento
+// da regua de MESES_RH com a base que o card ja consultava pela flag `vt`.
+                     valores:[7327.85,9389.75,9686.85,6349.37,14284.14,10217.20,10110.91,11115.31,11165.92,11200.63],
                      nota:'Indicador principal: <b>valor retido</b>, lido da coluna RETIDO da planilha “Retenções VALE TRANSPORTE”. O aproveitamento de um período é sempre <b>Σ retido ÷ Σ solicitado</b>, nunca a média dos percentuais mensais. Em 25 dos 91 meses da série a conta <i>solicitado − creditado</i> não fecha exatamente com o retido — a maior diferença é FEV/2022 (R$ 10.000,00); os valores foram preservados como a fonte os traz.'},
 };
 const DP_PENDENTES = [];
@@ -3480,6 +3520,9 @@ let HE_RESUMO = HE_POR_MES.jun2026.resumo;
 let HE_CC_RANKING = HE_POR_MES.jun2026.ccRanking;
 let HE_DONUT_SEGMENTS = HE_POR_MES.jun2026.donutSegments;
 let HE_MES_SEM_DADOS = null; // guarda o mesKey pedido quando não há dado de HE ainda
+// true quando a janela filtrada NAO tem nenhum mes de HE e o card esta exibindo
+// a janela completa como referencia. agregarHE() escreve, heChavesHE() le.
+let HE_JANELA_PARCIAL = false;
 let HE_CC_JANELA = null;     // janela realmente coberta pela quebra por centro de custo
 
 // Define como cada indicador se comporta ao agregar um período:
@@ -3541,7 +3584,23 @@ function rhPeriodoLabel(){
 function agregarHE(){
   const mapa = {jan:'Jan/26',fev:'Fev/26',mar:'Mar/26',abr:'Abr/26',mai:'Mai/26',jun:'Jun/26'};
   const labels = RH_PERIODO_IDX.map(i=>MESES_RH[i]);
-  const linhas = HE_HISTORICO_MENSAL.filter(h=>labels.includes(h.mes));
+  let linhas = HE_HISTORICO_MENSAL.filter(h=>labels.includes(h.mes));
+  // 10/11/2026 — FALLBACK EXPLICITO. Com a chegada de outubro ao RH, filtrar
+  // SO outubro passou a deixar esta lista vazia: a planilha de indicadores traz
+  // o VALOR de HE de outubro (R$ 38.203,16, ja importado em
+  // DP_INDICADORES.horasExtras), mas NAO traz horas, colaboradores nem quebra
+  // por centro de custo — esse detalhamento vem de outra planilha, que ainda
+  // nao chegou. Antes deste import a lista nunca ficava vazia porque RH parava
+  // em setembro e o filtro caia na regua inteira.
+  // Retornando null, o card ficava com o resumo que sobrou da ultima chamada
+  // (AGOSTO, R$ 22.843,14) — nem o mes pedido, nem o mais recente disponivel.
+  // Agora, quando a janela filtrada nao tem nenhum mes de HE, volta-se a
+  // janela COMPLETA de HE disponivel, que e o que a v381 ja exibia, e
+  // `janelaParcial` faz a tela dizer que o recorte nao e o do filtro.
+  // NAO se inventa HE para outubro e NAO se repete agosto como se fosse outubro.
+  let janelaParcial = false;
+  if(!linhas.length){ linhas = HE_HISTORICO_MENSAL.slice(); janelaParcial = true; }
+  HE_JANELA_PARCIAL = janelaParcial;
   if(!linhas.length) return null;
   const ult = linhas[linhas.length-1];
   return {
@@ -3553,6 +3612,7 @@ function agregarHE(){
     nMeses: linhas.length,
     primeiroMes: linhas[0].mes,
     ultimoMes: ult.mes,
+    janelaParcial,
     dataReferencia: linhas.length>1 ? `${linhas[0].mes} a ${ult.mes}` : ult.mes,
   };
 }
@@ -3570,9 +3630,18 @@ function heChavesHE(){
   // 'Set/26' -> 'set2026', derivado do próprio rótulo (sem lista fixa)
   const map = {Jan:'jan',Fev:'fev',Mar:'mar',Abr:'abr',Mai:'mai',Jun:'jun',
                Jul:'jul',Ago:'ago',Set:'set',Out:'out',Nov:'nov',Dez:'dez'};
-  return RH_PERIODO_IDX.map(i=>MESES_RH[i])
+  const k = RH_PERIODO_IDX.map(i=>MESES_RH[i])
     .map(rot => { const [m,a] = rot.split('/'); return map[m] ? map[m] + '20' + a : null; })
     .filter(k => k && HE_POR_MES[k]);
+  // Fallback RESTRITO ao caso que o import de outubro criou: a janela filtrada
+  // nao tem NENHUM mes de HE (HE_JANELA_PARCIAL). So nesse caso usa a janela
+  // completa, para o card nao ficar com o que sobrou da chamada anterior.
+  // Quando o mes TEM total de HE mas nao tem quebra por centro de custo —
+  // qualquer mes de jan a mai/26, porque HE_POR_MES comeca em junho — devolve
+  // vazio como sempre devolveu. Esse comportamento e anterior a este import e
+  // NAO foi alterado: mexer nele mudaria telas ja validadas, fora do escopo.
+  if(k.length) return k;
+  return HE_JANELA_PARCIAL ? Object.keys(HE_POR_MES).filter(x=>HE_POR_MES[x]) : [];
 }
 function agregarHECC(){
   const chaves = heChavesHE();
@@ -5221,8 +5290,15 @@ function renderVisaoGeralHE(){
   // Só avisa quando a quebra por centro de custo cobre MENOS que os totais.
   const elCC = document.getElementById('vgHECCPeriodo');
   if(elCC){
-    const iguais = !HE_CC_JANELA || !HE_RESUMO || HE_CC_JANELA === HE_RESUMO.dataReferencia;
-    elCC.textContent = iguais ? '' : `· só ${HE_CC_JANELA} (sem quebra por centro de custo antes de Jun/26)`;
+    // Quando a janela de HE nao e a do filtro (porque o periodo pedido nao tem
+    // planilha de HE), a tela diz isso em vez de exibir numeros de outro mes
+    // sob um titulo que parece ser do mes filtrado.
+    if(HE_RESUMO && HE_RESUMO.janelaParcial){
+      elCC.textContent = `· sem planilha de Horas Extras no período filtrado — exibindo ${HE_RESUMO.dataReferencia}`;
+    } else {
+      const iguais = !HE_CC_JANELA || !HE_RESUMO || HE_CC_JANELA === HE_RESUMO.dataReferencia;
+      elCC.textContent = iguais ? '' : `· só ${HE_CC_JANELA} (sem quebra por centro de custo antes de Jun/26)`;
+    }
   }
   drawDonut('vgDonutHE', HE_DONUT_SEGMENTS, fmtBRL0(HE_RESUMO.totalValor), 'total em HE');
   document.getElementById('vgHESetorMaior').textContent = HE_CC_RANKING[0].nome;
@@ -7304,6 +7380,14 @@ const COBERTURA_RETENCAO = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
+  // 10/11/2026: NOVEMBRO PARCIAL — a aba Novembro da planilha de Desligamento
+  // traz 15 registros, de 01 a 09/11. A janela para em 09/11 porque o mes esta
+  // em curso; nao usar 30/11.
+  // Esta cobertura e SO do DESLIGAMENTO. A sub-aba de Retencao tem a sua
+  // propria (COBERTURA_RETENCAO_CRA), que segue terminando em outubro porque a
+  // planilha Retencao 2026(8) nao tem nenhum registro de novembro — o ultimo e
+  // de 28/10. Sem dado nao e zero, e por isso as duas nao andam juntas.
+  nov2026: {ini:'2026-11-01', fim:'2026-11-09'},
 };
 function mesKeyParaRetencao(de, ate){
   for(const mesKey in COBERTURA_RETENCAO){
@@ -7355,7 +7439,8 @@ function mesKeyParaRetencao(de, ate){
 // Depois da consolidacao da equipe o array tem uma linha so, e e justamente
 // isso que a trava prova: a linha unica soma a MESMA quantidade e o MESMO valor
 // que as linhas individuais somavam — a consolidacao nao perdeu nem criou nada.
-const MESES_TRAVADOS_VENDAS = [['set2026','Setembro/2026'], ['out2026','Outubro/2026']];
+const MESES_TRAVADOS_VENDAS = [['set2026','Setembro/2026'], ['out2026','Outubro/2026'],
+                               ['nov2026','Novembro/2026']];
 function conferirVendasSet(){
   const q = [];
   MESES_TRAVADOS_VENDAS.forEach(([k, rotulo])=>{
@@ -8016,123 +8101,120 @@ const VENDAS_EXTRA_MESES = {
   //   Dois registros estao SEM data na origem (data:null) e sao preservados
   //   assim: entram na contagem e no valor, mas ficam fora da serie diaria.
   out2026: {
-    // ── OUTUBRO/2026 FECHADO · carga de 04/11/2026 ────────────────────────
-    // SUBSTITUI a posicao de 19/10 (28 vendas / R$ 14.607,75). Mesma
-    // competencia relida com o mes fechado — nao soma, substitui.
+    // ── OUTUBRO/2026 RECONCILIADO · releitura de 10/11/2026 ────────────────
+    // A aba "Outubro - 2026" foi REESCRITA entre a carga de 04/11 e esta: as
+    // matriculas mudaram de 7 digitos (1104xxx) para 11 (10000716xxx) e DUAS
+    // vendas sairam do detalhamento. Antes: 85 registros, adesao 59.363,79 e
+    // contribuicao 41.602,75. Agora: 83, 58.095,79 e 40.835,75.
     //
-    // A DIFERENCA QUE O DIRETOR PEDIU PARA INVESTIGAR, RESOLVIDA:
-    // o resumo da aba declara 85 vendas e R$ 59.363,79 de adesao; a conferencia
-    // preliminar achou 81 registros e R$ 57.377,79. Os 4 que faltavam sao as
-    // linhas com DATA EM TEXTO, no formato irregular DD/MMAAAA:
-    //   L11 '02/102026' R$   501,00    L12 '01/102026' R$ 501,00
-    //   L13 '02/102026' R$   266,00    L75 '30/102026' R$ 718,00
-    //                                  soma  R$ 1.986,00  <- a diferenca exata
-    // 81 + 4 = 85 e 57.377,79 + 1.986,00 = 59.363,79. Nenhum registro foi
-    // inventado e nenhum valor foi forcado. As quatro datas foram lidas como
-    // 02/10, 01/10, 02/10 e 30/10 — o padrao e inequivoco (dia/mesano).
+    // AS DUAS VENDAS NAO FORAM APAGADAS — FORAM RECLASSIFICADAS PARA NOVEMBRO.
+    // Identificadas uma a uma: F.P.O. (contribuicao 501) e M.A.B. (266),
+    // ambas datadas 31/10 na versao anterior. Na nova planilha sao as linhas
+    // 1 e 2 da aba "Novembro - 2026", datadas 03/11/2026, com matriculas
+    // 1104629 e 1104630 — da serie de novembro, nao da de outubro.
+    // A conta fecha nos dois campos, sem sobra:
+    //   contribuicao  41.602,75 - 40.835,75 = 767,00  = 501 + 266
+    //   adesao        59.363,79 - 58.095,79 = 1.268,00 (1.002 + 266)
     //
-    // CRITERIO FINANCEIRO: `valorArrecadado` e a soma de VALOR CONTRIBUICAO
-    // (R$ 41.602,75), nao de Adesao (R$ 59.363,79). E a mesma regra ja
-    // verificada em agosto (28.655,50 contra 30.127,50 de adesao) e setembro
-    // (32.347,50 contra 37.986,23). O resumo da aba rotula as duas colunas como
-    // "Taxa de Adesao" em meses diferentes — em agosto o valor declarado e o da
-    // CONTRIBUICAO, em outubro e o da ADESAO. O rotulo da fonte oscila; o
-    // criterio do painel nao.
-    //
-    // EQUIPE DE VENDAS: por determinacao do Gerente Geral, `consultores` traz um
-    // unico resultado consolidado. O campo "cons" de cada registro foi mantido
-    // na base para auditoria e NAO alimenta nenhuma apresentacao.
+    // POR QUE 83 E NAO 85: o resumo da aba AINDA declara 85 realizadas e gap
+    // -5, ou seja, nao foi atualizado quando as duas linhas foram movidas.
+    // Se outubro ficasse com 85 e novembro com 13, as mesmas duas vendas
+    // seriam contadas DUAS VEZES no acumulado. Com 83 + 13 o total do periodo
+    // continua 96, que e o mesmo de antes (85 + 11 novas). Nada se perdeu e
+    // nada foi duplicado. A quantidade oficial declarada (85) NAO foi apagada:
+    // esta registrada em `qtdOficialFonte` e dita no alerta da aba.
     registros:[
-      {"nome": "G.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "K.T.C.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "D.M.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 985.8},
-      {"nome": "F.T.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "V.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "R.B.", "data": "2026-10-02", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "C.L.M.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 953.0},
-      {"nome": "G.H.B.", "data": "2026-10-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 937.32},
-      {"nome": "J.C.B.", "data": "2026-10-08", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 889.0},
-      {"nome": "A.B.V.", "data": "2026-10-05", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 905.0},
-      {"nome": "L.H.P.S.", "data": "2026-10-06", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 905.0},
-      {"nome": "L.Q.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "C.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Visita + Tour", "valor": 699.0, "adesao": 699.0},
+      {"nome": "G.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "K.T.C.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "D.M.", "data": "2026-10-01", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 985.8},
+      {"nome": "F.T.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "V.S.R.", "data": "2026-10-01", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "R.B.", "data": "2026-10-02", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "C.L.M.", "data": "2026-10-02", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 953},
+      {"nome": "G.H.B.", "data": "2026-10-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 937.32},
+      {"nome": "J.C.B.", "data": "2026-10-08", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 889},
+      {"nome": "A.B.V.", "data": "2026-10-05", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 905},
+      {"nome": "L.H.P.S.", "data": "2026-10-06", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 905},
+      {"nome": "L.Q.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Campanha + Tour", "valor": 699, "adesao": 699},
+      {"nome": "C.S.", "data": "2026-10-08", "cons": "Helena", "cat": "Duo", "canal": "Visita + Tour", "valor": 699, "adesao": 699},
       {"nome": "A.S.P.", "data": "2026-10-07", "cons": "Nicole", "cat": "Convênio OAB", "canal": "Campanha + WhatsApp", "valor": 375.75, "adesao": 763.59},
-      {"nome": "S.D.", "data": "2026-10-07", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 653.84},
-      {"nome": "F.M.A.", "data": "2026-10-08", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
-      {"nome": "D.K.", "data": "2026-10-06", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
-      {"nome": "V.R.B.", "data": "2026-10-14", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
-      {"nome": "M.A.D.A.", "data": "2026-10-14", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 775.0},
-      {"nome": "A.V.Z.Z.", "data": "2026-10-14", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Campanha + WhatsApp", "valor": 359.0, "adesao": 633.72},
-      {"nome": "M.I.S.", "data": "2026-10-15", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "G.S.D.", "data": "2026-10-15", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 775.0},
-      {"nome": "E.P.G.", "data": "2026-10-15", "cons": "Helena", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999.0, "adesao": 999.0},
-      {"nome": "L.L.S.", "data": "2026-10-16", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "R.C.E.S.", "data": "2026-10-16", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
-      {"nome": "P.B.B.", "data": "2026-10-19", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "H.R.M.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "D.V.B.B.O.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "C.A.S.", "data": "2026-10-19", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 501.0},
-      {"nome": "J.S.S.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 501.0},
-      {"nome": "W.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359.0, "adesao": 359.0},
-      {"nome": "M.D.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "S.B.L.", "data": "2026-10-20", "cons": "Nicole", "cat": "Teen", "canal": "Visita + Tour", "valor": 266.0, "adesao": 266.0},
-      {"nome": "E.W.O.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Oktober + Tour", "valor": 266.0, "adesao": 266.0},
-      {"nome": "J.V.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699.0, "adesao": 699.0},
-      {"nome": "F.T.D.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + Tour", "valor": 266.0, "adesao": 427.52},
-      {"nome": "M.F.W.", "data": "2026-10-21", "cons": "Nicole", "cat": "Duo", "canal": "Amigo Indica", "valor": 699.0, "adesao": 699.0},
-      {"nome": "S.M.F.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Projeto Escola", "valor": 501.0, "adesao": 501.0},
-      {"nome": "V.E.P.", "data": "2026-10-19", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 695.0},
-      {"nome": "A.B.R.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501.0, "adesao": 661.0},
-      {"nome": "N.A.H.W.", "data": "2026-10-23", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 615.0},
-      {"nome": "G.C.A.S.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
-      {"nome": "D.C.C.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
-      {"nome": "R.C.L.R.", "data": "2026-10-26", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "L.G.A.", "data": "2026-10-26", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "M.T.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699.0, "adesao": 699.0},
-      {"nome": "B.C.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499.0, "adesao": 499.0},
-      {"nome": "A.A.B.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "N.M.S.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "M.N.P.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 501.0},
-      {"nome": "C.A.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 581.0},
-      {"nome": "M.I.S.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "C.R.L.S.", "data": "2026-10-28", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "B.S.H.", "data": "2026-10-28", "cons": "Nicole", "cat": "Teen", "canal": "Sócio Atleta", "valor": 266.0, "adesao": 266.0},
-      {"nome": "R.M.B.J.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "B.B.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "O.L.B.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "D.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "C.T.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Amigo Indica", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "L.S.O.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "C.S.S.", "data": "2026-10-29", "cons": "Nicole", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999.0, "adesao": 999.0},
-      {"nome": "M.A.U.A.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "J.D.L.G.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "T.S.A.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "M.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "J.F.S.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "J.A.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "R.M.D.L.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359.0, "adesao": 718.0},
-      {"nome": "G.E.R.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "F.C.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "P.G.N.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "A.S.B.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "L.B.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "D.M.C.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "P.G.J.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "E.C.G.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "A.S.T.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "D.S.D.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "A.P.O.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "L.L.B.", "data": "2026-10-31", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0},
-      {"nome": "J.D.Z.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Amigo Indica", "valor": 266.0, "adesao": 266.0},
-      {"nome": "V.K.", "data": "2026-10-31", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "R.V.M.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "F.P.O.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501.0, "adesao": 1002.0},
-      {"nome": "M.A.B.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266.0, "adesao": 266.0}
+      {"nome": "S.D.", "data": "2026-10-07", "cons": "Nicole", "cat": "Sênior", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 653.84},
+      {"nome": "F.M.A.", "data": "2026-10-08", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499, "adesao": 499},
+      {"nome": "D.K.", "data": "2026-10-06", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499, "adesao": 499},
+      {"nome": "V.R.B.", "data": "2026-10-14", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": 699},
+      {"nome": "M.A.D.A.", "data": "2026-10-14", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 775},
+      {"nome": "A.V.Z.Z.", "data": "2026-10-14", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Campanha + WhatsApp", "valor": 359, "adesao": 633.72},
+      {"nome": "M.I.S.", "data": "2026-10-15", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "G.S.D.", "data": "2026-10-15", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 775},
+      {"nome": "E.P.G.", "data": "2026-10-15", "cons": "Helena", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999, "adesao": 999},
+      {"nome": "L.L.S.", "data": "2026-10-16", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "R.C.E.S.", "data": "2026-10-16", "cons": "Helena", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": 699},
+      {"nome": "P.B.B.", "data": "2026-10-19", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699, "adesao": 699},
+      {"nome": "H.R.M.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699, "adesao": 699},
+      {"nome": "D.V.B.B.O.", "data": "2026-10-19", "cons": "Helena", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699, "adesao": 699},
+      {"nome": "C.A.S.", "data": "2026-10-19", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501, "adesao": 501},
+      {"nome": "J.S.S.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 501},
+      {"nome": "W.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359, "adesao": 359},
+      {"nome": "M.D.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699, "adesao": 699},
+      {"nome": "S.B.L.", "data": "2026-10-20", "cons": "Nicole", "cat": "Teen", "canal": "Visita + Tour", "valor": 266, "adesao": 266},
+      {"nome": "E.W.O.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Oktober + Tour", "valor": 266, "adesao": 266},
+      {"nome": "J.V.", "data": "2026-10-20", "cons": "Nicole", "cat": "Duo", "canal": "Oktober + Tour", "valor": 699, "adesao": 699},
+      {"nome": "F.T.D.A.F.", "data": "2026-10-20", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + Tour", "valor": 266, "adesao": 427.52},
+      {"nome": "M.F.W.", "data": "2026-10-21", "cons": "Nicole", "cat": "Duo", "canal": "Amigo Indica", "valor": 699, "adesao": 699},
+      {"nome": "S.M.F.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Projeto Escola", "valor": 501, "adesao": 501},
+      {"nome": "V.E.P.", "data": "2026-10-19", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501, "adesao": 695},
+      {"nome": "A.B.R.", "data": "2026-10-21", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Oktober + Tour", "valor": 501, "adesao": 661},
+      {"nome": "N.A.H.W.", "data": "2026-10-23", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 615},
+      {"nome": "G.C.A.S.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": 699},
+      {"nome": "D.C.C.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": 699},
+      {"nome": "R.C.L.R.", "data": "2026-10-26", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "L.G.A.", "data": "2026-10-26", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "M.T.", "data": "2026-10-26", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": 699},
+      {"nome": "B.C.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Plano Single", "canal": "Campanha + WhatsApp", "valor": 499, "adesao": 499},
+      {"nome": "A.A.B.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "N.M.S.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "M.N.P.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 501},
+      {"nome": "C.A.S.", "data": "2026-10-27", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 581},
+      {"nome": "M.I.S.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "C.R.L.S.", "data": "2026-10-28", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "B.S.H.", "data": "2026-10-28", "cons": "Nicole", "cat": "Teen", "canal": "Sócio Atleta", "valor": 266, "adesao": 266},
+      {"nome": "R.M.B.J.", "data": "2026-10-28", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "B.B.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "O.L.B.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "D.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "C.T.P.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Amigo Indica", "valor": 501, "adesao": 1002},
+      {"nome": "L.S.O.", "data": "2026-10-29", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "C.S.S.", "data": "2026-10-29", "cons": "Nicole", "cat": "Combo Família", "canal": "Campanha + WhatsApp", "valor": 999, "adesao": 999},
+      {"nome": "M.A.U.A.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "J.D.L.G.", "data": "2026-10-29", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "T.S.A.", "data": "2026-10-29", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "M.S.", "data": "2026-10-29", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "J.F.S.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "J.A.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": 1002},
+      {"nome": "R.M.D.L.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Individual", "canal": "Visita + Tour", "valor": 359, "adesao": 718},
+      {"nome": "G.E.R.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "F.C.P.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "P.G.N.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501, "adesao": 1002},
+      {"nome": "A.S.B.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "L.B.F.", "data": "2026-10-30", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "D.M.C.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "P.G.J.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "E.C.G.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "A.S.T.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "D.S.D.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "A.P.O.A.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "L.L.B.", "data": "2026-10-31", "cons": "Helena", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": 266},
+      {"nome": "J.D.Z.", "data": "2026-10-31", "cons": "Nicole", "cat": "Universitário", "canal": "Amigo Indica", "valor": 266, "adesao": 266},
+      {"nome": "V.K.", "data": "2026-10-31", "cons": "Helena", "cat": "Contribuinte Familiar", "canal": "Campanha + Tour", "valor": 501, "adesao": 1002},
+      {"nome": "R.V.M.", "data": "2026-10-31", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Visita", "valor": 501, "adesao": 1002}
     ],
     periodoTag:'Outubro/2026 (fechado)',
-    associacoesNovas:'85', valorArrecadado:'R$ 41.602,75', ticketMedio:'R$ 489,44',
+    associacoesNovas:'83', valorArrecadado:'R$ 40.835,75', ticketMedio:'R$ 492,00',
+    // Quantidade que o RESUMO da aba declara, preservada separadamente dos 83
+    // registros efetivamente identificados. Divergencia aberta: 2 vendas.
+    qtdOficialFonte:85,
     campanhas:[
-      {nome:'Campanha + WhatsApp', qtd:43, cor:'#3d7bff'},
+      {nome:'Campanha + WhatsApp', qtd:41, cor:'#3d7bff'},
       {nome:'Visita + Tour', qtd:16, cor:'#00e5a0'},
       {nome:'Campanha + Tour', qtd:10, cor:'#f2b705'},
       {nome:'Oktober + Tour', qtd:9, cor:'#a855f7'},
@@ -8142,29 +8224,84 @@ const VENDAS_EXTRA_MESES = {
       {nome:'Sócio Atleta', qtd:1, cor:'#b0b0d0'},
     ],
     consultores:[
-      {nome:'EQUIPE DE VENDAS', qtd:85, valor:41602.75},
+      {nome:'EQUIPE DE VENDAS', qtd:83, valor:40835.75},
     ],
     categorias:[
-      {nome:'Contribuinte Familiar', qtd:46}, {nome:'Duo', qtd:13}, {nome:'Teen', qtd:10},
-      {nome:'Universitário', qtd:5}, {nome:'Plano Single', qtd:3}, {nome:'Contribuinte Individual', qtd:3},
+      {nome:'Contribuinte Familiar', qtd:45}, {nome:'Duo', qtd:13}, {nome:'Teen', qtd:10},
+      {nome:'Universitário', qtd:4}, {nome:'Plano Single', qtd:3}, {nome:'Contribuinte Individual', qtd:3},
       {nome:'Sênior', qtd:2}, {nome:'Combo Família', qtd:2}, {nome:'Convênio OAB', qtd:1},
     ],
-    alerta: '<b style="color:var(--green);">Outubro fechou com 85 associações novas</b> e <b>R$ 41.602,75</b> de valor contribuição, com ticket médio de <b>R$ 489,44</b>. <b style="color:var(--green);">É o melhor mês do ano em volume</b> — acima das 66 de agosto e das 65 de setembro — e <b>bateu a meta de 83 (102%)</b>, embora fique 5 abaixo do desafio de 90. Substitui a posição parcial de 19/10, que trazia 28 vendas. <b>Contribuinte Familiar concentra 46 das 85</b> (54%), seguida de Duo (13) e Teen (10). Na origem, <b>Campanha + WhatsApp responde por 43</b> (51%) e Visita + Tour por 16 — os dois canais juntos explicam 69% do mês. <b style="color:var(--gold);">Conferência da diferença apontada:</b> o resumo da aba declara 85 vendas e R$ 59.363,79 de adesão, contra 81 registros e R$ 57.377,79 na contagem preliminar. Os 4 que faltavam têm <b>data gravada como texto</b> no formato irregular DD/MMAAAA e somam exatamente <b>R$ 1.986,00</b> — 81 + 4 = 85 e 57.377,79 + 1.986,00 = 59.363,79. Nada foi inventado nem forçado. <b style="color:var(--gold);">Ressalva de origem:</b> a matrícula 1104518 aparece em dois registros diferentes (19/10 e 29/10, pessoas e valores distintos) — é erro de cadastro na planilha, não venda duplicada, e os dois registros foram preservados.',
+    alerta: '<b style="color:var(--green);">Outubro fechou com 83 associações novas</b> e <b>R$ 40.835,75</b> de valor contribuição, ticket médio de <b>R$ 492,00</b>. <b style="color:var(--green);">Segue como o melhor mês do ano em volume</b> — acima das 66 de agosto e das 65 de setembro — e <b>bateu a meta de 83 (100%)</b>, 7 abaixo do desafio de 90. <b style="color:var(--gold);">Revisão desta carga:</b> a aba de outubro foi reescrita pela Secretaria e passou de 85 para 83 registros. <b>As duas vendas não sumiram — foram reclassificadas para novembro:</b> aparecem como as linhas 1 e 2 da aba de novembro, datadas 03/11, com matrículas da série de novembro. A conta fecha exatamente: R$ 767,00 de contribuição e R$ 1.268,00 de adesão. <b style="color:var(--red);">Pendência aberta:</b> o resumo da aba ainda declara 85 vendas e não foi atualizado após a mudança — o painel adota 83 para não contar as mesmas duas vendas em outubro e em novembro, e mantém o número oficial registrado para conferência da Secretaria. <b>Contribuinte Familiar concentra 45 das 83</b> (54%), seguida de Duo (13) e Teen (10). Na origem, <b>Campanha + WhatsApp responde por 41</b> (49%) e Visita + Tour por 16. <b style="color:var(--gold);">Ressalva de origem mantida:</b> a matrícula 1104518 aparecia em dois registros distintos na versão anterior — erro de cadastro, não venda duplicada.',
     metas:{
-      vendas:{orcado:83, real:85}, reingressos:{orcado:null, real:89},
-      // A aba repete 83 na linha 'TOTAL VENDAS/REINGRESSOS' e nao traz meta de
-      // reingresso separada. O 83 entra como esta; nada foi deduzido.
-      // A propria aba declara TOTAL real 85 e gap -5, contando SO vendas. O
-      // painel mantem o criterio ja adotado desde agosto: a linha se chama
-      // VENDAS/REINGRESSOS, entao soma as duas (85 + 89 = 174). As duas
-      // leituras ficam registradas; nenhuma foi compensada.
-      totalVR:{orcado:83, real:174}, desafioVenda:90, desafioReingresso:null,
-      total:{orcado:90, real:174, gap:84},
+      // `real` segue os 83 registros identificados, nao os 85 do resumo —
+      // ver qtdOficialFonte e o alerta acima.
+      vendas:{orcado:83, real:83}, reingressos:{orcado:null, real:89},
+      totalVR:{orcado:83, real:172}, desafioVenda:90, desafioReingresso:null,
+      total:{orcado:90, real:172, gap:82},
       // taxaAdesao guarda a serie do painel, que e o VALOR CONTRIBUICAO
-      // (R$ 41.602,75) — nao a coluna Adesao (R$ 59.363,79).
-      // taxaReingresso repete REINGRESSO_HISTORICO.out2026 (89 / R$ 75.073,44).
-      // taxaTotal = 41.602,75 + 75.073,44 = 116.676,19.
-      taxaAdesao:41602.75, taxaReingresso:75073.44, taxaTotal:116676.19,
+      // (R$ 40.835,75) — nao a coluna Adesao (R$ 58.095,79).
+      taxaAdesao:40835.75, taxaReingresso:75073.44, taxaTotal:115909.19,
+    },
+  },
+  nov2026: {
+    // ── NOVEMBRO/2026 PARCIAL · posicao de 09/11/2026 ─────────────────────
+    // 13 registros, de 03/11 a 09/11. R$ 6.599,25 — bate no centavo com o
+    // resumo da aba. NAO e fechamento: o mes esta em curso.
+    //
+    // NOMENCLATURA FINANCEIRA DIFERENTE DE OUTUBRO, sinalizada e NAO forcada:
+    // a aba de novembro tem UMA unica coluna financeira, chamada
+    // "Contribuicao". Outubro tem DUAS, "Adesao" e "Valor Contribuicao".
+    // O criterio do painel sempre foi o VALOR CONTRIBUICAO, entao os
+    // R$ 6.599,25 entram como contribuicao, que e o que a coluna diz ser.
+    // ADESAO DE NOVEMBRO NAO EXISTE NA FONTE: cada registro traz adesao null,
+    // nao zero e nao copia da contribuicao. Sem dado nao e zero.
+    //
+    // AS DUAS PRIMEIRAS LINHAS (F.P.O. e M.A.B., 03/11) sao as vendas que
+    // estavam em outubro na carga de 04/11 e foram reclassificadas. Entram
+    // aqui UMA unica vez — outubro foi reduzido a 83 justamente para elas nao
+    // serem contadas duas vezes. Ver o comentario de out2026.
+    //
+    // CAMPOS EM BRANCO NA ORIGEM, preservados como "Nao informado(a)":
+    // 9 dos 13 registros estao sem canal de venda e 1 sem categoria. Nao foi
+    // atribuido canal nem categoria por semelhanca.
+    registros:[
+      {"nome": "F.P.O.", "data": "2026-11-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": null},
+      {"nome": "M.A.B.", "data": "2026-11-03", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": null},
+      {"nome": "T.G.A.", "data": "2026-11-04", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": null},
+      {"nome": "B.Z.", "data": "2026-11-04", "cons": "Nicole", "cat": "Duo", "canal": "Campanha + WhatsApp", "valor": 699, "adesao": null},
+      {"nome": "I.L.M.", "data": "2026-11-04", "cons": "Nicole", "cat": "Duo", "canal": "Não informado", "valor": 699, "adesao": null},
+      {"nome": "J.P.R.S.", "data": "2026-11-04", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Não informado", "valor": 269.25, "adesao": null},
+      {"nome": "R.R.A.", "data": "2026-11-06", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Não informado", "valor": 501, "adesao": null},
+      {"nome": "L.L.", "data": "2026-11-06", "cons": "Nicole", "cat": "Duo", "canal": "Não informado", "valor": 699, "adesao": null},
+      {"nome": "V.", "data": "2026-11-06", "cons": "Não informada", "cat": "Não informada", "canal": "Não informado", "valor": 699, "adesao": null},
+      {"nome": "R.L.S.", "data": "2026-11-06", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Não informado", "valor": 501, "adesao": null},
+      {"nome": "T.W.V.", "data": "2026-11-09", "cons": "Nicole", "cat": "Plano Single", "canal": "Não informado", "valor": 499, "adesao": null},
+      {"nome": "C.P.M.B.", "data": "2026-11-07", "cons": "Nicole", "cat": "Plano Single", "canal": "Não informado", "valor": 499, "adesao": null},
+      {"nome": "J.V.M.", "data": "2026-11-09", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Não informado", "valor": 501, "adesao": null}
+    ],
+    periodoTag:'Novembro/2026 (parcial · 03 a 09/11)',
+    associacoesNovas:'13', valorArrecadado:'R$ 6.599,25', ticketMedio:'R$ 507,63',
+    campanhas:[
+      {nome:'Não informado', qtd:9, cor:'#b0b0d0'},
+      {nome:'Campanha + WhatsApp', qtd:4, cor:'#3d7bff'},
+    ],
+    consultores:[
+      {nome:'EQUIPE DE VENDAS', qtd:13, valor:6599.25},
+    ],
+    categorias:[
+      {nome:'Contribuinte Familiar', qtd:5}, {nome:'Duo', qtd:3}, {nome:'Plano Single', qtd:2},
+      {nome:'Universitário', qtd:1}, {nome:'Teen', qtd:1}, {nome:'Não informada', qtd:1},
+    ],
+    alerta: '<b style="color:var(--gold);">Posição parcial de novembro — 03 a 09/11, sete dias corridos.</b> São <b>13 associações novas</b> e <b>R$ 6.599,25</b> de valor contribuição, ticket médio de <b>R$ 507,63</b>. <b>Não é fechamento do mês</b> e não deve ser lido como tal. Frente à meta de <b>116</b>, o atingimento está em <b>11,2%</b>, com <b>103 vendas a fazer</b> no restante do mês — e 117 para o desafio de 130. <b style="color:var(--gold);">Ponto de atenção de ritmo:</b> outubro fechou com 83 em 31 dias, média de 2,7 por dia; novembro está em 1,9 por dia. Mantido esse ritmo, o mês terminaria perto de <b>56 vendas</b>, menos da metade da meta — a projeção é aritmética simples sobre sete dias, não considera sazonalidade nem campanhas previstas, e serve como alerta de acompanhamento, não como previsão. <b style="color:var(--gold);">Nomenclatura:</b> a aba de novembro traz uma única coluna financeira, chamada <b>Contribuição</b>, enquanto outubro separa Adesão e Valor Contribuição. O valor entrou como contribuição, que é o critério do painel; <b>adesão de novembro não existe na fonte</b> e ficou em branco, não como zero. <b>Nove dos 13 registros estão sem canal de venda</b> e um sem categoria na origem — aparecem como não informados, sem atribuição por semelhança.',
+    metas:{
+      // A aba declara meta 116, realizado 13 e desafio 130. Nao ha meta de
+      // reingresso e novembro ainda nao tem reingresso lancado na fonte —
+      // por isso reingressos.real fica null, e NAO zero.
+      vendas:{orcado:116, real:13}, reingressos:{orcado:null, real:null},
+      totalVR:{orcado:116, real:13}, desafioVenda:130, desafioReingresso:null,
+      total:{orcado:130, real:13, gap:-117},
+      // So contribuicao: a fonte de novembro nao tem coluna de adesao.
+      taxaAdesao:6599.25, taxaReingresso:null, taxaTotal:6599.25,
     },
   },
 };
@@ -8233,6 +8370,7 @@ const COBERTURA_RH = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 
 // Vendas tem cobertura própria (Jan a Jul/26) — a planilha de ENTRADAS tem os 6 meses,
@@ -8337,9 +8475,14 @@ const COBERTURA_VENDAS = {
   set2026: {ini:'2026-09-01', fim:'2026-09-26'},
   // Outubro EM ANDAMENTO: fim = 19/10, última data de venda registrada na aba
   // "Outubro - 2026". Não usar 31/10 — o mês não fechou.
-  // 04/11: outubro FECHADO — a planilha trouxe o mês inteiro, 85 vendas de
-  // 01 a 31/10. A janela deixa de ser parcial.
+  // 04/11: outubro FECHADO — a planilha trouxe o mês inteiro.
+  // 10/11: a aba foi reescrita e passou a 83 vendas; a janela segue 01 a 31/10.
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
+  // Novembro PARCIAL: fim = 09/11, última data de venda da aba
+  // "Novembro - 2026". Não usar 30/11 — o mês está em curso.
+  // Dezembro NÃO entra: a aba tem metas (149/165) e linhas numeradas de 1 a 4
+  // com todos os campos vazios. Número de linha não é prova de venda.
+  nov2026: {ini:'2026-11-01', fim:'2026-11-09'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
@@ -8529,7 +8672,16 @@ function renderVendasMeses(meses){
       return;
     }
     lista = [u];
-    aviso = `Sem dados de Vendas no intervalo selecionado — exibindo o último fechamento disponível (${FMES_EXT[u.mes]}/${u.ano}).`;
+    // 10/11: a palavra "fechamento" passou a mentir quando o ultimo mes
+    // disponivel e PARCIAL — caso de novembro/2026, que vai so ate 09/11.
+    // A frase agora le o proprio periodoTag do mes exibido: se ele diz
+    // "parcial", a tela diz "posicao parcial" em vez de "fechamento".
+    // Nenhum dado muda; muda so a palavra, para nao apresentar mes em curso
+    // como mes encerrado.
+    const _k = u.mes ? `${['','jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][u.mes]}${u.ano}` : null;
+    const _d = _k && VENDAS_EXTRA_MESES[_k];
+    const _parcial = _d && /parcial/i.test(_d.periodoTag || '');
+    aviso = `Sem dados de Vendas no intervalo selecionado — exibindo ${_parcial ? 'a última posição parcial disponível' : 'o último fechamento disponível'} (${FMES_EXT[u.mes]}/${u.ano}).`;
   }
   pintarVendas(agregarVendas(lista), aviso);
 }
@@ -10438,11 +10590,21 @@ const CRA_TRAVAS = {
   retencoes:     {painel:43,  fonte:43,  origem:'COUNTIF(E3:E992;"retenção") — Retenção 2026 (bloco S6 declara 43)'},
   licencas:      {painel:27,  fonte:27,  origem:'COUNTIF(E3:E992;"licença") — Retenção 2026 (bloco S5 declara 27)'},
   somaRetLic:    {painel:70,  fonte:70,  origem:'bloco S7 da planilha Retenção 2026'},
-  ocorrencias:   {painel:122, fonte:122, origem:'linhas válidas de Ocorrências 2026'},
-  manifestacoes: {painel:231, fonte:231, origem:'linhas válidas de Satisfação 2026'},
-  reclamacoes:   {painel:184, fonte:184, origem:'Satisfação 2026, Status = Reclamação'},
-  sugestoes:     {painel:44,  fonte:44,  origem:'Satisfação 2026, Status = Sugestão'},
-  elogios:       {painel:3,   fonte:3,   origem:'Satisfação 2026, Status = Elogio'},
+  // 10/11/2026 · "Ocorrencias 2026(6).xlsx": 140 linhas com data de abertura
+  // valida. Jan–Ago ficaram IDENTICAS as da carga anterior; setembro ganhou 2
+  // registros lancados retroativamente (21/09 Sindicancia e 22/09 Sinistro) e
+  // outubro entrou com 16. 122 + 2 + 16 = 140. Nenhum registro desapareceu.
+  ocorrencias:   {painel:140, fonte:140, origem:'linhas válidas de Ocorrências 2026(6) — 124 jan–set + 16 out'},
+  // 10/11/2026 · "Satisfacao  2026(6).xlsx": 284 protocolos com data de
+  // abertura valida. Jan–Set bateram EXATAMENTE com os 231 ja publicados, sem
+  // uma unica revisao historica; outubro entrou com 53 (37 reclamacoes,
+  // 13 sugestoes, 3 elogios). 231 + 53 = 284.
+  // A classificacao da fonte foi PRESERVADA: nem todo protocolo e reclamacao
+  // nem avaliacao positiva — os tres status entram como vem.
+  manifestacoes: {painel:284, fonte:284, origem:'linhas válidas de Satisfação 2026(6) — 231 jan–set + 53 out'},
+  reclamacoes:   {painel:221, fonte:221, origem:'Satisfação 2026(6), Status = Reclamação'},
+  sugestoes:     {painel:57,  fonte:57,  origem:'Satisfação 2026(6), Status = Sugestão'},
+  elogios:       {painel:6,   fonte:6,   origem:'Satisfação 2026(6), Status = Elogio'},
 };
 function conferirCRA(){
   const d=[], obs=[];
@@ -10470,6 +10632,10 @@ function conferirCRA(){
 // ── DIVERGÊNCIAS DA PRÓPRIA FONTE, PRESERVADAS E REGISTRADAS ───────────────
 // Nenhuma destas foi corrigida na origem nem compensada no painel.
 const CRA_OBS = [
+  'Desligamento 2026(10), aba Outubro — DIVERGÊNCIA REABERTA em 10/11/2026, AGUARDANDO VALIDAÇÃO. A planilha foi editada depois da confirmação da gestora: a aba de Outubro passou a ter 36 linhas com matrícula, não as 37 confirmadas em 03/11. Saiu uma das linhas que estavam sem a coluna DESLIGADO preenchida (eram 3, agora são 2). Há três números concorrentes para o mesmo mês: 37 confirmado expressamente pela gestora (que é o que o painel exibe), 36 linhas na aba detalhada e 30 declarado pela aba Evolução. Os agregados também mudaram — o motivo mudança caiu de 13 para 12 e o ticket médio sobre 36 linhas dá R$ 453,30 contra os R$ 460,63 validados sobre 37. Outubro NÃO foi alterado: não existe regra documentada que diga qual dos três números vale, e a instrução desta carga é explícita em não forçar o total sem conciliação e pedir validação antes de substituir o indicador oficial. A divergência é sistêmica e não um defeito de outubro: nesta planilha a Evolução fica abaixo do detalhado em todos os dez meses (jan 49/48, fev 68/67, mar 33/32, abr 139/138, mai 84/83, jun 53/52, jul 45/44, ago 48/46, set 13/10, out 36/30).',
+  'Desligamento 2026(10), aba Novembro — PARCIAL, posição de 09/11/2026. 15 linhas com matrícula: 14 desligamentos e 1 licença, que não entra como saída efetiva. Dos 14, 12 têm data efetiva e 2 seguem pendentes. 3 são residuais de outubro (solicitados em 03, 13 e 20/10, efetivados em 01/11) e 11 foram solicitados em novembro. A aba Evolução não declara nada para novembro, então não há número oficial para confrontar e nenhum foi inventado. Retidos e programados aparecem como “—”, não como zero: a planilha de Retenção não tem nenhum registro de novembro. A linha de licença está na aba de Desligamento mas não aparece na planilha de Retenção & licenças — não foi somada em nenhuma das duas contagens, para não haver dupla contagem, e aguarda definição da gestora sobre em qual base deve viver.',
+  'Ocorrências 2026(6) — setembro ganhou 2 registros lançados retroativamente (21/09 Sindicância na Ginástica Artística, fechada em 10/11; 22/09 Sinistro no Estacionamento, ainda aberta). Janeiro a agosto ficaram idênticos à carga anterior e nenhum registro desapareceu. Outubro entrou com 16. Total 140 = 122 anteriores + 2 + 16.',
+  'Satisfação 2026(6) — janeiro a setembro bateram exatamente com os 231 já publicados, sem uma única revisão histórica. Outubro entrou com 53 protocolos: 37 reclamações, 13 sugestões e 3 elogios. A classificação da fonte foi preservada — os três status entram como vêm, sem tratar todo protocolo como reclamação nem como avaliação positiva.',
   'Desligamento 2026, aba Outubro — RESOLVIDO em 03/11/2026. A gestora do CRA confirmou expressamente 37 desligamentos, 42 solicitações totais, 16 residuais, 21 deste mês, 5 retidos e 0 programados. O 37 é o número de LINHAS da aba: a leitura da carga da manhã parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, tudo fecha com o quadro lateral da própria aba — ticket médio R$ 460,63 idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. As duas identidades fecham exatas: 37 = 16 + 21 e 42 = 37 + 5. Nada foi redistribuído.',
   'Desligamento 2026 × Retenção 2026 (carga de 03/11): as duas bases fecham entre si em outubro — o quadro da aba de Desligamento declara 5 retidos (4 retenções + 1 licença) e a planilha de Retenção traz exatamente 4 retenções e 1 licença com data de registro em outubro.',
   'Desligamento 2026, aba Evolução (carga de 03/11): o bloco lateral declara "Licenças 25" e "Retenções 65", números que não batem com a planilha de Retenção 2026 (27 licenças e 43 retenções, somando 70). O 65 corresponde ao total retenções+licenças da carga ANTERIOR. É um resumo desatualizado dentro da planilha de Desligamento; o painel usa a planilha de Retenção como fonte desses indicadores e não importou esses dois números.',
@@ -11005,7 +11171,25 @@ const OCORRENCIAS = [
  {"tipo": "Administrativa", "nome": "L.G.D.A.", "ger": "Gerência Operações", "local": "Ginásio 2", "assunto": "Dano Material", "mes": "set2026", "abertura": "29/09/2026", "fechamento": "29/09/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
  {"tipo": "Administrativa", "nome": "K.D.S.R.", "ger": "Gerência Operações", "local": "Praça pequena", "assunto": "Dano Material", "mes": "set2026", "abertura": "30/09/2026", "fechamento": "30/09/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
  {"tipo": "Administrativa", "nome": "R.B.D.A.P.", "ger": "Gerência Esportiva", "local": "GINÁSTICA ARTISTICA", "assunto": "Procedimentos Internos", "mes": "mai2026", "abertura": "25/05/2026", "fechamento": "17/06/2026", "prazo": 17, "prazoCorridos": 23, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
- {"tipo": "Administrativa", "nome": "L.R.B.", "ger": "Gerência Esportiva", "local": "GINÁSTICA ARTISTICA", "assunto": "Procedimentos Internos", "mes": "jul2026", "abertura": "08/07/2026", "fechamento": "10/07/2026", "prazo": 2, "prazoCorridos": 2, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false}
+ {"tipo": "Administrativa", "nome": "L.R.B.", "ger": "Gerência Esportiva", "local": "GINÁSTICA ARTISTICA", "assunto": "Procedimentos Internos", "mes": "jul2026", "abertura": "08/07/2026", "fechamento": "10/07/2026", "prazo": 2, "prazoCorridos": 2, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Sindicância", "nome": "I.D.V.", "ger": "Diretoria", "local": "Ginastica Artistica", "assunto": "Comportamento de Associado", "mes": "set2026", "abertura": "21/09/2026", "fechamento": "10/11/2026", "prazo": 36, "prazoCorridos": 50, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Sinistro", "nome": "M.L.S.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Dano Material", "mes": "set2026", "abertura": "22/09/2026", "fechamento": null, "prazo": 35, "prazoCorridos": 49, "ressarc": false, "valor": 0.0, "aberta": true, "diasAberto": 49, "foraPrazo": true},
+ {"tipo": "Administrativa", "nome": "A.P.S.", "ger": "Gerência Operações", "local": "Recepção", "assunto": "Dano Material", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "01/10/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Administrativa", "nome": "R.S.D.C.", "ger": "Gerência Operações", "local": "Sem Local", "assunto": "Dano Material", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "14/10/2026", "prazo": 9, "prazoCorridos": 13, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Administrativa", "nome": "M.T.T.N.M.", "ger": "Gerência Operações", "local": "Biblioteca", "assunto": "Dano Material", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "01/10/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Interna", "nome": "R.S.B.", "ger": "Gerência Operações", "local": "Vestiário das piscinas", "assunto": "Dano Material", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "02/10/2026", "prazo": 1, "prazoCorridos": 1, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Administrativa", "nome": "G.G.S.", "ger": "Gerência Operações", "local": "FUTEBOL", "assunto": "Dano Material", "mes": "out2026", "abertura": "05/10/2026", "fechamento": "15/10/2026", "prazo": 8, "prazoCorridos": 10, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Interna", "nome": "Y.T.L.S.S.", "ger": "Gerência Operações", "local": "Recepção", "assunto": "Comportamento de Associado", "mes": "out2026", "abertura": "05/10/2026", "fechamento": "14/10/2026", "prazo": 7, "prazoCorridos": 9, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Interna", "nome": "L.G.F.F.", "ger": "Gerência Operações", "local": "Recepção", "assunto": "Atendimento", "mes": "out2026", "abertura": "05/10/2026", "fechamento": "14/10/2026", "prazo": 7, "prazoCorridos": 9, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Administrativa", "nome": "T.R.O.", "ger": "Gerência Operações", "local": "Escoteiros", "assunto": "Outros", "mes": "out2026", "abertura": "13/10/2026", "fechamento": "16/10/2026", "prazo": 3, "prazoCorridos": 3, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Administrativa", "nome": "I.S.G.", "ger": "Gerência Operações", "local": "Recepção", "assunto": "Comportamento de Não Associado", "mes": "out2026", "abertura": "16/10/2026", "fechamento": "16/10/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Administrativa", "nome": "J.R.T.", "ger": "Gerência Operações", "local": "Economatos", "assunto": "Segurança", "mes": "out2026", "abertura": "19/10/2026", "fechamento": "21/10/2026", "prazo": 2, "prazoCorridos": 2, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Sinistro", "nome": "A.R.", "ger": "Diretoria", "local": "Tênis", "assunto": "Comportamento de Associado", "mes": "out2026", "abertura": "19/10/2026", "fechamento": null, "prazo": 16, "prazoCorridos": 22, "ressarc": false, "valor": 0.0, "aberta": true, "diasAberto": 22, "foraPrazo": true},
+ {"tipo": "Interna", "nome": "R.M.B.", "ger": "Gerência Operações", "local": "Área Ajardinada", "assunto": "Segurança", "mes": "out2026", "abertura": "19/10/2026", "fechamento": "21/10/2026", "prazo": 2, "prazoCorridos": 2, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Administrativa", "nome": "K.P.S.", "ger": "Gerência Operações", "local": "GINÁSTICA ARTISTICA", "assunto": "Dano Material", "mes": "out2026", "abertura": "20/10/2026", "fechamento": "27/10/2026", "prazo": 5, "prazoCorridos": 7, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Sinistro", "nome": "M.L.E.", "ger": "Gerência Operações", "local": "Sem Local", "assunto": "Dano Material", "mes": "out2026", "abertura": "20/10/2026", "fechamento": "20/10/2026", "prazo": 0, "prazoCorridos": 0, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": false},
+ {"tipo": "Interna", "nome": "D.M.F.", "ger": "Gerência Operações", "local": "Fitness", "assunto": "Dano Material", "mes": "out2026", "abertura": "26/10/2026", "fechamento": "10/11/2026", "prazo": 11, "prazoCorridos": 15, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
+ {"tipo": "Interna", "nome": "G.G.", "ger": "Gerência Operações", "local": "Ginásio 1", "assunto": "Dano Material", "mes": "out2026", "abertura": "28/10/2026", "fechamento": "10/11/2026", "prazo": 9, "prazoCorridos": 13, "ressarc": false, "valor": 0.0, "aberta": false, "diasAberto": null, "foraPrazo": true},
 ];
 
 
@@ -11024,6 +11208,8 @@ const COBERTURA_OCORRENCIAS = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  // 10/11/2026: outubro entra FECHADO — 16 ocorrencias de 01 a 31/10.
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 const CORES_OCOR = ['#3d7bff','#e8192c','#f2b705','#00e5a0','#a855f7','#fb923c','#06b6d4','#f472b6','#b0b0d0','#22d3ee','#facc15','#8b8fa8','#5a5c78'];
 
@@ -11471,7 +11657,60 @@ const MANIFESTACOES = [
  {"tipo": "Reclamação", "nome": "A.C.S.", "ger": "Gerência Manutenção", "local": "Praça grande", "assunto": "Manutenção", "mes": "set2026", "abertura": "26/09/2026", "fechamento": "29/09/2026", "prazo": 2, "prazoCorridos": 3, "prot": "8736"},
  {"tipo": "Reclamação", "nome": "T.V.L.", "ger": "Gerência Operações", "local": "Piscinas", "assunto": "Higienização e Limpeza", "mes": "set2026", "abertura": "26/09/2026", "fechamento": "29/09/2026", "prazo": 2, "prazoCorridos": 3, "prot": "8735"},
  {"tipo": "Reclamação", "nome": "I.E.S.", "ger": "Gerência Operações", "local": "Vestiário das piscinas", "assunto": "Higienização e Limpeza", "mes": "set2026", "abertura": "28/09/2026", "fechamento": "29/09/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8737"},
- {"tipo": "Reclamação", "nome": "A.O.D.S.", "ger": "Gerência Operações", "local": "Sede Social", "assunto": "Investimento em Melhorias", "mes": "set2026", "abertura": "29/09/2026", "fechamento": "30/09/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8738"}
+ {"tipo": "Reclamação", "nome": "A.O.D.S.", "ger": "Gerência Operações", "local": "Sede Social", "assunto": "Investimento em Melhorias", "mes": "set2026", "abertura": "29/09/2026", "fechamento": "30/09/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8738"},
+ {"tipo": "Sugestão", "nome": "C.M.M.B.S.C.", "ger": "Gerência Esportiva", "local": "VOLEI", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "06/10/2026", "prazo": 3, "prazoCorridos": 5, "prot": "8743"},
+ {"tipo": "Sugestão", "nome": "S.C.M.G.", "ger": "Gerência Esportiva", "local": "FUTEBOL", "assunto": "Organização de Aula", "mes": "out2026", "abertura": "01/10/2026", "fechamento": "01/10/2026", "prazo": 0, "prazoCorridos": 0, "prot": "8744"},
+ {"tipo": "Elogio", "nome": "C.R.S.W.", "ger": "Gerência Esportiva", "local": "Fitness", "assunto": "Atendimento", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "05/10/2026", "prazo": 1, "prazoCorridos": 3, "prot": "8751"},
+ {"tipo": "Reclamação", "nome": "R.D.C.", "ger": "Gerência Manutenção", "local": "Piscinas", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "08/10/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8748"},
+ {"tipo": "Reclamação", "nome": "F.M.", "ger": "Gerência Operações", "local": "Fitness", "assunto": "Higienização e Limpeza", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "02/10/2026", "prazo": 0, "prazoCorridos": 0, "prot": "8747"},
+ {"tipo": "Reclamação", "nome": "G.M.S.", "ger": "Gerência Operações", "local": "Fitness", "assunto": "Higienização e Limpeza", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "02/10/2026", "prazo": 0, "prazoCorridos": 0, "prot": "8749"},
+ {"tipo": "Reclamação", "nome": "A.L.M.", "ger": "Gerência Operações", "local": "Fitness", "assunto": "Higienização e Limpeza", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "07/10/2026", "prazo": 3, "prazoCorridos": 5, "prot": "8752"},
+ {"tipo": "Sugestão", "nome": "L.C.N.W.", "ger": "Gerência Manutenção", "local": "Piscinas", "assunto": "Acessibilidade Universal", "mes": "out2026", "abertura": "02/10/2026", "fechamento": "09/10/2026", "prazo": 5, "prazoCorridos": 7, "prot": "8750"},
+ {"tipo": "Sugestão", "nome": "N.B.", "ger": "Gerência Esportiva", "local": "FUTEBOL", "assunto": "Organização de Aula", "mes": "out2026", "abertura": "03/10/2026", "fechamento": "06/10/2026", "prazo": 2, "prazoCorridos": 3, "prot": "8753"},
+ {"tipo": "Reclamação", "nome": "M.M.S.S.", "ger": "Gerência Operações", "local": "Churrasqueiras", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "05/10/2026", "fechamento": "07/10/2026", "prazo": 2, "prazoCorridos": 2, "prot": "8754"},
+ {"tipo": "Reclamação", "nome": "A.F.C.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Estacionamento", "mes": "out2026", "abertura": "07/10/2026", "fechamento": "13/10/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8758"},
+ {"tipo": "Sugestão", "nome": "C.P.C.", "ger": "Gerência Esportiva", "local": "Tenda do athletic", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "07/10/2026", "fechamento": "15/10/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8759"},
+ {"tipo": "Sugestão", "nome": "V.M.L.S.", "ger": "Gerência Esportiva", "local": "Tenda do athletic", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "07/10/2026", "fechamento": "15/10/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8760"},
+ {"tipo": "Reclamação", "nome": "N.B.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Estacionamento", "mes": "out2026", "abertura": "08/10/2026", "fechamento": "08/10/2026", "prazo": 0, "prazoCorridos": 0, "prot": "8761"},
+ {"tipo": "Reclamação", "nome": "A.D.C.Z.", "ger": "Gerência Operações", "local": "Praça grande", "assunto": "Segurança", "mes": "out2026", "abertura": "13/10/2026", "fechamento": "16/10/2026", "prazo": 3, "prazoCorridos": 3, "prot": "8762"},
+ {"tipo": "Sugestão", "nome": "J.V.B.", "ger": "Gerência Manutenção", "local": "Praça grande", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "13/10/2026", "fechamento": "16/10/2026", "prazo": 3, "prazoCorridos": 3, "prot": "8763"},
+ {"tipo": "Sugestão", "nome": "A.P.V.R.U.", "ger": "Gerência Esportiva", "local": "GINÁSTICA ARTISTICA", "assunto": "Organização de Aula", "mes": "out2026", "abertura": "14/10/2026", "fechamento": "16/10/2026", "prazo": 2, "prazoCorridos": 2, "prot": "8765"},
+ {"tipo": "Elogio", "nome": "T.C.S.M.", "ger": "Gerência Administrativa - Financeira", "local": "Eventos", "assunto": "Atendimento", "mes": "out2026", "abertura": "15/10/2026", "fechamento": "24/10/2026", "prazo": 6, "prazoCorridos": 9, "prot": "8767"},
+ {"tipo": "Elogio", "nome": "G.L.M.D.", "ger": "Gerência Esportiva", "local": "Academia", "assunto": "Atendimento", "mes": "out2026", "abertura": "15/10/2026", "fechamento": "19/10/2026", "prazo": 2, "prazoCorridos": 4, "prot": "8766"},
+ {"tipo": "Reclamação", "nome": "M.D.K.", "ger": "Gerência Administrativa - Financeira", "local": "Sede Social", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "16/10/2026", "fechamento": "24/10/2026", "prazo": 5, "prazoCorridos": 8, "prot": "8768"},
+ {"tipo": "Reclamação", "nome": "F.V.K.M.", "ger": "Gerência Administrativa - Financeira", "local": "Sede Social", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "16/10/2026", "fechamento": "24/10/2026", "prazo": 5, "prazoCorridos": 8, "prot": "8769"},
+ {"tipo": "Sugestão", "nome": "O.B.F.", "ger": "Gerência Administrativa - Financeira", "local": "Sede Social", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "16/10/2026", "fechamento": "24/10/2026", "prazo": 5, "prazoCorridos": 8, "prot": "8770"},
+ {"tipo": "Reclamação", "nome": "T.T.W.", "ger": "Gerência Administrativa - Financeira", "local": "Secretaria Administrativa", "assunto": "Atendimento", "mes": "out2026", "abertura": "17/10/2026", "fechamento": "21/10/2026", "prazo": 3, "prazoCorridos": 4, "prot": "8772"},
+ {"tipo": "Reclamação", "nome": "F.S.M.", "ger": "Gerência Administrativa - Financeira", "local": "Sem Local", "assunto": "Atendimento", "mes": "out2026", "abertura": "19/10/2026", "fechamento": "24/10/2026", "prazo": 4, "prazoCorridos": 5, "prot": "8774"},
+ {"tipo": "Reclamação", "nome": "T.L.S.C.", "ger": "Gerência Operações", "local": "Tênis", "assunto": "Comportamento de Associado", "mes": "out2026", "abertura": "19/10/2026", "fechamento": "26/10/2026", "prazo": 5, "prazoCorridos": 7, "prot": "8775"},
+ {"tipo": "Reclamação", "nome": "R.A.N.", "ger": "Gerência Operações", "local": "GINÁSTICA ARTISTICA", "assunto": "Higienização e Limpeza", "mes": "out2026", "abertura": "20/10/2026", "fechamento": "21/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8778"},
+ {"tipo": "Reclamação", "nome": "C.K.", "ger": "Gerência Operações", "local": "GINÁSTICA ARTISTICA", "assunto": "Higienização e Limpeza", "mes": "out2026", "abertura": "20/10/2026", "fechamento": "21/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8780"},
+ {"tipo": "Reclamação", "nome": "G.D.", "ger": "Gerência Manutenção", "local": "Piscinas", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "21/10/2026", "fechamento": "28/10/2026", "prazo": 5, "prazoCorridos": 7, "prot": "8783"},
+ {"tipo": "Sugestão", "nome": "N.B.", "ger": "Gerência Manutenção", "local": "Praça grande", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "21/10/2026", "fechamento": "28/10/2026", "prazo": 5, "prazoCorridos": 7, "prot": "8782"},
+ {"tipo": "Sugestão", "nome": "P.C.", "ger": "Gerência Operações", "local": "Vestiário das piscinas", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "21/10/2026", "fechamento": "22/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8784"},
+ {"tipo": "Reclamação", "nome": "M.C.B.C.", "ger": "Gerência Administrativa - Financeira", "local": "Sem Local", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "22/10/2026", "fechamento": "28/10/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8786"},
+ {"tipo": "Reclamação", "nome": "M.V.A.M.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Estacionamento", "mes": "out2026", "abertura": "22/10/2026", "fechamento": "28/10/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8785"},
+ {"tipo": "Reclamação", "nome": "F.B.H.", "ger": "Gerência Manutenção", "local": "Piscinas", "assunto": "Manutenção", "mes": "out2026", "abertura": "23/10/2026", "fechamento": "28/10/2026", "prazo": 3, "prazoCorridos": 5, "prot": "8787"},
+ {"tipo": "Reclamação", "nome": "L.F.P.", "ger": "Gerência Operações", "local": "Recepção", "assunto": "Controle de Acesso", "mes": "out2026", "abertura": "26/10/2026", "fechamento": "27/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8788"},
+ {"tipo": "Reclamação", "nome": "F.F.", "ger": "Gerência Administrativa - Financeira", "local": "Economatos", "assunto": "Valores", "mes": "out2026", "abertura": "26/10/2026", "fechamento": null, "prazo": 11, "prazoCorridos": 15, "prot": "8790"},
+ {"tipo": "Reclamação", "nome": "A.M.D.F.", "ger": "Gerência Manutenção", "local": "FUTEBOL", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "27/10/2026", "fechamento": "03/11/2026", "prazo": 5, "prazoCorridos": 7, "prot": "8793"},
+ {"tipo": "Reclamação", "nome": "A.D.C.Z.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Estacionamento", "mes": "out2026", "abertura": "27/10/2026", "fechamento": "28/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8792"},
+ {"tipo": "Sugestão", "nome": "C.F.", "ger": "Gerência Operações", "local": "Estacionamento", "assunto": "Estacionamento", "mes": "out2026", "abertura": "27/10/2026", "fechamento": "28/10/2026", "prazo": 1, "prazoCorridos": 1, "prot": "8791"},
+ {"tipo": "Reclamação", "nome": "A.M.D.F.", "ger": "Gerência Operações", "local": "FUTEBOL", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "28/10/2026", "fechamento": "03/11/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8794"},
+ {"tipo": "Reclamação", "nome": "N.M.M.", "ger": "Gerência Operações", "local": "Centro de Esportes", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "28/10/2026", "fechamento": "03/11/2026", "prazo": 4, "prazoCorridos": 6, "prot": "8795"},
+ {"tipo": "Sugestão", "nome": "C.S.B.", "ger": "Gerência Esportiva", "local": "Natação", "assunto": "Investimento em Melhorias", "mes": "out2026", "abertura": "28/10/2026", "fechamento": "09/11/2026", "prazo": 8, "prazoCorridos": 12, "prot": "8796"},
+ {"tipo": "Reclamação", "nome": "V.L.L.", "ger": "Gerência Esportiva", "local": "Eventos", "assunto": "Procedimentos Internos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8798"},
+ {"tipo": "Reclamação", "nome": "E.K.F.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8799"},
+ {"tipo": "Reclamação", "nome": "A.A.R.A.D.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8800"},
+ {"tipo": "Reclamação", "nome": "S.R.R.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8801"},
+ {"tipo": "Reclamação", "nome": "P.S.F.S.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8802"},
+ {"tipo": "Reclamação", "nome": "M.O.S.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8803"},
+ {"tipo": "Reclamação", "nome": "M.M.F.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8804"},
+ {"tipo": "Reclamação", "nome": "A.J.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8805"},
+ {"tipo": "Reclamação", "nome": "E.P.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8806"},
+ {"tipo": "Reclamação", "nome": "J.L.S.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8807"},
+ {"tipo": "Reclamação", "nome": "M.M.I.F.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8808"},
+ {"tipo": "Reclamação", "nome": "R.S.", "ger": "Gerência Esportiva", "local": "Tênis", "assunto": "Eventos", "mes": "out2026", "abertura": "29/10/2026", "fechamento": "06/11/2026", "prazo": 6, "prazoCorridos": 8, "prot": "8809"},
 ];;
 
 
@@ -11490,6 +11729,8 @@ const COBERTURA_MANIFESTACOES = {
   jul2026: {ini:'2026-07-01', fim:'2026-07-31'},
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
+  // 10/11/2026: outubro entra FECHADO — 53 protocolos de 01 a 31/10.
+  out2026: {ini:'2026-10-01', fim:'2026-10-31'},
 };
 // Descreve a cobertura de um bloco a partir do próprio dado. Antes, o aviso de
 // "nenhum registro no período" trazia a frase "Janeiro a Junho/2026" cravada no
@@ -12769,6 +13010,29 @@ const DESLIGAMENTOS_MESES = {
     // e nao ha dupla contagem entre as duas bases.
     // DIVERGENCIA DOCUMENTAL REMANESCENTE: a aba Evolucao da planilha pode
     // seguir trazendo 30. Prevalece a confirmacao expressa da gestora.
+    //
+    // ── 10/11/2026 · A ABA DE OUTUBRO FOI EDITADA DEPOIS DA CONFIRMACAO ────
+    // A planilha "Desligamento 2026(10).xlsx" traz outubro com 36 LINHAS com
+    // matricula, nao as 37 que a gestora confirmou em 03/11. Uma linha saiu —
+    // uma das que estavam sem a coluna DESLIGADO preenchida (eram 3, agora
+    // sao 2). Com isso ha TRES numeros concorrentes para o mesmo mes:
+    //   37  confirmado EXPRESSAMENTE pela gestora do CRA em 03/11 (vigente)
+    //   36  linhas com matricula na aba de Outubro desta planilha
+    //   30  declarado pela aba Evolucao desta planilha
+    // Os agregados tambem mudaram: motivo "mudanca" caiu de 13 para 12 e o
+    // ticket medio sobre 36 linhas da R$ 453,30, contra os R$ 460,63 que a
+    // gestora validou sobre 37.
+    // OUTUBRO NAO FOI ALTERADO. A instrucao desta carga e explicita: nao
+    // forcar o total para 30 nem para 34/36 sem conciliacao, e pedir validacao
+    // antes de substituir o indicador oficial. Nao existe regra documentada
+    // que diga qual dos tres numeros vale, e a unica referencia com
+    // confirmacao expressa continua sendo 37. A divergencia fica registrada e
+    // AGUARDA VALIDACAO da gestora do CRA.
+    // A DIVERGENCIA E SISTEMICA, nao e defeito de outubro: nesta planilha a
+    // Evolucao fica ABAIXO do detalhado em TODOS os dez meses — jan 49/48,
+    // fev 68/67, mar 33/32, abr 139/138, mai 84/83, jun 53/52, jul 45/44,
+    // ago 48/46, set 13/10, out 36/30. Enquanto a regra que separa as duas
+    // contagens nao for documentada, o painel mantem a serie da gestora.
     periodoTag:'Outubro/2026 (fechado)',
     kpis:[
         {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'42', sub:'37 desligamentos + 5 retidos'},
@@ -12789,6 +13053,59 @@ const DESLIGAMENTOS_MESES = {
     evolucaoDeclarada: 37, registrosNaAba: 37, linhasNaAba: 37,
     correcaoOficial: '03/11/2026 — gestora do CRA confirmou expressamente 42 solicitações, 37 desligamentos, 16 residuais, 21 deste mês, 5 retidos e 0 programados',
     analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, com os números <b style="color:var(--green);">confirmados expressamente pela gestora do CRA em 03/11/2026</b>. <b>Outubro fechou com 37 desligamentos</b>, dentro de <b>42 solicitações totais</b>. As duas identidades da fonte fecham exatas e nada foi redistribuído: <b>37 = 16 residuais + 21 deste mês</b> e <b>42 = 37 desligamentos + 5 retidos</b>. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>30</b> pela manhã. O 37 é o número de linhas da aba — a leitura anterior parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, <b>tudo passou a fechar com o quadro lateral da própria aba</b>: ticket médio de <b>R$ 460,63</b>, idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. <b style="color:var(--green);">Sem dupla contagem entre as bases:</b> os 5 retidos não são linhas desta aba — estão na planilha de Retenção, com 4 retenções e 1 licença registradas em outubro, e é por isso que 42 = 37 + 5. <b>Mudança lidera com 13</b> saídas (35%), seguida de financeiro (10) e saúde (7); as três explicam 81% do mês. Contribuinte Individual e Contribuinte respondem por 26 das 37. <b style="color:var(--gold);">Divergência documental remanescente:</b> a aba Evolução da planilha pode seguir trazendo 30 — prevalece a confirmação expressa da gestora, e a diferença fica registrada. <b>Novembro não foi criado</b>: a aba tem 2 saídas com data de 01/11, mas a Evolução não declara nada e o quadro está zerado.',
+  },
+  nov2026: {
+    // ── NOVEMBRO/2026 PARCIAL · posicao de 09/11/2026 ─────────────────────
+    // NAO E MES ENCERRADO. A aba Novembro traz 15 linhas com matricula, e a
+    // aba Evolucao NAO declara nada para novembro — a celula esta vazia.
+    // Por isso nov2026 nao entrou em DESLIGAMENTO_EVOLUCAO: sem declaracao da
+    // fonte nao se inventa numero para comparar, e sem dado nao e zero.
+    //
+    // SEPARACAO OBRIGATORIA — licenca NAO e saida efetiva:
+    //   15 linhas com matricula
+    //   -1 linha com motivo "licenca" (matricula 2842, solicitada 03/11)
+    //   =14 desligamentos
+    // Dos 14: 12 com data efetiva na coluna DESLIGADO e 2 ainda PENDENTES
+    // (matriculas 119895 e 15330, solicitadas em 07/11 e 09/11). As duas
+    // entram na contagem, que e o criterio ja validado do painel desde
+    // outubro — coluna em branco nao descaracteriza a saida.
+    //
+    // RESIDUAIS x DESTE MES, pela DATA DA SOLICITACAO:
+    //   3 residuais  — solicitados em OUTUBRO (03/10, 13/10 e 20/10),
+    //                  efetivados em 01/11
+    //   11 deste mes — solicitados em novembro
+    //   3 + 11 = 14, fecha exato. Nada foi redistribuido.
+    //
+    // RETIDOS E PROGRAMADOS SEM DADO, nao zero: a planilha "Retencao 2026(8)"
+    // NAO tem nenhum registro de novembro — o ultimo e de 28/10.
+    // INCONSISTENCIA ENTRE AS DUAS FONTES, registrada: a linha de motivo
+    // "licenca" acima esta na aba de DESLIGAMENTO mas nao aparece na planilha
+    // de Retencao & licencas. Nao foi somada em nenhuma das duas contagens de
+    // licenca, para nao criar dupla contagem, e aguarda a gestora definir em
+    // qual base ela deve viver.
+    //
+    // Ticket medio sobre os 13 dos 14 que tem o campo preenchido; dependentes
+    // sobre os 12 que o trazem.
+    periodoTag:'Novembro/2026 (parcial · 01 a 09/11)',
+    kpis:[
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'15', sub:'14 desligamentos + 1 licença'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'3', sub:'solicitados em outubro, saída em 01/11', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'11', sub:'solicitados em novembro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'14', sub:'12 com data efetiva + 2 pendentes', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'—', sub:'sem registro de novembro na base de Retenção', valorCor:'#b0b0d0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'não declarado pela fonte', valorCor:'#b0b0d0'},
+    ],
+    categorias: [{"nome": "Contribuinte Individual", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Contribuinte", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
+    motivos: [{"motivo": "Financeiro", "qtd": 5, "pct": 35.71, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 35.71, "cor": "#00e5a0"}, {"motivo": "Mudança", "qtd": 4, "pct": 28.57, "cor": "#a855f7"}],
+    totalDesligamentos: 14,
+    ticketMedio: 'R$ 473,88', dependentes: '1,0',
+    residual: 3, residualLabel: 'Residual de Outubro',
+    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: null,
+    quadroSocial: null,
+    negociacoesDesligados: '—',
+    evolucaoDeclarada: null, registrosNaAba: 15, linhasNaAba: 15,
+    parcial: true,
+    analise: 'Fonte: planilha Desligamento 2026(10), aba de <b>Novembro</b>, posição de <b>09/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: nove dias corridos de 30. A aba Evolução <b>não declara nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 15 linhas com matrícula, das quais 14 são desligamento e 1 é licença</b> — a licença não entra como saída efetiva, conforme a regra do CRA. Dos 14, <b>12 têm data efetiva de saída e 2 seguem pendentes</b> (solicitadas em 07/11 e 09/11); as duas contam como desligamento, critério já validado em outubro, porque a coluna em branco não descaracteriza a saída. <b>3 são residuais de outubro</b> — solicitados em 03, 13 e 20/10 e efetivados em 01/11 — e <b>11 foram solicitados no próprio novembro</b>: 3 + 11 = 14, fecha exato. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro e não utilização empatam com 5 cada, 71% juntos, e mudança soma 4 — perfil diferente de outubro, onde mudança liderava com 35%. Em nove dias o mês acumula 14 saídas contra as 37 de outubro inteiro: <b>o ritmo diário é semelhante</b>, 1,6 contra 1,2 por dia, então não há sinal de aceleração, mas vale acompanhar. <b style="color:var(--gold);">Retidos e programados aparecem como “—”, não como zero:</b> a planilha de Retenção não tem nenhum registro de novembro, sendo 28/10 o último. <b style="color:var(--red);">Inconsistência entre as fontes, registrada:</b> a linha de licença está na aba de Desligamento mas não aparece na planilha de Retenção &amp; licenças — não foi somada em nenhuma das duas contagens, para não haver dupla contagem, e aguarda definição da gestora sobre em qual base deve viver.',
   },
 };
 
@@ -16724,6 +17041,7 @@ function renderRH(mesKey){
       totalColaboradores: heAgg.totalColaboradores,
       ccComHE: heAgg.ccComHE,
       dataReferencia: heAgg.dataReferencia,
+      janelaParcial: heAgg.janelaParcial,
       _nMeses: heAgg.nMeses,
     };
     HE_MES_SEM_DADOS = null;
