@@ -365,7 +365,15 @@
     .comp-card{ min-height:0; padding:18px; }
     .comp-card > div:first-child{ width:38px; height:38px; font-size:18px; }
   }
-  .comp-acao{
+  .compvig-linha{ cursor:pointer; transition:background .15s; }
+.compvig-linha:hover{ background:rgba(61,123,255,.07); }
+.compvig-linha.aberta{ background:rgba(61,123,255,.10); }
+.compvig-linha.destaque{ background:rgba(232,25,44,.06); }
+.compvig-linha.destaque:hover{ background:rgba(232,25,44,.11); }
+.compvig-linha.destaque.aberta{ background:rgba(232,25,44,.13); }
+.compvig-linha td{ border-top:1px solid var(--border); padding-top:11px; padding-bottom:11px; }
+.compvig-linha:focus-visible{ outline:2px solid var(--blue); outline-offset:-2px; }
+.comp-acao{
     cursor:pointer; border:1px solid var(--border); border-radius:11px;
     padding:13px 14px; background:rgba(255,255,255,.02); transition:all .15s ease;
     align-self:start;
@@ -6172,6 +6180,98 @@ const COMPLIANCE_IMPLANTACAO_META = {
   emitidoEm:'11/11/2026',
   emitidoAnterior:'25/09/2026',
 };
+// ══════════════════════════════════════════════════════════════════════
+// FONTE VIGENTE ÚNICA DOS INDICADORES EXECUTIVOS — 12/11/2026
+// ══════════════════════════════════════════════════════════════════════
+// O PROBLEMA QUE ISTO RESOLVE: a aba tinha DUAS fontes dizendo coisas
+// diferentes sobre a MESMA atividade. O plano do Sistema de Gestão
+// (COMPLIANCE_DATA, 22 ações, posição de 01/09/2026) marcava "Implementar
+// canal de denúncias" como ATRASADA desde 31/08/2026, enquanto o relatório
+// da consultoria de 11/11/2026 registra o mesmo canal com prazo A DEFINIR,
+// porque a SOGIPA decidiu desenvolvê-lo internamente em 09/11 e o prazo
+// final ainda não foi informado. Quem lia a aba via duas situações atuais
+// contraditórias e um atraso que não corresponde à realidade documentada.
+//
+// A SOLUÇÃO: os indicadores executivos passam a sair SÓ daqui — do relatório
+// de acompanhamento vigente. O plano de 01/09 continua INTEIRO no painel,
+// mas identificado como HISTÓRICO, com seus prazos originais preservados.
+// O 31/08/2026 do canal NÃO foi alterado: ele segue no plano histórico, com
+// essa marcação, e a visão principal usa o prazo vigente ("A definir").
+//
+// REGRA DE VENCIMENTO: só vence o que tem data real no formato DD/MM/AAAA e
+// já passou da data de referência. "A definir", "Janeiro/2027" e "Contrato
+// vigente" NÃO são prazo vencido — ausência de prazo não é atraso.
+const COMPLIANCE_REF = '12/11/2026';
+function complVigPrazoTipo(x){
+  const p = (x.prazo||'').trim();
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(p)) return 'data';
+  if(/^a definir$/i.test(p))          return 'indefinido';
+  return 'textual';                   // "Janeiro/2027", "Contrato vigente"
+}
+function complVigVencido(x){
+  if(complImplCategoria(x) === 'Concluída')  return false;
+  if(complVigPrazoTipo(x) !== 'data')        return false;
+  return complianceISO(x.prazo) < complianceISO(COMPLIANCE_REF);
+}
+// Visão normalizada. Não cria dado novo: só reagrupa o que já está em
+// COMPLIANCE_IMPLANTACAO, que veio inteiro do relatório oficial.
+function complVigLista(){
+  return (COMPLIANCE_IMPLANTACAO||[]).map(x=>({
+    ...x,
+    categoria:   complImplCategoria(x),
+    prazoTipo:   complVigPrazoTipo(x),
+    vencido:     complVigVencido(x),
+    temPendencia: !!x.pendencia && complImplCategoria(x) !== 'Concluída',
+  }));
+}
+// Recortes executivos. Cada card e cada lista saem DESTE mapa — o número do
+// card e o conteúdo da tabela filtrada não têm como divergir.
+const COMPLIANCE_VIG_FILTROS = {
+  todos:      {rot:'Todos os registros', f:()=>true},
+  concluidas: {rot:'Concluídas',         f:x=>x.categoria==='Concluída'},
+  andamento:  {rot:'Em andamento',       f:x=>x.categoria==='Em progresso'},
+  aguardando: {rot:'Aguardando providência', f:x=>x.categoria==='Pendente'},
+  vencidas:   {rot:'Prazo vencido',      f:x=>x.vencido},
+  comprazo:   {rot:'Com prazo definido', f:x=>x.prazoTipo!=='indefinido' && x.categoria!=='Concluída'},
+  semprazo:   {rot:'Sem prazo definido', f:x=>x.prazoTipo==='indefinido'},
+};
+function complVigFiltro(k){
+  const d = COMPLIANCE_VIG_FILTROS[k] || COMPLIANCE_VIG_FILTROS.todos;
+  return complVigLista().filter(d.f);
+}
+function complVigResumo(){
+  const d = complVigLista(), c = f=>d.filter(f).length;
+  return {
+    total:      d.length,
+    concluidas: c(x=>x.categoria==='Concluída'),
+    andamento:  c(x=>x.categoria==='Em progresso'),
+    aguardando: c(x=>x.categoria==='Pendente'),
+    vencidas:   c(x=>x.vencido),
+    comPrazo:   c(x=>x.prazoTipo!=='indefinido' && x.categoria!=='Concluída'),
+    semPrazo:   c(x=>x.prazoTipo==='indefinido'),
+    comPendencia: c(x=>x.temPendencia),
+    // Próximo prazo com DATA real, à frente da referência. Sem data real na
+    // frente, devolve null e a tela diz que não há — nunca inventa um marco.
+    proximo: d.filter(x=>x.prazoTipo==='data' && x.categoria!=='Concluída'
+                       && complianceISO(x.prazo) >= complianceISO(COMPLIANCE_REF))
+              .sort((a,b)=>complianceISO(a.prazo).localeCompare(complianceISO(b.prazo)))[0] || null,
+  };
+}
+// Recorte selecionado na visão vigente. null = tabela completa.
+let COMPLIANCE_VIG_SEL = null;
+function complVigSelecionar(k){
+  COMPLIANCE_VIG_SEL = (COMPLIANCE_VIG_SEL === k) ? null : k;
+  renderCompliance();
+  const el = document.getElementById('complVigTabela');
+  if(el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+// Linha expandida na tabela vigente. Aceita id com ponto ("3.1"), por isso
+// é string — o expandir do plano histórico usa número e não foi tocado.
+let COMPLIANCE_VIG_EXP = null;
+function complVigExpandir(id){
+  COMPLIANCE_VIG_EXP = (COMPLIANCE_VIG_EXP === String(id)) ? null : String(id);
+  renderCompliance();
+}
 // Pessoas e areas de quem se aguarda providencia. A lista sai dos proprios
 // itens (proxRespAreas), entao nao existe nome aqui que nao esteja na fonte.
 function complImplAguardando(){
@@ -6230,35 +6330,170 @@ function complImplCor(x){
   if(s.startsWith('não iniciado')) return '#8b8fa8';
   return '#f2b705';                       // aguardando algo
 }
+// ── Visão executiva VIGENTE: cards + barra ───────────────────────────
+function complVigCards(){
+  const r = complVigResumo();
+  const card = (k, ic, cor, bg, lab, val, sub)=>{
+    const ativo = COMPLIANCE_VIG_SEL === k;
+    return `
+    <div class="comp-card${ativo?' active':''}" data-filtro="${k}"
+         onclick="complVigSelecionar('${k}')" role="button" tabindex="0"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();complVigSelecionar('${k}');}"
+         title="Clique para filtrar a tabela por este recorte">
+      <div style="width:40px;height:40px;border-radius:11px;background:${bg};display:flex;
+                  align-items:center;justify-content:center;font-size:19px;">${ic}</div>
+      <div class="card-label" style="margin:12px 0 0;font-size:10.5px;letter-spacing:.6px;">${lab}</div>
+      <div style="font-size:30px;font-weight:800;color:${cor};line-height:1.1;margin-top:5px;">${val}</div>
+      <div class="card-meta" style="margin:5px 0 0;font-size:10.5px;line-height:1.35;">${sub}</div>
+    </div>`;
+  };
+  const seg = [
+    {n:r.concluidas, cor:'#00e5a0', rot:'Concluídas'},
+    {n:r.andamento,  cor:'#3d7bff', rot:'Em andamento'},
+    {n:r.aguardando, cor:'#f2b705', rot:'Aguardando providência'},
+  ].map(f=>`<div title="${f.rot}: ${f.n} de ${r.total}"
+       style="width:${(f.n/r.total*100).toFixed(2)}%; background:${f.cor};"></div>`).join('');
+  return `
+    <div class="card">
+      <div class="card-label">Situação atual da implementação — ${r.total} registros</div>
+      <div class="card-meta" style="margin-top:4px;">
+        Fonte única desta visão: <b style="color:var(--text);">${COMPLIANCE_IMPLANTACAO_META.fonte}</b>,
+        posição de <b style="color:var(--text);">${COMPLIANCE_IMPLANTACAO_META.emitidoEm}</b>.
+        Os três status são exclusivos entre si e fecham o total. Clique para filtrar a tabela.
+      </div>
+      <div class="comp-grid-status">
+        ${card('todos','📋','var(--text)','rgba(61,123,255,.15)','Registros no relatório',r.total,'itens 1 a 15, com o 3.1')}
+        <div class="comp-composicao">
+          ${card('concluidas','✅','#00e5a0','rgba(0,229,160,.15)','Concluídas',r.concluidas,'etapas encerradas')}
+          ${card('andamento','🔄','#3d7bff','rgba(61,123,255,.15)','Em andamento',r.andamento,'execução declarada')}
+          ${card('aguardando','⏳','#f2b705','rgba(242,183,5,.15)','Aguardando providência',r.aguardando,'dependem de alguém agir')}
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="display:flex; height:10px; border-radius:5px; overflow:hidden; background:var(--border);">${seg}</div>
+        <div class="card-meta" style="margin-top:7px; font-size:10.5px;">
+          <b style="color:#00e5a0;">${r.concluidas}</b> +
+          <b style="color:#3d7bff;">${r.andamento}</b> +
+          <b style="color:#f2b705;">${r.aguardando}</b> =
+          <b style="color:var(--text);">${r.total} registros</b>.
+          Não há percentual de implantação: o relatório não atribui peso às ações,
+          e um percentual sobre contagem simples diria que 15 itens pequenos valem mais
+          que um estruturante.
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Prazos</div>
+      <div class="card-meta" style="margin-top:4px;">
+        Estes recortes <b style="color:var(--text);">se sobrepõem ao status</b> — um item sem prazo
+        continua aguardando providência. Por isso não somam com os números acima.
+      </div>
+      <div class="comp-grid-controle">
+        ${card('vencidas','⚠️','#e8192c','rgba(232,25,44,.15)','Prazo vencido',r.vencidas,
+               r.vencidas===0 ? 'nenhum prazo com data vencida' : 'de '+r.total+' com data ultrapassada')}
+        ${card('comprazo','📅','#3d7bff','rgba(61,123,255,.15)','Com prazo definido',r.comPrazo,
+               r.proximo ? 'próximo: '+r.proximo.prazo+' (item '+r.proximo.id+')' : 'sem data futura registrada')}
+        ${card('semprazo','❔','#f2b705','rgba(242,183,5,.15)','Sem prazo definido',r.semPrazo,
+               'marcados “A definir” na fonte')}
+      </div>
+      <div class="card-meta" style="margin-top:11px; line-height:1.5;">
+        <b style="color:var(--text);">Ausência de prazo não é atraso.</b> Só entra em “prazo vencido”
+        o item com data real no formato DD/MM/AAAA já ultrapassada em ${COMPLIANCE_REF}.
+        “A definir”, “Janeiro/2027” e “Contrato vigente” ficam fora dessa conta, de propósito.
+      </div>
+    </div>`;
+}
+// ── Tabela gerencial da visão vigente ────────────────────────────────
+function complVigTabela(){
+  const sel  = COMPLIANCE_VIG_SEL;
+  const r    = complVigResumo();
+  const base = complVigLista();
+  const itens = sel ? complVigFiltro(sel) : base;
+  const rot  = sel ? (COMPLIANCE_VIG_FILTROS[sel]||{}).rot : null;
+  const mu   = '<span class="muted">—</span>';
+  const corStatus = x => x.vencido ? '#e8192c'
+                     : x.categoria==='Concluída' ? '#00e5a0'
+                     : x.categoria==='Em progresso' ? '#3d7bff' : '#f2b705';
+  const corPrazo = x => x.vencido ? '#e8192c'
+                     : x.prazoTipo==='indefinido' ? '#f2b705' : 'var(--text)';
+  const linhas = itens.map(x=>{
+    const c = corStatus(x);
+    const ab = COMPLIANCE_VIG_EXP === String(x.id);
+    const dep = x.dependeDe ? `<div style="font-size:11px; color:var(--gold); font-weight:700; margin-top:3px;">⛓ depende do item ${x.dependeDe}</div>` : '';
+    return `
+    <tr class="compvig-linha${ab?' aberta':''}${x.destaque?' destaque':''}"
+        onclick="complVigExpandir('${x.id}')" role="button" tabindex="0"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();complVigExpandir('${x.id}');}"
+        title="${ab?'Clique para recolher':'Clique para ver histórico e próximo passo'}">
+      <td style="white-space:nowrap; font-weight:800; vertical-align:top;">${x.id}
+        ${x.destaque?'<div style="font-size:9px;color:var(--red);font-weight:800;letter-spacing:.4px;">PRIORIDADE</div>':''}</td>
+      <td style="vertical-align:top; min-width:188px; max-width:260px;">
+        <div style="font-weight:700; line-height:1.4;">${x.acao}</div>${dep}
+        ${ab ? `<div class="card-meta" style="margin-top:8px; line-height:1.55;">
+                  <b style="color:var(--text);">Histórico:</b> ${x.andamento || '—'}</div>` : ''}
+      </td>
+      <td style="vertical-align:top; min-width:116px; max-width:158px;">
+        <span style="display:inline-block; padding:3px 9px; border-radius:11px; font-size:10.5px;
+          font-weight:700; line-height:1.35; color:${c}; border:1px solid ${c}44; background:${c}18;
+          white-space:normal;">${x.statusFonte}</span>
+      </td>
+      <td style="vertical-align:top; font-size:11.5px; min-width:92px; max-width:118px;">${(x.donos||[]).join('<br>') || mu}</td>
+      <td style="vertical-align:top; font-size:11.5px; min-width:96px; max-width:125px;">
+        ${x.proxResp ? `<b style="color:var(--gold);">${x.proxResp}</b>` : mu}</td>
+      <td style="vertical-align:top; white-space:nowrap; font-weight:700; color:${corPrazo(x)};">
+        ${x.prazo}${x.prazoTipo==='indefinido'?'<div class="card-meta" style="margin-top:2px;">não definido na fonte</div>':''}
+        ${x.vencido?'<div style="font-size:10px; font-weight:800; color:#e8192c;">VENCIDO</div>':''}</td>
+      <td style="vertical-align:top; font-size:11.5px; min-width:180px; max-width:260px;">
+        ${x.pendencia || mu}
+        ${ab && x.proxPasso ? `<div class="card-meta" style="margin-top:6px;">
+            <b style="color:var(--text);">Próxima ação:</b> ${x.proxPasso}</div>` : ''}
+        ${!ab && x.proxPasso ? `<div class="card-meta" style="margin-top:5px; color:var(--blue); font-size:10.5px;">
+            clique para ver o histórico e a próxima ação</div>` : ''}
+      </td>
+      <td style="vertical-align:top; white-space:nowrap; font-size:11.5px;">
+        ${x.atualizadoEm || '<span class="muted">sem data</span>'}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div class="card full" id="complVigTabela" style="margin-top:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="card-label">Acompanhamento gerencial — situação atual</div>
+          <div class="card-meta" style="margin-top:4px;">
+            ${sel ? `Filtrado por <b style="color:var(--gold);">${rot}</b>:
+                     <b style="color:var(--text);">${itens.length}</b> de ${r.total} registros.
+                     Os cards acima mostram sempre o <b>total geral</b>, não o filtro.`
+                  : `<b style="color:var(--text);">${r.total}</b> registros, na ordem oficial do relatório.
+                     Clique numa linha para abrir o histórico e a próxima ação.`}
+          </div>
+        </div>
+        ${sel ? `<div onclick="complVigSelecionar('${sel}')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter'){complVigSelecionar('${sel}');}"
+             style="cursor:pointer; font-size:11px; font-weight:700; color:var(--blue);
+                    border:1px solid var(--border); border-radius:20px; padding:5px 13px; white-space:nowrap;">
+             Limpar filtro</div>` : ''}
+      </div>
+      <div class="card-meta compvig-dica" style="margin-top:8px; display:none;">↔ arraste na horizontal para ver todas as colunas</div>
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+      <table style="margin-top:12px; min-width:1020px;">
+        <thead><tr>
+          <th>Item</th><th>Atividade</th><th>Situação</th><th>Responsável</th>
+          <th>Próximo responsável</th><th>Prazo</th><th>Pendência / próxima ação</th><th>Atualização</th>
+        </tr></thead>
+        <tbody>${linhas || `<tr><td colspan="8" class="card-meta" style="padding:16px;">Nenhum registro neste recorte.</td></tr>`}</tbody>
+      </table>
+      </div>
+      <div class="card-meta" style="margin-top:11px; line-height:1.55;">
+        <b style="color:var(--text);">Como ler:</b> <b>Responsável</b> é o proprietário institucional da
+        ação; <b>Próximo responsável</b> é de quem se aguarda a providência agora. <b>Pendência</b> é a
+        entrega que falta. Datas em DD/MM/AAAA; onde a fonte não fixa prazo, o campo diz
+        <b style="color:var(--gold);">A definir</b> — e isso não conta como atraso.
+      </div>
+    </div>`;
+}
 function complImplBloco(){
   if(typeof COMPLIANCE_IMPLANTACAO === 'undefined') return '';
   const r = complImplResumo();
-  const mu = '<span class="muted">—</span>';
-  const linhas = COMPLIANCE_IMPLANTACAO.map(x=>{
-    const cor = complImplCor(x);
-    const dep = x.dependeDe ? ` <span style="color:var(--gold); font-weight:700;">⛓ depende do ${x.dependeDe}</span>` : '';
-    return `
-    <tr${x.destaque ? ' style="background:rgba(232,25,44,.06);"' : ''}>
-      <td style="white-space:nowrap; font-weight:800; vertical-align:top;">${x.id}${x.destaque ? '<div style="font-size:9.5px; color:var(--red); font-weight:800; letter-spacing:.4px;">PRIORIDADE</div>' : ''}</td>
-      <td style="vertical-align:top; min-width:210px;">
-        <div style="font-weight:700;">${x.acao}</div>${dep}
-        ${x.andamento ? `<div class="card-meta" style="margin-top:5px;">${x.andamento}</div>` : ''}
-      </td>
-      <td style="white-space:normal; font-size:12px; vertical-align:top; min-width:120px;">${(x.donos||[]).join('<br>') || mu}</td>
-      <td style="vertical-align:top; min-width:130px; font-size:12.5px;">
-        ${x.proxResp ? `<b style="color:var(--gold);">${x.proxResp}</b>` : mu}
-      </td>
-      <td style="vertical-align:top; min-width:200px; font-size:12.5px;">
-        ${x.pendencia ? x.pendencia : mu}
-        ${x.proxPasso ? `<div class="card-meta" style="margin-top:5px;"><b style="color:var(--text);">Próximo passo:</b> ${x.proxPasso}</div>` : ''}
-      </td>
-      <td class="num" style="white-space:nowrap; vertical-align:top;">${x.prazo || mu}</td>
-      <td style="vertical-align:top; white-space:nowrap;">
-        <span style="display:inline-block; padding:2px 8px; border-radius:20px; font-size:11.5px;
-            font-weight:700; color:${cor}; border:1px solid ${cor}44; background:${cor}18;">${x.statusFonte}</span>
-        <div class="card-meta" style="margin-top:4px;">${x.atualizadoEm ? 'atualizado em '+x.atualizadoEm : 'sem data de atualização'}</div>
-      </td>
-    </tr>`;}).join('');
   // ── Destaque: Canal de Denuncias (item 5) ─────────────────────────────
   const pri = COMPLIANCE_IMPLANTACAO.filter(x=>x.destaque);
   const blocoPri = pri.map(x=>`
@@ -6320,45 +6555,9 @@ function complImplBloco(){
       </div>
     </div>`;
   return `
-    <div class="section-title" style="margin-top:26px;">Relatório de Implementação — Consultoria<div class="line"></div></div>
     ${blocoPri}
-    ${blocoAg}
-    <div class="card full" style="margin-top:14px;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <div class="card-label">${COMPLIANCE_IMPLANTACAO_META.fonte}</div>
-        <div class="card-meta" style="margin:0;">Posição de ${COMPLIANCE_IMPLANTACAO_META.emitidoEm}</div>
-      </div>
-      <div class="card-meta" style="margin-top:6px;">
-        <b style="color:var(--text);">${r.total} itens</b> —
-        <b style="color:#00e5a0;">${r.concluidas} concluídos</b>,
-        <b style="color:#3d7bff;">${r.andamento} em andamento</b>,
-        <b style="color:#f2b705;">${r.aguardando} aguardando retorno</b> e
-        <b style="color:#8b8fa8;">${r.naoIniciado} não iniciados</b>.
-        Nos totais executivos da aba, <b>aguardando retorno conta como pendente</b>
-        (${r.pendentes} pendentes) — a ação já foi executada pela consultoria e
-        depende de resposta da SOGIPA.
-      </div>
-      <div style="overflow-x:auto;">
-      <table style="margin-top:12px;">
-        <thead><tr><th>#</th><th>Ação e histórico</th><th>Responsável formal</th><th>Próximo responsável</th><th>Pendência e próximo passo</th><th class="num">Prazo</th><th>Status</th></tr></thead>
-        <tbody>${linhas}</tbody>
-      </table>
-      </div>
-      <div class="card-meta" style="margin-top:10px;">
-        <b style="color:var(--text);">Leitura da tabela:</b> <b>Responsável formal</b> é o proprietário
-        institucional da ação; <b>Próximo responsável</b> é de quem se aguarda a providência agora — são
-        coisas diferentes e aparecem separadas de propósito. <b>Pendência</b> é a entrega que ainda falta e
-        <b>Próximo passo</b> é o que destrava. Todos os campos vêm do texto do relatório; onde a fonte não
-        fixa prazo, o campo diz <b>“A definir”</b> em vez de uma data estimada.
-      </div>
-      <div class="card-meta" style="margin-top:10px;">
-        💡 Este relatório é o acompanhamento da <b style="color:var(--text);">fase atual</b> feito pela
-        consultoria e <b>não substitui o plano do Sistema de Gestão</b> acima, que tem 22 ações e
-        horizonte até mar/2029. Os indicadores, a criticidade e os marcos da aba continuam saindo do
-        plano. Status e prazos aqui são os declarados pela fonte — nada é recalculado pela data de
-        abertura do painel.
-      </div>
-    </div>`;
+    ${blocoAg}`;
+
 }
 
 // ── render da aba Compliance ──────────────────────────────
@@ -6609,7 +6808,55 @@ function renderCompliance(){
   const processos = (typeof COMPLIANCE_PROCESSOS !== 'undefined')
     ? COMPLIANCE_PROCESSOS.map(complianceProcessoCard).join('') : '';
   const implantacao = (typeof complImplBloco === 'function') ? complImplBloco() : '';
-  el.innerHTML = cards + faixa + processos + implantacao + leitura + gantt;
+  // ── MONTAGEM EM DUAS CAMADAS, para acabar com as duas verdades ───────
+  // 1) SITUAÇÃO ATUAL: cards, destaque, aguardando e tabela — tudo do
+  //    relatório vigente de 11/11/2026. É o que o Gerente Geral lê primeiro.
+  // 2) PLANO DO SISTEMA DE GESTÃO: as 22 ações de 01/09/2026, INTEIRAS,
+  //    com seus prazos originais, sob um aviso que as identifica como
+  //    histórico. Nada foi apagado e nenhuma data foi reescrita.
+  const vigente = `
+    <div class="section-title">Situação atual — Relatório de Implementação<div class="line"></div></div>
+    ${complVigCards()}
+    ${implantacao}
+    ${complVigTabela()}`;
+  const avisoHistorico = `
+    <div class="section-title" style="margin-top:30px;">Plano do Sistema de Gestão — histórico<div class="line"></div></div>
+    <div class="card full" style="border-left:3px solid var(--muted); background:rgba(176,176,208,.05);">
+      <div class="card-label" style="color:var(--muted);">📁 Registro histórico — não é a situação atual</div>
+      <div class="card-meta" style="margin-top:7px; line-height:1.6;">
+        As 22 ações abaixo são o <b style="color:var(--text);">plano do Sistema de Gestão de Governança e
+        Compliance</b>, na posição de <b style="color:var(--text);">${COMPLIANCE_META.emitidoEm}</b>, com
+        horizonte até mar/2029. Os prazos aqui são os <b>originais daquele plano</b> e foram preservados
+        exatamente como estavam — inclusive o <b style="color:var(--text);">31/08/2026 do canal de
+        denúncias</b>, que aparece como atrasado nesta seção.
+        <br><br>
+        <b style="color:var(--gold);">Esse atraso é histórico e não descreve a situação de hoje.</b>
+        O mesmo canal está no <b>item 5 do relatório vigente</b>, acima, onde a SOGIPA decidiu em
+        09/11/2026 desenvolvê-lo internamente e o prazo final segue
+        <b style="color:var(--gold);">“A definir”</b>, aguardando retorno técnico da TI.
+        Os indicadores executivos da aba saem <b style="color:var(--text);">somente da situação atual</b>;
+        esta seção serve para consultar de onde o programa partiu, sem se misturar com ela.
+      </div>
+    </div>`;
+  el.innerHTML = vigente + avisoHistorico + cards + faixa + processos + leitura + gantt;
+  // A dica de rolagem da tabela vigente e decidida por MEDICAO, nao por
+  // breakpoint chutado: ela so aparece quando a tabela realmente transborda
+  // a area disponivel. Assim vale para qualquer resolucao, inclusive
+  // projetor e janela redimensionada.
+  (function(){
+    const tb = el.querySelector('#complVigTabela table');
+    const dica = el.querySelector('.compvig-dica');
+    if(!tb || !dica) return;
+    const wrap = tb.parentElement;
+    const ajusta = ()=>{ dica.style.display = (wrap.scrollWidth > wrap.clientWidth + 4) ? 'block' : 'none'; };
+    ajusta();
+    if(!window.__complVigResize){
+      window.__complVigResize = true;
+      window.addEventListener('resize', ()=>{ const t=document.querySelector('#complVigTabela table');
+        const d=document.querySelector('.compvig-dica');
+        if(t&&d){ const w=t.parentElement; d.style.display=(w.scrollWidth>w.clientWidth+4)?'block':'none'; } });
+    }
+  })();
 }
 
 const navItems = document.querySelectorAll('.nav-item');
