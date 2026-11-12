@@ -6160,210 +6160,48 @@ function complianceProcessoCard(pr){
 //    nunca gravada aqui — mesma regra da criticidade do plano SGC.
 const COMPLIANCE_IMPLANTACAO_META = {
   fonte:'TRENJUS · Relatório de Implementação do Programa de Compliance',
-  emitidoEm:'25/09/2026',
+  // 12/11/2026: posicao atualizada para o relatorio de 11/11/2026. Os 16 itens
+  // (1 a 15, com o 3.1) foram relidos integralmente do documento. Alem de
+  // status e prazo, cada item passou a carregar RESPONSAVEL FORMAL (donos),
+  // PROXIMO RESPONSAVEL (proxResp), PENDENCIA, PROXIMO PASSO e ULTIMA
+  // ATUALIZACAO — campos novos, extraidos do texto da fonte, nunca inferidos.
+  // REGRA ATENDIDA: nenhum item pendente fica so com "Aguardando" — todos os
+  // 14 nao concluidos tem pendencia e proximo passo preenchidos.
+  // Nada foi inventado: onde a fonte nao da prazo, o campo e "A definir";
+  // onde nao ha providencia pendente de alguem, proxResp explica o porque.
+  emitidoEm:'11/11/2026',
+  emitidoAnterior:'25/09/2026',
 };
+// Pessoas e areas de quem se aguarda providencia. A lista sai dos proprios
+// itens (proxRespAreas), entao nao existe nome aqui que nao esteja na fonte.
+function complImplAguardando(){
+  const m = new Map();
+  (COMPLIANCE_IMPLANTACAO||[]).forEach(x=>{
+    if((x.statusFonte||'').startsWith('Concluído')) return;
+    (x.proxRespAreas||[]).forEach(p=>{
+      if(!m.has(p)) m.set(p, []);
+      m.get(p).push(x.id);
+    });
+  });
+  return [...m.entries()].sort((a,b)=> b[1].length-a[1].length || a[0].localeCompare(b[0]));
+}
 const COMPLIANCE_IMPLANTACAO = [
- {
-  "id": "1",
-  "acao": "Agendar reunião com o Presidente para tratar do Programa de Compliance",
-  "donos": [
-   "Marcos Fraga"
-  ],
-  "prazo": "17/09/2026",
-  "andamento": "",
-  "statusFonte": "Concluído",
-  "prazoStatusBruto": "17/09/2026 – Concluído"
- },
- {
-  "id": "2",
-  "acao": "Agendar reunião com o Presidente e David Teixeira para apresentar o software de Gestão Teiia",
-  "donos": [
-   "Klyverson Moreno",
-   "David Teixeira"
-  ],
-  "prazo": "17/09/2026",
-  "andamento": "",
-  "statusFonte": "Concluído",
-  "prazoStatusBruto": "17/09/2026 – Concluído"
- },
- {
-  "id": "3",
-  "acao": "Criar e Aprovar texto curto do Presidente anunciando o Programa de Compliance (envio por e-mail) e Vídeo",
-  "donos": [
-   "Klyverson Moreno",
-   "Marcelo Bervian",
-   "MKT"
-  ],
-  "prazo": "17/09/2026",
-  "andamento": "17/09/2026 – Aprovado em reunião; 21/09/2026 – E-mail perguntando a data de cumprimento enviado pela consultoria.",
-  "statusFonte": "Aguardando retorno do presidente",
-  "prazoStatusBruto": "Prazo: 17/09/2026 – Aprovado em reunião; 21/09/2026 – E-mail perguntando a data de cumprimento enviado pela consultoria. Status: Aguardando retorno do presidente."
- },
- {
-  "id": "3.1",
-  "acao": "Criar Plano de Comunicação (logo e periódicos)",
-  "donos": [
-   "Klyverson Moreno",
-   "MKT",
-   "Cíntia (RH)"
-  ],
-  "prazo": "—",
-  "andamento": "",
-  "statusFonte": "Aguardando conclusão do Item 3",
-  "prazoStatusBruto": "Prazo/Status: Aguardando conclusão do Item 3."
- },
- {
-  "id": "4",
-  "acao": "Manual do Colaborador/Código de Ética – Enviar minuta consolidada às gerências para considerações. Após enviar ao Presidente para encaminhamentos (envio a Diretoria e aprovação).",
-  "donos": [
-   "Klyverson Moreno",
-   "Cíntia (RH)",
-   "Gerências",
-   "Diretoria"
-  ],
-  "prazo": "25/09/2026",
-  "andamento": "21/09/2026 – E-mail enviado para todas as gerências para considerações finais. Prazo concedido: 25/09/2026.",
-  "statusFonte": "Aguardar retorno das gerências para envio ao Presidente e Diretoria",
-  "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail enviado para todas as gerências para considerações finais. Prazo concedido: 25/09/2026. Status: Aguardar retorno das gerências para envio ao Presidente e Diretoria."
- },
- {
-  "id": "5",
-  "acao": "Canal de Denúncias e Drive na Nuvem para registro centralizado das evidências.",
-  "donos": [
-   "Marcelo Bervian",
-   "David Teixeira"
-  ],
-  "prazo": "21/09/2026",
-  "andamento": "21/09/2026 – E-mail com proposta da Teiia reenviado.",
-  "statusFonte": "Aguardando retorno",
-  "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail com proposta da Teiia reenviado. Status: Aguardando retorno."
- },
- {
-  "id": "6",
-  "acao": "Mapeamento de Riscos Prioritários da Alta Direção - Reenviar de Template de Gestão de Riscos para a Diretoria (Presidências da Diretoria, Conselho Deliberativo e Conselho Fiscal, Conselhos Complementares?) e Definição de nova ponto focal da Diretoria (Sugestão: Presidente do Conselho – Maria Carolina?)",
-  "donos": [
-   "Marcelo Bervian"
-  ],
-  "prazo": "24/09/2026",
-  "andamento": "24/09/2026 – E-mail enviado ao presidente e David Teixeira com as templates e sugestão do Nome da Ponto Focal.",
-  "statusFonte": "Aguardando retorno do Presidente",
-  "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com as templates e sugestão do Nome da Ponto Focal. Status: Aguardando retorno do Presidente."
- },
- {
-  "id": "7",
-  "acao": "Comitê de Ética e Integridade dos Colaboradores e elaboração do Procedimento Administrativo Disciplinar – PAD, Fluxos (o que vai para Sindicância – Diretoria e o que vai para Comitê dos Colaboradores) e Investigações Internas.",
-  "donos": [
-   "Marcelo Bervian",
-   "David Teixeira"
-  ],
-  "prazo": "24/09/2026",
-  "andamento": "24/09/2026 – E-mail enviado ao presidente e David Teixeira com orientações sobre o convite e formalização dos membros do comitê de ética dos colaboradores. Avançaremos no PAD após constituição do comitê.",
-  "statusFonte": "Aguardando retorno",
-  "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com orientações sobre o convite e formalização dos membros do comitê de ética dos colaboradores. Avançaremos no PAD após constituição do comitê. Status: Aguardando retorno."
- },
- {
-  "id": "8",
-  "acao": "Reunião com a Comissão do Estatuto e Presidente do Conselho para inclusão de Texto de Governança e Compliance nos instrumentos normativos da SOGIPA. Criar e incluir texto no Estatuto/Regulamento Geral sobre as normas de Governança e Compliance junto com o Comitê de Estatuto.",
-  "donos": [
-   "Alexandre Daré",
-   "Marcos Fraga",
-   "Klyverson Moreno",
-   "Maria Carolina",
-   "Unamiara"
-  ],
-  "prazo": "18/09/2026",
-  "andamento": "18/09/2026 – Reunião realizada. 24/09/2026 – E-mail enviado ao Alexandre Daré solicitando que solicite as Atas de reunião com o novo texto do Estatuto para análise e colaboração da consultoria.",
-  "statusFonte": "Aguardando retorno",
-  "prazoStatusBruto": "Prazo: 18/09/2026 – Reunião realizada. 24/09/2026 – E-mail enviado ao Alexandre Daré solicitando que solicite as Atas de reunião com o novo texto do Estatuto para análise e colaboração da consultoria. Status: Aguardando retorno."
- },
- {
-  "id": "9",
-  "acao": "Formalização do Marcos Fraga como Compliance Officer da SOGIPA através de Portaria.",
-  "donos": [
-   "Marcelo Bervian",
-   "David Teixeira",
-   "Marcos Fraga"
-  ],
-  "prazo": "25/09/2026",
-  "andamento": "25/09/2026 – E-mail enviado ao presidente e David Teixeira e Marcos Fraga com modelo de Portaria e orientações.",
-  "statusFonte": "Aguardando retorno",
-  "prazoStatusBruto": "Prazo: 25/09/2026 – E-mail enviado ao presidente e David Teixeira e Marcos Fraga com modelo de Portaria e orientações. Status: Aguardando retorno."
- },
- {
-  "id": "10",
-  "acao": "Sensibilização da Alta Direção sobre o Programa de Compliance.",
-  "donos": [
-   "Marcelo Bervian",
-   "David Teixeira",
-   "Marcos Fraga",
-   "Klyverson Moreno"
-  ],
-  "prazo": "16/04/2026",
-  "andamento": "16/04/2026 foi mencionada a necessidade deste momento com a Diretoria.",
-  "statusFonte": "Não iniciado",
-  "prazoStatusBruto": "Prazo: 16/04/2026 foi mencionada a necessidade deste momento com a Diretoria. Status: Não iniciado."
- },
- {
-  "id": "11",
-  "acao": "Risco Prioritário 01 a ser tratado: Alçadas e limites de autonomia gerencial a ser construído junto com a Diretoria. Criar Grupo de Trabalho da Diretoria: mapear decisões, alçadas, fluxos formais de aprovação e autonomia gerencial.",
-  "donos": [
-   "Diretoria",
-   "Trendjus",
-   "Gerências"
-  ],
-  "prazo": "05/06/2026",
-  "andamento": "05/06/2026 ficou definido como prioridade pelo Presidente, que será o primeiro risco a ser tratado.",
-  "statusFonte": "Não iniciado",
-  "prazoStatusBruto": "Prazo: 05/06/2026 ficou definido como prioridade pelo Presidente, que será o primeiro risco a ser tratado. Status: Não iniciado."
- },
- {
-  "id": "12",
-  "acao": "Criar manual de atribuições, cartilha para novos diretores e política de transição entre gestões.",
-  "donos": [
-   "Diretoria",
-   "Trendjus"
-  ],
-  "prazo": "A definir",
-  "andamento": "",
-  "statusFonte": "Não iniciado",
-  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
- },
- {
-  "id": "13",
-  "acao": "Due diligence de terceiros",
-  "donos": [
-   "Gerências",
-   "Trendjus"
-  ],
-  "prazo": "A definir",
-  "andamento": "",
-  "statusFonte": "Não iniciado",
-  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
- },
- {
-  "id": "14",
-  "acao": "Protocolo de gestão de crises",
-  "donos": [
-   "Diretoria",
-   "Gerencias",
-   "Trendjus"
-  ],
-  "prazo": "A definir",
-  "andamento": "",
-  "statusFonte": "Não iniciado",
-  "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."
- },
- {
-  "id": "15",
-  "acao": "Monitoramento e Gestão de Evidências - Compliance Officer terceirizado",
-  "donos": [
-   "Trendjus"
-  ],
-  "prazo": "—",
-  "andamento": "",
-  "statusFonte": "Em andamento (contrato vigente)",
-  "prazoStatusBruto": "Em andamento (contrato vigente)"
- }
+ {"id": "1", "acao": "Agendar reunião com o Presidente para tratar do Programa de Compliance", "donos": ["Marcos Fraga"], "prazo": "17/09/2026", "statusFonte": "Concluído", "atualizadoEm": "17/09/2026", "andamento": "17/09/2026 – Concluído.", "proxResp": null, "pendencia": null, "proxPasso": null, "prazoStatusBruto": "17/09/2026 – Concluído"},
+ {"id": "2", "acao": "Agendar reunião com o Presidente e David Teixeira para apresentar o software de Gestão Teiia", "donos": ["Klyverson Moreno", "David Teixeira"], "prazo": "17/09/2026", "statusFonte": "Concluído", "atualizadoEm": "17/09/2026", "andamento": "17/09/2026 – Concluído. A apresentação da solução Teiia NÃO se confunde com a decisão posterior, de 09/11, de desenvolver o Canal de Denúncias internamente (item 5).", "proxResp": null, "pendencia": null, "proxPasso": null, "prazoStatusBruto": "17/09/2026 – Concluído"},
+ {"id": "3", "acao": "Criar e Aprovar texto curto do Presidente anunciando o Programa de Compliance (envio por e-mail) e Vídeo", "donos": ["Klyverson Moreno", "Marcelo Bervian", "MKT"], "prazo": "A definir", "statusFonte": "Aguardando retorno do Daré", "atualizadoEm": "09/11/2026", "andamento": "17/09/2026 – Texto aprovado em reunião. 21/09/2026 – Consultoria enviou e-mail perguntando a data de cumprimento. 09/11/2026 – Daré irá despachar o envio do e-mail com o MKT e a TI, com cópia para a consultoria. Quanto ao vídeo, o Presidente o fará oportunamente — sem data definida.", "proxResp": "Alexandre Daré", "proxRespAreas": ["Alexandre Daré", "Marketing", "TI (\u00e1rea)"], "pendencia": "Despachar o envio do e-mail institucional do Presidente, junto com o MKT e a TI, com cópia para a consultoria.", "proxPasso": "Daré despachar o e-mail. O vídeo do Presidente segue previsto para momento oportuno, sem data definida.", "prazoStatusBruto": "Prazo: 17/09/2026 – Aprovado em reunião; 21/09/2026 – E-mail perguntando a data de cumprimento enviado pela consultoria. 09/11/2026 – Daré irá despachar o envio do e-mail com o MKT e TI – e-mail em cópia para consultoria; Quanto ao vídeo, o presidente o fará oportunamente. Status: Aguardando retorno do Daré."},
+ {"id": "3.1", "acao": "Criar Plano de Comunicação (logo e periódicos)", "donos": ["Klyverson Moreno", "MKT", "Cíntia (RH)"], "prazo": "A definir", "statusFonte": "Aguardando conclusão do Item 3", "atualizadoEm": null, "dependeDe": "3", "andamento": "Bloqueado pelo item 3: o plano de comunicação só avança depois que o anúncio institucional do Presidente for despachado.", "proxResp": "Depende do Item 3", "proxRespAreas": ["Alexandre Daré"], "pendencia": "Concluir o item 3 (envio do e-mail institucional) para viabilizar o avanço do plano.", "proxPasso": "Destravar o item 3; em seguida MKT e Cíntia (RH) elaboram logo e periódicos.", "prazoStatusBruto": "Prazo/Status: Aguardando conclusão do Item 3."},
+ {"id": "4", "acao": "Manual do Colaborador/Código de Ética – minuta consolidada enviada às gerências e, depois, ao Presidente para encaminhamentos", "donos": ["Klyverson Moreno", "Cíntia (RH)", "Gerências", "Diretoria"], "prazo": "A definir", "statusFonte": "Aguardando retorno do Daré e da Cíntia", "atualizadoEm": "11/11/2026", "andamento": "21/09/2026 – E-mail enviado a todas as gerências para considerações finais, com prazo até 25/09/2026. 28/09/2026 – E-mail enviado ao Presidente. 09/11/2026 – Texto APROVADO pelo Presidente, com registro em e-mail. 11/11/2026 – E-mail enviado ao RH e ao Gerente de Planejamento e Desenvolvimento para formatação junto ao MKT. A aprovação do texto NÃO encerra a implementação do manual.", "proxResp": "Alexandre Daré e Cíntia (RH)", "proxRespAreas": ["Alexandre Daré", "Cíntia — RH"], "pendencia": "Informar a melhor agenda para a reunião de alinhamento dos próximos passos.", "proxPasso": "Fechar a agenda e realizar a reunião de alinhamento; MKT conclui a formatação do manual.", "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail enviado para todas as gerências para considerações finais. Prazo concedido: 25/09/2026. Em 28/09/2026 e-mail enviado ao presidente. 09/11/2026 – Aprovado Texto pelo Presidente. Registro no e-mail. 11/11/2026 – E-mail enviado ao RH, Gerente de Planejamento e Desenvolvimento para formatação junto ao MKT. Após faremos uma reunião para alinharmos os próximos passos. Status: Aguardar retorno do Daré, Cinthia quanto a melhor agenda para nossa reunião."},
+ {"id": "5", "acao": "Canal de Denúncias e Drive na Nuvem para registro centralizado das evidências", "donos": ["Marcelo Bervian", "David Teixeira"], "prazo": "A definir", "destaque": true, "statusFonte": "Aguardando retorno da SOGIPA", "atualizadoEm": "11/11/2026", "andamento": "21/09/2026 – E-mail com a proposta da Teiia reenviado. 09/11/2026 – Decisão da SOGIPA pelo DESENVOLVIMENTO INTERNO do Canal de Denúncias. 11/11/2026 – Consultoria enviou e-mail com informações e requisitos de um Canal de Denúncias robusto, em apoio ao desenvolvimento interno. O envio dos requisitos NÃO é conclusão da implementação: não há evidência de sistema concluído, implantado ou em desenvolvimento efetivo.", "proxResp": "Ricardo — TI", "proxRespAreas": ["Ricardo — TI", "David Teixeira", "Cíntia — RH"], "pendencia": "Informar o andamento do desenvolvimento interno do Canal de Denúncias robusto, considerando os requisitos enviados pela consultoria em 11/11/2026, e apresentar uma previsão de entrega para alinhamento institucional.", "proxPasso": "Consolidar a posição técnica, definir o prazo previsto de entrega e encaminhar a informação à consultoria.", "tiResponsavel": "RICARDO — TI", "tiFalta": "Informar o andamento do desenvolvimento interno do Canal de Denúncias robusto, considerando os requisitos enviados pela consultoria de Compliance em 11/11/2026, e apresentar uma previsão de entrega para alinhamento institucional.", "tiSituacao": "Aguardando retorno da TI e alinhamento com David Teixeira e Cíntia.", "tiProxPasso": "Consolidar a posição técnica, definir o prazo previsto de entrega e encaminhar a informação à consultoria.", "prazoStatusBruto": "Prazo: 21/09/2026 – E-mail com proposta da Teiia reenviado. 09/11/2026 – Decisão da SOGIPA pelo desenvolvimento interno do Canal de Denúncias. 11/11/2026 – E-mail enviado pela consultoria com informações e requisitos de um Canal de Denúncias robusto em apoio ao desenvolvimento interno. Status: Aguardando retorno da SOGIPA (Teixeira, Cíntia e Ricardo) quanto ao prazo final para entrega do canal."},
+ {"id": "6", "acao": "Mapeamento de Riscos Prioritários da Alta Direção — reenvio do Template de Gestão de Riscos à Diretoria e definição do novo ponto focal", "donos": ["Marcelo Bervian"], "prazo": "30/11/2026", "statusFonte": "Aguardando retorno do Presidente, do Teixeira e das templates", "atualizadoEm": "11/11/2026", "andamento": "24/09/2026 – E-mail ao Presidente e a David Teixeira com as templates e a sugestão de nome do ponto focal. 09/11/2026 – Daré enviou ao Presidente a lista de e-mails da diretoria participante; o Presidente enviará e-mail a todos com prazo de retorno em 30/11/2026. 11/11/2026 – Consultoria unificou as informações e solicitou apoio do Teixeira junto ao Presidente para que as templates sejam enviadas aos Diretores.", "proxResp": "Presidente e David Teixeira (envio) · Diretores (resposta)", "proxRespAreas": ["Presidente", "David Teixeira", "Diretores"], "pendencia": "Apoiar o envio das templates de riscos à Diretoria, receber as templates respondidas pelos Diretores e consolidar o retorno para a consultoria.", "proxPasso": "Presidente e Teixeira despacham as templates aos Diretores; os Diretores respondem até 30/11/2026; a consultoria consolida.", "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com as templates e sugestão do Nome da Ponto Focal. 09/11/2026 – Daré enviou ao presidente a lista de e-mails da diretoria participante. Presidente enviará e-mail a todos com prazo para retorno em 30/11/2026. 11/11/2026 – Consultoria enviou e-mail unificando as informações e solicitando apoio do Teixiera junto ao presidente para que as templates de riscos prioritários sejam enviadas aos Diretores. Status: Aguardando retorno do Presidente, Teixeira e as templates respondidas pelos Diretores."},
+ {"id": "7", "acao": "Comitê de Ética e Integridade dos Colaboradores e elaboração do PAD, fluxos e investigações internas", "donos": ["Marcelo Bervian", "David Teixeira"], "prazo": "A definir", "statusFonte": "Aguardando retorno do Presidente e do Teixeira", "atualizadoEm": "09/11/2026", "andamento": "24/09/2026 – E-mail ao Presidente e a David Teixeira com orientações sobre o convite e a formalização dos membros. 09/11/2026 – Teixeira realizará o convite junto com o Presidente aos membros; depois a formalização será por portaria. O PAD só avança após a constituição do comitê — que NÃO pode ser considerado constituído antes da formalização.", "proxResp": "Presidente e David Teixeira", "proxRespAreas": ["Presidente", "David Teixeira"], "pendencia": "Realizar os convites aos integrantes do comitê.", "proxPasso": "1) Confirmar os membros; 2) formalizar a constituição por portaria; 3) avançar no PAD, fluxos e investigações internas.", "prazoStatusBruto": "Prazo: 24/09/2026 – E-mail enviado ao presidente e David Teixeira com orientações sobre o convite e formalização dos membros do comitê de ética dos colaboradores. 09/11/2026 – Teixeira irá realizar o convite junto com o presidente aos membros. Após, formalizamos por meio de portaria. Avançaremos no PAD após constituição do comitê. Status: Aguardando retorno do Presidente e Teixeira."},
+ {"id": "8", "acao": "Reunião com a Comissão do Estatuto e Presidente do Conselho para inclusão de texto de Governança e Compliance nos instrumentos normativos", "donos": ["Alexandre Daré", "Marcos Fraga", "Klyverson Moreno", "Maria Carolina", "Unamiara"], "prazo": "Janeiro/2027", "statusFonte": "Programado para retomada em janeiro/2027", "atualizadoEm": "11/11/2026", "andamento": "18/09/2026 – Reunião realizada. 24/09/2026 – E-mail a Alexandre Daré solicitando as atas de reunião com o novo texto do Estatuto. 11/11/2026 – Atas JÁ RECEBIDAS pela consultoria. Diante das demandas em paralelo e internas da SOGIPA (eleições do conselho, nova composição, final de ano), o prosseguimento ficará para janeiro de 2027. O adiamento foi expressamente registrado — NÃO é atraso.", "proxResp": "Retomada programada — sem providência pendente agora", "proxRespAreas": [], "pendencia": "Retomar a inclusão do texto de Governança e Compliance nos instrumentos normativos.", "proxPasso": "Retomar a tratativa com a Comissão do Estatuto em janeiro de 2027.", "prazoStatusBruto": "Prazo: 18/09/2026 – Reunião realizada. 24/09/2026 – E-mail enviado ao Alexandre Daré solicitando que solicite as Atas de reunião com o novo texto do Estatuto para análise e colaboração da consultoria. 11/11/2026 – Atas já recebidas pela Consultoria. Diante das diversas demandas em paralelo e das demandas internas da SOGIPA (eleições do conselho, nova composição, final de ano e etc.) o prosseguimento desta demanda ficará para janeiro de 2027. Status: Aguardar Janeiro 2027."},
+ {"id": "9", "acao": "Formalização de Marcos Fraga como Compliance Officer da SOGIPA através de Portaria", "donos": ["Marcelo Bervian", "David Teixeira", "Marcos Fraga"], "prazo": "A definir", "statusFonte": "Aguardando retorno do Presidente e do Teixeira", "atualizadoEm": "09/11/2026", "andamento": "25/09/2026 – E-mail ao Presidente, a David Teixeira e a Marcos Fraga com o modelo de Portaria e orientações. 09/11/2026 – Teixeira realizará a análise do texto da portaria junto com o Presidente e, depois, dará o OK. Marcos Fraga NÃO está formalizado por portaria até haver comprovação documental.", "proxResp": "David Teixeira e Presidente", "proxRespAreas": ["David Teixeira", "Presidente"], "pendencia": "Analisar o texto da portaria e fornecer a aprovação.", "proxPasso": "Dar o OK no texto e publicar a portaria de designação.", "prazoStatusBruto": "Prazo: 25/09/2026 – E-mail enviado ao presidente e David Teixeira e Marcos Fraga com modelo de Portaria e orientações. 09/11/2026 – Teixeira irá realizar a análise do texto da portaria junto com o presidente. Após dará o OK. Status: Aguardando retorno do Presidente e Teixeira."},
+ {"id": "10", "acao": "Sensibilização da Alta Direção sobre o Programa de Compliance", "donos": ["Marcelo Bervian", "David Teixeira", "Marcos Fraga", "Klyverson Moreno"], "prazo": "A definir", "statusFonte": "Não iniciado", "atualizadoEm": "09/11/2026", "andamento": "16/04/2026 – Mencionada a necessidade deste momento com a Diretoria. 09/11/2026 – Aguardar a eleição do conselho para prosseguimento.", "proxResp": "Aguardando eleição do conselho", "proxRespAreas": [], "pendencia": "Aguardar a eleição do conselho para então agendar a sensibilização.", "proxPasso": "Concluída a eleição, agendar o momento com a nova Diretoria.", "prazoStatusBruto": "Prazo: 16/04/2026 foi mencionada a necessidade deste momento com a Diretoria. 09/11/2026 – Aguardar eleição do conselho. Status: Não iniciado."},
+ {"id": "11", "acao": "Risco Prioritário 01 — Alçadas e limites de autonomia gerencial, com Grupo de Trabalho da Diretoria", "donos": ["Diretoria", "Trendjus", "Gerências"], "prazo": "A definir", "statusFonte": "Aguardando retorno do Daré", "atualizadoEm": "09/11/2026", "andamento": "05/06/2026 – Definido pelo Presidente como o primeiro risco a ser tratado. 09/11/2026 – O foco passou a ser o Procedimento de solicitação e liberação de eventos; Daré é o responsável por compilar o processo, para a consultoria depois apresentar à Direção.", "proxResp": "Alexandre Daré", "proxRespAreas": ["Alexandre Daré"], "pendencia": "Compilar o processo de solicitação e liberação de eventos — entrega esperada de Planejamento e Desenvolvimento.", "proxPasso": "Daré entrega o processo compilado; a consultoria apresenta à Direção.", "prazoStatusBruto": "Prazo: 05/06/2026 ficou definido como prioridade pelo Presidente, que será o primeiro risco a ser tratado. 09/11/2026 – Vamos focar no Procedimento de solicitação e liberação do evento. Daré responsável por compilar o processo, para após a consultoria apresentar à direção. Status: Aguardando o retorno do Daré."},
+ {"id": "12", "acao": "Criar manual de atribuições, cartilha para novos diretores e política de transição entre gestões", "donos": ["Diretoria", "Trendjus"], "prazo": "A definir", "statusFonte": "Não iniciado", "atualizadoEm": null, "andamento": "Prazo a definir. Sem responsável individual designado na fonte — a titularidade é da Diretoria em conjunto com a Trendjus.", "proxResp": null, "proxRespAreas": ["Diretores", "Consultoria Trendjus"], "pendencia": "Definir prazo e iniciar a elaboração.", "proxPasso": "Pautar o início do trabalho com a Diretoria.", "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."},
+ {"id": "13", "acao": "Due diligence de terceiros", "donos": ["Gerências", "Trendjus"], "prazo": "A definir", "statusFonte": "Não iniciado", "atualizadoEm": null, "andamento": "Prazo a definir.", "proxResp": null, "proxRespAreas": ["Consultoria Trendjus"], "pendencia": "Definir prazo e iniciar a elaboração.", "proxPasso": "Pautar o início do trabalho com as Gerências.", "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."},
+ {"id": "14", "acao": "Protocolo de gestão de crises", "donos": ["Diretoria", "Gerências", "Trendjus"], "prazo": "A definir", "statusFonte": "Não iniciado", "atualizadoEm": null, "andamento": "Prazo a definir.", "proxResp": null, "proxRespAreas": ["Consultoria Trendjus"], "pendencia": "Definir prazo e iniciar a elaboração.", "proxPasso": "Pautar o início do trabalho com a Diretoria e as Gerências.", "prazoStatusBruto": "Prazo: A definir. Status: Não iniciado."},
+ {"id": "15", "acao": "Monitoramento e Gestão de Evidências — Compliance Officer terceirizado", "donos": ["Trendjus"], "prazo": "Contrato vigente", "statusFonte": "Em andamento (contrato vigente)", "atualizadoEm": "11/11/2026", "andamento": "Em andamento, com contrato vigente. NÃO está concluído.", "proxResp": "Consultoria Trendjus", "proxRespAreas": ["Consultoria Trendjus"], "pendencia": "Manter o monitoramento contínuo e a gestão das evidências.", "proxPasso": "Seguir o acompanhamento conforme contrato.", "prazoStatusBruto": "Em andamento (contrato vigente)"}
 ];
 
 // Mapeamento para o vocabulário executivo da aba, decidido pelo Diretor em
@@ -6395,19 +6233,97 @@ function complImplCor(x){
 function complImplBloco(){
   if(typeof COMPLIANCE_IMPLANTACAO === 'undefined') return '';
   const r = complImplResumo();
-  const linhas = COMPLIANCE_IMPLANTACAO.map(x=>`
-    <tr>
-      <td style="white-space:nowrap; font-weight:700;">${x.id}</td>
-      <td>${x.acao}${x.andamento ? `<div class="card-meta" style="margin-top:4px;">${x.andamento}</div>` : ''}</td>
-      <td style="white-space:nowrap; font-size:12px;">${(x.donos||[]).join('<br>') || '<span class="muted">—</span>'}</td>
-      <td class="num" style="white-space:nowrap;">${x.prazo}</td>
-      <td><span style="display:inline-block; padding:2px 8px; border-radius:20px; font-size:11.5px;
-            font-weight:700; color:${complImplCor(x)}; border:1px solid ${complImplCor(x)}44;
-            background:${complImplCor(x)}18;">${x.statusFonte}</span></td>
-    </tr>`).join('');
+  const mu = '<span class="muted">—</span>';
+  const linhas = COMPLIANCE_IMPLANTACAO.map(x=>{
+    const cor = complImplCor(x);
+    const dep = x.dependeDe ? ` <span style="color:var(--gold); font-weight:700;">⛓ depende do ${x.dependeDe}</span>` : '';
+    return `
+    <tr${x.destaque ? ' style="background:rgba(232,25,44,.06);"' : ''}>
+      <td style="white-space:nowrap; font-weight:800; vertical-align:top;">${x.id}${x.destaque ? '<div style="font-size:9.5px; color:var(--red); font-weight:800; letter-spacing:.4px;">PRIORIDADE</div>' : ''}</td>
+      <td style="vertical-align:top; min-width:210px;">
+        <div style="font-weight:700;">${x.acao}</div>${dep}
+        ${x.andamento ? `<div class="card-meta" style="margin-top:5px;">${x.andamento}</div>` : ''}
+      </td>
+      <td style="white-space:normal; font-size:12px; vertical-align:top; min-width:120px;">${(x.donos||[]).join('<br>') || mu}</td>
+      <td style="vertical-align:top; min-width:130px; font-size:12.5px;">
+        ${x.proxResp ? `<b style="color:var(--gold);">${x.proxResp}</b>` : mu}
+      </td>
+      <td style="vertical-align:top; min-width:200px; font-size:12.5px;">
+        ${x.pendencia ? x.pendencia : mu}
+        ${x.proxPasso ? `<div class="card-meta" style="margin-top:5px;"><b style="color:var(--text);">Próximo passo:</b> ${x.proxPasso}</div>` : ''}
+      </td>
+      <td class="num" style="white-space:nowrap; vertical-align:top;">${x.prazo || mu}</td>
+      <td style="vertical-align:top; white-space:nowrap;">
+        <span style="display:inline-block; padding:2px 8px; border-radius:20px; font-size:11.5px;
+            font-weight:700; color:${cor}; border:1px solid ${cor}44; background:${cor}18;">${x.statusFonte}</span>
+        <div class="card-meta" style="margin-top:4px;">${x.atualizadoEm ? 'atualizado em '+x.atualizadoEm : 'sem data de atualização'}</div>
+      </td>
+    </tr>`;}).join('');
+  // ── Destaque: Canal de Denuncias (item 5) ─────────────────────────────
+  const pri = COMPLIANCE_IMPLANTACAO.filter(x=>x.destaque);
+  const blocoPri = pri.map(x=>`
+    <div class="card full" style="border-left:3px solid var(--red); background:linear-gradient(135deg, rgba(232,25,44,.08), rgba(232,25,44,.02));">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <div class="card-label" style="color:var(--red);">⚠ Prioridade · Item ${x.id} — Canal de Denúncias</div>
+        <div class="card-meta" style="margin:0;">última atualização ${x.atualizadoEm}</div>
+      </div>
+      <div style="font-size:14.5px; font-weight:700; margin-top:8px;">${x.acao}</div>
+      <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:14px;">
+        <div style="flex:1 1 180px; min-width:180px; border-left:3px solid var(--blue); padding-left:11px;">
+          <div class="card-label" style="margin:0; font-size:10px;">Responsável formal</div>
+          <div style="font-size:13px; font-weight:700; margin-top:3px;">${(x.donos||[]).join(' · ')}</div>
+        </div>
+        <div style="flex:1 1 180px; min-width:180px; border-left:3px solid var(--gold); padding-left:11px;">
+          <div class="card-label" style="margin:0; font-size:10px;">Status documentado</div>
+          <div style="font-size:13px; font-weight:700; margin-top:3px; color:var(--gold);">${x.statusFonte}</div>
+        </div>
+        <div style="flex:1 1 150px; min-width:150px; border-left:3px solid var(--muted); padding-left:11px;">
+          <div class="card-label" style="margin:0; font-size:10px;">Prazo final de entrega</div>
+          <div style="font-size:13px; font-weight:700; margin-top:3px;">${x.prazo}</div>
+        </div>
+      </div>
+      <div style="margin-top:16px; padding:13px 15px; border-radius:8px; background:rgba(232,25,44,.1); border:1px solid rgba(232,25,44,.3);">
+        <div style="font-size:11px; font-weight:800; letter-spacing:.6px; color:var(--red);">RESPONSÁVEL PELA INFORMAÇÃO TÉCNICA</div>
+        <div style="font-size:16px; font-weight:900; margin-top:4px; letter-spacing:.4px;">${x.tiResponsavel}</div>
+        <div style="margin-top:12px;">
+          <div class="card-label" style="margin:0; font-size:10px;">O que falta fazer</div>
+          <div style="font-size:13px; margin-top:3px; line-height:1.55;">${x.tiFalta}</div>
+        </div>
+        <div style="margin-top:11px;">
+          <div class="card-label" style="margin:0; font-size:10px;">Situação</div>
+          <div style="font-size:13px; margin-top:3px; line-height:1.55;">${x.tiSituacao}</div>
+        </div>
+        <div style="margin-top:11px;">
+          <div class="card-label" style="margin:0; font-size:10px;">Próximo passo</div>
+          <div style="font-size:13px; margin-top:3px; line-height:1.55;">${x.tiProxPasso}</div>
+        </div>
+      </div>
+      <div class="card-meta" style="margin-top:12px; line-height:1.55;">
+        <b style="color:var(--text);">Histórico:</b> ${x.andamento}
+      </div>
+    </div>`).join('');
+  // ── Aguardando providencia de quem ────────────────────────────────────
+  const ag = complImplAguardando();
+  const blocoAg = !ag.length ? '' : `
+    <div class="card full" style="margin-top:14px;">
+      <div class="card-label">Aguardando providência de</div>
+      <div class="card-meta" style="margin-top:4px;">
+        Quem precisa agir para destravar cada item. A lista sai dos próprios itens — nenhum nome
+        foi atribuído além do que o relatório registra.
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:9px; margin-top:13px;">
+        ${ag.map(([p,ids])=>`
+          <div style="flex:0 1 auto; padding:8px 13px; border-radius:8px; border:1px solid var(--border); background:var(--card);">
+            <div style="font-size:13px; font-weight:800;">${p}</div>
+            <div class="card-meta" style="margin-top:2px;">${ids.length} ${ids.length===1?'ação':'ações'} · ${ids.map(i=>'item '+i).join(', ')}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
   return `
     <div class="section-title" style="margin-top:26px;">Relatório de Implementação — Consultoria<div class="line"></div></div>
-    <div class="card full">
+    ${blocoPri}
+    ${blocoAg}
+    <div class="card full" style="margin-top:14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <div class="card-label">${COMPLIANCE_IMPLANTACAO_META.fonte}</div>
         <div class="card-meta" style="margin:0;">Posição de ${COMPLIANCE_IMPLANTACAO_META.emitidoEm}</div>
@@ -6424,9 +6340,16 @@ function complImplBloco(){
       </div>
       <div style="overflow-x:auto;">
       <table style="margin-top:12px;">
-        <thead><tr><th>#</th><th>Ação</th><th>Dono</th><th class="num">Prazo</th><th>Status declarado</th></tr></thead>
+        <thead><tr><th>#</th><th>Ação e histórico</th><th>Responsável formal</th><th>Próximo responsável</th><th>Pendência e próximo passo</th><th class="num">Prazo</th><th>Status</th></tr></thead>
         <tbody>${linhas}</tbody>
       </table>
+      </div>
+      <div class="card-meta" style="margin-top:10px;">
+        <b style="color:var(--text);">Leitura da tabela:</b> <b>Responsável formal</b> é o proprietário
+        institucional da ação; <b>Próximo responsável</b> é de quem se aguarda a providência agora — são
+        coisas diferentes e aparecem separadas de propósito. <b>Pendência</b> é a entrega que ainda falta e
+        <b>Próximo passo</b> é o que destrava. Todos os campos vêm do texto do relatório; onde a fonte não
+        fixa prazo, o campo diz <b>“A definir”</b> em vez de uma data estimada.
       </div>
       <div class="card-meta" style="margin-top:10px;">
         💡 Este relatório é o acompanhamento da <b style="color:var(--text);">fase atual</b> feito pela
