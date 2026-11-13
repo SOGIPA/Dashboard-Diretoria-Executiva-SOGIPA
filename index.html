@@ -3013,6 +3013,27 @@ const REINGRESSO_HISTORICO = [
       {nome:'Aguardando detalhamento da Sec. Adm.', qtd:89, cor:'#4a4c68'},
     ],
     alerta: '<b style="color:var(--green);">Outubro — 89 reingressos e R$ 75.073,44</b> de valor total informado, com ticket médio calculado de <b>R$ 843,52</b> (75.073,44 ÷ 89). <b style="color:var(--green);">Substitui a posição de 16/10</b>, que trazia 19 reingressos e R$ 12.231,54 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. É o <b>maior volume do ano</b>, acima de setembro (97 em quantidade, mas R$ 51.416,34) em valor, e o <b>maior ticket médio da série</b>: R$ 843,52 contra R$ 530,07 de setembro e R$ 548,96 de agosto — outubro trouxe menos volume que setembro com valor bem maior por reingresso. A separação informada pela gestão: <b>19 da Campanha de Aniversário</b> (21,35%) e <b>70 reingressos normais</b> (78,65%). <b style="color:var(--gold);">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 75.073,44 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
+  // ── NOVEMBRO/2026 · PARCIAL (01 a 05/11) ───────────────────────────────
+  // LEITURA ADOTADA, declarada aqui porque a fonte não nomeou a competência:
+  // a Sec. Adm. informou "26 reingressos · R$ 25.607,02" junto com a posição
+  // de inadimplência de 05/11/2026, sem dizer a qual mês se referem.
+  // NÃO pode ser o acumulado de 2026: só outubro já tem 89 reingressos
+  // confirmados pela própria Sec. Adm., e jan–out somam bem mais que 26.
+  // NÃO pode ser outubro: outubro está FECHADO em 89 / R$ 75.073,44, número
+  // oficial da área, e não foi tocado.
+  // Resta novembro, parcial até a data de referência do pacote (05/11).
+  // Por isso `fechado:false` e a janela de cobertura para em 05/11.
+  // Se a Sec. Adm. confirmar outra competência, é só mover este bloco — o
+  // histórico de janeiro a outubro ficou intacto e nada foi redistribuído.
+  //
+  // OS 26 NÃO FORAM ESPALHADOS ENTRE MESES: entram como um único resultado
+  // de competência, sem registro individual que sustentasse distribuição.
+  // CAMPANHAS: null, não zero — a fonte não trouxe quebra por campanha.
+  // TICKET: 25.607,02 / 26 = R$ 984,89, acima dos R$ 843,52 de outubro e dos
+  // R$ 548,96 de agosto. Fica registrado como ponto de atenção, não corrigido.
+  {mesKey:'nov2026', periodoTag:'Novembro/2026 (parcial · 01 a 05/11)', fechado:false,
+    total:26, valor:25607.02, campanhas:null,
+    alerta:'<b style="color:var(--gold);">Posição parcial de novembro — 01 a 05/11.</b> São <b>26 reingressos</b> e <b>R$ 25.607,02</b>, com ticket de <b>R$ 984,89</b>. <b>Não é fechamento do mês.</b> <b style="color:var(--gold);">Competência inferida, não declarada:</b> a informação chegou junto com a posição de inadimplência de 05/11/2026 e não nomeou o mês. Não pode ser o acumulado do ano nem outubro — que está fechado em 89 reingressos e R$ 75.073,44, número oficial da Secretaria Administrativa, preservado aqui. Resta novembro, parcial até 05/11, e é assim que entra. <b>Confirmar a competência com a Secretaria Administrativa.</b> <b style="color:var(--gold);">Ponto de atenção no ticket:</b> R$ 984,89 é 17% acima do de outubro (R$ 843,52) e quase o dobro do de agosto (R$ 548,96) — vale checar se há reingressos com débito acumulado nessa leva. A fonte não trouxe quebra por campanha, então esse detalhamento aparece como indisponível, não como zero.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -3055,9 +3076,21 @@ const NEGOCIACOES = [
   {mes:'Jul/26', valor:402369, contatos:804},
   {mes:'Ago/26', valor:375041, contatos:null},
   {mes:'Set/26', valor:354401, contatos:null},   // posição de 07/10 — mesma coluna RECUPERADO da tabela por faixa
-  // Out/26 sai da MESMA coluna RECUPERADO do quadro por faixa da abertura de
-  // 02/10. Contatos não vieram no relatório: fica null, nunca zero.
-  {mes:'Out/26', valor:244618, contatos:null},
+  // ── CORREÇÃO DE 13/11/2026 · OUT/26: 244.618 -> 569.086 ────────────────
+  // Esta linha tinha ficado para trás. Em 03/11 a tabela por faixa de outubro
+  // foi atualizada para a nova posição de cobrança (recuperado 244.618 ->
+  // 569.086), mas NEGOCIACOES continuou com o número da abertura de 02/10.
+  // Resultado: o painel mostrava DOIS valores para o mesmo mês — R$ 244.618
+  // aqui e R$ 569.086 no quadro por faixa. É exatamente o que a regra escrita
+  // nesta estrutura manda evitar ("Deixá-lo em 206.723 colocaria dois números
+  // para o mesmo mês na mesma tela"). Agosto e setembro já estavam coerentes
+  // entre as duas estruturas; só outubro divergia, em R$ 324.468.
+  // Nenhum valor foi inventado: 569.086 é o totRec que já estava publicado na
+  // tabela por faixa desde 03/11.
+  {mes:'Out/26', valor:569086, contatos:null},
+  // Nov/26 sai da MESMA coluna RECUPERADO do quadro por faixa, posição de
+  // 05/11/2026. Contatos não vieram no relatório: fica null, nunca zero.
+  {mes:'Nov/26', valor:263461, contatos:null},
 ];
 // Mar–jun vêm da apresentação da gestora (R$ 460.277 · 1.498 contatos).
 // Jul e ago vêm das tabelas por faixa da Cobrança, coluna RECUPERADO do período:
@@ -3085,7 +3118,8 @@ const INADIMPLENCIA = [
 // o que venceu NO MÊS entre titulares pagantes. Este aqui é o estoque acumulado,
 // e é o número que casa com o gráfico por faixa logo abaixo.
 // Mar a jun não têm estoque em R$ na base — só a taxa percentual.
-const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':601528, 'Out/26':685312};   // abertura do mês; não muda com o avanço da cobrança
+// 13/11: Nov/26 = 583.011, a base declarada na posição de 05/11/2026.
+const NEG_ESTOQUE = {'Jun/26':760494, 'Jul/26':784793, 'Ago/26':590002, 'Set/26':601528, 'Out/26':685312, 'Nov/26':583011};   // abertura do mês; não muda com o avanço da cobrança
 function estoqueDoRecorte(meses){
   for(let i=meses.length-1; i>=0; i--){          // regra de estoque: último mês com dado
     if(NEG_ESTOQUE[meses[i]] != null) return {mes:meses[i], valor:NEG_ESTOQUE[meses[i]]};
@@ -4220,6 +4254,45 @@ const NEG_FAIXAS = [
       {fx:'FX3',   idade:'3 meses',   ref:'jul/26',     abertura:50653,  rec:46670,  ab:3983,  pctOficial:92},
       {fx:'FORA',  idade:'4+ meses',  ref:'<= jun/26',  abertura:216421, rec:182827, ab:33594, pctOficial:84},
     ], selo:205593500 },
+  // ── NOVEMBRO/26 · POSIÇÃO DE 05/11/2026 ────────────────────────────────
+  // ENTRA COMO COMPETÊNCIA NOVA, NÃO como releitura de outubro. A régua
+  // AVANÇOU um mês, e é isso que prova que não é o mesmo quadro:
+  //        posição 03/11 (Out/26)        posição 05/11 (Nov/26)
+  //   FX1  dívida de set/26  328.044     dívida de OUT/26  334.833
+  //   FX2  dívida de ago/26   90.193     dívida de SET/26   81.788
+  //   FX3  dívida de jul/26   50.653     dívida de AGO/26   60.157
+  //   FORA até jun/26        216.421     até JUL/26        106.233
+  // As quatro aberturas mudaram de coorte: em novembro a dívida "de 1 mês" é
+  // a de outubro, não mais a de setembro. Sobrescrever Out/26 com estes
+  // números apagaria a posição de outubro E rotularia dado de novembro como
+  // se fosse de outubro. A convenção do painel é a mesma desde junho: a
+  // entrada do mês M tem FX1 = dívida de M-1.
+  //
+  // CONFERÊNCIA DOS VALORES OFICIAIS, fecha no declarado:
+  //   soma das faixas  inicial 583.011 · aberto 319.550  — EXATOS
+  //   total declarado  583.011 = 319.550 + 263.461       — fecha entre si
+  //   taxa geral       263.461 / 583.011 = 45,1897% -> 45%
+  //   FX1 48,16% · FX2 44,10% · FX3 79,70% · FORA 17,11%
+  //   batem com os 48 / 44 / 80 / 17 declarados
+  //
+  // DIVERGÊNCIA DE R$ 1,00 DA FONTE, PRESERVADA SEM AJUSTE: a FX2 declara
+  // inicial 81.788 e as parcelas somam 81.789 (45.721 + 36.068). O mesmo
+  // R$ 1,00 aparece na coluna RECUPERADO, cujas quatro faixas somam 263.462
+  // contra os 263.461 declarados. Como inicial e aberto fecham exatos e a
+  // linha de total é coerente entre si, vale o declarado — nada foi
+  // redistribuído entre faixas nem compensado em nenhum total.
+  { mes:'Nov/26', label:'Novembro/2026', fechado:false,
+    fonte:'Relatório de cobrança — POSIÇÃO 05/11/2026',
+    importadoEm:'13/11/2026', dataBase:'05/11/2026', competencia:'Novembro/2026',
+    inicio:583011, base:583011, totRec:263461, totAb:319550,
+    taxaOficial:45,
+    divergenciaFonte:{teto:50, motivo:'resíduo de R$ 1 da própria fonte na posição de 05/11/2026 — a FX2 declara inicial R$ 81.788 e as parcelas somam R$ 81.789, e a coluna RECUPERADO soma R$ 263.462 nas quatro faixas contra os R$ 263.461 declarados no total'},
+    faixas:[
+      {fx:'FX1',   idade:'1 mês',     ref:'out/26',     abertura:334833, rec:161270, ab:173563, pctOficial:48},
+      {fx:'FX2',   idade:'2 meses',   ref:'set/26',     abertura:81788,  rec:36068,  ab:45721,  pctOficial:44},
+      {fx:'FX3',   idade:'3 meses',   ref:'ago/26',     abertura:60157,  rec:47947,  ab:12210,  pctOficial:80},
+      {fx:'FORA',  idade:'4+ meses',  ref:'<= jul/26',  abertura:106233, rec:18177,  ab:88056,  pctOficial:17},
+    ], selo:174903400 },
   // ── ATUALIZAÇÃO DE 07/10 · SETEMBRO/26 (nova posição oficial de cobrança) ──
   // SUBSTITUI a posição de 05/10 (base 576.700 · recuperado 329.577 · aberto
   // 247.124 · 57,15%). Não é mês novo nem soma: é a mesma competência relida.
@@ -4854,7 +4927,31 @@ function renderNegFaixas(meses, pfx){
     /* nota de fallback removida em 14/08 a pedido do diretor. O comportamento
        segue igual: sem tabela por faixa no recorte, exibe o último mês disponível. */
     (usados.length>1 ? `<div class="alert-box" style="border-color:var(--gold); margin-top:12px;"><span>📐</span><div><b>Intervalo selecionado.</b> Os cards e as colunas mostram <b>${p.label}</b>, o último mês do período. É regra de estoque: somar meses contaria a mesma dívida mais de uma vez, porque o saldo não pago apenas muda de faixa no mês seguinte.</div></div>` : '') +
-    `<div class="card-meta" style="margin-top:10px;">A taxa cai de <b style="color:#00e5a0">${fmtPct(p.faixas[0].rec/p.faixas[0].abertura*100)}</b> na faixa 1 para <b style="color:#9b86ff">${fmtPct(p.faixas[3].rec/p.faixas[3].abertura*100)}</b> fora da faixa: cada mês que o débito atravessa sem acordo reduz muito a chance de voltar.</div>`;
+    `<div class="card-meta" style="margin-top:10px;">A taxa cai de <b style="color:#00e5a0">${fmtPct(p.faixas[0].rec/p.faixas[0].abertura*100)}</b> na faixa 1 para <b style="color:#9b86ff">${fmtPct(p.faixas[3].rec/p.faixas[3].abertura*100)}</b> fora da faixa: cada mês que o débito atravessa sem acordo reduz muito a chance de voltar.</div>`
+    // ── REGISTRO DO RESÍDUO DA PRÓPRIA FONTE (13/11/2026) ───────────────────
+    // A trava __AUDIT_NEG tolera até TOL_FAIXA_NEG (R$ 5) sem emitir observação,
+    // porque a Cobrança publica em reais inteiros. O efeito colateral é que um
+    // resíduo de R$ 1 ficava registrado só no código, invisível para quem lê o
+    // painel. Aqui ele passa a aparecer na tela da posição em que ocorre —
+    // calculado dos próprios números exibidos, sem compensar nada.
+    + (function(){
+        const f0=n=>Math.round(Math.abs(n)).toLocaleString('pt-BR');
+        const r=[];
+        p.faixas.forEach(f=>{ const d=(f.rec+f.ab)-f.abertura;
+          if(d) r.push(`<b>${f.fx}</b> — inicial informado R$ ${f0(f.abertura)} contra R$ ${f0(f.rec+f.ab)} de recuperado + em aberto (R$ ${f0(d)})`); });
+        const sI=p.faixas.reduce((t,f)=>t+f.abertura,0),
+              sR=p.faixas.reduce((t,f)=>t+f.rec,0),
+              sA=p.faixas.reduce((t,f)=>t+f.ab,0);
+        if(sI!==p.base)   r.push(`<b>abertura</b> — total informado R$ ${f0(p.base)} contra R$ ${f0(sI)} somando as quatro faixas (R$ ${f0(p.base-sI)})`);
+        if(sR!==p.totRec) r.push(`<b>recuperado</b> — total informado R$ ${f0(p.totRec)} contra R$ ${f0(sR)} somando as quatro faixas (R$ ${f0(p.totRec-sR)})`);
+        if(sA!==p.totAb)  r.push(`<b>em aberto</b> — total informado R$ ${f0(p.totAb)} contra R$ ${f0(sA)} somando as quatro faixas (R$ ${f0(p.totAb-sA)})`);
+        if(!r.length) return '';
+        const db = p.dataBase ? 'posição de '+p.dataBase : (p.importadoEm ? 'importado em '+p.importadoEm : 'data-base não informada');
+        return `<div class="alert-box" style="border-color:var(--muted); margin-top:12px;"><span>🧾</span><div>`
+          + `<b>Resíduo da própria fonte — ${p.competencia||p.label}, ${db}.</b> ${r.join('; ')}. `
+          + `A diferença já vem assim do relatório da Cobrança. Os valores estão exibidos <b>exatamente como informados</b>, sem compensação e sem arredondamento do painel.`
+          + `</div></div>`;
+      })();
   if(_negFaixaAceso) acenderFaixa(_negFaixaAceso), acenderFaixa(_negFaixaAceso);
 }
 
@@ -8680,6 +8777,9 @@ const COBERTURA_REINGRESSO = {
   // reingressos e R$ 75.073,44), substituindo a posição de 16/10 (19 e
   // R$ 12.231,54). A janela passa a cobrir o mês inteiro.
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
+  // 13/11: novembro PARCIAL — fim = 05/11, data de referência do pacote que
+  // trouxe os 26 reingressos. Não usar 30/11: o mês está em curso.
+  nov2026: {ini:'2026-11-01', fim:'2026-11-05'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
