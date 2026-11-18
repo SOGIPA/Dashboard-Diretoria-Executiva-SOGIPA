@@ -1063,7 +1063,7 @@
   <div class="content">
     <div style="margin-bottom:22px;">
       <div style="font-size:24px; font-weight:800;" id="pageBreadcrumbTitle">Visão Geral</div>
-      <div style="font-size:13.5px; color:var(--muted); margin-top:3px;" id="pageBreadcrumbSub">Gestão integrada · Junho/2026</div>
+      <div style="font-size:13.5px; color:var(--muted); margin-top:3px;" id="pageBreadcrumbSub">Gestão integrada</div>
     </div>
 
     <!-- ══════════════════ VISÃO GERAL ══════════════════ -->
@@ -2130,8 +2130,29 @@ const OBRAS_FUNDO = {
   // R$ 1.311.979,41, exatamente o TOTAL declarado. Na carga anterior faltavam
   // R$ 1.073,06 de centavos que o relatório de agosto não publicava — agora
   // publica, e a diferença deixou de existir.
-  dataReferencia: '29/09/2026',
-  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07','31/08','29/09'],
+  // ── POSICAO 31/10/2026 (carga de 18/11/2026) ──────────────────────────────
+  // Fonte: os dois demonstrativos "INDICES CONSTRUTIVOS — OUTUBRO/2026"
+  // (quadro de areas + indicadores financeiros, e detalhamento por projeto).
+  // Avanca a posicao de 29/09 sem apagar nada: a serie historica ganhou a
+  // coluna 31/10 e nenhum ponto anterior foi tocado.
+  //
+  // ESCALA RESOLVIDA POR EVIDENCIA, NAO POR SUPOSICAO. O documento usa a MESMA
+  // abreviacao "mi" com DOIS significados diferentes:
+  //   quadro dos 4 cards  -> MILHOES  ("2,39 mi" = R$ 2,39 milhoes)
+  //   tabela de areas     -> MILHARES ("13.850 mi" = R$ 13,85 milhoes)
+  // Prova 1: "Total Investido em Obra 2,39 mi" contra os 20 projetos, que
+  // somam R$ 2.391.856,78 — so fecha se "mi" for milhao.
+  // Prova 2: "total de Area em Indices vendidos 13.850 mi" contra o card
+  // "Total Recebido 13.8 mi" — so fecha se os 13.850 forem MILHARES.
+  // Nenhum valor foi multiplicado ou dividido fora disso.
+  //
+  // AS AREAS E A COMERCIALIZACAO NAO MUDARAM de setembro para outubro: area
+  // bruta, liquida, vendida, disponivel, comissao e as quatro participacoes
+  // vieram identicas, e ja estavam corretas no painel. Foram CONFERIDAS, nao
+  // reescritas. As identidades fecham exatas: 112.248,29 = 15.432,43 +
+  // 96.815,86 e 118.156,09 = 112.248,29 + 5.907,80.
+  dataReferencia: '31/10/2026',
+  posicoesLabels: ['31/03','30/04','31/05','30/06','31/07','31/08','29/09','31/10'],
   acompanhamento: [
     {label:'31/03', investidoAcum:294665.52, saldo:297163.42, obrasAtivas:1},
     {label:'30/04', investidoAcum:362444.42, saldo:228719.00, obrasAtivas:2},
@@ -2139,10 +2160,22 @@ const OBRAS_FUNDO = {
     {label:'30/06', investidoAcum:550614.82, saldo:1666587.37, obrasAtivas:7},
     {label:'31/07', investidoAcum:850235.78, saldo:2199758.39, obrasAtivas:10},
     {label:'31/08', investidoAcum:899504.76, saldo:2996605.86, obrasAtivas:12},
-    {label:'29/09', investidoAcum:1311979.41, saldo:2584131.21, obrasAtivas:15}
+    {label:'29/09', investidoAcum:1311979.41, saldo:2584131.21, obrasAtivas:15},
+    // 31/10: investido acumulado dos 20 projetos do demonstrativo, conferido
+    // ao centavo. O saldo vem da identidade ja documentada do painel
+    // (recebido - investido), NAO do card arredondado — ver saldoDisponivel.
+    {label:'31/10', investidoAcum:2391856.78, saldo:1504253.84, obrasAtivas:20}
   ],
   // Conta Corrente Mensal, copiada da fonte. Setembro é o primeiro mês SEM
   // entrada: R$ 0,00 recebido e R$ 412.474,65 investido, o que derruba o saldo.
+  //
+  // OUTUBRO NAO FOI ACRESCENTADO AQUI, de proposito. Os dois demonstrativos de
+  // outubro trazem areas, comercializacao, quatro indicadores arredondados e os
+  // investimentos por projeto — NAO trazem conta corrente mensal. Inventar a
+  // linha de outubro exigiria arbitrar quanto entrou no fundo no mes, e nao ha
+  // dado para isso. A serie para em Set/26 e a lacuna fica dita. (A diferenca de
+  // R$ 35.746,16 entre o saldo derivado e o declarado no card sugere justamente
+  // que houve entrada nao detalhada — ver saldoDisponivel.)
   fluxoMensal: [
     {mes:'Fev/26', saldoIni:0.00, entradas:453789.70, investimentos:0.00, saldoFim:453789.70},
     {mes:'Mar/26', saldoIni:453789.70, entradas:137373.72, investimentos:294000.00, saldoFim:297163.42},
@@ -2161,36 +2194,74 @@ const OBRAS_FUNDO = {
   // desta fonte, com centavos, e soma exatamente R$ 1.311.979,41.
   // ANTES desta carga a coluna 31/08 existia no rótulo mas TODAS as séries
   // tinham só 5 pontos — a coluna renderizava zerada na tela.
+  // 18/11: cada serie ganhou o 8o ponto (31/10) e entraram 5 obras novas,
+  // com zeros ate 29/09 porque realmente nao existiam antes — nao e dado
+  // ausente tratado como zero, e investimento que comecou em outubro.
+  // Os 20 totais somam R$ 2.391.856,78, igual ao declarado.
   obrasNoTempo: [
-    {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52,341665.52,341665.52], entrou:'31/03', total:341665.52},
-    {nome:'Quadras Recreativas', cor:'#3d7bff', serie:[0.00,52174.42,84447.00,84447.00,84447.00,84447.00,84447.00], entrou:'30/04', total:84447.00},
-    {nome:'Sanitários', cor:'#00e5a0', serie:[0.00,0.00,34954.50,80039.70,89999.70,89999.70,89999.70], entrou:'31/05', total:89999.70},
-    {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
-    {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08,170000.00,177158.04], entrou:'30/06', total:177158.04},
-    {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00,24000.00,28704.00], entrou:'30/06', total:28704.00},
-    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,7275.00,7275.00,7275.00], entrou:'30/06', total:7275.00},
-    {nome:'Telhado Tênis', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00,78000.00,78000.00], entrou:'31/07', total:78000.00},
-    {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48,38144.48,38144.48], entrou:'31/07', total:38144.48},
-    {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00,17900.00,17900.00], entrou:'31/07', total:17900.00},
-    {nome:'Laje Infinity', cor:'#84cc16', serie:[0.00,0.00,0.00,0.00,0.00,23000.00,23000.00], entrou:'31/08', total:23000.00},
-    {nome:'Reservatório Rest. Tênis', cor:'#facc15', serie:[0.00,0.00,0.00,0.00,0.00,15000.00,15240.00], entrou:'31/08', total:15240.00},
-    {nome:'Telhado Sede Leopoldina', cor:'#e879f9', serie:[0.00,0.00,0.00,0.00,0.00,0.00,379776.92], entrou:'29/09', total:379776.92},
-    {nome:'Quadras Esportivas', cor:'#5a5c78', serie:[0.00,0.00,0.00,0.00,0.00,0.00,21034.45], entrou:'29/09', total:21034.45},
-    {nome:'Aquecimento Piscinas', cor:'#b0b0d0', serie:[0.00,0.00,0.00,0.00,0.00,0.00,634.30], entrou:'29/09', total:634.30}
+    {nome:'Aquecedor Piscinas', cor:'#e8192c', serie:[294665.52,310270.00,319750.00,341665.52,341665.52,341665.52,341665.52,341665.52], entrou:'31/03', total:341665.52},
+    {nome:'Quadras Recreativas', cor:'#3d7bff', serie:[0.00,52174.42,84447.00,84447.00,84447.00,84447.00,84447.00,84447.00], entrou:'30/04', total:84447.00},
+    {nome:'Sanitários', cor:'#00e5a0', serie:[0.00,0.00,34954.50,80039.70,89999.70,89999.70,89999.70,89999.70], entrou:'31/05', total:89999.70},
+    {nome:'Área de Convivência', cor:'#f2b705', serie:[0.00,0.00,9000.00,9000.00,9000.00,9000.00,9000.00,9000.00], entrou:'31/05', total:9000.00},
+    {nome:'Salão Panorâmico', cor:'#a855f7', serie:[0.00,0.00,0.00,11621.10,163600.08,170000.00,177158.04,177158.04], entrou:'30/06', total:177158.04},
+    {nome:'Academia Atletas', cor:'#06b6d4', serie:[0.00,0.00,0.00,20204.00,20204.00,24000.00,28704.00,28704.00], entrou:'30/06', total:28704.00},
+    {nome:'Tubulações Piscinas', cor:'#fb923c', serie:[0.00,0.00,0.00,3637.50,7275.00,7275.00,7275.00,7275.00], entrou:'30/06', total:7275.00},
+    {nome:'Telhado Tênis', cor:'#22d3ee', serie:[0.00,0.00,0.00,0.00,78000.00,78000.00,78000.00,260000.00], entrou:'31/07', total:260000.00},
+    {nome:'Plano Diretor', cor:'#f472b6', serie:[0.00,0.00,0.00,0.00,38144.48,38144.48,38144.48,38144.48], entrou:'31/07', total:38144.48},
+    {nome:'Vestiários', cor:'#8b8fa8', serie:[0.00,0.00,0.00,0.00,17900.00,17900.00,17900.00,17900.00], entrou:'31/07', total:17900.00},
+    {nome:'Laje Infinity', cor:'#84cc16', serie:[0.00,0.00,0.00,0.00,0.00,23000.00,23000.00,23000.00], entrou:'31/08', total:23000.00},
+    {nome:'Reservatório Rest. Tênis', cor:'#facc15', serie:[0.00,0.00,0.00,0.00,0.00,15000.00,15240.00,15240.00], entrou:'31/08', total:15240.00},
+    {nome:'Telhado Sede Leopoldina', cor:'#e879f9', serie:[0.00,0.00,0.00,0.00,0.00,0.00,379776.92,430419.85], entrou:'29/09', total:430419.85},
+    {nome:'Quadras Esportivas', cor:'#5a5c78', serie:[0.00,0.00,0.00,0.00,0.00,0.00,21034.45,63103.35], entrou:'29/09', total:63103.35},
+    {nome:'Aquecimento Piscinas', cor:'#b0b0d0', serie:[0.00,0.00,0.00,0.00,0.00,0.00,634.30,3184.08], entrou:'29/09', total:3184.08},
+    {nome:'Iluminação Tênis', cor:'#f2b705', serie:[0.00,0.00,0.00,0.00,0.00,0.00,0.00,16900.00], entrou:'31/10', total:16900.00},
+    {nome:'Caminho Alternativo', cor:'#06b6d4', serie:[0.00,0.00,0.00,0.00,0.00,0.00,0.00,30000.00], entrou:'31/10', total:30000.00},
+    {nome:'Emolumentos', cor:'#fb923c', serie:[0.00,0.00,0.00,0.00,0.00,0.00,0.00,24715.76], entrou:'31/10', total:24715.76},
+    {nome:'Máquinas e Equip.', cor:'#ffd32a', serie:[0.00,0.00,0.00,0.00,0.00,0.00,0.00,680000.00], entrou:'31/10', total:680000.00},
+    {nome:'Taxas e Custas', cor:'#a855f7', serie:[0.00,0.00,0.00,0.00,0.00,0.00,0.00,51000.00], entrou:'31/10', total:51000.00},
   ],
+  // TOTAL RECEBIDO NO FUNDO, nao total comercializado — sao grandezas
+  // diferentes, como o proprio pedido adverte. Os R$ 3.896.110,62 sao a soma
+  // das entradas da conta corrente (fev a ago/26). O card "Total Recebido
+  // 13,8 mi" do demonstrativo e o total da COMERCIALIZACAO; desse montante,
+  // R$ 9,95 mi foram para endividamento e o que sobrou entrou no fundo:
+  // 13.850.020 - 9.950.000 = 3.900.020, contra os 3.896.110,62 da conta
+  // corrente — R$ 3.909,38 de diferenca, resíduo do arredondamento dos 9,95.
+  // O demonstrativo de OUTUBRO NAO publica conta corrente mensal, entao este
+  // numero NAO foi alterado: nao ha dado novo para ele.
   totalRecebido: 3896110.62,
-  totalInvestido: 1311979.41,
+  // Os 20 projetos do demonstrativo de outubro somam exatamente este valor.
+  totalInvestido: 2391856.78,
   // Regime de COMPETÊNCIA. Não confundir com o saldo do fluxo de caixa:
   // a diferença são investimentos parcelados já reconhecidos, sem desembolso.
-  saldoDisponivel: 2584131.21,
-  // Campos de conciliação: não aparecem na tela, servem de registro. O fluxo de
-  // caixa mais recente é de 24/09 (R$ 2.623.226) e este relatório é de 29/09,
-  // então a diferença de R$ 39.094,79 mistura o efeito do regime de competência
-  // com 5 dias de defasagem entre os dois documentos. NÃO é conciliação fechada.
-  saldoFluxoCaixa: 2623226.00,
-  diferencaConciliacao: 39094.79,
-  notaConciliacao: 'Saldo do fundo no Fluxo de Caixa em 24/09/2026: R$ 2.623.226,00, contra R$ 2.584.131,21 por competência em 29/09/2026. A diferença de R$ 39.094,79 não é conciliação fechada: os dois documentos têm datas-base diferentes (24/09 e 29/09) e ainda há investimentos parcelados reconhecidos por competência cujo desembolso segue o cronograma de pagamento.',
-  pctAplicado: 33.7,   // declarado pela fonte; 1.311.979,41 / 3.896.110,62 = 33,67%
+  //
+  // DERIVADO DA IDENTIDADE, nao copiado do card. 3.896.110,62 - 2.391.856,78
+  // = 1.504.253,84. O card do demonstrativo declara "Saldo Disponivel 1,54 mi",
+  // R$ 35.746,16 acima. A instrucao desta carga e explicita: os quatro cards
+  // sao arredondados na origem e NAO devem substituir lancamentos detalhados
+  // com centavos. Por isso vale o derivado, e o declarado fica registrado
+  // abaixo. A diferenca sugere entrada no fundo em setembro/outubro que o
+  // demonstrativo de outubro nao detalha — PENDENTE DE VALIDACAO.
+  saldoDisponivel: 1504253.84,
+  saldoDeclaradoFonte: 1540000,
+  divergenciaSaldo: 35746.16,
+  // Campos de conciliação com o CAIXA. Atualizados em 18/11 para a posição de
+  // outubro. O saldo da conta dos Índices no último dia útil de outubro (30/10,
+  // série de Necessidades) é R$ 2.268.464, contra R$ 1.504.253,84 por
+  // competência em 31/10 — R$ 764.210,16 de diferença, que CRESCEU muito em
+  // relação aos R$ 39 mil de setembro.
+  // ISSO NÃO É ERRO E NÃO FOI CONCILIADO À FORÇA: outubro reconheceu
+  // R$ 1.079.877,37 de investimento por competência, enquanto o cronograma de
+  // pagamentos dos Índices (aba Fluxo de Caixa) ainda tem R$ 1,5 milhão
+  // programado para sair entre novembro/2026 e dezembro/2027. Obra reconhecida
+  // não é obra paga. Os dois números medem coisas diferentes e NÃO se somam.
+  saldoFluxoCaixa: 2268464.00,
+  diferencaConciliacao: 764210.16,
+  notaConciliacao: 'Saldo da conta dos Índices Construtivos no Fluxo de Caixa em 30/10/2026: R$ 2.268.464,00, contra R$ 1.504.253,84 por competência em 31/10/2026. A diferença de R$ 764.210,16 não é conciliação fechada e cresceu frente aos R$ 39 mil de setembro: outubro reconheceu R$ 1.079.877,37 de investimento por competência, enquanto o cronograma de pagamentos dos Índices ainda tem cerca de R$ 1,5 milhão programado para desembolso entre novembro/2026 e dezembro/2027. Obra reconhecida não é obra paga — as duas bases medem coisas diferentes e não devem ser somadas.',
+  // 18/11: 2.391.856,78 / 3.896.110,62 = 61,39%. O demonstrativo de outubro
+  // nao publica este percentual, entao ele e DERIVADO dos dois valores acima,
+  // pela mesma formula que a fonte usava em setembro.
+  pctAplicado: 61.4,
   // ── Posição patrimonial (mesma fonte, página "Área e Comercialização") ──
   areaTotal: 118156.09,
   areaComissao: 5907.80,
@@ -2206,8 +2277,8 @@ const OBRAS_FUNDO = {
   // é valor que deixou de existir nesta posição.
   aReceber: 0.00,
   // Sem valor a receber, o saldo projetado é o próprio saldo por competência.
-  // Identidade oficial: 3.896.110,62 − 1.311.979,41 = 2.584.131,21.
-  saldoProjetado: 2584131.21,
+  // 18/11, posicao 31/10: 3.896.110,62 − 2.391.856,78 = 1.504.253,84.
+  saldoProjetado: 1504253.84,
   contabilizadoVendas: 13850020,
   pctEndividamento: 71.9,
   pctInvestimentos: 28.1,
@@ -2239,22 +2310,36 @@ const OBRAS_FUNDO = {
   ],
   // Investimentos por obra, na ordem e com os valores exatos da fonte.
   // As 15 linhas somam R$ 1.311.979,41 — o TOTAL declarado, sem diferença.
+  // Investimentos por obra, posicao 31/10/2026. As 20 linhas somam
+  // R$ 2.391.856,78 — o TOTAL declarado, sem diferenca. Nenhum valor foi
+  // arredondado e nenhum projeto de nome parecido foi fundido: 'Reforma
+  // Aquecedor das Piscinas' (341.665,52), 'Aquecimento Piscinas' (3.184,08)
+  // e 'Reforma Tubulacoes das Piscinas' (7.275,00) sao TRES obras distintas,
+  // como ja eram em setembro.
+  // O MES EM UM NUMERO: R$ 1.079.877,37 investidos em outubro, que se
+  // decompoem ao centavo em 5 obras novas (R$ 802.615,76) e 4 avancos
+  // (R$ 277.261,61). As outras 11 obras nao se moveram no mes.
   projetos: [
-    {nome:'Reforma Telhado - Sede Leopoldina', valor:379776.92},
+    {nome:'Reforma Telhado - Sede Leopoldina', valor:430419.85},
     {nome:'Reforma Aquecedor das Piscinas', valor:341665.52},
+    {nome:'Reforma Telhado - Tênis', valor:260000.00},
     {nome:'Reforma Salão Panorâmico', valor:177158.04},
     {nome:'Reforma Sanitários - 3º Andar', valor:89999.70},
     {nome:'Reforma Quadras Recreativas', valor:84447.00},
-    {nome:'Reforma Telhado - Tênis', valor:78000.00},
+    {nome:'Reforma Quadras Esportivas', valor:63103.35},
     {nome:'Plano Diretor', valor:38144.48},
     {nome:'Reforma Academia dos Atletas', valor:28704.00},
     {nome:'Impermeabilização - Laje Infinity', valor:23000.00},
-    {nome:'Reforma Quadras Esportivas', valor:21034.45},
     {nome:'Reforma Vestiários', valor:17900.00},
     {nome:'Reforma Reservatório - Restaurante Tênis', valor:15240.00},
     {nome:'Projeto Área de Convivência', valor:9000.00},
     {nome:'Reforma Tubulações das Piscinas', valor:7275.00},
-    {nome:'Aquecimento Piscinas', valor:634.30},
+    {nome:'Aquecimento Piscinas', valor:3184.08},
+    {nome:'Máquinas e Equipamentos', valor:680000.00},
+    {nome:'Taxas e Custas', valor:51000.00},
+    {nome:'Adequação Caminho Alternativo', valor:30000.00},
+    {nome:'Emolumentos', valor:24715.76},
+    {nome:'Readequação Iluminação Tênis', valor:16900.00},
   ],
 };
 
@@ -3078,9 +3163,28 @@ const REINGRESSO_HISTORICO = [
   // CAMPANHAS: null, não zero — a fonte não trouxe quebra por campanha.
   // TICKET: 25.607,02 / 26 = R$ 984,89, acima dos R$ 843,52 de outubro e dos
   // R$ 548,96 de agosto. Fica registrado como ponto de atenção, não corrigido.
-  {mesKey:'nov2026', periodoTag:'Novembro/2026 (parcial · 01 a 05/11)', fechado:false,
-    total:26, valor:25607.02, campanhas:null,
-    alerta:'<b style="color:var(--gold);">Posição parcial de novembro — 01 a 05/11.</b> São <b>26 reingressos</b> e <b>R$ 25.607,02</b>, com ticket de <b>R$ 984,89</b>. <b>Não é fechamento do mês.</b> <b style="color:var(--gold);">Competência inferida, não declarada:</b> a informação chegou junto com a posição de inadimplência de 05/11/2026 e não nomeou o mês. Não pode ser o acumulado do ano nem outubro — que está fechado em 89 reingressos e R$ 75.073,44, número oficial da Secretaria Administrativa, preservado aqui. Resta novembro, parcial até 05/11, e é assim que entra. <b>Confirmar a competência com a Secretaria Administrativa.</b> <b style="color:var(--gold);">Ponto de atenção no ticket:</b> R$ 984,89 é 17% acima do de outubro (R$ 843,52) e quase o dobro do de agosto (R$ 548,96) — vale checar se há reingressos com débito acumulado nessa leva. A fonte não trouxe quebra por campanha, então esse detalhamento aparece como indisponível, não como zero.'},
+  {mesKey:'nov2026', periodoTag:'Novembro/2026 (parcial · 01 a 18/11)', fechado:false,
+    // ── POSICAO OFICIAL DE 18/11/2026 · gestora da Secretaria Administrativa ──
+    // SUBSTITUI os 26 / R$ 25.607,02 da posicao de 05/11. NAO SOMA: 45 e
+    // R$ 42.654,83 sao os acumulados atualizados, nao movimentacao adicional.
+    // Somar daria 71 / R$ 68.261,85, que seria inventar reingresso que nao houve.
+    //
+    // E ACUMULADO DE NOVEMBRO, NAO DO ANO. 45 nao pode ser o acumulado de 2026:
+    // outubro sozinho fechou em 89 e janeiro em 75. A serie jan-out soma 536
+    // reingressos e R$ 407.720,89, toda ela oficial e PRESERVADA intacta. A
+    // unica leitura compativel e novembro parcial, e ela avanca coerentemente
+    // sobre a propria posicao anterior do mes: 26 -> 45 (+19) e R$ 25.607,02 ->
+    // R$ 42.654,83 (+R$ 17.047,81) entre 05 e 18/11.
+    //
+    // NADA FOI DISTRIBUIDO ENTRE OS MESES. A fonte informa dois totais, sem
+    // registro individual e sem quebra por campanha ou por data. Por isso o
+    // historico mensal anterior nao foi tocado e `campanhas` segue null —
+    // indisponivel, nao zero. A distribuicao dos 19 novos reingressos dentro de
+    // novembro fica PENDENTE de registro individual da Secretaria.
+    // Nenhum lancamento foi criado no Fluxo de Caixa a partir deste total: nao
+    // ha comprovacao de recebimento, e reingresso nao e associacao nova.
+    total:45, valor:42654.83, campanhas:null,
+    alerta:'<b style="color:var(--gold);">Posição parcial de novembro — 01 a 18/11.</b> São <b>45 reingressos</b> e <b>R$ 42.654,83</b>, com ticket de <b>R$ 947,89</b>, totais oficiais informados pela gestora da Secretaria Administrativa em 18/11/2026. <b>Não é fechamento do mês.</b> <b style="color:var(--green);">Atualiza, não soma:</b> a posição anterior deste mesmo mês era de 26 reingressos e R$ 25.607,02 até 05/11 — o avanço foi de <b>19 reingressos e R$ 17.047,81</b> em treze dias. <b style="color:var(--gold);">É acumulado de novembro, não do ano:</b> 45 não poderia ser o total de 2026, já que outubro sozinho fechou em 89 e janeiro em 75. A série de janeiro a outubro soma <b>536 reingressos e R$ 407.720,89</b> e está preservada intacta. <b style="color:var(--green);">Ticket em queda e isso é bom sinal:</b> R$ 947,89 contra R$ 984,89 na posição de 05/11 — a leva nova entrou com débito médio menor, afastando um pouco a hipótese de concentração de reingressos com dívida acumulada que a posição anterior sugeria. Ainda assim segue acima dos R$ 843,52 de outubro. <b style="color:var(--gold);">Pendente:</b> a fonte informou apenas os dois totais, sem registro individual, sem data e sem quebra por campanha. Por isso a distribuição dentro do mês e o detalhamento por campanha não foram preenchidos — aparecem como indisponíveis, não como zero. <b>Confirmar com a Secretaria Administrativa</b> que os números são de novembro.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -5827,7 +5931,11 @@ selectView('operacional');
 // NAVEGAÇÃO — SIDEBAR
 // ═══════════════════════════════════════════════════════════
 const PAGE_TITLES = {
-  visaogeral:  {t:'Visão Geral', s:'Gestão integrada · Junho/2026'},
+  // 18/11: o subtitulo trazia "· Junho/2026" FIXO. A Visao Geral acompanha o
+  // filtro de periodo, entao citar um mes congelado no cabecalho estava errado
+  // em qualquer recorte que nao fosse junho. O mes sai; o periodo real continua
+  // aparecendo nos cards e nas tags de cada bloco.
+  visaogeral:  {t:'Visão Geral', s:'Gestão integrada'},
   institucional: {t:'Indicadores Institucionais', s:'Painel do Presidente · visão mensal para o Conselho'},
   diagnostico: {t:'Diagnóstico Gerencial', s:'Relatório gerencial para gestão da diretoria'},
   estrategia:  {t:'Planejamento Estratégico', s:'Mapa Estratégico SOGIPA · 2024–2026 (V11)'},
@@ -5841,7 +5949,10 @@ const PAGE_TITLES = {
   vendas:      {t:'Vendas', s:'Associações novas e metas'},
   retencao:    {t:'CRA — Central de Relacionamento com o Associado', s:'Retenção, satisfação, ocorrências e desligamentos'},
   rh:          {t:'RH', s:'Indicadores de RH e Departamento Pessoal'},
-  locacoes:    {t:'Locações', s:'Locação de espaços · Junho/2026'},
+  // 18/11: idem. Alem de congelado, estava incompleto — a base de locacoes
+  // cobre Junho E Julho/2026 (27 contratos, de 03/06 a 06/07). A propria aba ja
+  // informa essa cobertura, entao o cabecalho nao repete um mes so.
+  locacoes:    {t:'Locações', s:'Locação de espaços'},
   esportes:    {t:'Esportes', s:'Resultado por modalidade'},
   obras:       {t:'Obras', s:'Fundo Índices Construtivos'},
 };
@@ -8906,7 +9017,7 @@ const COBERTURA_REINGRESSO = {
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
   // 13/11: novembro PARCIAL — fim = 05/11, data de referência do pacote que
   // trouxe os 26 reingressos. Não usar 30/11: o mês está em curso.
-  nov2026: {ini:'2026-11-01', fim:'2026-11-05'},
+  nov2026: {ini:'2026-11-01', fim:'2026-11-18'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
@@ -13005,7 +13116,15 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     const kpi = lbl => { const k = (r.kpis||[]).find(x=>x.label===lbl); return k ? k.valor : '—'; };
     miniEl.innerHTML = `
       <div class="mini-stat"><div class="mini-stat-label">Desligados</div><div class="mini-stat-value" style="color:var(--red);">${r.totalDesligamentos!=null?r.totalDesligamentos:kpi('Desligados')}</div></div>
+      ${/* 18/11/2026: RESIDUAL RETIRADO TAMBEM DA VISAO GERAL. E o mesmo
+           indicador que a gestora do CRA mandou remover do Desligamento em
+           18/11 — aqui ele aparecia de novo, abaixo do donut, com o MESMO
+           r.residual. Era duplicacao da apresentacao ja removida, nao um
+           indicador proprio da Visao Geral. Ficam Desligados e Retidos.
+           O dado nao foi apagado: r.residual segue na base, alimentando
+           residuais/deste mes e a analise do mes.
       <div class="mini-stat"><div class="mini-stat-label">Residual</div><div class="mini-stat-value" style="color:var(--yellow);">${r.residual!=null?r.residual:kpi('Residuais')}</div></div>
+      */''}
       <div class="mini-stat"><div class="mini-stat-label">Retidos</div><div class="mini-stat-value" style="color:var(--green);">${kpi('Retidos')}</div></div>`;
   }
 
@@ -13758,81 +13877,70 @@ const DESLIGAMENTOS_MESES = {
   },
   nov2026: {
     // ── NOVEMBRO/2026 PARCIAL · POSICAO DE 18/11/2026 ─────────────────────
-    // RECARGA de 'Desligamento 2026(20261118-182553).xlsx'. A posicao anterior
-    // era de 09/11, com 15 linhas; agora sao 20. NAO E MES ENCERRADO: 18 dias
-    // corridos de 30. A aba Evolucao SEGUE sem declarar nada para novembro —
-    // celula vazia —, por isso nov2026 continua FORA de DESLIGAMENTO_EVOLUCAO.
-    // Sem declaracao da fonte nao se inventa numero para comparar.
+    // 20 linhas com matricula na aba de Novembro. NAO E MES ENCERRADO: 18 dias
+    // corridos de 30. A aba Evolucao segue sem declarar nada para novembro, por
+    // isso nov2026 continua FORA de DESLIGAMENTO_EVOLUCAO.
     //
-    // SEPARACAO OBRIGATORIA — licenca e retencao NAO sao saida efetiva:
-    //   20 linhas com matricula
-    //   -2 com motivo "licenca"  (matriculas 2842 e 117326)
-    //   -2 com motivo "retencao" (matriculas 1883 e 19641)
-    //   =16 desligamentos
-    // Dos 16, 13 tem data efetiva na coluna DESLIGADO e 3 seguem PENDENTES
-    // (matriculas 119895, 15330 e 119779, solicitadas em 07, 09 e 11/11). As
-    // tres entram na contagem — criterio ja validado do painel desde outubro:
-    // coluna em branco nao descaracteriza a saida.
+    // ── REVISAO DE METODOLOGIA · 18/11/2026 (auditoria) ───────────────────
+    // A carga anterior contava 16 DESLIGADOS, somando 13 com data efetiva de
+    // saida e 3 ainda sem data. O criterio vinha de outubro, onde a gestora
+    // validou linhas sem a coluna DESLIGADO preenchida como desligamento.
+    // AQUI ELE NAO SE APLICA, e a diferenca e o estado do mes: outubro estava
+    // FECHADO quando foi validado, entao aquelas linhas ja tinham desfecho
+    // conhecido. Novembro esta EM CURSO, e uma solicitacao de 07, 09 ou 11/11
+    // sem data de saida pode ainda virar retencao. Contar como efetivada seria
+    // decidir o desfecho antes de ele existir.
+    //   DESLIGADOS = 13  (somente os que tem data efetiva na coluna DESLIGADO)
+    //   PENDENTES  =  3  (matriculas 119895, 15330 e 119779, solicitadas em
+    //                     07, 09 e 11/11 — SEM data, e nenhuma foi inventada)
+    //   RETIDOS    =  4  (2 retencoes + 2 licencas)
+    //   SOLICITACOES TOTAIS = 20 = 13 + 3 + 4, fecha exato.
+    // Os 3 pendentes NAO sumiram: estao em "Programados", o card que ja existia
+    // para solicitacao ainda a processar — nenhum card removido pela gestora
+    // foi restaurado, e "Programados" segue oculto na tela como os demais.
+    // DIVERGENCIA REGISTRADA: pelo criterio de outubro o mes teria 16
+    // desligamentos. Enquanto a regra para mes em curso nao for documentada
+    // pela CRA, vale o numero que se pode afirmar com seguranca, que e 13.
     //
-    // RESIDUAIS x DESTE MES, pela DATA DA SOLICITACAO:
-    //   3 residuais  — solicitados em OUTUBRO (03/10, 13/10 e 20/10)
-    //   13 deste mes — solicitados em novembro
-    //   3 + 13 = 16, fecha exato. Nada foi redistribuido.
-    // SOLICITACOES TOTAIS = 20 = 16 desligamentos + 4 retidos, a mesma
-    // identidade que outubro usa (42 = 37 + 5).
+    // TUDO RECALCULADO SOBRE OS 13, nao herdado dos 16:
+    //   residuais 3 (solicitados em out: 03/10, 13/10 e 20/10) + deste mes 10
+    //   categorias somam 13 e motivos somam 13
+    //   ticket medio R$ 6.206,20 / 12 linhas com o campo = R$ 517,18
+    //   dependentes 12 / 11 linhas com o campo = 1,09
     //
-    // ⚠️ O QUADRO LATERAL DA ABA DE NOVEMBRO ESTA DEFASADO e NAO foi usado
-    // para os cards. Ele declara "Solicitacoes totais 4", "quantos foram
-    // desligados 0" e "quantos programados 0", enquanto a propria aba lista 20
-    // linhas com 13 datas de saida preenchidas. O quadro so enxerga as 4
-    // retencoes/licencas: seu campo "quantos retidos? 4" bate exatamente com a
-    // contagem individual, e os demais campos ficaram para tras. Nos meses
-    // fechados o quadro lateral e a fonte dos cards; aqui, visivelmente
-    // defasado, os cards saem dos REGISTROS INDIVIDUAIS. Fica registrado.
-    // O campo "Total de Desligamentos do mes" do quadro traz 15, o bloco de
-    // categorias traz 13 e os motivos somam 14 — tres numeros do mesmo quadro
-    // que nao concordam entre si nem com as 16 linhas de desligamento. Nenhum
-    // deles foi adotado. PENDENTE DE VALIDACAO da gestora do CRA.
+    // ⚠️ O QUADRO LATERAL DA ABA DE NOVEMBRO ESTA DEFASADO e NAO foi usado:
+    // declara 4 solicitacoes totais e 0 desligados, enquanto a aba lista 20
+    // linhas com 13 datas de saida. So o campo "quantos retidos? 4" bate com a
+    // contagem individual. Os cards saem dos REGISTROS INDIVIDUAIS.
     //
-    // ⚠️ INCONSISTENCIA ENTRE AS DUAS BASES, AMPLIADA. A planilha "Retencao
-    // 2026" nao tem NENHUM registro de novembro: seu ultimo lancamento e de
-    // 28/10. Mas a aba de Desligamento de novembro traz 4 registros de
-    // retencao/licenca. Na carga anterior era 1; agora sao 4. Eles NAO foram
-    // lancados em RETENCAO_CRA nem em LICENCAS_CRA — fazer isso criaria
-    // registros que a base oficial de Retencao nao tem, e as duas contagens
-    // oficiais (43 retencoes e 27 licencas) deixariam de fechar com a propria
-    // planilha. Por isso o card "Retidos" de novembro mostra 4, vindo da aba de
-    // Desligamento, enquanto a coluna Licencas do Historico de Retencao mostra
-    // "nao apurado": sao bases diferentes e a divergencia esta dita, nao
-    // escondida. AGUARDA a gestora definir em qual base esses 4 devem viver.
-    //
-    // Ticket medio sobre os 15 dos 16 que tem o campo preenchido (R$ 7.725,25
-    // / 15 = R$ 515,02); dependentes sobre os 14 que o trazem (16 / 14 = 1,14).
-    // O quadro lateral declara ticket R$ 553,10 e dependentes 1,33 porque seu
-    // range de formula nao alcanca as duas primeiras linhas da aba: R$ 7.725,25
-    // menos os R$ 368 e R$ 167 dessas linhas, divididos por 13, dao exatamente
-    // os R$ 553,0961 declarados. E defeito de range na fonte, nao de leitura.
+    // ⚠️ INCONSISTENCIA ENTRE AS BASES: a planilha "Retencao 2026" nao tem
+    // nenhum registro de novembro (ultimo e 28/10), mas a aba de Desligamento
+    // traz 4 de retencao/licenca. Nao foram lancados em RETENCAO_CRA nem em
+    // LICENCAS_CRA, para nao quebrar os totais oficiais de 43 e 27. Por isso o
+    // card Retidos mostra 4 e a coluna Licencas do Historico mostra "nao
+    // apurado". AGUARDA a gestora definir em qual base esses 4 devem viver.
     periodoTag:'Novembro/2026 (parcial · 01 a 18/11)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'20', sub:'16 desligamentos + 4 retidos'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'20', sub:'13 desligados + 3 pendentes + 4 retidos'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'3', sub:'solicitados em outubro, saída em 01/11', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'solicitados em novembro'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'16', sub:'13 com data efetiva + 3 pendentes', valorCor:'#e8192c'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'10', sub:'solicitados e desligados em novembro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'13', sub:'somente os com data efetiva de saída', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 retenções + 2 licenças · na aba de Desligamento, ausentes da base de Retenção', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'quadro lateral da aba está defasado — não declarado com confiança', valorCor:'#b0b0d0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'3', sub:'solicitados em 07, 09 e 11/11, ainda sem data de saída', valorCor:'#fb923c'},
     ],
-    categorias: [{"nome": "Contribuinte", "qtd": 7, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
-    motivos: [{"motivo": "Financeiro", "qtd": 6, "pct": 37.50, "cor": "#3d7bff"}, {"motivo": "Mudança", "qtd": 5, "pct": 31.25, "cor": "#00e5a0"}, {"motivo": "Não utilização", "qtd": 5, "pct": 31.25, "cor": "#a855f7"}],
-    totalDesligamentos: 16,
-    ticketMedio: 'R$ 515,02', dependentes: '1,1',
+    categorias: [{"nome": "Contribuinte", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 5, "cor": "#3d7bff"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
+    motivos: [{"motivo": "Financeiro", "qtd": 5, "pct": 38.46, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 38.46, "cor": "#a855f7"}, {"motivo": "Mudança", "qtd": 3, "pct": 23.08, "cor": "#00e5a0"}],
+    totalDesligamentos: 13,
+    ticketMedio: 'R$ 517,18', dependentes: '1,1',
     residual: 3, residualLabel: 'Residual de Outubro',
-    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:3, nao:9},
+    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:3, nao:8},
     quadroSocial: null,
     negociacoesDesligados: '—',
     evolucaoDeclarada: null, registrosNaAba: 20, linhasNaAba: 20,
     parcial: true,
-    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Novembro</b>, posição de <b>18/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: 18 dias corridos de 30. A aba Evolução <b>segue sem declarar nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 20 linhas com matrícula: 16 desligamentos, 2 retenções e 2 licenças</b> — retenção e licença não entram como saída efetiva, conforme a regra do CRA. Dos 16, <b>13 têm data efetiva de saída e 3 seguem pendentes</b> (solicitadas em 07, 09 e 11/11); as três contam como desligamento, critério já validado em outubro, porque a coluna em branco não descaracteriza a saída. <b>3 são residuais de outubro</b> — solicitados em 03, 13 e 20/10 e efetivados em 01/11 — e <b>13 foram solicitados no próprio novembro</b>: 3 + 13 = 16, fecha exato, e 20 = 16 + 4 fecha com as solicitações totais. <b style="color:var(--gold);">Movimento desde 09/11:</b> os desligamentos passaram de 14 para 16 e os retidos de nenhum registro para 4 — em nove dias entraram 2 saídas e 4 retenções/licenças, ou seja, <b>o que mais cresceu foi a retenção</b>. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro lidera com 6 (37,5%), mudança e não utilização empatam com 5 cada — perfil diferente de outubro, onde mudança liderava com 35%. Em 18 dias o mês acumula 16 saídas contra as 37 de outubro inteiro: <b>0,9 por dia contra 1,2</b>, ritmo mais baixo, mas o mês não terminou. <b style="color:var(--red);">O quadro lateral da aba está defasado e não foi usado para os cards:</b> declara 4 solicitações totais e 0 desligados, enquanto a própria aba lista 20 linhas com 13 datas de saída preenchidas — só o campo de retidos (4) bate com a contagem individual. Os cards saem dos registros individuais e a divergência fica registrada. <b style="color:var(--red);">Inconsistência entre as bases, ampliada:</b> a planilha de Retenção não tem nenhum registro de novembro (o último é de 28/10), mas a aba de Desligamento traz 4 registros de retenção/licença — era 1 na carga anterior. Não foram lançados na base de Retenção para não quebrar os totais oficiais de 43 retenções e 27 licenças, e é por isso que a coluna Licenças do Histórico aparece como “não apurado” em novembro. Aguarda definição da gestora sobre em qual base esses registros devem viver.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Novembro</b>, posição de <b>18/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: 18 dias corridos de 30. A aba Evolução <b>não declara nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 20 linhas com matrícula: 13 desligamentos efetivados, 3 solicitações pendentes e 4 retenções/licenças</b> — 13 + 3 + 4 = 20, fecha exato. <b style="color:var(--gold);">Mudança de critério nesta carga:</b> a versão anterior contava 16 desligados, incluindo as 3 linhas <b>sem data efetiva de saída</b>. O critério vinha de outubro, mas lá o mês estava <b>fechado</b> quando a gestora validou — aquelas linhas já tinham desfecho conhecido. Novembro está em curso, e uma solicitação de 07, 09 ou 11/11 ainda sem data pode virar retenção; contá-la como saída seria decidir o desfecho antes de ele existir. Agora <b>Desligados são só os 13 com data</b>, e os 3 pendentes aparecem em Programados. <b style="color:var(--gold);">Divergência registrada:</b> pelo critério de outubro o mês teria 16 — a regra para mês em curso ainda não está documentada pela CRA e precisa de validação. <b>3 são residuais de outubro</b> (solicitados em 03, 13 e 20/10, efetivados em 01/11) e <b>10 foram solicitados e desligados no próprio novembro</b>. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro e não utilização empatam com 5 cada, 77% juntos, e mudança soma 3 — perfil diferente de outubro, onde mudança liderava com 35%. Em 18 dias o mês acumula 13 saídas confirmadas contra as 37 de outubro inteiro: <b>0,7 por dia contra 1,2</b>, ritmo mais baixo, mas o mês não terminou e há 3 solicitações em aberto. <b style="color:var(--red);">O quadro lateral da aba está defasado e não foi usado:</b> declara 4 solicitações totais e 0 desligados, enquanto a aba lista 20 linhas com 13 datas de saída — só o campo de retidos (4) bate com a contagem individual. <b style="color:var(--red);">Inconsistência entre as bases:</b> a planilha de Retenção não tem nenhum registro de novembro (o último é de 28/10), mas a aba de Desligamento traz 4 de retenção/licença. Não foram lançados na base de Retenção para não quebrar os totais oficiais de 43 retenções e 27 licenças, e é por isso que a coluna Licenças do Histórico aparece como “não apurado”. Aguarda definição da gestora.',
   },
+
 
 };
 
