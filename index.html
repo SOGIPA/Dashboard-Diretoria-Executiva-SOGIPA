@@ -2026,46 +2026,93 @@ const PROJECAO = [
   // O limite de R$ 6,4 milhões é crédito, não entrada.
   {d:'29/out', mov:-22265, banco:-771912, indices:2267302, total:7895389.86},
   {d:'30/out', mov:-45656, banco:-817568, indices:2268464, total:7850895.67},
-  {d:'03/nov', mov:40065, banco:-777504, indices:2268464, total:7890960.29},
-  {d:'04/nov', mov:103900, banco:-673604, indices:2268464, total:7994860.29},
-  {d:'05/nov', mov:-43796, banco:-717399, indices:2243748, total:7926348.72},
-  {d:'06/nov', mov:-441595, banco:-1158994, indices:2127066, total:7368072.27},
-  {d:'09/nov', mov:87700, banco:-1071294, indices:2106768, total:7435474.02},
-  {d:'10/nov', mov:-113683, banco:-1184976, indices:2092358, total:7307381.92},
-  {d:'11/nov', mov:1425000, banco:240024, indices:1928363, total:8568386.92},
-  {d:'12/nov', mov:177645, banco:417669, indices:1928363, total:8746032.32},
-  {d:'13/nov', mov:-196450, banco:221219, indices:1928363, total:8549582.32},
-  {d:'16/nov', mov:26000, banco:247219, indices:1928363, total:8575582.32},
-  {d:'17/nov', mov:23051, banco:270270, indices:1928363, total:8598633.66},
-  {d:'18/nov', mov:85000, banco:355270, indices:1928363, total:8683633.66},
-  {d:'19/nov', mov:-986600, banco:-631330, indices:1921232, total:7689902.69},
-  {d:'23/nov', mov:-30100, banco:-661430, indices:1921232, total:7659802.69},
-  {d:'24/nov', mov:-41518, banco:-702947, indices:1921232, total:7618285.19},
-  {d:'25/nov', mov:10000, banco:-692947, indices:1921232, total:7628285.19},
-  {d:'26/nov', mov:24475, banco:-668472, indices:1921232, total:7652760.19},
-  {d:'27/nov', mov:-40300, banco:-708772, indices:1875932, total:7567160.19},
-  {d:'30/nov', mov:-286110, banco:-994882, indices:1854932, total:7260050.19},
-  {d:'01/dez', mov:31254, banco:-963628, indices:1822680, total:7259051.39},
-  {d:'02/dez', mov:2500, banco:-961128, indices:1822680, total:7261551.39},
-  {d:'03/dez', mov:-95700, banco:-1056828, indices:1822680, total:7165851.39},
-  {d:'04/dez', mov:-383079, banco:-1439907, indices:1822680, total:6782772.39},
-  {d:'07/dez', mov:165754, banco:-1274153, indices:1792163, total:6918009.43},
-  {d:'08/dez', mov:85663, banco:-1188490, indices:1792163, total:7003672.73},
-  {d:'09/dez', mov:70885, banco:-1117605, indices:1792163, total:7074557.89},
-  {d:'10/dez', mov:-55800, banco:-1173405, indices:1445371, total:6671965.89},
-  {d:'11/dez', mov:961466, banco:-211939, indices:1445371, total:7633431.39},
-  {d:'14/dez', mov:234472, banco:22533, indices:1445371, total:7867903.39},
-  {d:'15/dez', mov:35923, banco:58456, indices:1445371, total:7903826.39},
-  {d:'16/dez', mov:-5086, banco:53369, indices:1445371, total:7898740.11},
-  {d:'17/dez', mov:12929, banco:66298, indices:1445371, total:7911669.21},
-  {d:'18/dez', mov:-1291578, banco:-1225280, indices:1445371, total:6620091.03},
-  {d:'21/dez', mov:68481, banco:-1156799, indices:1400071, total:6643271.93},
-  {d:'22/dez', mov:-51, banco:-1156850, indices:1400071, total:6643221.04},
-  {d:'23/dez', mov:-20587, banco:-1177437, indices:1400071, total:6622634.32},
-  {d:'24/dez', mov:-119000, banco:-1296437, indices:1400071, total:6503634.32},
-  {d:'28/dez', mov:-34200, banco:-1330637, indices:1400071, total:6469434.32},
-  {d:'29/dez', mov:16841, banco:-1313795, indices:1400071, total:6486275.78},
-  {d:'30/dez', mov:24000, banco:-1289795, indices:1367818, total:6478023.19},
+  // ── RELAÇÃO DE NECESSIDADES · posição 18/11/2026 (Controladoria) ─────────
+  // SUBSTITUI a trajetória de 03/nov em diante, que vinha da posição de 30/10.
+  // 01/out a 30/out NÃO foi tocado: são dias já realizados e esta fonte começa
+  // justamente em 03/nov. As 40 linhas cobrem 03/nov a 30/dez e entram no lugar
+  // das 40 antigas, data por data — mesmo conjunto de datas, nenhuma repetida,
+  // nenhuma criada, nenhuma perdida.
+  //
+  // EMENDA SEM DEGRAU, CONFERIDA: o painel fecha 30/out em -817.568 e a fonte
+  // nova abre 03/nov com movimento de -49.642, o que dá exatamente os -867.210
+  // declarados. O saldo dos Índices também continua em 2.268.464. Zero degrau
+  // na costura — nada entrou em QUEBRAS_CONHECIDAS.
+  //
+  // A CADEIA FECHA EM TODOS OS 40 DIAS: saldo(d) = saldo(d-1) + movimento(d),
+  // sem nenhuma divergência acima de R$ 1. A fórmula do total também fecha:
+  // banco + índices + LIMITE_CREDITO_TOTAL, com resíduo máximo de R$ 0,73 num
+  // único dia, porque banco e índices vêm arredondados em reais inteiros na
+  // apresentação enquanto o total carrega centavos. Nada foi compensado.
+  //
+  // A coluna 'Não Operacionais' do documento vem com traço nas 40 linhas. É
+  // AUSÊNCIA DE INFORMAÇÃO, não zero: os pagamentos dos Índices Construtivos
+  // aparecem na própria coluna de saldo dos Índices, que cai nas datas de
+  // pagamento. Não são somados de novo em lugar nenhum.
+  // O limite de R$ 6,4 milhões é crédito, não entrada: não entra como receita
+  // nem como movimento diário, só compõe o total disponível.
+  //
+  // PROJEÇÃO, NÃO REALIZADO. O documento é de 18/11 e a série começa em 03/11:
+  // só os dias até 18/11 têm posição observada; de 19/nov a 30/dez é projeção.
+  // Nenhum dia foi marcado como realizado por estar no passado do calendário.
+  //
+  // ⚠️ DIVERGÊNCIA ENTRE AS DUAS PÁGINAS DO MESMO DOCUMENTO — R$ 403.305,18.
+  // Esta série derruba o saldo dos Índices em três movimentos que o cronograma
+  // da página 2 NÃO lista:
+  //     10/dez  R$ 338.800,00 — valor idêntico ao Salão Panorâmico que a
+  //                             página 2 agora programa para 11/nov. A queda
+  //                             de 346.792 em 10/dez decompõe exatamente em
+  //                             7.992 (Luminária Tênis) + 338.800.
+  //     01/dez  R$  32.252,59 — Biccateca "Locker" parc. 01/03
+  //     30/dez  R$  32.252,59 — Biccateca "Locker" parc. 02/03
+  // As três parcelas Biccateca saíram inteiramente do cronograma novo.
+  // Conciliação fechada: queda total do saldo 03/11→30/12 R$ 1.250.185 contra
+  // R$ 847.479,89 de cronograma na mesma janela = R$ 402.705,11; os R$ 403.305,18
+  // acima menos R$ 599,89 de créditos/arredondamentos nos demais dias dão
+  // exatamente esse número.
+  // NÃO FOI CORRIGIDO. A série fica como a Controladoria declarou. Se o
+  // cronograma estiver certo, o saldo projetado dos Índices em 30/dez está
+  // SUBESTIMADO em até R$ 403.305,18, e o Total Disponível junto com ele —
+  // isto é, dezembro apareceria pior do que é. PENDENTE DE VALIDAÇÃO.
+  {d:'03/nov', mov:-49642, banco:-867210, indices:2268464, total:7801253.45},
+  {d:'04/nov', mov:93403, banco:-773807, indices:2268464, total:7894656.38},
+  {d:'05/nov', mov:122895, banco:-650912, indices:2244019, total:7993106.79},
+  {d:'06/nov', mov:-439030, banco:-1089943, indices:2127159, total:7437215.97},
+  {d:'09/nov', mov:117411, banco:-972532, indices:2106860, total:7534328.44},
+  {d:'10/nov', mov:139576, banco:-832956, indices:2095893, total:7662936.86},
+  {d:'11/nov', mov:1365868, banco:532912, indices:1757228, total:8690140.28},
+  {d:'12/nov', mov:95362, banco:628274, indices:1757228, total:8785502.43},
+  {d:'13/nov', mov:-53450, banco:574824, indices:1757228, total:8732052.43},
+  {d:'16/nov', mov:-153500, banco:421324, indices:1757228, total:8578552.43},
+  {d:'17/nov', mov:23951, banco:445276, indices:1578824, total:8424099.27},
+  {d:'18/nov', mov:164000, banco:609276, indices:1578824, total:8588099.27},
+  {d:'19/nov', mov:-986600, banco:-377324, indices:1571693, total:7594368.30},
+  {d:'23/nov', mov:-30100, banco:-407424, indices:1571693, total:7564268.30},
+  {d:'24/nov', mov:-39000, banco:-446424, indices:1571693, total:7525268.30},
+  {d:'25/nov', mov:15000, banco:-431424, indices:1571693, total:7540268.30},
+  {d:'26/nov', mov:19375, banco:-412049, indices:1571693, total:7559643.30},
+  {d:'27/nov', mov:-50300, banco:-462349, indices:1526393, total:7464043.30},
+  {d:'30/nov', mov:-286110, banco:-748459, indices:1505393, total:7156933.30},
+  {d:'01/dez', mov:31254, banco:-717206, indices:1473140, total:7155934.50},
+  {d:'02/dez', mov:2500, banco:-714706, indices:1473140, total:7158434.50},
+  {d:'03/dez', mov:-95700, banco:-810406, indices:1473140, total:7062734.50},
+  {d:'04/dez', mov:-383079, banco:-1193485, indices:1473140, total:6679655.50},
+  {d:'07/dez', mov:165754, banco:-1027731, indices:1442623, total:6814892.54},
+  {d:'08/dez', mov:85663, banco:-942067, indices:1442623, total:6900555.84},
+  {d:'09/dez', mov:70885, banco:-871182, indices:1442623, total:6971441.00},
+  {d:'10/dez', mov:-55800, banco:-926982, indices:1095831, total:6568849.00},
+  {d:'11/dez', mov:961466, banco:34483, indices:1095831, total:7530314.50},
+  {d:'14/dez', mov:234472, banco:268955, indices:1095831, total:7764786.50},
+  {d:'15/dez', mov:35923, banco:304878, indices:1095831, total:7800709.50},
+  {d:'16/dez', mov:-5086, banco:299792, indices:1095831, total:7795623.22},
+  {d:'17/dez', mov:12929, banco:312721, indices:1095831, total:7808552.32},
+  {d:'18/dez', mov:-1291578, banco:-978857, indices:1095831, total:6516974.14},
+  {d:'21/dez', mov:68481, banco:-910376, indices:1050531, total:6540155.04},
+  {d:'22/dez', mov:-51, banco:-910427, indices:1050531, total:6540104.15},
+  {d:'23/dez', mov:-20587, banco:-931014, indices:1050531, total:6519517.43},
+  {d:'24/dez', mov:-119000, banco:-1050014, indices:1050531, total:6400517.43},
+  {d:'28/dez', mov:-34200, banco:-1084214, indices:1050531, total:6366317.43},
+  {d:'29/dez', mov:16841, banco:-1067372, indices:1050531, total:6383158.89},
+  {d:'30/dez', mov:24000, banco:-1043372, indices:1018279, total:6374906.30},
 ];
 const LIMITE_CREDITO_TOTAL = 6400000;
 
@@ -7540,6 +7587,76 @@ const PAGAMENTOS_POR_PERIODO = {
     dias:[{data:"03/11/2026",qtd:45,total:225842.74},{data:"04/11/2026",qtd:19,total:63870.53},{data:"05/11/2026",qtd:36,total:102936.33},{data:"06/11/2026",qtd:48,total:815548.16}],
     top:[{nome:"Folha Pagamento",qtd:12,valor:630200.86,pct:52.16},{nome:"Gba Brasil Administracao De Pessoas Ltda",qtd:1,valor:162739.8,pct:13.47},{nome:"Santori Moveis",qtd:1,valor:85945,pct:7.11},{nome:"Wtec",qtd:1,valor:30516.95,pct:2.53},{nome:"5 Continentes Viagens E Assessoria Ltda",qtd:4,valor:26343.43,pct:2.18},{nome:"M.A.G.F. (pessoa física)",qtd:2,valor:24715.76,pct:2.05},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:1,valor:16849.13,pct:1.39},{nome:"Centro De Integração Empresa Escola",qtd:1,valor:16125.67,pct:1.33},{nome:"Mercadopago.com Representacoes Ltda.",qtd:6,valor:12982.34,pct:1.07},{nome:"Teletex Sul Tecnologia E Automacao Ltda",qtd:1,valor:12500,pct:1.03},{nome:"Contabilizi Consultoria Ltda",qtd:2,valor:11881.6,pct:0.98},{nome:"Escola Racing Futsal Porto Alegre",qtd:1,valor:10889.77,pct:0.90},{nome:"Beckenkamp Vestuario Ltda",qtd:1,valor:10208.02,pct:0.84},{nome:"Fabricio Serviços De Divulgação De Eventos Ei",qtd:1,valor:8603.6,pct:0.71},{nome:"Mogi & Mogi Consultorias, Treinamentos E Proj",qtd:1,valor:7967.48,pct:0.66}],
     bancos:[{nome:"BANRISUL",qtd:136,total:930782.86},{nome:"ÍNDICES CONS",qtd:5,total:141847.71},{nome:"PROJETO OLIM",qtd:1,total:58783.22},{nome:"CBC EDIT 11 R",qtd:1,total:50082.48},{nome:"PATROCÍNIO A",qtd:2,total:13371.6},{nome:"ALTO RENDIME",qtd:1,total:7500},{nome:"PROJ SOGIPA",qtd:1,total:4500},{nome:"Caixa Sogipa",qtd:1,total:1329.89}]},
+  // ── RELATORIO PAGAMENTOS 09.11 a 13.11.26 (Controladoria), aba "09.11 - 13.11" ──
+  // CARGA DE 18/11/2026. 07/11 foi sabado e 08/11 domingo: o corte vai de
+  // segunda (09) a sexta (13), encostado no corte anterior sem lacuna nem
+  // sobreposicao. Nenhuma das 202 datas de pagamento e anterior a 09/11.
+  //
+  // CONCILIADO AO CENTAVO: 202 pagamentos, R$ 1.054.196,41, igual ao TOTAL
+  // GERAL da planilha (que NAO foi importado como pagamento). Os cinco totais
+  // diarios fecham exatos contra os informados. O proprio quadro gerencial da
+  // fonte confirma a leitura por outro caminho: 34 lancamentos >= R$ 5.000
+  // somando R$ 832.913,67 (79,0093%) e 168 abaixo somando R$ 221.282,74 —
+  // reproduzidos identicos a partir dos registros, o que fecha a importacao.
+  // `maiorQtd/maiorTotal` e `menorQtd/menorTotal` sao essas duas faixas.
+  //
+  // COMPETENCIA PELA DATA EFETIVA DE PAGAMENTO, nao pela emissao nem pelo
+  // vencimento, como manda a instrucao. Acrescimos de R$ 8,13 em 2 registros
+  // (AZ Motobombas R$ 8,11 e Mercadopago R$ 0,02) e nenhum desconto — o total
+  // declarado ja esta liquido, e os centavos nao foram arredondados.
+  //
+  // ZERO DUPLICIDADE. Chave composta (titulo + parcela + fornecedor + valor +
+  // data de pagamento + banco): nenhuma repeticao entre os 202. Ha 3 pares
+  // (fornecedor, valor) repetidos, que NAO sao duplicidade — titulo, parcela
+  // ou data diferem. Contra o corte 03-06/nov nao ha interseccao possivel:
+  // janelas de datas disjuntas.
+  //
+  // SEM FOLHA DE PAGAMENTO NESTA JANELA. "Folha Pagamento" aparece com apenas
+  // R$ 1.209,13, contra R$ 630.200,86 no corte anterior: a folha de novembro
+  // saiu em 06/11 e ja esta em 03-06nov. Por isso este corte tem 202
+  // pagamentos (54 mais) e um valor MENOR que o anterior. Nao e queda de
+  // despesa — e calendario. Nada foi somado duas vezes.
+  //
+  // CONTAS PRESERVADAS COMO NA FONTE, sem reclassificar: BANRISUL, INDICES
+  // CONS, PROJETO OLIM, Caixa Sogipa e PATROCINIO A. Os R$ 387.379,95 da
+  // conta INDICES CONS sao vinculados a obras e NAO sao despesa operacional:
+  // esta base e de REALIZADO e nao se soma ao Fluxo de Caixa, ao Resumo de
+  // Necessidades nem ao cronograma dos Indices, que ja os refletem.
+  //
+  // LGPD: 69 fornecedores pessoa fisica foram convertidos em iniciais com o
+  // sufixo "(pessoa fisica)". Nenhum deles entra no top-15 por valor.
+  //
+  // ⚠️ ACHADO 1 — O SALAO PANORAMICO DE R$ 338.800,00 FOI PAGO EM 11/11/2026,
+  // pela conta INDICES CONS (titulo 1/1, CL Solucoes em Engenharia). Isto
+  // CONFIRMA, com documento de realizado, a divergencia que o v388 registrou
+  // como pendente: a serie diaria da Relacao de Necessidades continua
+  // projetando R$ 338.800 de saida dos Indices em 10/12, o mesmo valor, ja
+  // pago. A hipotese de dupla contagem deixa de ser ponto cego.
+  //
+  // ⚠️ ACHADO 2 — QUATRO PAGAMENTOS PELA CONTA DOS INDICES EM 13/11 que nao
+  // constam de cronograma de obras nenhum, somando R$ 17.043,20:
+  //   R$ 7.493,20  R.N.C. (pessoa fisica), titulo 69848959
+  //   R$ 5.700,00  P C Pascual e Cia Ltda
+  //   R$ 2.500,00  Fabricio Servicos de Divulgacao de Eventos
+  //   R$ 1.350,00  Suporte Fisioterapia Comercio e Prestacao
+  // Divulgacao de eventos e fisioterapia nao tem natureza evidente de obra.
+  // NAO afirmo irregularidade: pode ser rateio, classificacao contabil ou
+  // servico vinculado a obra. Os tres primeiros pagamentos da conta no periodo
+  // casam ao centavo com o cronograma (GALBO 20.298,25 em 09/11, Cesar V da
+  // Luz 11.238,50 em 10/11, CL Solucoes 338.800,00 em 11/11); estes quatro
+  // nao casam com nada. PENDENTE DE VALIDACAO da Controladoria.
+  //
+  // NAO IMPORTADO DE PROPOSITO: a planilha traz outras duas abas, "DEZEMBRO
+  // 2025" (764 pagamentos, R$ 6.285.983,81) e "01-21 JAN" (436 pagamentos,
+  // R$ 2.833.032,87), com layout de colunas diferente. Nenhuma das duas entra:
+  // dez/2025 esta fora da serie do painel, e janeiro/2026 JA ESTA COMPLETO na
+  // base mensal (PAGAMENTOS_MESES.jan2026 = 640 pagamentos, R$ 4.292.651,46) —
+  // a aba cobre so 01 a 21/01 e seria subconjunto representado duas vezes.
+  // Preservadas sem alteracao; so lemos a aba do periodo.
+  '09-13nov': {label:'09 a 13/11/2026', qtd:202, total:1054196.41, maiorQtd:34, maiorTotal:832913.67, menorQtd:168, menorTotal:221282.74,
+    dias:[{data:"09/11/2026",qtd:42,total:138780.20},{data:"10/11/2026",qtd:41,total:216281.03},{data:"11/11/2026",qtd:15,total:354225.21},{data:"12/11/2026",qtd:27,total:110791.56},{data:"13/11/2026",qtd:77,total:234118.41}],
+    top:[{nome:"Cl Solucoes Em Engenharia Ltda",qtd:1,valor:338800,pct:32.14},{nome:"Unimed Porto Alegre",qtd:1,valor:100353.72,pct:9.52},{nome:"Departamento Municipal De Agua E Esgotos",qtd:6,valor:83097.93,pct:7.88},{nome:"Capitale Energia Comercializadora Ltda.",qtd:1,valor:35937.65,pct:3.41},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:1,valor:30084.78,pct:2.85},{nome:"Galbo Engenharia Ltda - Epp",qtd:1,valor:20298.25,pct:1.93},{nome:"Comite Brasileiro De Clubes",qtd:1,valor:17842.50,pct:1.69},{nome:"Postura Fitness Ltda",qtd:1,valor:17500.98,pct:1.66},{nome:"Soji Centro De Capacitacao De Idiomas Ltda",qtd:1,valor:15470.74,pct:1.47},{nome:"Minuzzi Faccin E Simon Sociedade De Advogados",qtd:2,valor:13812.05,pct:1.31},{nome:"Jb Esporte E Marketing Ltda",qtd:1,valor:13471.79,pct:1.28},{nome:"Beckenkamp Vestuario Ltda",qtd:2,valor:13020.61,pct:1.24},{nome:"Stv Seguranca Tecnologia E Vigilancia",qtd:1,valor:12828.74,pct:1.22},{nome:"Mercadopago.com Representacoes Ltda.",qtd:14,valor:12682.97,pct:1.20},{nome:"Cesar V Da Luz & Melero Cia Ltda",qtd:1,valor:11238.50,pct:1.07}],
+    bancos:[{nome:"BANRISUL",qtd:138,total:522861.48},{nome:"ÍNDICES CONS",qtd:7,total:387379.95},{nome:"PROJETO OLIM",qtd:44,total:132500},{nome:"Caixa Sogipa",qtd:11,total:5751.09},{nome:"PATROCÍNIO A",qtd:2,total:5703.89}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -7582,7 +7699,13 @@ const PERIODOS = [
   // aba "03.11 - 06.11". HA UMA LACUNA ANTES DESTE CORTE: 26 a 30/10 e 02/11
   // nao foram enviados. O intervalo nao foi preenchido por estimativa — o
   // grafico semanal passa de 19-23/out direto para 03-06/nov.
-  {key:'03-06nov',     temDados:{pagamentos:true}, ini:'2026-11-03', fim:'2026-11-06', atual:true},
+  {key:'03-06nov',     temDados:{pagamentos:true}, ini:'2026-11-03', fim:'2026-11-06'},
+  // Relatorio "RELATORIO PAGAMENTOS - 09.11 a 13.11.26" (Controladoria),
+  // aba "09.11 - 13.11". 07/11 sabado e 08/11 domingo: o corte vai de segunda
+  // (09) a sexta (13), encostado no anterior — sem lacuna e sem sobreposicao.
+  // A lacuna de 26 a 30/10 e 02/11 CONTINUA aberta e nao foi preenchida por
+  // estimativa; o grafico semanal segue pulando de 19-23/out para 03-06/nov.
+  {key:'09-13nov',     temDados:{pagamentos:true}, ini:'2026-11-09', fim:'2026-11-13', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -7647,14 +7770,14 @@ const COBERTURA_RETENCAO = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
-  // 10/11/2026: NOVEMBRO PARCIAL — a aba Novembro da planilha de Desligamento
-  // traz 15 registros, de 01 a 09/11. A janela para em 09/11 porque o mes esta
-  // em curso; nao usar 30/11.
+  // 18/11/2026: NOVEMBRO PARCIAL — a aba Novembro da planilha de Desligamento
+  // traz agora 20 registros, de 01 a 18/11 (eram 15 ate 09/11). A janela avanca
+  // para 18/11 porque o mes segue em curso; nao usar 30/11.
   // Esta cobertura e SO do DESLIGAMENTO. A sub-aba de Retencao tem a sua
   // propria (COBERTURA_RETENCAO_CRA), que segue terminando em outubro porque a
   // planilha Retencao 2026(8) nao tem nenhum registro de novembro — o ultimo e
   // de 28/10. Sem dado nao e zero, e por isso as duas nao andam juntas.
-  nov2026: {ini:'2026-11-01', fim:'2026-11-09'},
+  nov2026: {ini:'2026-11-01', fim:'2026-11-18'},
 };
 function mesKeyParaRetencao(de, ate){
   for(const mesKey in COBERTURA_RETENCAO){
@@ -8624,6 +8747,10 @@ const COBERTURA_FLUXO = {
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
   // 30/10: outubro segue EM ANDAMENTO — posição atualizada para 28/10.
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
+  // 18/11: novembro EM CURSO — posição de 12/11. A janela cobre o mês inteiro
+  // porque é assim que o filtro casa o recorte; o dado é parcial e quem diz
+  // isso é `fechado:false` e a `dataReferencia` do mês, não a cobertura.
+  nov2026: {ini:'2026-11-01', fim:'2026-11-30'},
 };
 
 // RH/DP tem cobertura própria (planilha da Gerência de RH).
@@ -9805,6 +9932,212 @@ const DADOS_MES = {
     // comparacoes mes a mes. Fica como esta ate haver documento de fechamento.
     fechado: false,
     ptoAtencao: '<b>Posição de 30/10 — último dia útil de outubro.</b> O operacional fechou a posição em <b style="color:var(--red);">-R$ 146,3 mil</b> (receita R$ 3.658,8 mil contra despesa R$ 3.805,1 mil). <b style="color:var(--green);">É o melhor número de outubro em todas as cargas</b>: a posição de 28/10 trazia -R$ 78,4 mil de realizado com tendência de -R$ 239,1 mil, e o previsto era -R$ 268,2 mil — o mês terminou <b>R$ 121,9 mil melhor que o orçado</b>. A receita superou o previsto em R$ 86,8 mil (puxada por Receitas Diversas, R$ 713,9 mil contra R$ 650,0 mil, e Cartões Crédito, R$ 548,3 mil contra R$ 490,0 mil) e a despesa ficou R$ 35,1 mil abaixo. <b style="color:var(--gold);">Nesta carga tendência e realizado são iguais em todas as rubricas</b> — outubro chegou ao fim. <b style="color:var(--red);">O resultado líquido é -R$ 494,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 348,0 mil, que são a conta dos Índices Construtivos: ela caiu de R$ 2.616.414 em 30/set para R$ 2.268.464 em 30/out. O saldo em banco na posição é de <b>R$ 1.450,9 mil</b>, com <b>-R$ 817,6 mil de caixa livre</b> — R$ 68,0 mil pior que os -R$ 749,6 mil de 28/10. <b style="color:var(--gold);">Atenção à programação de obras:</b> nenhum dos quatro pagamentos previstos para 29 e 30/10 (R$ 199,4 mil) foi executado — todos foram reprogramados para novembro, e a programação dos Índices subiu de R$ 1.306,2 mil para <b>R$ 1.602,7 mil</b> com dez compromissos novos. Detalhes na aba <b>Fluxo de Caixa</b>.',
+  },
+  nov2026: {
+    label: 'Novembro/2026',
+    // ── POSICAO 12/11/2026 · "Resumo Fluxo de Caixa NOV2026" ───────────────
+    // CARGA DE 18/11/2026. Novembro entra como competencia NOVA; outubro NAO
+    // foi tocado. O mes esta EM CURSO: a posicao cobre 01 a 12/11, 8 dias
+    // uteis dos 20 do mes. `fechado:false`.
+    //
+    // ESCALA CONFIRMADA POR DOIS DOCUMENTOS INDEPENDENTES, nao por suposicao:
+    // o relatorio traz "SALDO FINAL BANCOS 12/11/2026 = 2.385,5" e a Relacao
+    // de Necessidades traz, em 12/nov, banco 628.274 + indices 1.757.228 =
+    // 2.385.502. Logo os valores estao em MILHARES de reais e "saldo final
+    // bancos" INCLUI a conta dos Indices Construtivos. Nada foi multiplicado
+    // ou dividido por conta propria.
+    //
+    // TRES NATUREZAS PRESERVADAS E DIFERENTES ENTRE SI. Ao contrario de
+    // outubro, aqui tendencia e realizado NAO coincidem: o mes nao acabou.
+    // Receita realizada 2.826,4 contra tendencia 3.726,4; despesa realizada
+    // 1.380,5 contra tendencia 3.657,2.
+    //
+    // HIERARQUIA DE TRES NIVEIS, conferida e NAO somada em duplicidade. A
+    // coluna Previsto fecha EXATO nos quatro testes, o que prova o aninhamento:
+    //   "Pessoal de Apoio" (1.811,2 prev) JA CONTEM Salarios 981,1 + Encargos
+    //     550,0 + Rescisoes 0 + Outros gastos c/pessoal 280,1 = 1.811,2 exato;
+    //   "Outros gastos c/pessoal" (280,1) JA CONTEM Alimentacao 110,0 +
+    //     Assistencia Medica 103,5 + VT 44,0 + Estagiarios 22,6 = 280,1 exato
+    //     — ou seja, Alimentacao/Assistencia/VT/Estagiarios sao NETOS de
+    //     Pessoal de Apoio, nao irmaos. Soma-los como irmaos duplicaria 280,1;
+    //   "Despesas de Funcionamento" (1.070,8) JA CONTEM limpeza/seguranca
+    //     300,0 + Contratos 262,8 + Fornecedores Diversos 508,0 = 1.070,8 exato;
+    //   "Despesas Fixas" (296,2) JA CONTEM agua e esgoto 85,0 + Energia 111,0 +
+    //     Gas 85,5 + Comunicacoes 14,7 + Combustivel do Gerador 0 = 296,2 exato.
+    // O painel guarda SO as 9 sinteticas de topo, como nos meses anteriores.
+    //
+    // RESIDUOS DE ARREDONDAMENTO DA PROPRIA FONTE (+-0,1 mil = +-R$ 100),
+    // conferidos linha a linha e NAO compensados:
+    //   receita tendencia  as 8 contas somam 3.726,3 / declarado 3.726,4 (-0,1)
+    //   receita realizado  as 8 contas somam 2.826,3 / declarado 2.826,4 (-0,1)
+    //   despesa previsto   as 9 linhas somam 3.638,7 / declarado 3.638,6 (+0,1)
+    //   despesa tendencia  as 9 linhas somam 3.657,3 / declarado 3.657,2 (+0,1)
+    //   despesa realizado  fecha EXATO em 1.380,5
+    //   result. oper. tend.  3.726,4-3.657,2 = 69,2 / declarado 69,1 (+0,1)
+    //   result. oper. real.  2.826,4-1.380,5 = 1.445,9 / declarado 1.445,8 (+0,1)
+    //   result. oper. prev.  fecha EXATO em 96,4
+    // Valem os valores OFICIAIS declarados. Nenhum foi ajustado para fechar.
+    despesas: [
+      {nome:'Pessoal de Apoio', prev:1811.2, tend:1836.8, real:652.3},
+      {nome:'Despesas de Funcionamento', prev:1070.8, tend:1068.1, real:453.1},
+      {nome:'Despesas Fixas', prev:296.2, tend:295.0, real:140.7},
+      {nome:'Esporte', prev:241.3, tend:240.6, real:91.6},
+      {nome:'Eventos', prev:25.9, tend:23.5, real:16.9},
+      {nome:'Taxas e Impostos', prev:109.5, tend:109.6, real:1.1},
+      {nome:'Imobilizado', prev:48.8, tend:48.8, real:12.5},
+      {nome:'Tarifas e Desp. Bancárias', prev:10.9, tend:10.8, real:9.2},
+      {nome:'Contingências (Indenizações)', prev:24.1, tend:24.1, real:3.1},
+    ],
+    receitas: [
+      {nome:'Boletos', prev:1587.0, tend:1586.7, real:1365.7},
+      {nome:'Débito em Conta', prev:715.0, tend:710.8, real:710.8},
+      {nome:'Receitas Diversas', prev:609.0, tend:608.4, real:378.4},
+      {nome:'Cartões Crédito', prev:671.0, tend:670.9, real:286.9},
+      {nome:'Cartões Débito', prev:153.0, tend:149.4, real:84.4},
+      {nome:'Cheque pré-datados', prev:0, tend:0, real:0},
+      {nome:'Rendimento Aplicação', prev:0, tend:0.1, real:0.1},
+      {nome:'Patrocínios', prev:0, tend:0, real:0},
+    ],
+    // Totais como o documento DECLARA, nas tres naturezas.
+    totaisReceitaDespesa: {
+      previsto:  {receita:3735.0, despesa:3638.6},
+      tendencia: {receita:3726.4, despesa:3657.2},
+      realizado: {receita:2826.4, despesa:1380.5},
+    },
+    // ── Relacao de Necessidades, pagina 2 · posicao 18/11/2026 ────────────
+    // 36 pagamentos somando R$ 1.517.641,87 — exatamente o TOTAL declarado,
+    // sem nenhuma linha duplicada (data + descricao + valor todos distintos).
+    // A carga de 30/10 tinha 38 linhas e R$ 1.602.693,82.
+    //
+    // RECONCILIACAO DA VARIACAO DE -R$ 85.051,95, fechada no centavo:
+    //   - 96.757,77  BICCATECA "LOCKER" SAIU INTEIRAMENTE: as tres parcelas de
+    //                R$ 32.252,59 (01/12, 30/12 e 30/01/2027) desapareceram do
+    //                cronograma e nenhuma linha equivalente entrou.
+    //   +    467,32  MTX REPRECIFICADO: as 14 parcelas passaram de
+    //                R$ 45.300,00 para R$ 45.333,38 (+R$ 33,38 cada).
+    //   + 11.238,50  LUMINARIA TENIS de 10/11 VOLTOU. A carga de 30/10 a tinha
+    //                retirado ("fica so a de 10/12"); agora as duas constam.
+    //   = -85.051,95
+    // SALAO PANORAMICO — as duas parcelas TROCARAM DE DATA, sem mudar valor:
+    //   R$ 338.800,00  10/12/2026 -> 11/11/2026  (antecipada)
+    //   R$ 145.200,00  11/11/2026 -> 17/11/2026  (postergada)
+    //
+    // ⚠️ A PAGINA 1 NAO CONCORDA COM A PAGINA 2 — R$ 403.305,18. A serie diaria
+    // projeta saidas da conta dos Indices em 10/dez (338.800,00), 01/dez
+    // (32.252,59) e 30/dez (32.252,59) que ESTE cronograma nao lista. Os dois
+    // documentos ficaram como a Controladoria entregou; a divergencia esta
+    // registrada no cabecalho da PROJECAO e PENDE DE VALIDACAO.
+    //
+    // ESTA LISTA E BASE DE PROJETADO, nao de realizado. Cinco destes
+    // compromissos ja foram liquidados em 05 e 06/11 (R$ 141.847,71 pela conta
+    // ÍNDICES CONS) e a fonte os mantem pelo valor programado — inclusive o
+    // Santori de 06/11, programado em 85.495,00 e pago em 85.945,00 (+450,00).
+    // Nao foram baixados por conta propria: a lista e a posicao oficial de
+    // 18/11 e so muda com documento da Controladoria que a substitua. O
+    // realizado esta em PAGAMENTOS_POR_PERIODO. As duas bases NAO se somam.
+    //
+    // Estes pagamentos JA estao refletidos na coluna "Saldo Indices
+    // Construtivos" do diario. NAO entram no DRE, no resultado operacional,
+    // no total disponivel nem em qualquer base contabil: saem da conta de
+    // Indices Construtivos, que e vinculada a obras.
+    //
+    // LGPD: pagamento a pessoa fisica entra por iniciais, com o sufixo
+    // "(pessoa fisica)", conforme a regra permanente do painel.
+    obras: [
+      {data:'05/11/2026', fornecedor:'M.A.G.F. (pessoa física)', projeto:'Terreno Dom Pedro', valor:18215.00},
+      {data:'05/11/2026', fornecedor:'M.A.G.F. (pessoa física)', projeto:'Terreno Dom Pedro', valor:6500.00},
+      {data:'06/11/2026', fornecedor:'Pro Eletro Comercial ltda', projeto:'Aquec. Piscina Baby', valor:670.00},
+      {data:'06/11/2026', fornecedor:'Santori Comerci de Móveis', projeto:'Playground Piscina', valor:85495.00},
+      {data:'06/11/2026', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 1/3', projeto:'Armários Inteligentes', valor:30516.95},
+      {data:'09/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:20298.25},
+      {data:'10/11/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Luminária Tênis', valor:11238.50},
+      {data:'11/11/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Salão Panorâmico', valor:338800.00},
+      {data:'17/11/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Espaço Infinity', valor:14409.50},
+      {data:'17/11/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Salão Panorâmico', valor:145200.00},
+      {data:'17/11/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Caminho Alternativo', valor:18795.00},
+      {data:'19/11/2026', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:7130.97},
+      {data:'27/11/2026', fornecedor:'MTX Parc 2/15', projeto:'Muscul. dos Atletas', valor:45333.38},
+      {data:'30/11/2026', fornecedor:'GALBO', projeto:'Quadro Elétr. Piscina', valor:21035.00},
+      {data:'07/12/2026', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 2/3', projeto:'Armários Inteligentes', valor:30516.96},
+      {data:'10/12/2026', fornecedor:'Cesar V da Luz e Merelo Cia ltda', projeto:'Luminária Tênis', valor:7992.00},
+      {data:'21/12/2026', fornecedor:'MTX Parc 3/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'04/01/2027', fornecedor:'Santori Comerci de Móveis Parc 1/4', projeto:'Playground Piscina', valor:21372.00},
+      {data:'06/01/2027', fornecedor:'WTEC Móveis e Equip Tecnicos Parc 3/3', projeto:'Armários Inteligentes', valor:30516.96},
+      {data:'20/01/2027', fornecedor:'MTX Parc 4/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'25/01/2027', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:5078.23},
+      {data:'03/02/2027', fornecedor:'Santori Comerci de Móveis Parc 2/4', projeto:'Playground Piscina', valor:21372.00},
+      {data:'20/02/2027', fornecedor:'MTX Parc 5/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'25/02/2027', fornecedor:'CL Soluções em Engenharia ltda', projeto:'Passarela Sl. Panorâm.', valor:5078.23},
+      {data:'03/03/2027', fornecedor:'Santori Comerci de Móveis Parc 3/4', projeto:'Playground Piscina', valor:21372.00},
+      {data:'20/03/2027', fornecedor:'MTX Parc 6/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'05/04/2027', fornecedor:'Santori Comerci de Móveis Parc 4/4', projeto:'Playground Piscina', valor:21372.00},
+      {data:'20/04/2027', fornecedor:'MTX Parc 7/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/05/2027', fornecedor:'MTX Parc 8/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/06/2027', fornecedor:'MTX Parc 9/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/07/2027', fornecedor:'MTX Parc 10/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/08/2027', fornecedor:'MTX Parc 11/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/09/2027', fornecedor:'MTX Parc 12/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/10/2027', fornecedor:'MTX Parc 13/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/11/2027', fornecedor:'MTX Parc 14/15', projeto:'Aparelh. Musculação', valor:45333.38},
+      {data:'20/12/2027', fornecedor:'MTX Parc 15/15', projeto:'Aparelh. Musculação', valor:45333.38},
+    ],
+    obrasTotal: 1517641.87,
+    // Posicao 12/11: banco 628.274 + indices 1.757.228 = 2.385.502, que e o
+    // "SALDO FINAL BANCOS 12/11/2026 = 2.385,5" declarado no relatorio mensal.
+    // Percentuais derivados do proprio saldo: 628,3/2.385,5 = 26,3% e
+    // 1.757,2/2.385,5 = 73,7% (somam 100%).
+    //
+    // CAIXA LIVRE POSITIVO, MAS E EFEITO DE CALENDARIO, NAO DE OPERACAO.
+    // `negativo:false` porque em 12/11 o caixa proprio esta em +628,3 mil — o
+    // primeiro valor positivo depois de meses. A posicao foi tirada UM DIA
+    // DEPOIS da maior entrada do mes: em 11/11 entraram R$ 1.365.868 e o saldo
+    // saltou de -832.956 para +532.912. A propria projecao mostra o caixa
+    // voltando ao negativo em 19/nov (-377.324) e permanecendo negativo em 29
+    // dos 40 dias da serie, ate -1.043.372 em 30/dez. Nao e melhora estrutural.
+    //
+    // NAO OPERACIONAIS DERIVADOS DA CONTA DOS INDICES, nao digitados: a conta
+    // caiu de 2.268.464 (03/nov) para 1.757.228 (12/nov) = 511.236, que e o
+    // (511,2) declarado como realizado. Previsto (763,5) e tendencia (763,1)
+    // conversam com o cronograma de novembro da pagina 2 (R$ 763.637,55).
+    //
+    // ROTULO DEFASADO NA FONTE, 5a CARGA SEGUIDA — E AGORA DECODIFICADO.
+    // O relatorio traz "SALDO BANCO 31/07/2026 = 756,9". Nao e saldo de julho
+    // (julho fechou em 2.200,2 mil) nem da data do cabecalho (12/11 = 2.385,5).
+    // E o saldo projetado para 30/11/2026: banco -748.459 + indices 1.505.393
+    // = 756.934 -> 756,9 mil, exato. Em outubro a linha coincidiu com o
+    // cabecalho porque o relatorio ERA do ultimo dia util do mes; novembro,
+    // sendo de meio de mes, separa as duas coisas e revela o que a linha e:
+    // o saldo de FIM DE MES, com o rotulo de data congelado em 31/07.
+    // Fica como veio. A nota de outubro NAO foi reescrita.
+    caixaLivre: 628.3, fundoObras: 1757.2, resultadoOper: 1445.8, saldoTotal: 2385.5,
+    caixaLivrePct: 26.3, fundoObrasPct: 73.7, negativo: false,
+    receitaReal: 2826.4, despesaReal: 1380.5,
+    // A fonte declara UM UNICO resultado liquido: (694,0). Ele e da coluna
+    // TENDENCIA, provado pela formula: 69,1 operacional + (763,1) nao
+    // operacional = (694,0) exato. Nao e previsto (96,4 - 763,5 = -667,1) nem
+    // realizado (1.445,8 - 511,2 = +934,6).
+    //
+    // `resultadoLiquido` recebe os -694,0 porque, em todos os meses deste
+    // painel, este campo guarda O VALOR QUE A FONTE DECLARA — nao um liquido
+    // recalculado. Em outubro tendencia e realizado coincidiam e a distincao
+    // nao aparecia; em novembro, nao. O campo so e exibido em mes FECHADO, e
+    // novembro esta `fechado:false`, entao nada vai a tela rotulado como
+    // liquido do mes: a leitura correta esta no ponto de atencao, que diz
+    // expressamente que os -694,0 sao da coluna TENDENCIA.
+    // Tentei antes deixar NULL e a trava __AUDIT_IMPORT recusou, com razao:
+    // campo obrigatorio vazio e importacao parcial, que mente em silencio. A
+    // trava NAO foi afrouxada — o dado foi alimentado com o valor oficial.
+    // O +934,6 de liquido realizado NAO foi gravado em lugar nenhum: seria
+    // conta minha apresentada como numero da Controladoria.
+    resultadoLiquido: -694.0,
+    resultadoOperTendencia: 69.1, resultadoOperPrevisto: 96.4,
+    naoOperacionais: {previsto:-763.5, tendencia:-763.1, realizado:-511.2},
+    resultadoLiquidoTendencia: -694.0,
+    saldoBancoObservacaoFonte: 'O relatório de NOV2026 traz também uma linha "SALDO BANCO 31/07/2026 = R$ 756,9 mil". O rótulo de data está congelado na origem pela quinta carga seguida, e esta carga permite decifrar a linha: R$ 756,9 mil não é o saldo de julho (julho fechou em R$ 2.200,2 mil) nem o da data do cabeçalho (12/11, R$ 2.385,5 mil) — é o saldo projetado para 30/11/2026, último dia útil do mês (banco -R$ 748.459 + índices R$ 1.505.393 = R$ 756.934). Em outubro o valor coincidia com o cabeçalho porque o relatório era do próprio fim do mês. Mantido como veio, sem correção por suposição.',
+    dataReferencia: '12/11/2026',
+    // Novembro EM CURSO: posicao de 12/11, 8 dias uteis de 20. Nao e fechamento.
+    fechado: false,
+    ptoAtencao: '<b>Posição de 12/11 — novembro em curso, 8 dias úteis de 20.</b> Não é fechamento: receita realizada de <b>R$ 2.826,4 mil</b> contra tendência de R$ 3.726,4 mil, e despesa realizada de <b>R$ 1.380,5 mil</b> contra tendência de R$ 3.657,2 mil. <b style="color:var(--gold);">Os R$ 1.445,8 mil de resultado operacional realizado não são lucro do mês</b> — a receita de novembro já entrou quase 76% enquanto a despesa saiu só 38%, pelo calendário de boletos e débito em conta. O número que projeta o mês é a <b>tendência: +R$ 69,1 mil</b>, contra R$ 96,4 mil previstos. <b style="color:var(--red);">O resultado líquido declarado é -R$ 694,0 mil</b>, e é da coluna <b>tendência</b>: R$ 69,1 mil de operacional menos R$ 763,1 mil de entradas e saídas não operacionais, que são a conta dos Índices Construtivos. <b style="color:var(--gold);">O caixa livre aparece positivo em R$ 628,3 mil, mas é efeito de calendário, não melhora estrutural:</b> a posição foi tirada um dia depois da maior entrada do mês (R$ 1.365.868 em 11/11, que levou o caixa de -R$ 832.956 para +R$ 532.912). A própria projeção da Controladoria traz o caixa de volta ao negativo em <b>19/nov (-R$ 377.324)</b> e negativo em <b>29 dos 40 dias</b> até 30/dez, chegando a <b style="color:var(--red);">-R$ 1.043.372</b>. <b style="color:var(--red);">Ponto de atenção para dezembro:</b> a partir de 28/dez o total disponível projetado cai abaixo do limite de R$ 6,4 milhões (R$ 6.366.317 em 28/dez), o que significa que o clube passaria a consumir o próprio limite de crédito. <b style="color:var(--gold);">E as duas páginas do relatório de Necessidades não concordam:</b> a série diária projeta <b>R$ 403.305,18</b> de saídas dos Índices em dezembro (R$ 338.800,00 em 10/dez mais duas parcelas Biccateca de R$ 32.252,59) que o cronograma da página 2 não lista — se o cronograma estiver certo, dezembro aparece pior do que é. Pende de validação da Controladoria. Detalhes na aba <b>Fluxo de Caixa</b>.',
   },
 };
 
@@ -11264,13 +11597,16 @@ function renderRetencaoCRA(mesesSel){
     <div class="card full">
       <div class="card-label">Comparativo por Período</div>
       <table>
-        <thead><tr><th>Período</th><th class="num">Desligamentos</th><th class="num">Retenção</th><th class="num">Residual</th><th class="num">Ticket Médio</th><th class="num">Dependentes</th></tr></thead>
+        <thead><tr><th>Período</th><th class="num">Desligamentos</th><th class="num">Retenção</th><th class="num">Licenças</th></tr></thead>
         <tbody id="tabelaHistoricoRetencao"></tbody>
       </table>
         <div class="card-meta" style="margin-top:8px;">
-          <b>Não apurado</b> = a planilha do mês não traz o dado: em Janeiro e Fevereiro as colunas de
-          ticket e dependentes estão vazias, e Março tem apenas um ticket lançado (marcado com <span style="color:var(--yellow);">*</span>),
-          o que não sustenta uma média. Retenção zerada em Jan/Fev também é real —
+          <b>Licenças</b> = suspensão temporária do vínculo, alternativa ao desligamento.
+          <b>Não são somadas à retenção</b>: são colunas independentes.
+          <b>Não apurado</b> = o mês está fora da base individual de retenções e licenças da CRA,
+          que cobre ${(typeof textoCobertura==='function' && typeof COBERTURA_RETENCAO_CRA!=='undefined') ? textoCobertura(COBERTURA_RETENCAO_CRA) : 'o período informado pela gestora'}.
+          Zero só aparece em mês que a base cobre e não registrou licença — ausência de
+          cobertura nunca é exibida como zero. Retenção zerada em Janeiro e Fevereiro é real:
           o acompanhamento de retenção começou em Março.
         </div>
       <div class="card-meta" style="margin-top:10px;">💡 Guarda o resumo de cada período importado, sem apagar o histórico anterior.</div>
@@ -12026,34 +12362,51 @@ const ordAb = d => { const p = String(d||'').split('/'); return p.length===3 ? +
 // Donut Reclamações x Sugestões. Duas fatias, como pedido: os poucos elogios
 // entram junto das sugestões para que as fatias somem o total do card de
 // Manifestações — com uma terceira fatia escondida o donut não fecharia.
-function donutManif(recl, sug, total){
+// 18/11/2026 — SUGESTÕES E ELOGIOS DESAGRUPADOS (gestora do CRA).
+// A base JÁ tinha a classificação individual: MANIFESTACOES.tipo traz
+// 'Reclamação', 'Sugestão' e 'Elogio' registro por registro. Nada foi rateado,
+// estimado ou dividido proporcionalmente — as três fatias são contagem direta
+// e somam exatamente o total do card de Manifestações. As cores saem de
+// TIPO_COR, que já existia com os três tipos.
+function donutManif(recl, sug, elo, total){
   if(!total) return '<div class="card-meta">Sem manifestações no período.</div>';
-  const R = '#e8192c', S = '#f2b705';
-  const pr = recl/total, circ = 2*Math.PI*54;
+  const R = TIPO_COR['Reclamação'], S = TIPO_COR['Sugestão'], E = TIPO_COR['Elogio'];
+  const circ = 2*Math.PI*54;
   const seg = (cor, frac, off) => `<circle cx="70" cy="70" r="54" fill="none" stroke="${cor}"
     stroke-width="22" stroke-dasharray="${(circ*frac).toFixed(2)} ${circ.toFixed(2)}"
     stroke-dashoffset="${(-circ*off).toFixed(2)}" transform="rotate(-90 70 70)"></circle>`;
-  // O percentual da segunda fatia é o COMPLEMENTO da primeira: arredondar as
-  // duas em separado fazia 82,5% + 17,5% virar 83% + 18% = 101%.
-  const pRecl = Math.round(recl/total*100);
-  const pct = v => (v === recl ? pRecl : 100 - pRecl) + '%';
-  const item = (cor, rot, v) => `<div class="sat-leg-item">
+  // Com DUAS fatias bastava dar o complemento à segunda. Com TRÊS isso não
+  // serve, e arredondar cada uma por conta própria fecharia 101% ou 99%.
+  // Maior resto: distribui os pontos que faltam para 100 na ordem das maiores
+  // frações, então a soma dos rótulos é sempre exatamente 100%.
+  const _p = (function(){
+    const v = [recl, sug, elo], bruto = v.map(x => x/total*100);
+    const base = bruto.map(Math.floor);
+    const falta = 100 - base.reduce((a,b)=>a+b, 0);
+    const ordem = bruto.map((x,i)=>[x - base[i], i]).sort((a,b)=>b[0]-a[0]);
+    const out = base.slice();
+    for(let i=0; i<falta; i++) out[ordem[i % ordem.length][1]]++;
+    return out;
+  })();
+  const pct = i => _p[i] + '%';
+  const item = (cor, rot, v, i) => `<div class="sat-leg-item">
       <span class="dot" style="background:${cor};"></span>
       <span class="sat-leg-nome">${rot}</span>
-      <b class="sat-leg-val">${v} <span class="muted">${pct(v)}</span></b>
+      <b class="sat-leg-val">${v} <span class="muted">${pct(i)}</span></b>
     </div>`;
   return `
     <svg viewBox="0 0 140 140" class="sat-donut" role="img"
-         aria-label="Reclamações ${recl} (${pct(recl)}), sugestões e elogios ${sug} (${pct(sug)})">
+         aria-label="Reclamações ${recl} (${pct(0)}), sugestões ${sug} (${pct(1)}), elogios ${elo} (${pct(2)})">
       <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="22"></circle>
-      ${seg(R, pr, 0)}${seg(S, sug/total, pr)}
+      ${seg(R, recl/total, 0)}${seg(S, sug/total, recl/total)}${seg(E, elo/total, (recl+sug)/total)}
       <text x="70" y="65" text-anchor="middle" font-size="26" font-weight="800" fill="var(--text)">${total}</text>
       <text x="70" y="82" text-anchor="middle" font-size="9" fill="var(--muted)"
             letter-spacing="0.5">MANIFESTAÇÕES</text>
     </svg>
     <div class="sat-leg">
-      ${item(R, 'Reclamações', recl)}
-      ${item(S, 'Sugestões e elogios', sug)}
+      ${item(R, 'Reclamações', recl, 0)}
+      ${item(S, 'Sugestões', sug, 1)}
+      ${item(E, 'Elogios', elo, 2)}
     </div>`;
 }
 
@@ -12104,9 +12457,13 @@ function renderManifestacoes(mesesSel){
   const noSla     = comPrazo.filter(m=>m.prazo<=SLA_MANIF);
   const prazoMedio= comPrazo.length ? comPrazo.reduce((s,m)=>s+m.prazo,0)/comPrazo.length : null;
   const recl      = ms.filter(m=>m.tipo==='Reclamação').length;
-  // Tudo que não é reclamação: sugestões e elogios juntos. Só o DONUT usa este
-  // número — duas fatias que somam o total do card de Manifestações.
-  const sug       = ms.length - recl;
+  // 18/11: sugestões e elogios passam a ser contados SEPARADAMENTE, direto do
+  // campo `tipo` de cada registro — não há rateio nem estimativa. O agregado
+  // antigo fica em `sugEloTotal` para quem ainda precisar dele, e a identidade
+  // recl + sug + elo === ms.length é conferida na auditoria desta carga.
+  const sug       = ms.filter(m=>m.tipo==='Sugestão').length;
+  const elo       = ms.filter(m=>m.tipo==='Elogio').length;
+  const sugEloTotal = ms.length - recl;
   // Os CARDS executivos mostram as três classificações separadas, como estão na
   // planilha da CRA: nada de elogio contado como sugestão. Conferem com o total:
   // recl + sugReal + elog = ms.length.
@@ -12149,17 +12506,23 @@ function renderManifestacoes(mesesSel){
     : [...new Set(MANIFESTACOES.map(m=>m.mes))];
   const rot = {};
   ordem.forEach(k => rot[k] = (ABREV[k.slice(0,3)] || k));
+  // 18/11: a barra tinha DUAS faixas, reclamações e "outros". Agora tem TRÊS,
+  // com a mesma contagem por `tipo` do donut. O total de cada mês não muda:
+  // recl + sug + elo é exatamente o que recl + outros era.
   const porMes = ordem.map(k=>({rotulo:rot[k],
     recl: ms.filter(m=>m.mes===k && m.tipo==='Reclamação').length,
-    outros: ms.filter(m=>m.mes===k && m.tipo!=='Reclamação').length}));
-  const maxMes = Math.max.apply(null, porMes.map(m=>m.recl+m.outros)) || 1;
+    sug:  ms.filter(m=>m.mes===k && m.tipo==='Sugestão').length,
+    elo:  ms.filter(m=>m.mes===k && m.tipo==='Elogio').length}));
+  const maxMes = Math.max.apply(null, porMes.map(m=>m.recl+m.sug+m.elo)) || 1;
   const evolucao = porMes.map(m=>{
-    const tot=m.recl+m.outros, h=Math.max(4, tot/maxMes*110);
+    const tot=m.recl+m.sug+m.elo, h=Math.max(4, tot/maxMes*110);
+    const tip = `${m.rotulo}: ${m.recl} reclamaç${m.recl===1?'ão':'ões'}, ${m.sug} sugest${m.sug===1?'ão':'ões'}, ${m.elo} elogio${m.elo===1?'':'s'}`;
     return `<div style="flex:1; min-width:0; text-align:center;">
       <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:5px;">${tot||''}</div>
-      <div style="height:${h}px; display:flex; flex-direction:column; justify-content:flex-end; border-radius:5px 5px 0 0; overflow:hidden; background:#2a2c3d;">
-        ${m.outros?`<div style="height:${m.outros/tot*100}%; background:#f2b705;"></div>`:''}
-        ${m.recl?`<div style="height:${m.recl/tot*100}%; background:#e8192c;"></div>`:''}
+      <div style="height:${h}px; display:flex; flex-direction:column; justify-content:flex-end; border-radius:5px 5px 0 0; overflow:hidden; background:#2a2c3d;" title="${tip}">
+        ${m.elo?`<div style="height:${m.elo/tot*100}%; background:${TIPO_COR['Elogio']};"></div>`:''}
+        ${m.sug?`<div style="height:${m.sug/tot*100}%; background:${TIPO_COR['Sugestão']};"></div>`:''}
+        ${m.recl?`<div style="height:${m.recl/tot*100}%; background:${TIPO_COR['Reclamação']};"></div>`:''}
       </div>
       <div style="font-size:11.5px; color:var(--muted); margin-top:6px;">${m.rotulo}</div>
     </div>`;}).join('');
@@ -12215,7 +12578,7 @@ function renderManifestacoes(mesesSel){
     <div class="sat-comp" style="margin-top:16px;">
       <div class="card">
         <div class="card-label">Composição das Manifestações</div>
-        <div class="sat-donut-wrap">${donutManif(recl, sug, ms.length)}</div>
+        <div class="sat-donut-wrap">${donutManif(recl, sug, elo, ms.length)}</div>
       </div>
       <div class="card">
         <div class="card-label">Tempo de Resposta</div>
@@ -12249,7 +12612,7 @@ function renderManifestacoes(mesesSel){
       <div class="card">
         <div class="card-label">Manifestações por Mês</div>
         <div style="display:flex; align-items:flex-end; gap:10px; height:165px; margin-top:16px; padding:0 4px;">${evolucao}</div>
-        <div class="card-meta" style="margin-top:10px;"><span class="dot" style="background:#e8192c;"></span> Reclamações &nbsp; <span class="dot" style="background:#f2b705;"></span> Sugestões e elogios</div>
+        <div class="card-meta" style="margin-top:10px;"><span class="dot" style="background:${TIPO_COR['Reclamação']};"></span> Reclamações &nbsp; <span class="dot" style="background:${TIPO_COR['Sugestão']};"></span> Sugestões &nbsp; <span class="dot" style="background:${TIPO_COR['Elogio']};"></span> Elogios</div>
       </div>
       <div class="card">
         <div class="card-label">Por Local</div>
@@ -12551,7 +12914,10 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     if(n === 0){
       aviso = `Não há dados de Retenção no intervalo selecionado — exibindo o <b>último fechamento disponível (${r.periodoTag})</b>. Abril/2026 não foi preenchido pela Gerência de RH.`;
     } else if(agregado){
-      aviso = `Exibindo os <b>totais somados de ${agregado._agregado} meses</b> do intervalo. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; Quadro Social e Residual são a foto do <b>último mês</b>; ticket e dependentes são <b>médias ponderadas</b>. O detalhe mês a mês está na tabela de <b>Histórico</b> ao final.`;
+      // 18/11: a frase citava Quadro Social e Residual, que não aparecem mais
+      // na tela. A regra de agregação deles não mudou — segue valendo por
+      // dentro —, mas descrever card que o usuário não vê só confunde.
+      aviso = `Exibindo os <b>totais somados de ${agregado._agregado} meses</b> do intervalo. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; ticket e dependentes são <b>médias ponderadas</b>. O detalhe mês a mês está na tabela de <b>Histórico</b> ao final.`;
     }
   }
   const avisoHtml = aviso ? `<div class="alert-box" style="border-color:var(--gold);"><span>ℹ️</span><div>${aviso}</div></div>` : '';
@@ -12564,7 +12930,28 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   // 07/10: 'Deste Mês' volta a aparecer — a gestora do CRA pediu o indicador
   // explicitamente, e ele é justamente o que distingue as 10 novas solicitações
   // de setembro dos 12 desligados do mês.
-  const KPIS_DESLIG_OCULTOS = ['Quadro Social', 'Deslig. pelo Quadro Social'];
+  //
+  // 18/11/2026 — A GESTORA DO CRA REVERTEU O PEDIDO DE 07/10. O documento
+  // "Painel CRA — melhorias" pede, para a visão mensal E para a anual,
+  // "deixar apenas a informação do total de solicitações, os desligados e os
+  // retidos". Isso recoloca 'Deste Mês' na lista de ocultos, junto de
+  // 'Residuais' e 'Programados'. A decisão de 07/10 fica registrada acima de
+  // propósito: foi substituída por pedido posterior da mesma gestora, não
+  // ignorada.
+  //
+  // DIVERGÊNCIA DE NOMENCLATURA, registrada e não "corrigida" por suposição:
+  // o pedido escrito nomeia os cards a remover como "Em análise", "Em aberto",
+  // "Residual" e "Dias Médios". Nenhum desses rótulos existe no painel — os
+  // cards reais são 'Residuais', 'Deste Mês' e 'Programados'. Prevaleceu a
+  // regra da gestora no PDF (deixar SÓ os três), que é inequívoca, em vez dos
+  // nomes aproximados. 'Dias Médios' não existe em lugar nenhum do painel.
+  //
+  // É SÓ A CAMADA DE APRESENTAÇÃO. Os KPIs seguem em r.kpis e nos blocos
+  // mensais; quem lê esses números por dentro (análises, mini-stats da Visão
+  // Geral, agregador anual, totalDesligamentos, residual) não muda. O filtro é
+  // por rótulo, então vale igual para o mês e para o agregado de vários meses.
+  const KPIS_DESLIG_OCULTOS = ['Quadro Social', 'Deslig. pelo Quadro Social',
+                               'Residuais', 'Deste Mês', 'Programados'];
   const kpisVisiveis = r.kpis.filter(k => KPIS_DESLIG_OCULTOS.indexOf(k.label) < 0);
   const kpisHtml = kpisVisiveis.map(k=>`
     <div class="kpi-icon-card">
@@ -12586,7 +12973,14 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('🎫 Ticket Médio', r.ticketMedio, 'dos registros com desligamento')}
       ${cardKpi('👨‍👩‍👧 Média de Dependentes', r.dependentes, 'por desligamento')}
+      ${/* 18/11/2026: "podes excluir o residual do final" (gestora do CRA).
+            Só a apresentação: r.residual e r.residualLabel continuam na base e
+            seguem sendo lidos por quem precisa. Ticket Médio, Média de
+            Dependentes, Taxa de Desligamento e Modalidade Ofertada FICAM — o
+            documento não marca nenhum deles para remoção, e a instrução é
+            explícita em preservar o que não tiver indicação inequívoca.
       ${cardKpi('🔁 ' + r.residualLabel, r.residual, 'pendentes de períodos anteriores')}
+         */''}
       ${r.desligadosComTaxa ? cardKpi('💲 Taxa de Desligamento', r.desligadosComTaxa,
           r.taxaQtd!=null ? `cobrada de ${r.taxaQtd} desligado${r.taxaQtd===1?'':'s'} no período` : 'valor de taxa cobrada') : ''}
       ${r.modalidadeTaxa ? cardKpi('🎁 Modalidade Ofertada', r.modalidadeTaxa.sim,
@@ -12624,15 +13018,29 @@ function preencherHistoricoRetencao(){
   const alvo = document.getElementById('tabelaHistoricoRetencao');
   if(!alvo) return;
   const keys = Object.keys(COBERTURA_RETENCAO).filter(k=>getRetencaoMes(k));
+  // 18/11/2026 — HISTÓRICO SIMPLIFICADO (gestora do CRA): ficam Período,
+  // Desligamentos e Retenção; ENTRA Licenças; SAEM Residual, Ticket Médio e
+  // Dependentes. Nenhum dado foi apagado — rr.residual, rr.ticketMedio,
+  // rr.dependentes e rr.ticketBase1 seguem na base e continuam sendo lidos
+  // pelos cards e pelas análises. Só a tabela deixou de exibi-los.
+  //
+  // LICENÇAS VÊM DA BASE INDIVIDUAL, contadas por mês de REGISTRO, igual ao
+  // resto da CRA. Não são somadas à retenção: a instrução é explícita, e aqui
+  // são colunas separadas.
+  //
+  // AUSÊNCIA DE COBERTURA NÃO É ZERO. A base individual (COBERTURA_RETENCAO_CRA)
+  // cobre fev a out/2026, enquanto esta tabela lista jan a nov/2026. Janeiro e
+  // novembro ficam "não apurado", e NÃO como 0 — zero só sai em mês que a base
+  // cobre e no qual nenhuma licença foi registrada.
+  const COB_LIC = (typeof COBERTURA_RETENCAO_CRA !== 'undefined') ? COBERTURA_RETENCAO_CRA : {};
+  const temLicencas = typeof LICENCAS_CRA !== 'undefined';
   alvo.innerHTML = keys.map(k=>{
     const rr = getRetencaoMes(k);
     const retido = rr.kpis.find(x=>x.label==='Retenção' || x.label==='Retidos');
-    // "—" puro fazia parecer erro do painel. Em jan/fev as colunas TICKET e
-    // DEPENDENTE estão vazias na planilha (zero registros preenchidos) e março
-    // tem um único ticket lançado: é ausência de apuração, não falha de carga.
-    const semDado = v => (!v || v==='—')
-      ? '<span style="color:var(--muted); font-style:italic;">não apurado</span>' : v;
-    return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : '—'}</td><td class="num">${rr.residual}</td><td class="num">${semDado(rr.ticketMedio)}${rr.ticketBase1?' <span title="média de um único registro" style="color:var(--yellow);">*</span>':''}</td><td class="num">${semDado(rr.dependentes)}</td></tr>`;
+    const naoApurado = '<span style="color:var(--muted); font-style:italic;">não apurado</span>';
+    const cobre = temLicencas && Object.prototype.hasOwnProperty.call(COB_LIC, k);
+    const lic = cobre ? LICENCAS_CRA.filter(x=>x.mes===k).length : null;
+    return `<tr><td>${rr.periodoTag}</td><td class="num">${rr.totalDesligamentos}</td><td class="num">${retido ? retido.valor : naoApurado}</td><td class="num">${lic != null ? lic : naoApurado}</td></tr>`;
   }).join('');
 }
 
@@ -12977,6 +13385,30 @@ const DESLIGAMENTO_EVOLUCAO = {jan2026:48, fev2026:67, mar2026:32, abr2026:138, 
 // 3 dessas linhas, e foi so isso que fez a leitura anterior parar em 34/30.
 // A aba Evolucao da planilha pode seguir mostrando 30: divergencia DOCUMENTAL
 // registrada, prevalece a confirmacao da gestora.
+//
+// ── 18/11/2026 · A FONTE CONVERGIU PARA 37, MAS AINDA NAO FECHOU ──────────
+// Na planilha 'Desligamento 2026(20261118-182553)' a aba Evolucao passou a
+// declarar 36 para outubro — vinha de 30. A divergencia contra os 37 da
+// gestora caiu de 7 para 1. E o quadro lateral da aba de Outubro agora traz
+// DOIS numeros: 36 em "quantos foram desligados" e 37 em "Total de
+// Desligamentos do mes". Os 37 confirmados em 03/11 aparecem, portanto, na
+// propria planilha.
+// ISSO REFORCA 37, MAS NAO PROVA. O mesmo campo "Total de Desligamentos do
+// mes" declara 14 para setembro, enquanto o painel usa 12 (validado pela
+// gestora em 07/10) e "quantos foram desligados" traz 12. Esse campo fica
+// sistematicamente acima do numero que a CRA valida, e tomar o 37 dele como
+// prova obrigaria a mudar setembro para 14 — o que nenhuma validacao sustenta.
+// Outubro FICA EM 37 pela confirmacao expressa, nao por esse campo. A serie
+// desta trava NAO foi alterada: out2026 segue 37 e set2026 segue 10, que e o
+// "quantos sao deste mes" da Evolucao. AGUARDA validacao da gestora do CRA.
+//
+// O QUADRO LATERAL DE OUTUBRO TAMBEM MUDOU, e tambem NAO foi adotado: traz 46
+// solicitacoes totais, 20 "deste mes" e 5 programados, contra os 42, 21 e 0
+// que a gestora confirmou expressamente em 03/11. A identidade da fonte fecha
+// (46 = 36 + 5 + 5) e a do painel tambem (42 = 37 + 5 e 37 = 16 + 21), so que
+// com desligados diferentes. A instrucao desta carga e explicita: nao forcar
+// conciliacao com metodologia diferente da validada pela CRA e preservar a
+// metodologia oficial existente. OUTUBRO NAO FOI ALTERADO.
 // NOVEMBRO NAO ENTRA: a
 // aba existe com 2 registros (saidas programadas para 01/11), mas a Evolucao
 // nao declara nada para novembro e o quadro lateral da aba esta todo zerado.
@@ -13325,58 +13757,83 @@ const DESLIGAMENTOS_MESES = {
     analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, com os números <b style="color:var(--green);">confirmados expressamente pela gestora do CRA em 03/11/2026</b>. <b>Outubro fechou com 37 desligamentos</b>, dentro de <b>42 solicitações totais</b>. As duas identidades da fonte fecham exatas e nada foi redistribuído: <b>37 = 16 residuais + 21 deste mês</b> e <b>42 = 37 desligamentos + 5 retidos</b>. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>30</b> pela manhã. O 37 é o número de linhas da aba — a leitura anterior parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, <b>tudo passou a fechar com o quadro lateral da própria aba</b>: ticket médio de <b>R$ 460,63</b>, idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. <b style="color:var(--green);">Sem dupla contagem entre as bases:</b> os 5 retidos não são linhas desta aba — estão na planilha de Retenção, com 4 retenções e 1 licença registradas em outubro, e é por isso que 42 = 37 + 5. <b>Mudança lidera com 13</b> saídas (35%), seguida de financeiro (10) e saúde (7); as três explicam 81% do mês. Contribuinte Individual e Contribuinte respondem por 26 das 37. <b style="color:var(--gold);">Divergência documental remanescente:</b> a aba Evolução da planilha pode seguir trazendo 30 — prevalece a confirmação expressa da gestora, e a diferença fica registrada. <b>Novembro não foi criado</b>: a aba tem 2 saídas com data de 01/11, mas a Evolução não declara nada e o quadro está zerado.',
   },
   nov2026: {
-    // ── NOVEMBRO/2026 PARCIAL · posicao de 09/11/2026 ─────────────────────
-    // NAO E MES ENCERRADO. A aba Novembro traz 15 linhas com matricula, e a
-    // aba Evolucao NAO declara nada para novembro — a celula esta vazia.
-    // Por isso nov2026 nao entrou em DESLIGAMENTO_EVOLUCAO: sem declaracao da
-    // fonte nao se inventa numero para comparar, e sem dado nao e zero.
+    // ── NOVEMBRO/2026 PARCIAL · POSICAO DE 18/11/2026 ─────────────────────
+    // RECARGA de 'Desligamento 2026(20261118-182553).xlsx'. A posicao anterior
+    // era de 09/11, com 15 linhas; agora sao 20. NAO E MES ENCERRADO: 18 dias
+    // corridos de 30. A aba Evolucao SEGUE sem declarar nada para novembro —
+    // celula vazia —, por isso nov2026 continua FORA de DESLIGAMENTO_EVOLUCAO.
+    // Sem declaracao da fonte nao se inventa numero para comparar.
     //
-    // SEPARACAO OBRIGATORIA — licenca NAO e saida efetiva:
-    //   15 linhas com matricula
-    //   -1 linha com motivo "licenca" (matricula 2842, solicitada 03/11)
-    //   =14 desligamentos
-    // Dos 14: 12 com data efetiva na coluna DESLIGADO e 2 ainda PENDENTES
-    // (matriculas 119895 e 15330, solicitadas em 07/11 e 09/11). As duas
-    // entram na contagem, que e o criterio ja validado do painel desde
-    // outubro — coluna em branco nao descaracteriza a saida.
+    // SEPARACAO OBRIGATORIA — licenca e retencao NAO sao saida efetiva:
+    //   20 linhas com matricula
+    //   -2 com motivo "licenca"  (matriculas 2842 e 117326)
+    //   -2 com motivo "retencao" (matriculas 1883 e 19641)
+    //   =16 desligamentos
+    // Dos 16, 13 tem data efetiva na coluna DESLIGADO e 3 seguem PENDENTES
+    // (matriculas 119895, 15330 e 119779, solicitadas em 07, 09 e 11/11). As
+    // tres entram na contagem — criterio ja validado do painel desde outubro:
+    // coluna em branco nao descaracteriza a saida.
     //
     // RESIDUAIS x DESTE MES, pela DATA DA SOLICITACAO:
-    //   3 residuais  — solicitados em OUTUBRO (03/10, 13/10 e 20/10),
-    //                  efetivados em 01/11
-    //   11 deste mes — solicitados em novembro
-    //   3 + 11 = 14, fecha exato. Nada foi redistribuido.
+    //   3 residuais  — solicitados em OUTUBRO (03/10, 13/10 e 20/10)
+    //   13 deste mes — solicitados em novembro
+    //   3 + 13 = 16, fecha exato. Nada foi redistribuido.
+    // SOLICITACOES TOTAIS = 20 = 16 desligamentos + 4 retidos, a mesma
+    // identidade que outubro usa (42 = 37 + 5).
     //
-    // RETIDOS E PROGRAMADOS SEM DADO, nao zero: a planilha "Retencao 2026(8)"
-    // NAO tem nenhum registro de novembro — o ultimo e de 28/10.
-    // INCONSISTENCIA ENTRE AS DUAS FONTES, registrada: a linha de motivo
-    // "licenca" acima esta na aba de DESLIGAMENTO mas nao aparece na planilha
-    // de Retencao & licencas. Nao foi somada em nenhuma das duas contagens de
-    // licenca, para nao criar dupla contagem, e aguarda a gestora definir em
-    // qual base ela deve viver.
+    // ⚠️ O QUADRO LATERAL DA ABA DE NOVEMBRO ESTA DEFASADO e NAO foi usado
+    // para os cards. Ele declara "Solicitacoes totais 4", "quantos foram
+    // desligados 0" e "quantos programados 0", enquanto a propria aba lista 20
+    // linhas com 13 datas de saida preenchidas. O quadro so enxerga as 4
+    // retencoes/licencas: seu campo "quantos retidos? 4" bate exatamente com a
+    // contagem individual, e os demais campos ficaram para tras. Nos meses
+    // fechados o quadro lateral e a fonte dos cards; aqui, visivelmente
+    // defasado, os cards saem dos REGISTROS INDIVIDUAIS. Fica registrado.
+    // O campo "Total de Desligamentos do mes" do quadro traz 15, o bloco de
+    // categorias traz 13 e os motivos somam 14 — tres numeros do mesmo quadro
+    // que nao concordam entre si nem com as 16 linhas de desligamento. Nenhum
+    // deles foi adotado. PENDENTE DE VALIDACAO da gestora do CRA.
     //
-    // Ticket medio sobre os 13 dos 14 que tem o campo preenchido; dependentes
-    // sobre os 12 que o trazem.
-    periodoTag:'Novembro/2026 (parcial · 01 a 09/11)',
+    // ⚠️ INCONSISTENCIA ENTRE AS DUAS BASES, AMPLIADA. A planilha "Retencao
+    // 2026" nao tem NENHUM registro de novembro: seu ultimo lancamento e de
+    // 28/10. Mas a aba de Desligamento de novembro traz 4 registros de
+    // retencao/licenca. Na carga anterior era 1; agora sao 4. Eles NAO foram
+    // lancados em RETENCAO_CRA nem em LICENCAS_CRA — fazer isso criaria
+    // registros que a base oficial de Retencao nao tem, e as duas contagens
+    // oficiais (43 retencoes e 27 licencas) deixariam de fechar com a propria
+    // planilha. Por isso o card "Retidos" de novembro mostra 4, vindo da aba de
+    // Desligamento, enquanto a coluna Licencas do Historico de Retencao mostra
+    // "nao apurado": sao bases diferentes e a divergencia esta dita, nao
+    // escondida. AGUARDA a gestora definir em qual base esses 4 devem viver.
+    //
+    // Ticket medio sobre os 15 dos 16 que tem o campo preenchido (R$ 7.725,25
+    // / 15 = R$ 515,02); dependentes sobre os 14 que o trazem (16 / 14 = 1,14).
+    // O quadro lateral declara ticket R$ 553,10 e dependentes 1,33 porque seu
+    // range de formula nao alcanca as duas primeiras linhas da aba: R$ 7.725,25
+    // menos os R$ 368 e R$ 167 dessas linhas, divididos por 13, dao exatamente
+    // os R$ 553,0961 declarados. E defeito de range na fonte, nao de leitura.
+    periodoTag:'Novembro/2026 (parcial · 01 a 18/11)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'15', sub:'14 desligamentos + 1 licença'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'20', sub:'16 desligamentos + 4 retidos'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'3', sub:'solicitados em outubro, saída em 01/11', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'11', sub:'solicitados em novembro'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'14', sub:'12 com data efetiva + 2 pendentes', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'—', sub:'sem registro de novembro na base de Retenção', valorCor:'#b0b0d0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'não declarado pela fonte', valorCor:'#b0b0d0'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'13', sub:'solicitados em novembro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'16', sub:'13 com data efetiva + 3 pendentes', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 retenções + 2 licenças · na aba de Desligamento, ausentes da base de Retenção', valorCor:'#00e5a0'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'—', sub:'quadro lateral da aba está defasado — não declarado com confiança', valorCor:'#b0b0d0'},
     ],
-    categorias: [{"nome": "Contribuinte Individual", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Contribuinte", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
-    motivos: [{"motivo": "Financeiro", "qtd": 5, "pct": 35.71, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 35.71, "cor": "#00e5a0"}, {"motivo": "Mudança", "qtd": 4, "pct": 28.57, "cor": "#a855f7"}],
-    totalDesligamentos: 14,
-    ticketMedio: 'R$ 473,88', dependentes: '1,0',
+    categorias: [{"nome": "Contribuinte", "qtd": 7, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 6, "cor": "#3d7bff"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
+    motivos: [{"motivo": "Financeiro", "qtd": 6, "pct": 37.50, "cor": "#3d7bff"}, {"motivo": "Mudança", "qtd": 5, "pct": 31.25, "cor": "#00e5a0"}, {"motivo": "Não utilização", "qtd": 5, "pct": 31.25, "cor": "#a855f7"}],
+    totalDesligamentos: 16,
+    ticketMedio: 'R$ 515,02', dependentes: '1,1',
     residual: 3, residualLabel: 'Residual de Outubro',
-    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: null,
+    desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:3, nao:9},
     quadroSocial: null,
     negociacoesDesligados: '—',
-    evolucaoDeclarada: null, registrosNaAba: 15, linhasNaAba: 15,
+    evolucaoDeclarada: null, registrosNaAba: 20, linhasNaAba: 20,
     parcial: true,
-    analise: 'Fonte: planilha Desligamento 2026(10), aba de <b>Novembro</b>, posição de <b>09/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: nove dias corridos de 30. A aba Evolução <b>não declara nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 15 linhas com matrícula, das quais 14 são desligamento e 1 é licença</b> — a licença não entra como saída efetiva, conforme a regra do CRA. Dos 14, <b>12 têm data efetiva de saída e 2 seguem pendentes</b> (solicitadas em 07/11 e 09/11); as duas contam como desligamento, critério já validado em outubro, porque a coluna em branco não descaracteriza a saída. <b>3 são residuais de outubro</b> — solicitados em 03, 13 e 20/10 e efetivados em 01/11 — e <b>11 foram solicitados no próprio novembro</b>: 3 + 11 = 14, fecha exato. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro e não utilização empatam com 5 cada, 71% juntos, e mudança soma 4 — perfil diferente de outubro, onde mudança liderava com 35%. Em nove dias o mês acumula 14 saídas contra as 37 de outubro inteiro: <b>o ritmo diário é semelhante</b>, 1,6 contra 1,2 por dia, então não há sinal de aceleração, mas vale acompanhar. <b style="color:var(--gold);">Retidos e programados aparecem como “—”, não como zero:</b> a planilha de Retenção não tem nenhum registro de novembro, sendo 28/10 o último. <b style="color:var(--red);">Inconsistência entre as fontes, registrada:</b> a linha de licença está na aba de Desligamento mas não aparece na planilha de Retenção &amp; licenças — não foi somada em nenhuma das duas contagens, para não haver dupla contagem, e aguarda definição da gestora sobre em qual base deve viver.',
+    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Novembro</b>, posição de <b>18/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: 18 dias corridos de 30. A aba Evolução <b>segue sem declarar nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 20 linhas com matrícula: 16 desligamentos, 2 retenções e 2 licenças</b> — retenção e licença não entram como saída efetiva, conforme a regra do CRA. Dos 16, <b>13 têm data efetiva de saída e 3 seguem pendentes</b> (solicitadas em 07, 09 e 11/11); as três contam como desligamento, critério já validado em outubro, porque a coluna em branco não descaracteriza a saída. <b>3 são residuais de outubro</b> — solicitados em 03, 13 e 20/10 e efetivados em 01/11 — e <b>13 foram solicitados no próprio novembro</b>: 3 + 13 = 16, fecha exato, e 20 = 16 + 4 fecha com as solicitações totais. <b style="color:var(--gold);">Movimento desde 09/11:</b> os desligamentos passaram de 14 para 16 e os retidos de nenhum registro para 4 — em nove dias entraram 2 saídas e 4 retenções/licenças, ou seja, <b>o que mais cresceu foi a retenção</b>. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro lidera com 6 (37,5%), mudança e não utilização empatam com 5 cada — perfil diferente de outubro, onde mudança liderava com 35%. Em 18 dias o mês acumula 16 saídas contra as 37 de outubro inteiro: <b>0,9 por dia contra 1,2</b>, ritmo mais baixo, mas o mês não terminou. <b style="color:var(--red);">O quadro lateral da aba está defasado e não foi usado para os cards:</b> declara 4 solicitações totais e 0 desligados, enquanto a própria aba lista 20 linhas com 13 datas de saída preenchidas — só o campo de retidos (4) bate com a contagem individual. Os cards saem dos registros individuais e a divergência fica registrada. <b style="color:var(--red);">Inconsistência entre as bases, ampliada:</b> a planilha de Retenção não tem nenhum registro de novembro (o último é de 28/10), mas a aba de Desligamento traz 4 registros de retenção/licença — era 1 na carga anterior. Não foram lançados na base de Retenção para não quebrar os totais oficiais de 43 retenções e 27 licenças, e é por isso que a coluna Licenças do Histórico aparece como “não apurado” em novembro. Aguarda definição da gestora sobre em qual base esses registros devem viver.',
   },
+
 };
 
 function getRetencaoMes(key){
@@ -15600,7 +16057,22 @@ function renderObras(){
   // Compromissos: quanto já venceu (executado) x quanto ainda está por vir, com base na data de hoje
   const agora = new Date();
   agora.setHours(0,0,0,0);
-  const compromissos = DADOS_MES.jul2026.obras;
+  // CORRIGIDO EM 18/11/2026 — DEFEITO PRE-EXISTENTE. Esta linha estava fixa em
+  // `DADOS_MES.jul2026.obras`, ou seja, a aba Obras calculava compromissos
+  // executados e pendentes sobre a programacao de JULHO (7 linhas,
+  // R$ 931.266,00) enquanto a aba Fluxo de Caixa ja usava a do mes corrente.
+  // Eram dois numeros diferentes para a mesma programacao, em duas telas do
+  // mesmo painel, com quatro cargas de defasagem. Agora passa a usar o mes
+  // MAIS RECENTE que tenha programacao, sem fixar chave de mes nenhuma — o
+  // mesmo criterio do resto do painel. Nenhum valor foi digitado aqui.
+  const _kObras = Object.keys(DADOS_MES).filter(k => DADOS_MES[k].obras && DADOS_MES[k].obras.length);
+  const _mObras = _kObras.length ? DADOS_MES[_kObras[_kObras.length-1]] : null;
+  const compromissos = _mObras ? _mObras.obras : [];
+  // Totalizador da nota estrategica: estava ESCRITO como literal 931266, o
+  // numero de julho. Com a correcao acima, os dois cartoes de baixo passariam
+  // a somar a programacao vigente enquanto o texto continuaria em julho — tres
+  // numeros discordando no mesmo cartao. Agora sai da propria lista.
+  const _totComp = _mObras ? _mObras.obrasTotal : 0;
   let compJaExecutado = 0, compAindaPendente = 0;
   compromissos.forEach(c=>{
     const [dd,mm,yy] = c.data.split('/');
@@ -15707,7 +16179,7 @@ function renderObras(){
     <div class="card full" style="margin-top:16px; border-left:4px solid var(--gold);">
       <div class="card-label">📌 Nota Estratégica — Compromissos já Contratados</div>
       <div style="font-size:13.5px; line-height:1.8; color:var(--text); margin-top:8px;">
-        Os <b>${fmtBRL0(931266)}</b> em "Compromissos já Contratados" são o valor total <b>já contratado com fornecedores</b> para a realização das obras — compromissos firmados na conta Índices Construtivos (tabela completa na aba Fluxo de Caixa), parte já paga e parte com pagamento programado para os próximos meses:
+        Os <b>${fmtBRL0(_totComp)}</b> em "Compromissos já Contratados" são o valor total <b>já contratado com fornecedores</b> para a realização das obras — compromissos firmados na conta Índices Construtivos (tabela completa na aba Fluxo de Caixa), parte já paga e parte com pagamento programado para os próximos meses:
         <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;">
           <div style="flex:1; min-width:180px; padding:12px 16px; background:#13151d; border:1px solid var(--border); border-radius:10px;">
             <div style="font-size:11px; color:var(--muted); text-transform:uppercase;">Já pago (parcelas vencidas)</div>
@@ -18628,7 +19100,25 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   document.getElementById('vgResultadoOper').textContent = (resOper<0?'-':'') + 'R$ ' + Math.abs(resOper).toFixed(1).replace('.',',') + ' mil';
   document.getElementById('vgResultadoOper').style.color = resOper<0 ? 'var(--red)' : 'var(--green)';
   const subRes = document.querySelector('#vgResultadoOper')?.parentElement?.querySelector('.delta');
-  if(subRes) subRes.textContent = nMesesRes>1 ? `receita − despesa · ${nMesesRes} meses somados` : 'receita − despesa';
+  // 18/11: a Visao Geral somava mes EM ANDAMENTO no acumulado sem dizer que
+  // estava fazendo isso. Com novembro (posicao de 12/11) o efeito ficou
+  // material: o acumulado passou de -801 para +645 mil, porque a receita de
+  // novembro ja entrou quase 76% enquanto a despesa saiu 38%. O Diagnostico ja
+  // avisava, usando este mesmo `parciais` que consolidarDiagnostico calcula;
+  // aqui o aviso faltava. Nenhum numero foi alterado e nenhum indicador novo
+  // foi criado: a linha que ja existia passa a dizer o que esta somando.
+  if(subRes){
+    const _base = nMesesRes>1 ? `receita − despesa · ${nMesesRes} meses somados` : 'receita − despesa';
+    const _parc = (cons && cons.parciais && cons.parciais.length) ? cons.parciais : null;
+    if(_parc){
+      subRes.innerHTML = _base
+        + `<br><span style="color:var(--gold); font-size:11px;">⚠️ inclui ${_parc.join(', ')} ainda em andamento — `
+        + `mês parcial puxa o resultado para cima, porque a mensalidade entra no início do mês e boa parte `
+        + `da despesa sai depois. Não comparável a período fechado.</span>`;
+    } else {
+      subRes.textContent = _base;
+    }
+  }
   document.getElementById('vgFundoObras').textContent = fmtMil(m.fundoObras);
   pintarComposicaoSaldo('vgSaldo', m);
   document.getElementById('alertaPontoAtencaoVG').innerHTML = m.ptoAtencao + ' Detalhes na aba <b>Fluxo de Caixa</b>.';
