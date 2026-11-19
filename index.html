@@ -1120,6 +1120,7 @@
         <div class="card">
           <div class="card-label">Pagamentos — Distribuição por Faixa de Valor</div>
           <div id="vgDonutPagamentos" class="donut-wrap"></div>
+          <div class="card-meta" id="vgDonutPagPeriodo" style="margin-top:6px;"></div>
         </div>
         <div class="card">
           <div class="card-label">Receita × Despesa (R$ mil)</div>
@@ -10097,12 +10098,18 @@ const DADOS_MES = {
     resultadoLiquidoTendencia: -494.2,
     saldoBancoObservacaoFonte: 'O relatório de OUT2026 traz também uma linha "SALDO BANCO 31/07/2026 = R$ 1.450,9 mil". O rótulo de data está errado na origem pela quarta carga seguida; desta vez o valor coincide com o do cabeçalho (31/10/2026), então o defeito está apenas na data. O cabeçalho, por sua vez, diz 31/10/2026 enquanto o documento foi encaminhado como posição de 30/10/2026 — a série diária termina em 30/out, último dia útil do mês. Mantido como veio, sem correção por suposição.',
     dataReferencia: '30/10/2026',
-    // Mantido FALSE de proposito. A fonte traz tendencia = realizado em todas
-    // as rubricas e um saldo rotulado 31/10, o que sugere mes encerrado, mas
-    // o documento foi entregue como POSICAO de 30/10 e em nenhum ponto declara
-    // fechamento. Marcar true mudaria a contagem de recorrencia e as
-    // comparacoes mes a mes. Fica como esta ate haver documento de fechamento.
-    fechado: false,
+    // Marcado TRUE na v399. O criterio registrado aqui era "ate haver documento
+    // de fechamento": a Controladoria publicou a DRE oficial de outubro/2026,
+    // com a coluna Realizado do mes inteiro, e esse e o documento que faltava.
+    // Sustentam a marcacao: tendencia = realizado em todas as rubricas
+    // (3.658,8 / 3.805,1), dataReferencia 30/10 (ultimo dia util do mes),
+    // COBERTURA_FLUXO cobrindo 01 a 31/10 e a mesma regra ja aplicada aos
+    // outros 9 meses fechados da serie.
+    // Conferido antes de aplicar: nenhum indicador muda de valor. Mudam apenas
+    // o selo de status, o aviso de mes parcial e o texto de fechamento. O
+    // resultado de outubro continua sendo o do FLUXO DE CAIXA (-R$ 146,3 mil),
+    // e NAO o da DRE contabil (+R$ 202 mil): as duas fontes seguem separadas.
+    fechado: true,
     ptoAtencao: '<b>Posição de 30/10 — último dia útil de outubro.</b> O resultado operacional fechou a posição em <b style="color:var(--red);">-R$ 146,3 mil</b> (receita R$ 3.658,8 mil contra despesa R$ 3.805,1 mil). <b style="color:var(--green);">É o melhor resultado de outubro entre todas as posições já importadas</b>: a posição de 28/10 registrava -R$ 78,4 mil de realizado, com tendência de -R$ 239,1 mil, e o previsto era -R$ 268,2 mil — o mês terminou <b>R$ 121,9 mil melhor que o orçado</b>. A receita superou o previsto em R$ 86,8 mil (impulsionada por Receitas Diversas, R$ 713,9 mil contra R$ 650,0 mil, e Cartões Crédito, R$ 548,3 mil contra R$ 490,0 mil) e a despesa ficou R$ 35,1 mil abaixo do previsto. <b style="color:var(--gold);">Nesta posição, tendência e realizado coincidem em todas as rubricas</b>, porque outubro já se encerrou. <b style="color:var(--red);">O resultado líquido é -R$ 494,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 348,0 mil, que são a conta dos Índices Construtivos: essa conta caiu de R$ 2.616.414 em 30/09 para R$ 2.268.464 em 30/10. O saldo em banco na posição é de <b>R$ 1.450,9 mil</b>, com <b>-R$ 817,6 mil de caixa livre</b> — R$ 68,0 mil pior que os -R$ 749,6 mil de 28/10. <b style="color:var(--gold);">Atenção à programação de obras:</b> nenhum dos quatro pagamentos previstos para 29 e 30/10 (R$ 199,4 mil) foi executado — todos foram reprogramados para novembro, e a programação dos Índices subiu de R$ 1.306,2 mil para <b>R$ 1.602,7 mil</b> com dez compromissos novos.',
   },
   nov2026: {
@@ -15036,6 +15043,7 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
   if(tendCaixa){
     el.innerHTML += `
     <div class="section-title" style="margin-top:8px;">🔮 Previsão de Caixa — Próximos Dias</div>
+    <div class="card-meta" style="margin-top:-10px; margin-bottom:10px;">Projeção diária da Controladoria a partir da posição de <b>${tendCaixa.atual.d}</b>. Não integra o período filtrado acima nem o fechamento das competências exibidas.</div>
     <div class="msg-card ${tendStatus}">
       <div class="msg-icon">${tendStatus==='red'?'⚠️':'✅'}</div>
       <div>
@@ -15092,7 +15100,7 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
 
   // ── Monta as listas "O que está bem" / "O que precisa de atenção" dinamicamente ──
   const itens = [
-    {status:resultadoStatus, titulo:'Resultado operacional '+(resultadoStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.resultadoOper)} no período. ${resultadoStatus==='green'?'A operação está gerando mais receita do que despesa.':'As despesas superaram as receitas no período — acompanhar de perto até o fechamento.'}`},
+    {status:resultadoStatus, titulo:'Resultado operacional '+(resultadoStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.resultadoOper)} no período. ${resultadoStatus==='green'?'A operação está gerando mais receita do que despesa.':'As despesas superaram as receitas no período' + (C.parciais.length ? ' — acompanhar de perto até o fechamento.' : '.')}`},
     {status:caixaStatus, titulo:'Caixa operacional '+(caixaStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.caixaLivre)} de caixa livre. ${caixaStatus==='green'?'Há folga de caixa além do fundo de obras.':'O caixa de uso livre está negativo — o clube depende do fundo de obras ou do limite de crédito neste momento.'}`},
     {status:tendStatus, titulo:tendCaixa && tendCaixa.proximoNegativo ? 'Caixa deve virar negativo em breve' : 'Tendência de caixa sob controle', texto: tendCaixa ? (tendCaixa.proximoNegativo ? `Reversão prevista para ${tendCaixa.proximoNegativo.d}, com ponto mais baixo em ${tendCaixa.pior.d} (${fmtBRL0(tendCaixa.pior.banco)}) — ciclo normal do mês (mensalidades no início, folha+impostos e fornecedores entre 20-25).` : `Nenhuma reversão para negativo prevista nos ${tendCaixa.totalDias} dias já projetados pela Controladoria.`) : 'Sem dado de projeção diária disponível no momento.'},
     {status:inadStatus, titulo:'Inadimplência '+(inadStatus==='red'?'acima da meta':inadStatus==='yellow'?'no limite da meta':'dentro da meta'), texto:`${inad.real.toFixed(1).replace('.',',')}% ${inadSemDadoDoMes?'(referente a '+inad.mes+', mês mais recente disponível)':''}, ${inadSubindo?'em trajetória de alta desde '+inadPrimeira.mes+' ('+inadPrimeira.real.toFixed(1).replace('.',',')+'%)':'em queda no período'}.`},
@@ -19443,7 +19451,7 @@ function agregarPagamentos(meses){
 
 function renderPagamentosMeses(meses){
   const aviso = document.getElementById('pagAvisoSemDados');
-  let lista = meses, txtAviso = '';
+  let lista = meses, txtAviso = '', _semNoPeriodo = false;
   if(!lista.length){
     const u = ultimoMesCobertura(COBERTURA_PAGAMENTOS);
     if(!u){
@@ -19451,6 +19459,7 @@ function renderPagamentosMeses(meses){
       return;
     }
     lista = [u];
+    _semNoPeriodo = true;
     txtAviso = `Sem relatório de pagamentos no intervalo selecionado — exibindo o último fechamento disponível (${PAGAMENTOS_MESES[u.key].label}).`;
   }
   const d = agregarPagamentos(lista);
@@ -19475,6 +19484,14 @@ function renderPagamentosMeses(meses){
   ];
   drawDonut('pagDonutFaixa', faixas, String(d.qtd), 'pagamentos');
   if(document.getElementById('vgDonutPagamentos')) drawDonut('vgDonutPagamentos', faixas, String(d.qtd), 'pagamentos');
+  // A Visao Geral desenha o mesmo donut do Financeiro, mas o aviso de fallback
+  // (#pagAvisoSemDados) so existe no Financeiro. Sem declarar a competencia, um
+  // filtro posterior a cobertura de Pagamentos exibia aqui o ultimo fechamento
+  // como se fosse do periodo pedido. O rotulo abaixo torna o periodo explicito.
+  const _vgPer = document.getElementById('vgDonutPagPeriodo');
+  if(_vgPer) _vgPer.innerHTML = _semNoPeriodo
+    ? `<span style="color:var(--gold);">⚠️ Sem relatório de pagamentos no período filtrado — exibindo <b>${d.label}</b>, o último fechamento disponível.</span>`
+    : `Competência exibida: <b>${d.label}</b>.`;
 
   renderTabelaFornecedoresPeriodo(d.top);
   renderTabelaBancosPeriodo(d.bancos, d.total);
@@ -20163,7 +20180,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v138</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v139</div>
     </div>
   </div>
 </header>
@@ -20174,7 +20191,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v138</div>
+">SOGIPA · PAINEL 01 · v139</div>
 
 <main>
 
@@ -21021,7 +21038,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v138 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v139 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -21101,6 +21118,9 @@ const DADOS = {
     9:  { rl:3339, orcRL:3499, rl_ant:3191, do_:3539, orcDO:3525, do_ant:3033,  // DRE oficial Set/2026 (Controladoria — R$ mil, arredondado; RO = -201 na fonte, -200 por arredondamento das rubricas → corrigido pela camada DRE_OFICIAL)
           compRL:{ 'Associações':1778, 'Esporte':878, 'Proj. Criança':217, 'Venda Serviços':252, 'Eventos':119, 'Outras Receitas':151, 'Outras / Ajustes':-56 },
           compDO:{ 'Pessoal de Apoio':1861, 'Funcionamento':923, 'Esporte':152, 'Proj. Criança':51, 'Eventos':235, 'Tributárias':3, 'Financeiras':15, 'Contingências':0, 'Outras / Ajustes':299 } },  // Outras/Ajustes = Conservação/manutenção 183 + Outras despesas 116 (estrutura de 9 chaves do painel)
+    10: { rl:3810, orcRL:3888, rl_ant:3661, do_:3608, orcDO:3513, do_ant:3166,  // DRE oficial Out/2026 (Controladoria — R$ mil); RO = 202 (RL−DO fecha exato neste mês)
+          compRL:{ 'Associações':1972, 'Esporte':956, 'Proj. Criança':235, 'Venda Serviços':264, 'Eventos':302, 'Outras Receitas':138, 'Outras / Ajustes':-57 },
+          compDO:{ 'Pessoal de Apoio':1779, 'Funcionamento':904, 'Esporte':261, 'Proj. Criança':47, 'Eventos':263, 'Tributárias':61, 'Financeiras':25, 'Contingências':112, 'Outras / Ajustes':156 } },  // Outras/Ajustes = Conservação/manutenção 149 + Outras despesas 7
   },
 };
 
@@ -21117,12 +21137,14 @@ const DADOS = {
 const DRE_OFICIAL = {
   mensal: {
     2026: {
-      9: { rl:3339, do_:3539, ro:-201, orcRL:3499, orcDO:3525, orcRO:-26, rlAnt:3191, doAnt:3033, roAnt:158 }
+      9: { rl:3339, do_:3539, ro:-201, orcRL:3499, orcDO:3525, orcRO:-26, rlAnt:3191, doAnt:3033, roAnt:158 },
+      10:{ rl:3810, do_:3608, ro:202, orcRL:3888, orcDO:3513, orcRO:375, rlAnt:3661, doAnt:3166, roAnt:494 }  // Out/26: RO 2025 oficial 494 (RL−DO arred. = 495)
     }
   },
   acumulado: {
     2026: {
-      9: { rl:29645, do_:30102, ro:-456, orcRL:30318, orcDO:29760, orcRO:558, rlAnt:29133, doAnt:25186, roAnt:3947 }
+      9: { rl:29645, do_:30102, ro:-456, orcRL:30318, orcDO:29760, orcRO:558, rlAnt:29133, doAnt:25186, roAnt:3947 },
+      10:{ rl:33460, do_:33713, ro:-253, orcRL:34206, orcDO:33273, orcRO:933, rlAnt:32794, doAnt:28352, roAnt:4442 }  // Jan–Out/26 oficial Controladoria
     }
   }
 };
@@ -21398,6 +21420,7 @@ const QS = {
     7:  { vendR:32, reingR:39, conv:3, entrOrc:71.00, exclR:39, deslR:48, saiOrc:87.00, titOrc:3667.00, titReal:3524 },  // conv/orçado-mov. pendentes (Painel do Diretor)
     8:  { vendR:64, reingR:68, conv:1, entrOrc:132.00, exclR:28, deslR:46, saiOrc:83.00, titOrc:3681.00, titReal:3582 },  // Ago/26 RETIFICADO pela Controladoria (relatório Set/26): exclR 37→28 e titReal 3.573→3.582; conv/orçado-mov. pendentes
     9:  { vendR:67, reingR:97, conv:null, entrOrc:null, exclR:18, deslR:25, saiOrc:null, titOrc:3728, titReal:3703 },  // Set/26 fechamento oficial (Controladoria): titReal corrigido 3.719→3.703; movimento real (vend67/reing97/excl18/desl25); conv e orçado-mov. (entrOrc/saiOrc) não constam na fonte — null
+    10: { vendR:83, reingR:89, conv:null, entrOrc:null, exclR:46, deslR:33, saiOrc:null, titOrc:3836, titReal:3796 },  // Out/26 oficial: entradas 172 / saídas 79 / saldo +93; realizado 3.796 (orç 3.836, var -40); conv e orçado-mov. não constam — null
   }
 };
 
@@ -23433,7 +23456,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v138');
+  html = html.split('{{VERSAO}}').join('v139');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
