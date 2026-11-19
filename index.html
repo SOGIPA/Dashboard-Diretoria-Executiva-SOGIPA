@@ -1074,7 +1074,7 @@
         <div class="inst-toolbar-btns">
           <button onclick="voltarAoPainelDiretor()" title="Voltar às abas do Painel do Gerente Geral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Voltar ao Painel</button>
           <button onclick="recarregarInstitucional()" title="Voltar ao início do Painel do Presidente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Início</button>
-          <button onclick="abrirInstitucionalTelaCheia()" title="Abrir em tela cheia numa nova aba" class="inst-btn-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg> Tela cheia</button>
+          <button onclick="abrirInstitucionalTelaCheia()" title="Abrir em tela cheia em uma nova aba" class="inst-btn-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg> Tela cheia</button>
         </div>
       </div>
       <iframe id="institucionalFrame" style="width:100%; flex:1; border:none; display:block; background:#13151d;" loading="lazy"></iframe>
@@ -1086,7 +1086,7 @@
         <div id="alertaPontoAtencaoVG">PONTO DE ATENÇÃO carregando...</div>
       </div>
 
-      <div class="section-title">Fluxo Caixa - SOGIPA<div class="line"></div></div>
+      <div class="section-title">Fluxo de Caixa — SOGIPA<div class="line"></div></div>
       <div class="kpi-row-icons">
         <div class="kpi-icon-card">
           <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(0,229,160,.15); color:var(--green); font-weight:800; font-size:20px;">R$</div><div class="label">Caixa Livre</div></div>
@@ -1098,7 +1098,7 @@
         </div>
         <div class="kpi-icon-card">
           <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(168,85,247,.15); color:var(--purple);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><path d="M4 18v-2a8 8 0 0 1 16 0v2"/><path d="M2 18h20"/><line x1="12" y1="6" x2="12" y2="9"/></svg></div><div class="label">Fundo Obras</div></div>
-          <div class="kpi-icon-info"><div class="value" id="vgFundoObras">R$ 1,88 milhões</div><div class="delta muted">restrito p/ obras</div></div>
+          <div class="kpi-icon-info"><div class="value" id="vgFundoObras">R$ 1,88 milhão</div><div class="delta muted">restrito p/ obras</div></div>
         </div>
         <div class="kpi-icon-card">
           <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(0,229,160,.15); color:var(--green);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="vertical-align:-3px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="label">Recuperado (Neg.)</div></div>
@@ -1250,8 +1250,8 @@
         </div>
         <div class="card kpi-card" id="kpi-investimento" onclick="selectView('investimento')" style="--accent:#a855f7;">
           <div class="card-label" id="fcLabel2">② Fundo Índices Construtivos</div>
-          <div class="card-value" style="color:var(--purple)" id="fcVal2">R$ 1,88 milhões</div>
-          <div class="card-meta">Restrito — obras (Caldeira, Quadras, Telhado...)</div>
+          <div class="card-value" style="color:var(--purple)" id="fcVal2">R$ 1,88 milhão</div>
+          <div class="card-meta">Restrito — obras (Caldeira, Quadras, Telhado e outras)</div>
         </div>
         <div class="card kpi-card" id="kpi-financiamento" onclick="selectView('financiamento')" style="--accent:#06b6d4;">
           <div class="card-label">③ Limite de Crédito Garantido</div>
@@ -1277,7 +1277,7 @@
         </div>
         <div id="fcCompLegend">
         <div class="legend-row"><span class="dot" style="background:var(--red)"></span> Caixa Operacional Livre — <b style="color:var(--red)">-R$ 10,1 mil (negativo)</b></div>
-        <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — R$ 1,88 milhões</div>
+        <div class="legend-row"><span class="dot" style="background:var(--purple)"></span> Fundo Índices Construtivos (restrito a obras) — R$ 1,88 milhão</div>
         </div>
       </div>
 
@@ -1311,7 +1311,7 @@
         <div class="card-meta" style="margin-top:10px;">💡 Esta tabela guarda o resumo de cada fechamento mensal — vai crescendo a cada novo período importado, sem apagar o histórico anterior. Os gráficos acima (categorias, projeção diária, compromissos) sempre mostram o período mais recente.</div>
       </div>
 
-      <div class="section-title">Detalhamento de Compromissos - SOGIPA<div class="line"></div></div>
+      <div class="section-title">Detalhamento de Compromissos — SOGIPA<div class="line"></div></div>
       <div class="card full">
         <div class="card-label">Compromissos futuros — Conta Índices Construtivos</div>
         <div class="scrollx"><table>
@@ -1382,7 +1382,7 @@
           <div id="pagDonutFaixa" class="donut-wrap"></div>
         </div>
         <div class="card">
-          <div class="card-label">Pagamentos por Semana - Dados Controladoria</div>
+          <div class="card-label">Pagamentos por Semana — Dados da Controladoria</div>
           <div id="pagChartSemanal" class="scrollx"></div>
         </div>
       </div>
@@ -1523,7 +1523,7 @@
 <div class="neg-oculto">      <div class="alert-box red" id="negCemiterioBox"><span>🪦</span><div id="negCemiterio"></div></div></div>
 
 <div class="neg-oculto">      <div class="section-title" style="margin-top:26px;"><span class="neg-num">4</span>Por que a dívida não acaba<div class="line"></div></div></div>
-      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">A equipe recupera bem. Então por que o saldo não cai.</div>
+      <div class="card-meta neg-oculto" style="margin:-6px 0 12px 34px; font-style:italic;">A equipe recupera bem. Então, por que o saldo não cai?</div>
 
 <div class="neg-oculto">      <div class="card full" id="negCardEsteira">
         <div class="card-label">A esteira — entra mais do que sai</div>
@@ -3144,7 +3144,7 @@ const REINGRESSO_HISTORICO = [
     categorias:[
       {nome:'Aguardando detalhamento da Sec. Adm.', qtd:89, cor:'#4a4c68'},
     ],
-    alerta: '<b style="color:var(--green);">Outubro — 89 reingressos e R$ 75.073,44</b> de valor total informado, com ticket médio calculado de <b>R$ 843,52</b> (75.073,44 ÷ 89). <b style="color:var(--green);">Substitui a posição de 16/10</b>, que trazia 19 reingressos e R$ 12.231,54 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. É o <b>maior volume do ano</b>, acima de setembro (97 em quantidade, mas R$ 51.416,34) em valor, e o <b>maior ticket médio da série</b>: R$ 843,52 contra R$ 530,07 de setembro e R$ 548,96 de agosto — outubro trouxe menos volume que setembro com valor bem maior por reingresso. A separação informada pela gestão: <b>19 da Campanha de Aniversário</b> (21,35%) e <b>70 reingressos normais</b> (78,65%). <b style="color:var(--gold);">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 75.073,44 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
+    alerta: '<b style="color:var(--green);">Outubro — 89 reingressos e R$ 75.073,44</b> de valor total informado, com ticket médio calculado de <b>R$ 843,52</b> (75.073,44 ÷ 89). <b style="color:var(--green);">Substitui a posição de 16/10</b>, que trazia 19 reingressos e R$ 12.231,54 — são a mesma competência, e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. É o <b>maior volume financeiro do ano</b>: setembro teve mais reingressos (97), mas somou R$ 51.416,34. Outubro registra também o <b>maior ticket médio da série</b>: R$ 843,52, contra R$ 530,07 de setembro e R$ 548,96 de agosto. Em resumo, foram menos reingressos que em setembro, com valor significativamente maior por reingresso. A separação informada pela gestão: <b>19 da Campanha de Aniversário</b> (21,35%) e <b>70 reingressos normais</b> (78,65%). <b style="color:var(--gold);">Ressalvas de origem:</b> a Secretaria enviou apenas as quantidades de cada grupo, <b>sem os valores individuais</b> — por isso os R$ 75.073,44 aparecem só como total, sem rateio entre campanha e normais e sem ticket por grupo. O valor é o <b>total informado</b> da competência e não deve ser lido como receita efetivamente recebida nem como mensalidade recorrente. A abertura por categoria de sócio e o número de contatos também não vieram.'},
   // ── NOVEMBRO/2026 · PARCIAL (01 a 05/11) ───────────────────────────────
   // LEITURA ADOTADA, declarada aqui porque a fonte não nomeou a competência:
   // a Sec. Adm. informou "26 reingressos · R$ 25.607,02" junto com a posição
@@ -3852,7 +3852,7 @@ function agregarHECC(){
   const top = rank.slice(0,5);
   const resto = Math.round(rank.slice(5).reduce((t,c)=>t+c.valor,0)*100)/100;
   const donut = top.map((c,i)=>({nome:c.nome, valor:c.valor, cor:HE_CORES_CC[i]}));
-  if(rank.length > 5) donut.push({nome:`Outros (${rank.length-5} setores)`, valor:resto, cor:'#b0b0d0'});
+  if(rank.length > 5) donut.push({nome:`Outros (${qt(rank.length-5,'setor','setores')})`, valor:resto, cor:'#b0b0d0'});
   // Rótulo da janela REALMENTE coberta pela quebra por centro de custo. Ela pode
   // ser menor que a dos totais: HE_POR_MES começa em jun/26, enquanto o
   // histórico mensal (totais) vai desde jan/26. Quando for menor, a tela diz —
@@ -3882,11 +3882,22 @@ function setHEPeriodo(mesKey){
 // ═══════════════════════════════════════════════════════════
 const TAG_LABEL = {pessoal:'Pessoal', func:'Funcionamento', fixa:'Desp. Fixa', esporte:'Esporte', evento:'Evento', outros:'Outros'};
 
+// ═══════════════════════════════════════════════════════════
+// HELPERS EDITORIAIS (v398) — concordancia em texto gerado.
+// Nao alteram nenhum valor nem nenhum calculo: apenas escolhem
+// a forma singular ou plural da palavra que acompanha o numero.
+//   qt(3,'mes','meses')        -> "3 meses"
+//   qt(1,'mes','meses')        -> "1 mes"
+//   vb(1,'fechou','fecharam')  -> "fechou"
+// ═══════════════════════════════════════════════════════════
+function qt(n, sing, plur){ return n + ' ' + (Number(n) === 1 ? sing : plur); }
+function vb(n, sing, plur){ return Number(n) === 1 ? sing : plur; }
+
 function fmtMil(v){
   const abs = Math.abs(v);
   if(abs >= 1000){
     const emMilhoes = v/1000;
-    const label = Math.abs(emMilhoes) < 1.05 ? 'milhão' : 'milhões';
+    const label = Math.abs(Math.round(emMilhoes*100)/100) < 2 ? 'milhão' : 'milhões';
     return 'R$ ' + emMilhoes.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}) + ' ' + label;
   }
   return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
@@ -3898,7 +3909,7 @@ function fmtMilReais(v){
   const abs = Math.abs(v);
   if(abs >= 1000000){
     const emMilhoes = v/1000000;
-    const label = Math.abs(emMilhoes) < 1.05 ? 'milhão' : 'milhões';
+    const label = Math.abs(Math.round(emMilhoes*100)/100) < 2 ? 'milhão' : 'milhões';
     return 'R$ ' + emMilhoes.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}) + ' ' + label;
   }
   if(abs >= 1000){
@@ -3940,7 +3951,7 @@ function renderCats(containerId, cats, isReceita){
       <div class="status-item">
         <div class="status-item-top">
           <span class="nome">${c.nome}</span>
-          <span class="val" style="color:${g.cor};">${fmtMil(c.real)} <b>(${c.pct>=0?'+':''}${c.pct.toFixed(1)}%)</b></span>
+          <span class="val" style="color:${g.cor};">${fmtMil(c.real)} <b>(${c.pct>=0?'+':''}${c.pct.toFixed(1).replace('.',',')}%)</b></span>
         </div>
         <div class="status-item-sub">Prev: ${fmtMil(c.prev)} · Tend: ${fmtMil(c.tend)}</div>
       </div>`).join('');
@@ -3999,7 +4010,7 @@ function drawPagamentosSemanal(elId){
     const cx = padL + i*bw + bw/2, barW = Math.min(bw*0.6, 42);
     const barH = (H-padB) - y(s.total);
     bars += `<rect x="${(cx-barW/2).toFixed(1)}" y="${y(s.total).toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#3d7bff" rx="3">`
-          + `<title>${s.cheio}: ${fmtBRL0(s.total)} · ${s.qtd} lançamentos</title></rect>`;
+          + `<title>${s.cheio}: ${fmtBRL0(s.total)} · ${qt(s.qtd,'lançamento','lançamentos')}</title></rect>`;
     bars += `<text x="${cx}" y="${y(s.total)-8}" text-anchor="middle" fill="#5a92ff" font-size="11.5" font-weight="800">${curto(s.total)}</text>`;
     labels += `<text x="${cx}" y="${H-padB+17}" text-anchor="middle" fill="#b0b0d0" font-size="11.5" font-weight="600">${s.dias}</text>`;
     labels += `<text x="${cx}" y="${H-padB+31}" text-anchor="middle" fill="#6f7490" font-size="10.5">${s.mes}</text>`;
@@ -4046,7 +4057,7 @@ function drawDonut(elId, segments, centerLabel, centerSub, opts){
         </div>
       </div>`).join('');
   } else {
-    legend = segments.map(s=>`<div class="legend-row"><span class="dot" style="background:${s.cor}"></span>${s.nome} — ${s.valor.toLocaleString('pt-BR')}${s.suffix||''} (${(s.valor/total*100).toFixed(1)}%)</div>`).join('');
+    legend = segments.map(s=>`<div class="legend-row"><span class="dot" style="background:${s.cor}"></span>${s.nome} — ${s.valor.toLocaleString('pt-BR')}${s.suffix||''} (${(s.valor/total*100).toFixed(1).replace('.',',')}%)</div>`).join('');
   }
   el.innerHTML = `<div class="donut">
       <div class="donut-ring" style="width:158px; height:158px; border-radius:50%; background:conic-gradient(${stops.join(',')}); display:flex; align-items:center; justify-content:center;">
@@ -4865,7 +4876,7 @@ function renderNegEsteira(meses){
   const noRec=NEG_FAIXAS.filter(p=>meses.indexOf(p.mes)>=0);
   if(noRec.length<2){
     card.style.display='';
-    box.innerHTML=`<div class="card-meta">Para medir a esteira preciso de <b>dois meses consecutivos</b> com quebra por faixa no recorte — a dívida nova de um mês é a abertura dele menos o que sobrou do anterior. Hoje só a passagem <b>jul → ago</b> é calculável. Filtre um intervalo que inclua os dois.</div>`;
+    box.innerHTML=`<div class="card-meta">Para medir a esteira são necessários <b>dois meses consecutivos</b> com quebra por faixa no recorte — a dívida nova de um mês é a abertura dele menos o que sobrou do anterior. Hoje só a passagem <b>jul → ago</b> é calculável. Filtre um intervalo que inclua os dois.</div>`;
     return;
   }
   card.style.display='';
@@ -5440,7 +5451,7 @@ function renderInadJulho(){
       <div style="height:6px; background:#2a2c3d; border-radius:3px; margin-top:7px; overflow:hidden;">
         <div style="height:100%; width:${(f.valor/totFx*100).toFixed(1)}%; background:${f.cor};"></div>
       </div>
-      <div style="font-size:11.5px; color:var(--muted); margin-top:5px;">${f.qtd} associados · ${(f.valor/totFx*100).toFixed(1).replace('.',',')}% do total</div>
+      <div style="font-size:11.5px; color:var(--muted); margin-top:5px;">${qt(f.qtd,'associado','associados')} · ${(f.valor/totFx*100).toFixed(1).replace('.',',')}% do total</div>
     </div>`).join('');
 
   const maxPct = Math.max.apply(null, D.categorias.map(c=>c.pct));
@@ -5819,7 +5830,7 @@ const VIEWS = {
       const piorDia = PROJECAO_ATUAL.reduce((a,b)=> b.banco<a.banco ? b : a).d;
       container.innerHTML = `<div style="display:flex; height:34px; border-radius:8px; overflow:hidden; border:1px solid var(--border); margin:6px 0 8px; background:#13151d;">
           <div style="width:${pctUso.toFixed(2)}%; background:var(--cyan); min-width:3px;"></div></div>
-        <div class="legend-row">Uso projetado no pior dia (${piorDia}): <b style="color:var(--text)">${fmtBRL0(usoMaxNecessario)}</b> — apenas <b style="color:var(--cyan)">${pctUso.toFixed(1)}%</b> do limite total</div>`;
+        <div class="legend-row">Uso projetado no pior dia (${piorDia}): <b style="color:var(--text)">${fmtBRL0(usoMaxNecessario)}</b> — apenas <b style="color:var(--cyan)">${pctUso.toFixed(1).replace('.',',')}%</b> do limite total</div>`;
     },
     get alerts(){ return `<div class="alert-box"><span>💡</span><div>Mesmo no pior dia projetado (${PROJECAO[0].d} a ${PROJECAO[PROJECAO.length-1].d}), o disponível entre fundo + limite de crédito nunca cai abaixo de <b>${fmtBRL0(DISPONIVEL_MINIMO)}</b> — bem acima da necessidade operacional do período.</div></div>`; }
   },
@@ -6610,7 +6621,7 @@ function complVigCards(){
        style="width:${(f.n/r.total*100).toFixed(2)}%; background:${f.cor};"></div>`).join('');
   return `
     <div class="card">
-      <div class="card-label">Situação atual da implementação — ${r.total} registros</div>
+      <div class="card-label">Situação atual da implementação — ${qt(r.total,'registro','registros')}</div>
       <div class="card-meta" style="margin-top:4px;">
         Fonte única desta visão: <b style="color:var(--text);">${COMPLIANCE_IMPLANTACAO_META.fonte}</b>,
         posição de <b style="color:var(--text);">${COMPLIANCE_IMPLANTACAO_META.emitidoEm}</b>.
@@ -6630,7 +6641,7 @@ function complVigCards(){
           <b style="color:#00e5a0;">${r.concluidas}</b> +
           <b style="color:#3d7bff;">${r.andamento}</b> +
           <b style="color:#f2b705;">${r.aguardando}</b> =
-          <b style="color:var(--text);">${r.total} registros</b>.
+          <b style="color:var(--text);">${qt(r.total,'registro','registros')}</b>.
           Não há percentual de implantação: o relatório não atribui peso às ações,
           e um percentual sobre contagem simples diria que 15 itens pequenos valem mais
           que um estruturante.
@@ -6716,10 +6727,10 @@ function complVigTabela(){
           <div class="card-label">Acompanhamento gerencial — situação atual</div>
           <div class="card-meta" style="margin-top:4px;">
             ${sel ? `Filtrado por <b style="color:var(--gold);">${rot}</b>:
-                     <b style="color:var(--text);">${itens.length}</b> de ${r.total} registros.
+                     <b style="color:var(--text);">${itens.length}</b> de ${qt(r.total,'registro','registros')}.
                      Os cards acima mostram sempre o <b>total geral</b>, não o filtro.`
                   : `<b style="color:var(--text);">${r.total}</b> registros, na ordem oficial do relatório.
-                     Clique numa linha para abrir o histórico e a próxima ação.`}
+                     Clique em uma linha para abrir o histórico e a próxima ação.`}
           </div>
         </div>
         ${sel ? `<div onclick="complVigSelecionar('${sel}')" role="button" tabindex="0"
@@ -6995,7 +7006,7 @@ function renderCompliance(){
     <div class="card"><div class="card-label">Leitura Executiva</div>
       <div style="margin-top:10px; line-height:1.75; font-size:13.5px; color:var(--text);">
         <b style="color:var(--red);">${r.atrasadas} de ${r.total} ações estão atrasadas</b>, com vencimentos
-        de ${Math.min(...critAtraso)} a ${Math.max(...critAtraso)} dias.
+        ${Math.min(...critAtraso)===Math.max(...critAtraso) ? 'de '+qt(Math.max(...critAtraso),'dia','dias') : 'de '+Math.min(...critAtraso)+' a '+Math.max(...critAtraso)+' dias'}.
         <b style="color:var(--red);">${r.criticas.length} são críticas</b> — atraso somado a prioridade alta,
         e nenhuma ação de prioridade alta está no prazo.<br>
         <b style="color:var(--gold);">Nenhuma das ${r.total} ações tem responsável definido.</b>
@@ -9422,7 +9433,7 @@ const DADOS_MES = {
       tendencia: {receita:3030.1, despesa:2962.5},
       realizado: {receita:3030.1, despesa:2962.5},
     },
-    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 489,1 mil, <b>R$ 35,3 mil (7,2%)</b> é caixa operacional livre. Os outros <b>R$ 453,8 mil (92,8%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
+    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 489,1 mil, <b>R$ 35,3 mil (7,2%)</b> são caixa operacional livre. Os outros <b>R$ 453,8 mil (92,8%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
   },
   mar2026: {
     label: 'Março/2026',
@@ -9458,7 +9469,7 @@ const DADOS_MES = {
       tendencia: {receita:3482.8, despesa:3323.9},
       realizado: {receita:3482.8, despesa:3323.9},
     },
-    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 665,4 mil, <b>R$ 368,2 mil (55,3%)</b> é caixa operacional livre. Os outros <b>R$ 297,2 mil (44,7%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
+    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 665,4 mil, <b>R$ 368,2 mil (55,3%)</b> são caixa operacional livre. Os outros <b>R$ 297,2 mil (44,7%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
   },
   abr2026: {
     label: 'Abril/2026',
@@ -9494,7 +9505,7 @@ const DADOS_MES = {
       tendencia: {receita:3306.3, despesa:3127.6},
       realizado: {receita:3306.3, despesa:3127.6},
     },
-    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 677,8 mil, <b>R$ 449,1 mil (66,3%)</b> é caixa operacional livre. Os outros <b>R$ 228,7 mil (33,7%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
+    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 677,8 mil, <b>R$ 449,1 mil (66,3%)</b> são caixa operacional livre. Os outros <b>R$ 228,7 mil (33,7%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
   },
   mai2026: {
     label: 'Maio/2026',
@@ -9530,7 +9541,7 @@ const DADOS_MES = {
       tendencia: {receita:3290.9, despesa:3182.3},
       realizado: {receita:3290.9, despesa:3182.3},
     },
-    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 1461,4 mil, <b>R$ 512,0 mil (35,0%)</b> é caixa operacional livre. Os outros <b>R$ 949,4 mil (65,0%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
+    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 1.461,4 mil, <b>R$ 512,0 mil (35,0%)</b> são caixa operacional livre. Os outros <b>R$ 949,4 mil (65,0%)</b> pertencem ao fundo Índices Construtivos, restrito a obras.',
   },
   jun2026: {
     label: 'Junho/2026',
@@ -9575,7 +9586,7 @@ const DADOS_MES = {
       tendencia: {receita:3379.5, despesa:3484.0},
       realizado: {receita:3379.5, despesa:3484.0},
     },
-    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 2,07 milhões, apenas <b>R$ 400,5 mil (19,4%)</b> é caixa operacional livre. Os outros <b>R$ 1,67 milhões (80,6%)</b> pertencem ao fundo Índices Construtivos.',
+    ptoAtencao: '<b>PONTO DE ATENÇÃO:</b> do saldo em banco de R$ 2,07 milhões, apenas <b>R$ 400,5 mil (19,4%)</b> são caixa operacional livre. Os outros <b>R$ 1,67 milhão (80,6%)</b> pertencem ao fundo Índices Construtivos.',
     retencao: {
       periodoTag:'01 a 30/jun/2026',
       kpis:[
@@ -9703,7 +9714,7 @@ const DADOS_MES = {
     resultadoLiquido: 133.1,
     dataReferencia: '31/07/2026',
     fechado: true,
-    ptoAtencao: '<b>O caixa livre fechou julho negativo em -R$ 122,3 mil.</b> O saldo em banco de R$ 2.200,2 mil é <b>menor que o fundo Índices Construtivos (R$ 2.322,5 mil)</b> — ou seja, o dia a dia do clube está sendo sustentado por recurso que pertence a obras. O resultado operacional de julho ficou em <b>-R$ 308,6 mil</b> (receita R$ 3.350,4 mil contra despesa R$ 3.659,0 mil); o resultado líquido só ficou positivo em R$ 133,1 mil por causa do aporte não operacional de R$ 441,7 mil da conta de Índices Construtivos. <b style="color:var(--gold);">Esse é o ponto a acompanhar:</b> o fechamento positivo veio de fora da operação, não da operação.',
+    ptoAtencao: '<b>O caixa livre fechou julho negativo em -R$ 122,3 mil.</b> O saldo em banco de R$ 2.200,2 mil é <b>menor que o fundo Índices Construtivos (R$ 2.322,5 mil)</b> — ou seja, o dia a dia do clube está sendo sustentado por recursos que pertencem a obras. O resultado operacional de julho ficou em <b>-R$ 308,6 mil</b> (receita R$ 3.350,4 mil contra despesa R$ 3.659,0 mil); o resultado líquido só ficou positivo em R$ 133,1 mil por causa do aporte não operacional de R$ 441,7 mil da conta de Índices Construtivos. <b style="color:var(--gold);">Esse é o ponto a acompanhar:</b> o fechamento positivo não foi gerado pela operação, e sim por um aporte externo a ela.',
     retencao: {
       periodoTag:'Julho/2026',
       kpis:[
@@ -9809,7 +9820,7 @@ const DADOS_MES = {
     resultadoLiquido: 363.3,
     dataReferencia: '31/08/2026',
     fechado: true,
-    ptoAtencao: '<b>Mês fechado — posição de 31/08.</b> Agosto encerrou com <b>resultado operacional de -R$ 423,0 mil</b> e <b style=\"color:var(--green);\">resultado líquido positivo de R$ 363,3 mil</b>, graças aos R$ 786,2 mil da conta de Índices Construtivos. A receita fechou em <b>R$ 3.392,3 mil</b>, R$ 150,3 mil acima do previsto, puxada por Boletos (R$ 1.500,3 mil) e Receitas Diversas (R$ 589,0 mil). A despesa fechou em <b>R$ 3.815,3 mil</b>, R$ 244,7 mil acima do previsto: Pessoal de Apoio chegou a R$ 1.686,4 mil com R$ 180,5 mil de rescisões, Esporte a R$ 279,9 mil e Eventos a R$ 287,9 mil, todos bem acima do orçado. Do outro lado, Despesas de Funcionamento ficaram R$ 101,5 mil abaixo do previsto. O caixa operacional livre encerrou <b>negativo em R$ 545,3 mil</b>, e com o fundo de R$ 3.108,7 mil o saldo em banco fechou em R$ 2.563,4 mil.',
+    ptoAtencao: '<b>Mês fechado — posição de 31/08.</b> Agosto encerrou com <b>resultado operacional de -R$ 423,0 mil</b> e <b style=\"color:var(--green);\">resultado líquido positivo de R$ 363,3 mil</b>, em razão dos R$ 786,2 mil da conta de Índices Construtivos. A receita fechou em <b>R$ 3.392,3 mil</b>, R$ 150,3 mil acima do previsto, impulsionada por Boletos (R$ 1.500,3 mil) e Receitas Diversas (R$ 589,0 mil). A despesa fechou em <b>R$ 3.815,3 mil</b>, R$ 244,7 mil acima do previsto: Pessoal de Apoio chegou a R$ 1.686,4 mil com R$ 180,5 mil de rescisões, Esporte a R$ 279,9 mil e Eventos a R$ 287,9 mil, todos muito acima do orçado. Em sentido contrário, as Despesas de Funcionamento ficaram R$ 101,5 mil abaixo do previsto. O caixa operacional livre encerrou <b>negativo em R$ 545,3 mil</b>, e com o fundo de R$ 3.108,7 mil o saldo em banco fechou em R$ 2.563,4 mil.',
   },
   set2026: {
     label: 'Setembro/2026',
@@ -9901,7 +9912,7 @@ const DADOS_MES = {
     resultadoLiquido: -618.3,
     dataReferencia: '30/09/2026',
     fechado: true,
-    ptoAtencao: '<b>Mês fechado — posição de 30/09.</b> Setembro encerrou com <b>resultado operacional de -R$ 126,0 mil</b>, a melhor operação desde junho e bem acima dos -R$ 423,0 mil de agosto. A receita fechou em <b>R$ 3.448,2 mil</b>, R$ 60,8 mil abaixo do previsto — Boletos entregaram R$ 1.489,8 mil contra R$ 1.525,0 mil orçados e Receitas Diversas R$ 602,9 mil contra R$ 626,0 mil; do outro lado, Cartões de Crédito superaram o previsto em R$ 6,5 mil. A despesa fechou em <b>R$ 3.574,2 mil</b>, R$ 24,3 mil acima do previsto, e a conta é quase inteira de <b>Pessoal de Apoio: R$ 1.605,4 mil contra R$ 1.490,5 mil orçados (+R$ 114,9 mil)</b>, puxado por <b>R$ 101,0 mil de rescisões que não estavam no orçamento</b>. Despesas de Funcionamento compensaram parte, fechando R$ 64,1 mil abaixo do previsto. <b style=\"color:var(--red);\">O resultado líquido ficou em -R$ 618,3 mil</b> porque saíram R$ 492,3 mil pela conta de Índices Construtivos — menos que os R$ 683,0 mil programados. O saldo em banco encerrou em <b>R$ 1.945,1 mil</b>, dos quais <b>R$ 2.616,4 mil são do fundo de obras e o caixa operacional livre está negativo em R$ 671,3 mil</b>: o clube só tem saldo positivo porque o recurso vinculado cobre o rombo operacional. Pela frente, <b>R$ 943,9 mil de obras já contratadas</b> em 14 parcelas até dezembro, com os dois maiores desembolsos em 28/10 (Telhado Rest. Tênis, R$ 182,0 mil) e 10/12 (Salão Panorâmico, R$ 338,8 mil).',
+    ptoAtencao: '<b>Mês fechado — posição de 30/09.</b> Setembro encerrou com <b>resultado operacional de -R$ 126,0 mil</b>, a melhor operação desde junho e muito menos negativa que os -R$ 423,0 mil de agosto. A receita fechou em <b>R$ 3.448,2 mil</b>, R$ 60,8 mil abaixo do previsto — Boletos entregaram R$ 1.489,8 mil contra R$ 1.525,0 mil orçados e Receitas Diversas R$ 602,9 mil contra R$ 626,0 mil; em sentido contrário, os Cartões de Crédito superaram o previsto em R$ 6,5 mil. A despesa fechou em <b>R$ 3.574,2 mil</b>, R$ 24,3 mil acima do previsto, e a conta é quase inteira de <b>Pessoal de Apoio: R$ 1.605,4 mil contra R$ 1.490,5 mil orçados (+R$ 114,9 mil)</b>, em razão de <b>R$ 101,0 mil de rescisões não previstas no orçamento</b>. Despesas de Funcionamento compensaram parte, fechando R$ 64,1 mil abaixo do previsto. <b style=\"color:var(--red);\">O resultado líquido ficou em -R$ 618,3 mil</b> porque saíram R$ 492,3 mil pela conta de Índices Construtivos — menos que os R$ 683,0 mil programados. O saldo em banco encerrou em <b>R$ 1.945,1 mil</b>, enquanto o <b>fundo de obras somava R$ 2.616,4 mil</b> — ou seja, o <b>caixa operacional livre está negativo em R$ 671,3 mil</b>: o clube só apresenta saldo positivo porque o recurso vinculado a obras cobre o déficit operacional. Para os meses seguintes, estão contratados <b>R$ 943,9 mil de obras</b>, em 14 parcelas até dezembro, com os dois maiores desembolsos em 28/10 (Telhado Rest. Tênis, R$ 182,0 mil) e 10/12 (Salão Panorâmico, R$ 338,8 mil).',
   },
   out2026: {
     label: 'Outubro/2026',
@@ -10092,7 +10103,7 @@ const DADOS_MES = {
     // fechamento. Marcar true mudaria a contagem de recorrencia e as
     // comparacoes mes a mes. Fica como esta ate haver documento de fechamento.
     fechado: false,
-    ptoAtencao: '<b>Posição de 30/10 — último dia útil de outubro.</b> O operacional fechou a posição em <b style="color:var(--red);">-R$ 146,3 mil</b> (receita R$ 3.658,8 mil contra despesa R$ 3.805,1 mil). <b style="color:var(--green);">É o melhor número de outubro em todas as cargas</b>: a posição de 28/10 trazia -R$ 78,4 mil de realizado com tendência de -R$ 239,1 mil, e o previsto era -R$ 268,2 mil — o mês terminou <b>R$ 121,9 mil melhor que o orçado</b>. A receita superou o previsto em R$ 86,8 mil (puxada por Receitas Diversas, R$ 713,9 mil contra R$ 650,0 mil, e Cartões Crédito, R$ 548,3 mil contra R$ 490,0 mil) e a despesa ficou R$ 35,1 mil abaixo. <b style="color:var(--gold);">Nesta carga tendência e realizado são iguais em todas as rubricas</b> — outubro chegou ao fim. <b style="color:var(--red);">O resultado líquido é -R$ 494,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 348,0 mil, que são a conta dos Índices Construtivos: ela caiu de R$ 2.616.414 em 30/set para R$ 2.268.464 em 30/out. O saldo em banco na posição é de <b>R$ 1.450,9 mil</b>, com <b>-R$ 817,6 mil de caixa livre</b> — R$ 68,0 mil pior que os -R$ 749,6 mil de 28/10. <b style="color:var(--gold);">Atenção à programação de obras:</b> nenhum dos quatro pagamentos previstos para 29 e 30/10 (R$ 199,4 mil) foi executado — todos foram reprogramados para novembro, e a programação dos Índices subiu de R$ 1.306,2 mil para <b>R$ 1.602,7 mil</b> com dez compromissos novos. Detalhes na aba <b>Fluxo de Caixa</b>.',
+    ptoAtencao: '<b>Posição de 30/10 — último dia útil de outubro.</b> O resultado operacional fechou a posição em <b style="color:var(--red);">-R$ 146,3 mil</b> (receita R$ 3.658,8 mil contra despesa R$ 3.805,1 mil). <b style="color:var(--green);">É o melhor resultado de outubro entre todas as posições já importadas</b>: a posição de 28/10 registrava -R$ 78,4 mil de realizado, com tendência de -R$ 239,1 mil, e o previsto era -R$ 268,2 mil — o mês terminou <b>R$ 121,9 mil melhor que o orçado</b>. A receita superou o previsto em R$ 86,8 mil (impulsionada por Receitas Diversas, R$ 713,9 mil contra R$ 650,0 mil, e Cartões Crédito, R$ 548,3 mil contra R$ 490,0 mil) e a despesa ficou R$ 35,1 mil abaixo do previsto. <b style="color:var(--gold);">Nesta posição, tendência e realizado coincidem em todas as rubricas</b>, porque outubro já se encerrou. <b style="color:var(--red);">O resultado líquido é -R$ 494,2 mil</b>, por conta das entradas e saídas não operacionais de -R$ 348,0 mil, que são a conta dos Índices Construtivos: essa conta caiu de R$ 2.616.414 em 30/09 para R$ 2.268.464 em 30/10. O saldo em banco na posição é de <b>R$ 1.450,9 mil</b>, com <b>-R$ 817,6 mil de caixa livre</b> — R$ 68,0 mil pior que os -R$ 749,6 mil de 28/10. <b style="color:var(--gold);">Atenção à programação de obras:</b> nenhum dos quatro pagamentos previstos para 29 e 30/10 (R$ 199,4 mil) foi executado — todos foram reprogramados para novembro, e a programação dos Índices subiu de R$ 1.306,2 mil para <b>R$ 1.602,7 mil</b> com dez compromissos novos.',
   },
   nov2026: {
     label: 'Novembro/2026',
@@ -10298,7 +10309,7 @@ const DADOS_MES = {
     dataReferencia: '12/11/2026',
     // Novembro EM CURSO: posicao de 12/11, 8 dias uteis de 20. Nao e fechamento.
     fechado: false,
-    ptoAtencao: '<b>Posição de 12/11 — novembro em curso, 8 dias úteis de 20.</b> Não é fechamento: receita realizada de <b>R$ 2.826,4 mil</b> contra tendência de R$ 3.726,4 mil, e despesa realizada de <b>R$ 1.380,5 mil</b> contra tendência de R$ 3.657,2 mil. <b style="color:var(--gold);">Os R$ 1.445,8 mil de resultado operacional realizado não são lucro do mês</b> — a receita de novembro já entrou quase 76% enquanto a despesa saiu só 38%, pelo calendário de boletos e débito em conta. O número que projeta o mês é a <b>tendência: +R$ 69,1 mil</b>, contra R$ 96,4 mil previstos. <b style="color:var(--red);">O resultado líquido declarado é -R$ 694,0 mil</b>, e é da coluna <b>tendência</b>: R$ 69,1 mil de operacional menos R$ 763,1 mil de entradas e saídas não operacionais, que são a conta dos Índices Construtivos. <b style="color:var(--gold);">O caixa livre aparece positivo em R$ 628,3 mil, mas é efeito de calendário, não melhora estrutural:</b> a posição foi tirada um dia depois da maior entrada do mês (R$ 1.365.868 em 11/11, que levou o caixa de -R$ 832.956 para +R$ 532.912). A própria projeção da Controladoria traz o caixa de volta ao negativo em <b>19/nov (-R$ 377.324)</b> e negativo em <b>29 dos 40 dias</b> até 30/dez, chegando a <b style="color:var(--red);">-R$ 1.043.372</b>. <b style="color:var(--red);">Ponto de atenção para dezembro:</b> a partir de 28/dez o total disponível projetado cai abaixo do limite de R$ 6,4 milhões (R$ 6.366.317 em 28/dez), o que significa que o clube passaria a consumir o próprio limite de crédito. <b style="color:var(--gold);">E as duas páginas do relatório de Necessidades não concordam:</b> a série diária projeta <b>R$ 403.305,18</b> de saídas dos Índices em dezembro (R$ 338.800,00 em 10/dez mais duas parcelas Biccateca de R$ 32.252,59) que o cronograma da página 2 não lista — se o cronograma estiver certo, dezembro aparece pior do que é. Pende de validação da Controladoria. Detalhes na aba <b>Fluxo de Caixa</b>.',
+    ptoAtencao: '<b>Posição de 12/11 — novembro em curso, com 8 dias úteis transcorridos de 20.</b> Os números abaixo são uma posição parcial e não representam o fechamento do mês.<br><br><b style="color:var(--blue); letter-spacing:.04em; font-size:11.5px;">1 · O QUE JÁ FOI REALIZADO ATÉ 12/11</b><br>Receita realizada de <b>R$ 2.826,4 mil</b> e despesa realizada de <b>R$ 1.380,5 mil</b>. A diferença entre as duas produz um resultado operacional realizado de <b>R$ 1.445,8 mil</b>, que <b style="color:var(--gold);">não representa lucro do mês</b>: até a data da posição, cerca de 76% da receita já havia entrado, enquanto apenas 38% da despesa havia saído. A defasagem decorre do calendário de boletos e de débito em conta, e não de ganho de eficiência.<br><br><b style="color:var(--blue); letter-spacing:.04em; font-size:11.5px;">2 · O QUE É TENDÊNCIA E PROJEÇÃO</b><br>A coluna que projeta o mês completo é a tendência: receita de <b>R$ 3.726,4 mil</b> e despesa de <b>R$ 3.657,2 mil</b>, o que corresponde a um <b>resultado operacional de +R$ 69,1 mil</b>, contra R$ 96,4 mil previstos. O <b style="color:var(--red);">resultado líquido declarado de -R$ 694,0 mil</b> também pertence à coluna de tendência e resulta dos R$ 69,1 mil de resultado operacional menos R$ 763,1 mil de entradas e saídas não operacionais, que correspondem à movimentação da conta dos Índices Construtivos.<br><br><b style="color:var(--blue); letter-spacing:.04em; font-size:11.5px;">3 · RISCOS FINANCEIROS</b><br>O caixa livre está positivo em <b>R$ 628,3 mil</b> na data da posição, mas <b style="color:var(--gold);">esse resultado é efeito do calendário e não indica melhora estrutural</b>. A posição foi apurada um dia depois da maior entrada do mês: R$ 1.365.868 em 11/11, que elevaram o caixa de -R$ 832.956 para +R$ 532.912. A projeção da própria Controladoria devolve o caixa ao campo negativo já em <b>19/11 (-R$ 377.324)</b> e o mantém negativo em <b>29 dos 40 dias</b> até 30/12, chegando a <b style="color:var(--red);">-R$ 1.043.372</b>. <b style="color:var(--red);">Há um segundo risco em dezembro:</b> a partir de 28/12 o total disponível projetado fica abaixo do limite de crédito de R$ 6,4 milhões (R$ 6.366.317 em 28/12), o que significa que o clube passaria a consumir o próprio limite.<br><br><b style="color:var(--blue); letter-spacing:.04em; font-size:11.5px;">4 · DIVERGÊNCIA PENDENTE DE VALIDAÇÃO</b><br>As duas páginas do relatório de Necessidades Financeiras não são coincidentes: a série diária projeta <b>R$ 403.305,18</b> de saídas dos Índices Construtivos em dezembro — R$ 338.800,00 em 10/12 e duas parcelas Biccateca de R$ 32.252,59 — que o cronograma da página 2 não relaciona. Se o cronograma estiver correto, dezembro aparece pior do que efetivamente é. <b>A divergência pende de validação da Controladoria</b> e não foi ajustada no painel.',
   },
 };
 
@@ -10707,7 +10718,7 @@ function renderPatrocinioPeriodo(mesesPatroc){
       <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
         <div>
           <div style="font-size:16px; font-weight:800; color:var(--text);">${p.nome}${p.razao?` <span style="font-size:11.5px; color:var(--muted); font-weight:600;">· ${p.razao}</span>`:''}</div>
-          <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">${p.vigencia} · ${p.meses} meses · ${fmtBRL0(p.valorMes)}/mês</div>
+          <div style="font-size:12.5px; color:var(--muted); margin-top:3px;">${p.vigencia} · ${qt(p.meses,'mês','meses')} · ${fmtBRL0(p.valorMes)}/mês</div>
         </div>
         <div class="tag" style="background:rgba(232,25,44,.15); color:var(--red); font-weight:700;">Encerrado</div>
       </div>
@@ -10784,7 +10795,7 @@ function renderPatrocinioPeriodo(mesesPatroc){
             <td class="num" style="color:${tot25.liquido<0?'var(--red)':'var(--green)'};">${fmtSin(tot25.liquido)}</td></tr>
         </tbody>
       </table></div>
-      <div class="card-meta" style="margin-top:10px;">Líquido = Patrocínio − COFINS − Comissão − Rateio. <b style="color:var(--gold);">${mesesNeg} dos ${totLinhas} meses fecharam negativos</b> — o rateio comprometido superou o que restava do aporte. Fonte: Planilha de Distribuição (01/08/2026).</div>
+      <div class="card-meta" style="margin-top:10px;">Líquido = Patrocínio − COFINS − Comissão − Rateio. <b style="color:var(--gold);">${mesesNeg} de ${totLinhas} meses ${vb(mesesNeg,'fechou negativo','fecharam negativos')}</b> — o rateio comprometido superou o que restava do aporte. Fonte: Planilha de Distribuição (01/08/2026).</div>
     </div>
 
     <div class="section-title" style="margin-top:26px;">Aplicação por Evento e Departamento — 2025<div class="line"></div></div>
@@ -11340,9 +11351,9 @@ function deltaOficialCRA(keys){
     const r = RETENCAO_CRA.filter(x=>x.mes===k).length;
     const l = LICENCAS_CRA.filter(x=>x.mes===k).length;
     if(o.retencoes!=null && o.retencoes!==r){ dRet += o.retencoes-r;
-      notas.push(`${k}: ${o.retencoes} retenções confirmadas pela gestora, ${r} identificadas na planilha por DATA DO REGISTRO`); }
+      notas.push(`${k}: ${qt(o.retencoes,'retenção confirmada','retenções confirmadas')} pela gestora, ${r} identificadas na planilha por DATA DO REGISTRO`); }
     if(o.licencas!=null && o.licencas!==l){ dLic += o.licencas-l;
-      notas.push(`${k}: ${o.licencas} licença(s) confirmada(s) pela gestora, ${l} identificada(s) na planilha por DATA DO REGISTRO`); }
+      notas.push(`${k}: ${qt(o.licencas,'licença confirmada','licenças confirmadas')} pela gestora, ${l} ${vb(l,'identificada','identificadas')} na planilha por DATA DO REGISTRO`); }
   });
   return {dRet, dLic, notas};
 }
@@ -11384,7 +11395,7 @@ function conferirCRA(){
     bate('elogios',       MANIFESTACOES.filter(m=>m.tipo==='Elogio').length,     CRA_TRAVAS.elogios.fonte);
     // todo registro de retenção/licença precisa cair em ALGUM mês
     const orf = RETENCAO_CRA.filter(x=>!x.mes).length + LICENCAS_CRA.filter(x=>!x.mes).length;
-    if(orf) d.push(`${orf} registro(s) de retenção/licença sem mês de competência`);
+    if(orf) d.push(`${qt(orf,'registro','registros')} de retenção/licença sem mês de competência`);
     // o delta oficial precisa ser ZERO agora que a competência está correta
     const of = deltaOficialCRA(Object.keys(CRA_OFICIAL));
     if(of.dRet!==0 || of.dLic!==0) d.push('posição oficial da gestora deixou de bater com a base: '+of.notas.join(' | '));
@@ -11570,8 +11581,8 @@ function renderRetencaoCRA(mesesSel){
     <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
       <b>Nenhum acordo de retenção registrado no período selecionado.</b>
       O acompanhamento de retenção da CRA cobre <b>${textoCobertura(COBERTURA_RETENCAO_CRA)}</b>,
-      pela <b>data de início do acordo</b>. Ausência de registro não é fechamento com zero:
-      pode ser período ainda não enviado pela gestora.
+      pela <b>data de início do acordo</b>. Ausência de registro não equivale a fechamento com zero:
+      o período pode ainda não ter sido enviado pela gestora.
       ${semData.length ? `Há também <b>${semData.length} registro${semData.length===1?'':'s'} sem data de início</b> na planilha, que só ${semData.length===1?'entra':'entram'} quando o filtro cobre todo o período apurado.` : ''}
     </div></div>`;
     return;
@@ -11753,7 +11764,7 @@ function renderRetencaoCRA(mesesSel){
 
     <div class="section-title" style="margin-top:26px;">Licenças<div class="line"></div></div>
     <div class="card full">
-      <div class="card-label">${LICENCAS_CRA.length} licenças registradas em 2026</div>
+      <div class="card-label">${qt(LICENCAS_CRA.length,'licença registrada','licenças registradas')} em 2026</div>
       <div class="card-meta" style="margin-top:8px;">Suspensão temporária do vínculo — alternativa ao desligamento, tratada pelo mesmo processo do CRA. Licença <b>não</b> entra no numerador de retenção efetiva: são dois indicadores separados.${(()=>{const o=LICENCAS_CRA.filter(l=>!l.mes).length; return o? ` <b style="color:var(--gold);">${o} sem mês de competência na planilha.</b>` : '';})()} Se a gestora preferir, dá para mover as licenças para uma sub-aba própria.</div>
     </div>
     <div class="section-title" style="margin-top:26px;">Histórico de Retenção<div class="line"></div></div>
@@ -12007,7 +12018,7 @@ function renderOcorrencias(mesesSel){
     <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
       <b>Nenhuma ocorrência registrada no período selecionado.</b>
       O registro de ocorrências da CRA cobre <b>${textoCobertura(COBERTURA_OCORRENCIAS)}</b>.
-      Ausência de registro não é zero de operação: pode ser período ainda não enviado pela gestora.
+      Ausência de registro não equivale a zero de operação: o período pode ainda não ter sido enviado pela gestora.
     </div></div>
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('📋 Ocorrências', '0', 'no período selecionado')}
@@ -12058,7 +12069,7 @@ function renderOcorrencias(mesesSel){
         <div style="white-space:nowrap; text-align:right;"><b style="font-size:14px;">${qtd}</b>
           <span class="muted" style="font-size:12px; margin-left:5px;">${(qtd/total*100).toFixed(0)}%</span></div>
       </div>`).join('') +
-      (resto ? `<div class="card-meta" style="margin-top:8px;">+ ${dados.length-lim} outros locais somando ${resto} ocorrências.</div>` : '');
+      (resto ? `<div class="card-meta" style="margin-top:8px;">+ ${qt(dados.length-lim,'outro local','outros locais')} somando ${qt(resto,'ocorrência','ocorrências')}.</div>` : '');
   };
 
   // 28/09: a lista de meses era FIXA e parava em junho — com a base indo ate
@@ -12129,7 +12140,7 @@ function renderOcorrencias(mesesSel){
       <b>${abertasAtrasadas.length} ocorrência${abertasAtrasadas.length===1?'':'s'} em aberto já ${abertasAtrasadas.length===1?'passou':'passaram'} do prazo de ${SLA_OCOR} dias úteis</b>
       e continua${abertasAtrasadas.length===1?'':'m'} sem Data de Fim — o prazo segue contando.
       ${maisAntigaAberta ? `A mais antiga foi aberta em <b>${maisAntigaAberta.abertura}</b> e está há
-        <b>${String(maisAntigaAberta.diasAberto).replace('.',',')} dias úteis</b> em andamento (${maisAntigaAberta.local}).` : ''}
+        <b>${qt(String(maisAntigaAberta.diasAberto).replace('.',','),'dia útil','dias úteis')}</b> em andamento${maisAntigaAberta.local ? ' ('+maisAntigaAberta.local+')' : ''}.` : ''}
       <br><span class="muted">Contagem até ${new Date().toLocaleDateString('pt-BR')}; ela anda sozinha enquanto a ocorrência não for encerrada.</span>
     </div></div>` : ''}
     ${(emAberto.length && !abertasAtrasadas.length) ? `<div class="alert-box" style="border-color:var(--green); margin-top:16px;"><span>🕒</span><div>
@@ -12598,7 +12609,7 @@ function renderManifestacoes(mesesSel){
     <div class="alert-box" style="border-color:var(--gold);"><span>🗓️</span><div>
       <b>Nenhuma manifestação registrada no período selecionado.</b>
       O registro de manifestações da CRA cobre <b>${textoCobertura(COBERTURA_MANIFESTACOES)}</b>.
-      Ausência de registro não é zero de operação: pode ser período ainda não enviado pela gestora.
+      Ausência de registro não equivale a zero de operação: o período pode ainda não ter sido enviado pela gestora.
     </div></div>
     <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit, minmax(205px, 1fr));">
       ${cardKpi('💬 Manifestações', '0', 'no período selecionado')}
@@ -12734,7 +12745,7 @@ function renderManifestacoes(mesesSel){
 
     ${comPrazo.length && noSla.length/comPrazo.length < 0.5 ? `<div class="alert-box" style="border-color:var(--red); margin-top:16px;"><span>⚠️</span><div>
       <b>Só ${(noSla.length/comPrazo.length*100).toFixed(0)}% das manifestações foram respondidas dentro do prazo de ${SLA_MANIF} dias.</b>
-      As outras ${comPrazo.length-noSla.length} passaram do acordado, e o tempo médio ficou em ${prazoMedio.toFixed(1).replace('.',',')} dias.
+      ${vb(comPrazo.length-noSla.length,'A outra','As outras '+(comPrazo.length-noSla.length))} ${vb(comPrazo.length-noSla.length,'passou','passaram')} do acordado, e o tempo médio ficou em ${prazoMedio.toFixed(1).replace('.',',')} dias.
       ${abertas.length?`Há ainda <b>${abertas.length} manifestaç${abertas.length===1?'ão':'ões'} em aberto</b>, sem data de fechamento.`:''}</div></div>`
      : (abertas.length?`<div class="alert-box" style="border-color:var(--gold); margin-top:16px;"><span>📌</span><div><b>${abertas.length} manifestaç${abertas.length===1?'ão':'ões'} em aberto</b>, sem data de fechamento na planilha.</div></div>`:'')}
 
@@ -13001,12 +13012,12 @@ function agregarRetencao(mesesRet){
   const depMed = pesoDep ? (somaDep/pesoDep).toFixed(1).replace('.',',') : '—';
 
   const nomeMes = k => ({jan:'Janeiro',fev:'Fevereiro',mar:'Março',abr:'Abril',mai:'Maio',jun:'Junho',jul:'Julho',ago:'Agosto',set:'Setembro',out:'Outubro',nov:'Novembro',dez:'Dezembro'}[k.slice(0,3)]||k);
-  const tag = `${nomeMes(mesesRet[0].key)} a ${nomeMes(mesesRet[mesesRet.length-1].key)}/2026 · ${itens.length} meses`;
+  const tag = `${nomeMes(mesesRet[0].key)} a ${nomeMes(mesesRet[mesesRet.length-1].key)}/2026 · ${qt(itens.length,'mês','meses')}`;
 
   return {
     periodoTag: tag,
     kpis: [
-      {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:String(solic), sub:`somadas em ${itens.length} meses`},
+      {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:String(solic), sub:`somadas em ${qt(itens.length,'mês','meses')}`},
       {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:String(novas), sub:'novas solicitações no período'},
       {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:String(deslig), sub:'total de desligamentos', valorCor:'#e8192c'},
       {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:String(retidos), sub:'associados retidos', valorCor:'#00e5a0'},
@@ -13026,7 +13037,7 @@ function agregarRetencao(mesesRet){
     quadroSocial: ult.quadroSocial,
     taxaRetencaoPeriodo: (deslig+retidos)>0 ? (retidos/(deslig+retidos)*100) : 0,
     _agregado: itens.length,
-    analise: `<b>Totais consolidados de ${itens.length} meses (${tag}).</b> No período houve <b>${solic} solicitações</b> de desligamento e <b>${deslig} desligamentos efetivados</b>, com <b>${retidos} associados retidos</b> — taxa de retenção de <b>${((deslig+retidos)>0?(retidos/(deslig+retidos)*100):0).toFixed(1).replace('.',',')}%</b> no acumulado. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; o Quadro Social e o Residual referem-se ao <b>último mês do intervalo</b> (são fotos, não acumulados). Ticket médio e dependentes são <b>médias ponderadas</b> pelo número de desligamentos de cada mês.`,
+    analise: `<b>Totais consolidados de ${qt(itens.length,'mês','meses')} (${tag}).</b> No período houve <b>${solic} solicitações</b> de desligamento e <b>${deslig} desligamentos efetivados</b>, com <b>${retidos} associados retidos</b> — taxa de retenção de <b>${((deslig+retidos)>0?(retidos/(deslig+retidos)*100):0).toFixed(1).replace('.',',')}%</b> no acumulado. Solicitações, desligamentos, categorias e motivos estão <b>somados</b>; o Quadro Social e o Residual referem-se ao <b>último mês do intervalo</b> (são fotos, não acumulados). Ticket médio e dependentes são <b>médias ponderadas</b> pelo número de desligamentos de cada mês.`,
   };
 }
 
@@ -13067,7 +13078,7 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
     // 28/09: a frase trazia "Janeiro a Agosto/2026 (agosto parcial)" cravada e
     // envelheceu assim que setembro entrou. Passa a sair de textoCobertura(),
     // igual ao resto da CRA — nenhuma lista de meses fixa na interface.
-    document.getElementById('desligamentoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Temos os fechamentos de ${textoCobertura(COBERTURA_RETENCAO)}. Selecione um intervalo dentro desse período.</div></div>`;
+    document.getElementById('desligamentoConteudo').innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados de Retenção para o período selecionado.</b> Estão disponíveis os fechamentos de ${textoCobertura(COBERTURA_RETENCAO)}. Selecione um intervalo dentro desse período.</div></div>`;
     return;
   }
   // Aviso quando o filtro não corresponde exatamente ao mês exibido
@@ -13281,7 +13292,7 @@ function renderLocacoesPeriodo(mesKey, de, ate){
 
   if(!contratos.length){
     document.getElementById('locacoesPeriodoTag').textContent = 'sem dados no período';
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há contratos de locação no período selecionado.</b> ${(()=>{const c=coberturaLocacoes(); return c ? `Temos ${c.qtd} contratos registrados em <b>${c.meses}</b>, de ${fmtDataBR(c.ini)} a ${fmtDataBR(c.fim)}.` : 'Não há contratos de locação registrados em nenhum período.';})()}</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há contratos de locação no período selecionado.</b> ${(()=>{const c=coberturaLocacoes(); return c ? `Há ${qt(c.qtd,'contrato registrado','contratos registrados')} em <b>${c.meses}</b>, de ${fmtDataBR(c.ini)} a ${fmtDataBR(c.fim)}.` : 'Não há contratos de locação registrados em nenhum período.';})()}</div></div>`;
     return;
   }
 
@@ -14106,7 +14117,7 @@ function locacoesDoPeriodo(meses){
 const FONTES_DADOS = [
   {area:'Fluxo de Caixa',      cob:()=>COBERTURA_FLUXO,      fonte:'Controladoria — relatório "Fluxo Caixa SOGIPA"'},
   {area:'Pagamentos',          cob:()=>COBERTURA_PAGAMENTOS, fonte:'Controladoria — relatório de pagamentos por período',
-   obs:'Julho cobre 06 a 31/07: os dias 01 a 05 só existem num corte que atravessa junho.'},
+   obs:'Julho cobre 06 a 31/07: os dias 01 a 05 só existem em um corte que atravessa junho.'},
   {area:'Vendas',              cob:()=>COBERTURA_VENDAS,     fonte:'Planilha ENTRADAS REALIZADAS'},
   {area:'Vendas em Processo', cob:()=>COBERTURA_VENDAS_PROCESSO, fonte:'Gestoria de Vendas — negociações pendentes',
    obs:'Não entram nos totais de vendas realizadas.'},
@@ -14859,10 +14870,10 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
     <b>Como ler Caixa e Resultado.</b>
     O <b>Resultado Operacional é volátil por natureza</b> — depende de quando caem a folha, os impostos e os pagamentos a fornecedores.
     ${C.nMeses>1
-      ? `No período, <b>${posit} de ${C.nMeses} meses</b> ficaram positivos, variando de <b style="color:var(--red);">${fmtMil(pior.v)}</b> (${pior.label}) a <b style="color:var(--green);">${fmtMil(melhor.v)}</b> (${melhor.label}). Olhe a tendência, não o mês isolado.`
+      ? `No período, <b>${posit} de ${C.nMeses} meses</b> ${vb(posit,'ficou positivo','ficaram positivos')}, variando de <b style="color:var(--red);">${fmtMil(pior.v)}</b> (${pior.label}) a <b style="color:var(--green);">${fmtMil(melhor.v)}</b> (${melhor.label}). Olhe a tendência, não o mês isolado.`
       : `Um único mês não define tendência — compare com os meses anteriores na aba Fluxo de Caixa.`}
     Já o <b>Caixa</b> precisa de uma distinção: do saldo em banco de <b>${fmtMil(C.saldoTotal)}</b> em ${C.ultLabel},
-    <b style="color:var(--gold);">${fmtMil(C.fundoObras)}</b> é fundo de Índices Construtivos, <b>restrito a obras</b>.
+    o fundo de Índices Construtivos responde por <b style="color:var(--gold);">${fmtMil(C.fundoObras)}</b>, <b>restrito a obras</b>.
     O que a operação pode de fato usar é o <b style="color:var(--green);">caixa livre de ${fmtMil(C.caixaLivre)}</b>.</div></div>`;
 
   // 1) Resultado Operacional
@@ -14943,7 +14954,7 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
   const consAnt = mesesFlxAnt.length ? consolidarDiagnostico(mesesFlxAnt) : null;
   const rotAnt = mesesFlxAnt.length
     ? (mesesFlxAnt.length===1 ? (DADOS_MES[mesesFlxAnt[0].key]||{}).label || mesesFlxAnt[0].key
-       : `${mesesFlxAnt.length} meses anteriores`)
+       : `${qt(mesesFlxAnt.length,'mês anterior','meses anteriores')}`)
     : '';
 
   // inadimplência: mês anterior ao último com dado (varia em PONTOS percentuais)
@@ -14998,7 +15009,7 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
         <div class="status-icon">🔄</div>
         <div class="status-label">Taxa de Retenção</div>
         <div class="status-value">${taxaRetencao.toFixed(1).replace('.',',')}%</div>
-        <div class="status-meta">${retidosPer} retidos de ${casosPer} casos${nMesesRet>1?` · ${nMesesRet} meses somados`:''}<br><span style="opacity:.75;">último mês: ${taxaRetUltimo.toFixed(1).replace('.',',')}%</span></div>
+        <div class="status-meta">${retidosPer} ${vb(retidosPer,'retido','retidos')} de ${qt(casosPer,'caso','casos')}${nMesesRet>1?` · ${nMesesRet} meses somados`:''}<br><span style="opacity:.75;">último mês: ${taxaRetUltimo.toFixed(1).replace('.',',')}%</span></div>
         ${taxaRetAnt!=null ? linhaDelta(taxaRetencao, taxaRetAnt, 'período anterior', {pontos:true, maiorMelhor:true})
                           : `<div class="status-trend ${corTrendClass[retStatus]}">${taxaRetencaoAnterior!=null ? (taxaRetencao>taxaRetencaoAnterior?'▲ Melhor que '+labelRetAnterior:'▼ Pior que '+labelRetAnterior) : 'Sem comparativo'}</div>`}
       </div>
@@ -15085,11 +15096,11 @@ function renderDiagnosticoMeses(mesesFlx, mesesRet, mesesVen){
     {status:caixaStatus, titulo:'Caixa operacional '+(caixaStatus==='green'?'positivo':'negativo'), texto:`${fmtMil(m.caixaLivre)} de caixa livre. ${caixaStatus==='green'?'Há folga de caixa além do fundo de obras.':'O caixa de uso livre está negativo — o clube depende do fundo de obras ou do limite de crédito neste momento.'}`},
     {status:tendStatus, titulo:tendCaixa && tendCaixa.proximoNegativo ? 'Caixa deve virar negativo em breve' : 'Tendência de caixa sob controle', texto: tendCaixa ? (tendCaixa.proximoNegativo ? `Reversão prevista para ${tendCaixa.proximoNegativo.d}, com ponto mais baixo em ${tendCaixa.pior.d} (${fmtBRL0(tendCaixa.pior.banco)}) — ciclo normal do mês (mensalidades no início, folha+impostos e fornecedores entre 20-25).` : `Nenhuma reversão para negativo prevista nos ${tendCaixa.totalDias} dias já projetados pela Controladoria.`) : 'Sem dado de projeção diária disponível no momento.'},
     {status:inadStatus, titulo:'Inadimplência '+(inadStatus==='red'?'acima da meta':inadStatus==='yellow'?'no limite da meta':'dentro da meta'), texto:`${inad.real.toFixed(1).replace('.',',')}% ${inadSemDadoDoMes?'(referente a '+inad.mes+', mês mais recente disponível)':''}, ${inadSubindo?'em trajetória de alta desde '+inadPrimeira.mes+' ('+inadPrimeira.real.toFixed(1).replace('.',',')+'%)':'em queda no período'}.`},
-    {status: retidos===0 ? 'red' : retStatus, titulo: retidos===0 ? 'Retenção sem resultado no período' : 'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto: retidos===0 ? `Nenhuma das ${r.totalDesligamentos} solicitações de desligamento foi revertida — indica que o processo de retenção ainda não estava sendo executado nesse período.` : `Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% no período (${retidosPer} retidos de ${casosPer} casos${nMesesRet>1?', '+nMesesRet+' meses somados':''}).${nMesesRet>1?' Só em '+r.periodoTag.split('/')[0]+': '+taxaRetUltimo.toFixed(1).replace('.',',')+'%.':''}`},
+    {status: retidos===0 ? 'red' : retStatus, titulo: retidos===0 ? 'Retenção sem resultado no período' : 'Retenção '+(retStatus==='green'?'melhorando':retStatus==='red'?'piorando':'estável'), texto: retidos===0 ? `Nenhuma das ${r.totalDesligamentos} solicitações de desligamento foi revertida — indica que o processo de retenção ainda não estava sendo executado nesse período.` : `Taxa de retenção de ${taxaRetencao.toFixed(1).replace('.',',')}% no período (${retidosPer} ${vb(retidosPer,'retido','retidos')} de ${qt(casosPer,'caso','casos')}${nMesesRet>1?', '+nMesesRet+' meses somados':''}).${nMesesRet>1?' Só em '+r.periodoTag.split('/')[0]+': '+taxaRetUltimo.toFixed(1).replace('.',',')+'%.':''}`},
     {status:vendasStatus, titulo:'Vendas '+(vendasStatus==='green'?'batendo a meta':'abaixo da meta'), texto:`${mt?mt.vendas.real:'—'} de ${mt?mt.vendas.orcado:'—'} vendas novas orçadas (${pctVendas!=null?pctVendas.toFixed(0):'—'}%).`},
     ...(craTaxa!=null ? [{status:craStatus, titulo:'Retenção do CRA '+(craStatus==='green'?'com alta taxa de sucesso':craStatus==='yellow'?'com sucesso parcial':'com baixa conversão'), texto:`${craSalvos} de ${craCasos.length} acordos retidos (${craTaxa.toFixed(1).replace('.',',')}%), preservando ${fmtBRL0(craReceita)} de contrato.`}] : []),
     ...(manifPct!=null ? [{status:manifStatus, titulo:'Prazo de resposta ao associado '+(manifStatus==='green'?'dentro do acordado':'acima do acordado'), texto:`${manifPct.toFixed(0)}% das manifestações respondidas em até ${(typeof SLA_MANIF!=='undefined'?SLA_MANIF:5)} dias úteis; média de ${manifMedia.toFixed(1).replace('.',',')} dias úteis em ${manif.length} registros.`}] : []),
-    ...(ocorMedia!=null ? [{status:ocorStatus, titulo:'Ocorrências '+(ocorStatus==='green'?'fechando rápido':'demorando a fechar'), texto:`${ocor.length} ocorrências no período, com ${ocorMedia.toFixed(1).replace('.',',')} dias úteis em média até o fechamento.`}] : []),
+    ...(ocorMedia!=null ? [{status:ocorStatus, titulo:'Ocorrências '+(ocorStatus==='green'?'fechando rápido':'demorando a fechar'), texto:`${qt(ocor.length,'ocorrência','ocorrências')} no período, com ${ocorMedia.toFixed(1).replace('.',',')} dias úteis em média até o fechamento.`}] : []),
     // 19/11: o destaque de modalidades so entra quando a aba Esportes estiver
     // visivel. Mesma condicao usada no menu — `abaOculta('esportes')` le a
     // PAINEL_ABAS_OCULTAS, entao ligar e desligar continua sendo num lugar so.
@@ -15965,7 +15976,7 @@ function abrirDetalheEsporte(nome, manter){
       t += `Melhor mês: <b>${melhor.rot}</b> (${fmtSinEsp(melhor.v)}); pior: <b>${pior.rot}</b> (${fmtSinEsp(pior.v)}). `;
       if(negativos===0) t += 'Nenhum mês negativo no período.';
       else if(negativos===noPeriodo.length) t += '<b style="color:#ff6b6b;">Negativo em todos os meses</b> — não é oscilação, é padrão.';
-      else t += `${negativos} de ${noPeriodo.length} meses fecharam negativos.`;
+      else t += `${negativos} de ${noPeriodo.length} meses ${vb(negativos,'fechou negativo','fecharam negativos')}.`;
     }
     return t;
   })();
@@ -17028,8 +17039,8 @@ function vtDetalheHTML(grupo, chave, ind){
     const pp = (cA.apr!=null&&cB.apr!=null) ? cA.apr-cB.apr : null;
     const cor = d>0 ? 'var(--gold)' : 'var(--blue)';
     compHtml = `<div class="kpi-spark-grid">`
-      + mini('#b0b0d0', `Retido ${F.aFim-1}`, fmtIndicador(cB.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${cB.n} meses`)
-      + mini(ind.cor,   `Retido ${F.aFim}`,   fmtIndicador(cA.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${cA.n} meses`)
+      + mini('#b0b0d0', `Retido ${F.aFim-1}`, fmtIndicador(cB.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${qt(cB.n,'mês','meses')}`)
+      + mini(ind.cor,   `Retido ${F.aFim}`,   fmtIndicador(cA.ret,'moeda'), `${VT_MES_ABREV[F.i0]} a ${VT_MES_ABREV[F.i1]} · ${qt(cA.n,'mês','meses')}`)
       + mini(cor, 'Variação', (d<0?'− ':'+ ')+fmtIndicador(Math.abs(d),'moeda'), pct==null?'—':`${d>=0?'+':'−'}${Math.abs(pct).toFixed(1).replace('.',',')}% sobre ${F.aFim-1}`)
       + mini('#a855f7','Aproveitamento', cA.apr.toFixed(2).replace('.',',')+'%', pp==null?'—':`${pp>=0?'+':'−'}${Math.abs(pp).toFixed(2).replace('.',',')} p.p. contra ${cB.apr.toFixed(2).replace('.',',')}%`)
       + `</div>`;
@@ -17145,8 +17156,8 @@ function renderIndicadoresGrid(elId, indicadores, pendentes, grupo){
       }
     } else {
       // período: rótulo do que o número representa
-      const rotulo = regra==='soma' ? `somado · ${idxP.length} meses`
-                   : regra==='media' ? `média · ${idxP.length} meses`
+      const rotulo = regra==='soma' ? `somado · ${qt(idxP.length,'mês','meses')}`
+                   : regra==='media' ? `média · ${qt(idxP.length,'mês','meses')}`
                    : `posição em ${MESES_RH[idxP[idxP.length-1]]}`;
       deltaHtml = `<span class="muted">${rotulo}</span>`;
     }
@@ -17510,7 +17521,7 @@ function terceirosAnalise(r){
   if(um){
     P.push(`Em <b>${rotFim}</b> o custo com terceiros foi de <b>${fmtMilReais(r.v26[r.iUlt])}</b>.`);
   } else {
-    P.push(`De <b>${rotIni}</b> a <b>${rotFim}</b>, o custo com terceiros soma <b>${fmtMilReais(r.soma26)}</b> em ${r.comDado.length} meses informados.`);
+    P.push(`De <b>${rotIni}</b> a <b>${rotFim}</b>, o custo com terceiros soma <b>${fmtMilReais(r.soma26)}</b> em ${qt(r.comDado.length,'mês informado','meses informados')}.`);
   }
   if(r.varPct != null){
     const palavra = r.varPct < 0 ? 'redução' : (r.varPct > 0 ? 'aumento' : 'estabilidade');
@@ -17540,7 +17551,7 @@ function terceirosAnalise(r){
         : '';
     P.push(`Ao longo dos meses selecionados a série está <b style="color:${cor};">${t}</b>${pontaAponta}.`);
   } else if(!um){
-    P.push(`Com ${r.comDado.length} meses no período não há série suficiente para afirmar tendência.`);
+    P.push(`Com ${qt(r.comDado.length,'mês','meses')} no período não há série suficiente para afirmar tendência.`);
   }
 
   // 4 — comportamento do último mês
@@ -17555,7 +17566,7 @@ function terceirosAnalise(r){
   // 5 — melhor mês do ano (fato do ano inteiro, não do recorte)
   if(r.iMelhorAno != null && r.baseQtdMeses > 1){
     const dentro = r.comDado.indexOf(r.iMelhorAno) >= 0;
-    P.push(`No ano, o <b>menor custo mensal de 2026</b> é o de <b>${MESES_RH[r.iMelhorAno]}</b> (<b style="color:var(--green);">${fmtMilReais(r.v26[r.iMelhorAno])}</b>), entre os ${r.baseQtdMeses} meses realizados${dentro ? '' : ' — fora do período filtrado'}.`);
+    P.push(`No ano, o <b>menor custo mensal de 2026</b> é o de <b>${MESES_RH[r.iMelhorAno]}</b> (<b style="color:var(--green);">${fmtMilReais(r.v26[r.iMelhorAno])}</b>), entre os ${qt(r.baseQtdMeses,'mês realizado','meses realizados')}${dentro ? '' : ' — fora do período filtrado'}.`);
   }
 
   // 6 — limite da base: o que ela NÃO responde
@@ -17650,7 +17661,7 @@ function terceirosBloco(){
         <span style="color:var(--text); font-weight:800;">${MESES_RH[r.iMelhorAno]}</span>
         <span style="color:var(--green); font-weight:900;">${fmtMilReais(vM)}</span>
         ${abaixo != null ? `<span class="muted">${terceirosPctMag(abaixo)} abaixo do segundo menor (${MESES_RH[r.iSegundoAno]}, ${fmtMilReais(vS)})</span>` : ''}
-        <span class="muted" style="margin-left:auto;">entre os ${r.baseQtdMeses} meses realizados</span>
+        <span class="muted" style="margin-left:auto;">entre os ${qt(r.baseQtdMeses,'mês realizado','meses realizados')}</span>
       </div>`;
   }
 
@@ -18019,7 +18030,7 @@ function renderRH(mesKey){
     <div class="section-title" style="margin-top:26px;">Explorar por setor — clique em um centro de custo<div class="line"></div></div>
     <div class="grid-2 reverse">
       <div class="card">
-        <div class="card-label">Ranking de Horas Extras por Centro de Custo (${HE_CC_RANKING.length} setores)</div>
+        <div class="card-label">Ranking de Horas Extras por Centro de Custo (${qt(HE_CC_RANKING.length,'setor','setores')})</div>
         <div id="rhRankingCC" style="margin-top:10px; max-height:480px; overflow-y:auto; padding-right:6px;"></div>
       </div>
       <div class="card" style="display:flex; flex-direction:column;">
@@ -18288,7 +18299,7 @@ function renderFunilVendas(de, ate){
     : VENDAS_FUNIL_DIARIO;
 
   if(!dias.length){
-    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> ${(()=>{const ds=VENDAS_FUNIL_DIARIO.map(d=>d.data).filter(Boolean).sort(); return ds.length ? `Temos <b>${ds.length} dias</b> de registro, de ${fmtDataBR(ds[0])} a ${fmtDataBR(ds[ds.length-1])}.` : 'Não há registro diário do funil em nenhum período.';})()}</div></div>`;
+    el.innerHTML = `<div class="alert-box"><span>🚫</span><div><b>Não há dados do funil de vendas para o período selecionado.</b> ${(()=>{const ds=VENDAS_FUNIL_DIARIO.map(d=>d.data).filter(Boolean).sort(); return ds.length ? `Há <b>${qt(ds.length,'dia','dias')}</b> de registro, de ${fmtDataBR(ds[0])} a ${fmtDataBR(ds[ds.length-1])}.` : 'Não há registro diário do funil em nenhum período.';})()}</div></div>`;
     return;
   }
 
@@ -18313,7 +18324,7 @@ function renderFunilVendas(de, ate){
     <div class="alert-box" style="border-color:var(--gold); margin-bottom:14px;"><span>ℹ️</span><div>
       <b>${vendasSemCtrl} vendas de ${diasSemCtrl.join(' e ')}</b> estão contabilizadas em <b>Vendas Realizadas</b>, mas
       o <b>controle diário desses dias não foi preenchido</b>. Por isso leads, contatos, visitas e a taxa de
-      conversão consideram apenas os <b>${comCtrl.length} dias com controle</b> — misturar os dois recortes
+      conversão consideram apenas os <b>${qt(comCtrl.length,'dia com controle','dias com controle')}</b> — misturar os dois recortes
       inflaria a conversão.</div></div>` : '';
 
   const motivosHtml = (typeof VENDAS_MOTIVOS_PERDA !== 'undefined' && VENDAS_MOTIVOS_PERDA.length) ? `
@@ -18339,7 +18350,7 @@ function renderFunilVendas(de, ate){
     <div class="kpi-row-icons cols-4">
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(61,123,255,.15); color:var(--blue);">📥</div><div class="label">Leads Recebidos</div></div>
-        <div class="kpi-icon-info"><div class="value">${leads}</div><div class="delta muted">${diasSemCtrl.length?`em ${comCtrl.length} dias com controle`:'no período'}</div></div>
+        <div class="kpi-icon-info"><div class="value">${leads}</div><div class="delta muted">${diasSemCtrl.length?`em ${qt(comCtrl.length,'dia com controle','dias com controle')}`:'no período'}</div></div>
       </div>
       <div class="kpi-icon-card">
         <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:rgba(6,182,212,.15); color:var(--cyan);">📞</div><div class="label">Contatos Realizados</div></div>
@@ -19046,7 +19057,7 @@ function renderAgendaPagamentos(){
     ? `<text x="${(pad+i*bw).toFixed(1)}" y="${H-6}" font-size="10" fill="var(--muted)">${AG_MES[+d.slice(5,7)-1]}/${d.slice(2,4)}</text>` : '').join('');
   const grafico = `<div class="card"><div class="card-label">Necessidade de caixa por dia</div>
     <div class="card-meta" style="margin-top:4px;">Total previsto para pagamento em cada dia, de
-      ${agBR(cobIni)} a ${agBR(cobFim)} · ${dias.length} dias com pagamento.
+      ${agBR(cobIni)} a ${agBR(cobFim)} · ${qt(dias.length,'dia com pagamento','dias com pagamento')}.
       Em vermelho, os 5 dias de maior pressão, que concentram
       <b style="color:var(--text);">${pctTop5.toFixed(1).replace('.',',')}%</b> do total.
       Maior desembolso em <b style="color:var(--gold);">${agBR(maior.d)}</b>
@@ -19057,7 +19068,7 @@ function renderAgendaPagamentos(){
 
   // resumo por grupo (clicável: filtra o detalhamento)
   const resumo = `<div class="card"><div class="card-label">Compromissos por grupo</div>
-    <div class="card-meta" style="margin-top:4px;">Clique num grupo para filtrar o detalhamento abaixo.</div>
+    <div class="card-meta" style="margin-top:4px;">Clique em um grupo para filtrar o detalhamento abaixo.</div>
     <div style="margin-top:12px;">${gOrd.map(([g,v])=>`
       <div class="ag-grupo${AGENDA_GRUPO===g?' ativo':''}" role="button" tabindex="0"
            onclick="agendaFiltrar('${g.replace(/'/g,"\\'")}')"
@@ -19073,7 +19084,7 @@ function renderAgendaPagamentos(){
       <div class="card-label">Detalhamento dos pagamentos</div>
       ${AGENDA_GRUPO ? `<span role="button" tabindex="0" class="ag-limpa" onclick="agendaFiltrar('${AGENDA_GRUPO.replace(/'/g,"\\'")}')"
         onkeydown="if(event.key==='Enter'){agendaFiltrar('${AGENDA_GRUPO.replace(/'/g,"\\'")}');}">Grupo: ${AGENDA_GRUPO} ✕</span>` : ''}</div>
-    <div class="card-meta" style="margin-top:4px;">${diasFilt.length} dia(s). Clique numa data para ver as rubricas.</div>
+    <div class="card-meta" style="margin-top:4px;">${qt(diasFilt.length,'dia','dias')}. Clique em uma data para ver as rubricas.</div>
     <div class="ag-lista">${diasFilt.map(d=>{
       const itens = porDia[d].filter(x=>!AGENDA_GRUPO || x.grupo===AGENDA_GRUPO);
       const sub = itens.reduce((a,x)=>a+x.valor,0);
@@ -19261,7 +19272,7 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   if(stageActiveEl) selectView(stageActiveEl.id.replace('kpi-',''));
 
   if(!m){
-    document.getElementById('alertaFechamentoFC').innerHTML = `<b>Detalhamento mensal por categoria não disponível para este período.</b> Temos o detalhamento completo (despesas/receitas por categoria) de Junho/2026 e Julho/2026 — mas os gráficos de tendência diária (Caixa Operacional, Investimento, Financiamento e Consolidado) já mostram o período selecionado, com base na projeção da Controladoria (Jan-Set/26).`;
+    document.getElementById('alertaFechamentoFC').innerHTML = `<b>Detalhamento mensal por categoria não disponível para este período.</b> Está disponível o detalhamento completo (despesas/receitas por categoria) de Junho/2026 e Julho/2026 — mas os gráficos de tendência diária (Caixa Operacional, Investimento, Financiamento e Consolidado) já mostram o período selecionado, com base na projeção da Controladoria (Jan-Set/26).`;
     document.getElementById('alertaPontoAtencaoFC').innerHTML = 'Sem detalhamento de categoria (Prev/Tendência/Realizado) para este recorte — ver os cards de tendência diária acima.';
     return;
   }
@@ -19286,7 +19297,7 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
   if(stageActive) selectView(stageActive.id.replace('kpi-',''));
 
   // KPIs (Visão Geral)
-  document.getElementById('vgCaixaLivre').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('vgCaixaLivre').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
   document.getElementById('vgCaixaLivre').style.color = m.caixaLivre<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('vgCaixaLivreSub').textContent = m.negativo ? 'negativo no período' : (m.caixaLivrePct.toFixed(1).replace('.',',')+'% do saldo total');
   // Resultado operacional é FLUXO: soma os meses do período, igual ao Diagnóstico.
@@ -19297,7 +19308,7 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
       ? consolidarDiagnostico(mesesFlx) : null;
   const resOper = cons ? cons.resultadoOper : m.resultadoOper;
   const nMesesRes = cons ? cons.nMeses : 1;
-  document.getElementById('vgResultadoOper').textContent = (resOper<0?'-':'') + 'R$ ' + Math.abs(resOper).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('vgResultadoOper').textContent = (resOper<0?'-':'') + 'R$ ' + Math.abs(resOper).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
   document.getElementById('vgResultadoOper').style.color = resOper<0 ? 'var(--red)' : 'var(--green)';
   const subRes = document.querySelector('#vgResultadoOper')?.parentElement?.querySelector('.delta');
   // 18/11: a Visao Geral somava mes EM ANDAMENTO no acumulado sem dizer que
@@ -19328,10 +19339,10 @@ function renderFluxoCaixaPeriodo(mesKey, de, ate, mesesFlx){
     : `<b>Fechamento em andamento:</b> dados de <b>${m.label}</b> atualizados pela Controladoria até <b>${m.dataReferencia}</b>. Os valores de "Tendência" e "Realizado" seguem sendo ajustados conforme novos lançamentos chegam.`;
 
   // KPIs (aba Fluxo de Caixa)
-  document.getElementById('fcVal1').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('fcVal1').textContent = (m.caixaLivre<0?'-':'') + 'R$ ' + Math.abs(m.caixaLivre).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
   document.getElementById('fcVal1').style.color = m.caixaLivre<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('fcVal2').textContent = fmtMil(m.fundoObras);
-  document.getElementById('fcVal4').textContent = (aggResultado<0?'-':'') + 'R$ ' + Math.abs(aggResultado).toFixed(1).replace('.',',') + ' mil';
+  document.getElementById('fcVal4').textContent = (aggResultado<0?'-':'') + 'R$ ' + Math.abs(aggResultado).toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}) + ' mil';
   document.getElementById('fcVal4').style.color = aggResultado<0 ? 'var(--red)' : 'var(--green)';
   document.getElementById('fcMeta4').textContent = mesesComResultado>1
     ? `${periodoLabel} · Receita ${fmtMil(aggReceita)} − Despesa ${fmtMil(aggDespesa)}`
@@ -19377,12 +19388,12 @@ function pintarComposicaoSaldo(prefixo, m){
       <div class="comp-item">
         <div class="comp-nome"><span class="dot" style="background:var(--blue)"></span>Caixa Operacional Livre</div>
         <div class="comp-valor" style="color:var(--blue)">${fmtMil(m.caixaLivre)}</div>
-        <div class="comp-qual">${m.caixaLivrePct}% do saldo</div>
+        <div class="comp-qual">${String(m.caixaLivrePct).replace('.',',')}% do saldo</div>
       </div>
       <div class="comp-item">
         <div class="comp-nome"><span class="dot" style="background:var(--purple)"></span>Fundo Índices Construtivos</div>
         <div class="comp-valor">${fmtMil(m.fundoObras)}</div>
-        <div class="comp-qual">Restrito a obras · ${m.fundoObrasPct}% do saldo</div>
+        <div class="comp-qual">Restrito a obras · ${String(m.fundoObrasPct).replace('.',',')}% do saldo</div>
       </div>`;
   }
   if(lbl && prefixo==='vgSaldo') lbl.textContent = `Composição do Saldo em Banco — ${m.label}`;
@@ -20721,28 +20732,28 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
     <div class="mini-chart-row">
       <span class="mini-chart-label">Não utilização</span>
       <div class="mini-chart-bar-wrap">
-        <div class="mini-chart-bar" style="width:46.4%;background:#e8192c;">46.4%</div>
+        <div class="mini-chart-bar" style="width:46.4%;background:#e8192c;">46,4%</div>
       </div>
       <span class="mini-chart-value" style="color:#e8192c;">32 saídas</span>
     </div>
     <div class="mini-chart-row">
       <span class="mini-chart-label">Financeiro</span>
       <div class="mini-chart-bar-wrap">
-        <div class="mini-chart-bar" style="width:30.4%;background:#3d7bff;">30.4%</div>
+        <div class="mini-chart-bar" style="width:30.4%;background:#3d7bff;">30,4%</div>
       </div>
       <span class="mini-chart-value" style="color:#3d7bff;">21 saídas</span>
     </div>
     <div class="mini-chart-row">
       <span class="mini-chart-label">Mudança</span>
       <div class="mini-chart-bar-wrap">
-        <div class="mini-chart-bar" style="width:14.5%;background:#ffd32a;">14.5%</div>
+        <div class="mini-chart-bar" style="width:14.5%;background:#ffd32a;">14,5%</div>
       </div>
       <span class="mini-chart-value" style="color:#ffd32a;">10 saídas</span>
     </div>
     <div class="mini-chart-row">
       <span class="mini-chart-label">Outros</span>
       <div class="mini-chart-bar-wrap">
-        <div class="mini-chart-bar" style="width:8.7%;background:#00e5a0;">8.7%</div>
+        <div class="mini-chart-bar" style="width:8.7%;background:#00e5a0;">8,7%</div>
       </div>
       <span class="mini-chart-value" style="color:#00e5a0;">6 saídas</span>
     </div>
