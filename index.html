@@ -3196,28 +3196,39 @@ const REINGRESSO_HISTORICO = [
   // CAMPANHAS: null, não zero — a fonte não trouxe quebra por campanha.
   // TICKET: 25.607,02 / 26 = R$ 984,89, acima dos R$ 843,52 de outubro e dos
   // R$ 548,96 de agosto. Fica registrado como ponto de atenção, não corrigido.
-  {mesKey:'nov2026', periodoTag:'Novembro/2026 (parcial · 01 a 18/11)', fechado:false,
-    // ── POSICAO OFICIAL DE 18/11/2026 · gestora da Secretaria Administrativa ──
-    // SUBSTITUI os 26 / R$ 25.607,02 da posicao de 05/11. NAO SOMA: 45 e
-    // R$ 42.654,83 sao os acumulados atualizados, nao movimentacao adicional.
-    // Somar daria 71 / R$ 68.261,85, que seria inventar reingresso que nao houve.
+  {mesKey:'nov2026', periodoTag:'Novembro/2026 (parcial · 01 a 23/11)', fechado:false,
+    // ── POSICAO DE 23/11/2026 · Secretaria Administrativa ─────────────────
+    // SUBSTITUI os 45 / R$ 42.654,83 da posicao de 18/11. NAO SOMA: 68 e
+    // R$ 65.303,41 sao os acumulados atualizados do mes, nao movimentacao
+    // adicional. Somar daria 113 / R$ 107.958,24, que seria inventar
+    // reingresso que nao houve.
     //
-    // E ACUMULADO DE NOVEMBRO, NAO DO ANO. 45 nao pode ser o acumulado de 2026:
-    // outubro sozinho fechou em 89 e janeiro em 75. A serie jan-out soma 536
-    // reingressos e R$ 407.720,89, toda ela oficial e PRESERVADA intacta. A
-    // unica leitura compativel e novembro parcial, e ela avanca coerentemente
-    // sobre a propria posicao anterior do mes: 26 -> 45 (+19) e R$ 25.607,02 ->
-    // R$ 42.654,83 (+R$ 17.047,81) entre 05 e 18/11.
+    // COMPETENCIA AGORA DECLARADA PELA FONTE. Nas cargas anteriores a
+    // competencia nao vinha escrita e o painel registrava a leitura adotada
+    // como pendente de confirmacao. Desta vez a fonte diz expressamente
+    // "Competencia: novembro/2026" — a pendencia esta RESOLVIDA e a leitura
+    // anterior (novembro parcial) fica confirmada em retrospecto.
+    //
+    // E ACUMULADO DE NOVEMBRO, NAO DO ANO: outubro sozinho fechou em 89 e
+    // janeiro em 75. A serie jan-out soma 536 reingressos e R$ 407.720,89,
+    // toda ela oficial e PRESERVADA intacta. A progressao dentro do mes e
+    // coerente: 26 (05/11) -> 45 (18/11) -> 68 (23/11), com +23 reingressos e
+    // +R$ 22.648,58 nos ultimos cinco dias.
+    //
+    // SEM DATA DE POSICAO NA FONTE: o informe traz quantidade, valor e
+    // competencia, mas nao a data-base. A janela de cobertura usa a data da
+    // informacao (23/11), mesma convencao ja aplicada em setembro. Nao foi
+    // inventada data de corte.
     //
     // NADA FOI DISTRIBUIDO ENTRE OS MESES. A fonte informa dois totais, sem
     // registro individual e sem quebra por campanha ou por data. Por isso o
     // historico mensal anterior nao foi tocado e `campanhas` segue null —
-    // indisponivel, nao zero. A distribuicao dos 19 novos reingressos dentro de
+    // indisponivel, nao zero. A distribuicao dos 23 novos reingressos dentro de
     // novembro fica PENDENTE de registro individual da Secretaria.
     // Nenhum lancamento foi criado no Fluxo de Caixa a partir deste total: nao
     // ha comprovacao de recebimento, e reingresso nao e associacao nova.
-    total:45, valor:42654.83, campanhas:null,
-    alerta:'<b style="color:var(--gold);">Posição parcial de novembro — 01 a 18/11.</b> São <b>45 reingressos</b> e <b>R$ 42.654,83</b>, com ticket de <b>R$ 947,89</b>, totais oficiais informados pela gestora da Secretaria Administrativa em 18/11/2026. <b>Não é fechamento do mês.</b> <b style="color:var(--green);">Atualiza, não soma:</b> a posição anterior deste mesmo mês era de 26 reingressos e R$ 25.607,02 até 05/11 — o avanço foi de <b>19 reingressos e R$ 17.047,81</b> em treze dias. <b style="color:var(--gold);">É acumulado de novembro, não do ano:</b> 45 não poderia ser o total de 2026, já que outubro sozinho fechou em 89 e janeiro em 75. A série de janeiro a outubro soma <b>536 reingressos e R$ 407.720,89</b> e está preservada intacta. <b style="color:var(--green);">Ticket em queda e isso é bom sinal:</b> R$ 947,89 contra R$ 984,89 na posição de 05/11 — a leva nova entrou com débito médio menor, afastando um pouco a hipótese de concentração de reingressos com dívida acumulada que a posição anterior sugeria. Ainda assim segue acima dos R$ 843,52 de outubro. <b style="color:var(--gold);">Pendente:</b> a fonte informou apenas os dois totais, sem registro individual, sem data e sem quebra por campanha. Por isso a distribuição dentro do mês e o detalhamento por campanha não foram preenchidos — aparecem como indisponíveis, não como zero. <b>Confirmar com a Secretaria Administrativa</b> que os números são de novembro.'},
+    total:68, valor:65303.41, campanhas:null,
+    alerta:'<b style="color:var(--gold);">Posição parcial de novembro — 01 a 23/11.</b> São <b>68 reingressos</b> e <b>R$ 65.303,41</b>, com ticket de <b>R$ 960,34</b>, totais informados pela Secretaria Administrativa. <b>Não é fechamento do mês.</b> <b style="color:var(--green);">Atualiza, não soma:</b> a posição anterior deste mesmo mês era de 45 reingressos e R$ 42.654,83 até 18/11 — o avanço foi de <b>23 reingressos e R$ 22.648,58</b> em cinco dias. <b style="color:var(--green);">Competência confirmada pela fonte:</b> este informe declara expressamente novembro/2026, o que encerra a ressalva que acompanhava as duas posições anteriores, em que a competência não vinha escrita e precisava ser deduzida. <b style="color:var(--gold);">É acumulado de novembro, não do ano:</b> 68 não poderia ser o total de 2026, já que outubro sozinho fechou em 89 e janeiro em 75. A série de janeiro a outubro soma <b>536 reingressos e R$ 407.720,89</b> e está preservada intacta. <b>Ticket estável:</b> R$ 960,34, contra R$ 947,89 em 18/11 e R$ 984,89 em 05/11 — a leva nova entrou com débito médio próximo ao do restante do mês. Segue bem acima dos R$ 843,52 de outubro, o que mantém em aberto a hipótese de reingressos com dívida acumulada. <b style="color:var(--gold);">Pendente:</b> a fonte informou apenas quantidade e valor, sem registro individual, sem data de posição e sem quebra por campanha. Por isso a distribuição dentro do mês e o detalhamento por campanha continuam indisponíveis, não zerados. O valor é o <b>total informado</b> da competência e não foi lançado como receita recebida no Fluxo de Caixa nem somado a qualquer indicador financeiro.'},
 ];
 REINGRESSO_HISTORICO.forEach(h=>{ h.ticketMedio = (h.total && h.total > 0) ? h.valor / h.total : null; });
 const VENDAS_CAMPANHAS = [
@@ -4463,31 +4474,48 @@ const NEG_FAIXAS = [
   // se fosse de outubro. A convenção do painel é a mesma desde junho: a
   // entrada do mês M tem FX1 = dívida de M-1.
   //
-  // CONFERÊNCIA DOS VALORES OFICIAIS, fecha no declarado:
-  //   soma das faixas  inicial 583.011 · aberto 319.550  — EXATOS
-  //   total declarado  583.011 = 319.550 + 263.461       — fecha entre si
-  //   taxa geral       263.461 / 583.011 = 45,1897% -> 45%
-  //   FX1 48,16% · FX2 44,10% · FX3 79,70% · FORA 17,11%
-  //   batem com os 48 / 44 / 80 / 17 declarados
+  // ── NOVA MEDIÇÃO DA MESMA POSIÇÃO, IMPORTADA EM 23/11/2026 ─────────────
+  // SUBSTITUI a medição de 13/11 e NÃO soma. A COORTE É IDÊNTICA: as quatro
+  // aberturas são exatamente as mesmas (334.833 · 81.788 · 60.157 · 106.233)
+  // e o inicial total continua R$ 583.011. O que avançou foi só a cobrança
+  // sobre essa mesma dívida aberta em 05/11:
+  //            13/11 -> 23/11 (recuperado)     em aberto 13/11 -> 23/11
+  //   FX1      161.270 -> 230.388 (+69.118)     173.563 -> 104.445
+  //   FX2       36.068 ->  46.380 (+10.312)      45.721 ->  35.409
+  //   FX3       47.947 ->  47.873    (-74)       12.210 ->  12.284
+  //   FORA      18.177 ->  41.045 (+22.868)      88.056 ->  65.189
+  //   TOTAL    263.461 -> 365.686 (+102.225)    319.550 -> 217.326
+  //   taxa          45% -> 63% (oficial declarada)
+  // Percentuais oficiais declarados: 69 / 57 / 80 / 39 e 63 no total.
+  // A FX3 recuou R$ 74 no recuperado e subiu R$ 74 no aberto — movimento
+  // pequeno e compatível com estorno ou reclassificação de um lançamento;
+  // fica registrado, sem ajuste.
   //
-  // DIVERGÊNCIA DE R$ 1,00 DA FONTE, PRESERVADA SEM AJUSTE: a FX2 declara
-  // inicial 81.788 e as parcelas somam 81.789 (45.721 + 36.068). O mesmo
-  // R$ 1,00 aparece na coluna RECUPERADO, cujas quatro faixas somam 263.462
-  // contra os 263.461 declarados. Como inicial e aberto fecham exatos e a
-  // linha de total é coerente entre si, vale o declarado — nada foi
-  // redistribuído entre faixas nem compensado em nenhum total.
+  // CONFERÊNCIA: a soma das faixas fecha EXATO no inicial (583.011) e no
+  // recuperado (365.686). Taxas calculadas 68,81 · 56,71 · 79,58 · 38,64 e
+  // 62,72 no total — arredondam nos 69 / 57 / 80 / 39 / 63 declarados.
+  //
+  // QUATRO RESÍDUOS DE R$ 1,00 DA PRÓPRIA FONTE, PRESERVADOS SEM AJUSTE —
+  // e registrados aqui porque as tolerâncias do validador (TOL_FAIXA_NEG = 5
+  // e os tetos de dTot/dRec) os absorveriam em silêncio:
+  //   a) soma do ABERTO das faixas 217.327 contra 217.326 declarado   (+1)
+  //   b) FX2:  81.788 - 35.409 = 46.379, recuperado informado 46.380  (+1)
+  //   c) FORA: 106.233 - 65.189 = 41.044, recuperado informado 41.045 (+1)
+  //   d) total: 583.011 - 217.326 = 365.685, informado 365.686        (+1)
+  // Nada foi redistribuído entre faixas e nada foi somado a nenhum total.
+  // Valem os valores oficiais como a Cobrança enviou.
   { mes:'Nov/26', label:'Novembro/2026', fechado:false,
-    fonte:'Relatório de cobrança — POSIÇÃO 05/11/2026',
-    importadoEm:'13/11/2026', dataBase:'05/11/2026', competencia:'Novembro/2026',
-    inicio:583011, base:583011, totRec:263461, totAb:319550,
-    taxaOficial:45,
-    divergenciaFonte:{teto:50, motivo:'resíduo de R$ 1 da própria fonte na posição de 05/11/2026 — a FX2 declara inicial R$ 81.788 e as parcelas somam R$ 81.789, e a coluna RECUPERADO soma R$ 263.462 nas quatro faixas contra os R$ 263.461 declarados no total'},
+    fonte:'Relatório de cobrança — abertura 05/11/2026, medição de 23/11/2026',
+    importadoEm:'23/11/2026', dataBase:'05/11/2026', competencia:'Novembro/2026',
+    inicio:583011, base:583011, totRec:365686, totAb:217326,
+    taxaOficial:63,
+    divergenciaFonte:{teto:50, motivo:'quatro resíduos de R$ 1 da própria fonte na medição de 23/11/2026 sobre a abertura de 05/11 — soma do aberto das faixas R$ 217.327 contra R$ 217.326 declarado; FX2 e FORA com recuperado informado R$ 1 acima de inicial menos aberto; e total R$ 365.686 informado contra R$ 365.685 da subtração'},
     faixas:[
-      {fx:'FX1',   idade:'1 mês',     ref:'out/26',     abertura:334833, rec:161270, ab:173563, pctOficial:48},
-      {fx:'FX2',   idade:'2 meses',   ref:'set/26',     abertura:81788,  rec:36068,  ab:45721,  pctOficial:44},
-      {fx:'FX3',   idade:'3 meses',   ref:'ago/26',     abertura:60157,  rec:47947,  ab:12210,  pctOficial:80},
-      {fx:'FORA',  idade:'4+ meses',  ref:'<= jul/26',  abertura:106233, rec:18177,  ab:88056,  pctOficial:17},
-    ], selo:174903400 },
+      {fx:'FX1',   idade:'1 mês',     ref:'out/26',     abertura:334833, rec:230388, ab:104445, pctOficial:69},
+      {fx:'FX2',   idade:'2 meses',   ref:'set/26',     abertura:81788,  rec:46380,  ab:35409,  pctOficial:57},
+      {fx:'FX3',   idade:'3 meses',   ref:'ago/26',     abertura:60157,  rec:47873,  ab:12284,  pctOficial:80},
+      {fx:'FORA',  idade:'4+ meses',  ref:'<= jul/26',  abertura:106233, rec:41045,  ab:65189,  pctOficial:39},
+    ], selo:174903600 },
   // ── ATUALIZAÇÃO DE 07/10 · SETEMBRO/26 (nova posição oficial de cobrança) ──
   // SUBSTITUI a posição de 05/10 (base 576.700 · recuperado 329.577 · aberto
   // 247.124 · 57,15%). Não é mês novo nem soma: é a mesma competência relida.
@@ -9109,9 +9137,10 @@ const COBERTURA_REINGRESSO = {
   // reingressos e R$ 75.073,44), substituindo a posição de 16/10 (19 e
   // R$ 12.231,54). A janela passa a cobrir o mês inteiro.
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
-  // 13/11: novembro PARCIAL — fim = 05/11, data de referência do pacote que
-  // trouxe os 26 reingressos. Não usar 30/11: o mês está em curso.
-  nov2026: {ini:'2026-11-01', fim:'2026-11-18'},
+  // 23/11: novembro PARCIAL — fim = 23/11, data em que a Sec. Adm. informou
+  // os 68 reingressos. A fonte NÃO declarou data de posição; vale a data da
+  // informação, como já se fez em setembro. Não usar 30/11: o mês está em curso.
+  nov2026: {ini:'2026-11-01', fim:'2026-11-23'},
 };
 
 function parseDataISO(str){ return new Date(str+'T00:00:00'); }
