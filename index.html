@@ -166,6 +166,37 @@
   /* Institucional: iframe ocupa toda a área, sem o padding/altura do .content */
   #page-institucional.active{ position:fixed; top:92px; left:264px; right:0; bottom:0; z-index:5; display:flex; flex-direction:column; }
   @media (max-width:900px){ #page-institucional.active{ left:0; top:auto; } }
+    /* ═══════════════════════════════════════════════════════════
+       v401 — INTEGRACAO DO PAINEL DO PRESIDENTE EM TELAS PEQUENAS
+       Ate 900px a regra "top:auto" deixava o painel fixo sem altura
+       definida, e o "flex:1" do iframe nao tinha o que preencher:
+       o Painel do Presidente ficava numa janela de 150px. Aqui ele
+       volta ao fluxo normal da pagina, com altura util de tela.
+       Acima de 900px nada muda (o painel fixo do desktop continua).
+       ═══════════════════════════════════════════════════════════ */
+    @media (max-width:900px){
+      #page-institucional.active{
+        position: static;
+        top:auto; left:auto; right:auto; bottom:auto;
+        display:flex; flex-direction:column;
+        height: calc(100vh - 150px);
+        min-height: 520px;
+        padding: 0;
+      }
+      #page-institucional.active #institucionalFrame{
+        flex: 1 1 auto; min-height: 460px; width:100%;
+      }
+      .inst-toolbar{ padding:8px 12px; gap:8px; }
+      .inst-toolbar-label{ font-size:11.5px; }
+      .inst-toolbar-btns{ gap:6px; flex-wrap:wrap; }
+      .inst-toolbar-btns button{ padding:8px 10px; font-size:11.5px; min-height:38px; }
+    }
+    @supports (height: 100dvh){
+      @media (max-width:900px){
+        #page-institucional.active{ height: calc(100dvh - 150px); }
+      }
+    }
+
   .inst-toolbar{ flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 16px; background:var(--sidebar); border-bottom:1px solid var(--border); flex-wrap:wrap; }
   .inst-toolbar-label{ font-size:12.5px; color:var(--muted); font-weight:600; display:flex; align-items:center; }
   .inst-toolbar-btns{ display:flex; gap:8px; }
@@ -20135,6 +20166,120 @@ header {
 .strat-code.p { color:#efd873; border-color:rgba(239,216,115,.60); }
 .strat-code.a { color:#e5b451; border-color:rgba(229,180,81,.60); }
 .strat-code:hover { filter:brightness(1.25); }
+
+/* ═══════════════════════════════════════════════════════════════
+   v140 — AJUSTES DE RESPONSIVIDADE MOBILE (ate 600px)
+   Somente apresentacao. Nenhum dado, formula, indicador, filtro
+   ou funcionalidade e alterado. Acima de 600px (tablet/desktop)
+   nada aqui se aplica.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 600px){
+
+  /* 1 ── ROLAGEM HORIZONTAL ──────────────────────────────────
+     Causa: "grid-template-columns:1fr" equivale a minmax(auto,1fr),
+     e o minimo "auto" impede a trilha de encolher abaixo do
+     min-content do filho — a trilha ficava com 389px numa tela
+     de 320px. minmax(0,1fr) + min-width:0 liberam o encolhimento. */
+  .kpi-row, .kpi-row-4, .chart-row-2, .chart-row-n{
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .kpi-row > *, .kpi-row-4 > *, .chart-row-2 > *, .chart-row-n > *{
+    min-width: 0 !important;
+  }
+  .chart-section, .section-block, .kpi-card, .chart-body{ min-width:0 !important; }
+  .qs-solo-legend, .pizza-legend{ min-width:0 !important; max-width:100% !important; }
+  html, body{ overflow-x: hidden; }
+
+  /* 2 ── CABECALHO COMPACTO ──────────────────────────────────
+     Ocupava 250px de altura (30% da tela util num celular). */
+  header{ padding:8px 12px !important; gap:8px !important; }
+  .logo-area{ gap:10px !important; align-items:center !important; }
+  .logo-img{ width:34px !important; }
+  .logo-text h1{ font-size:12px !important; letter-spacing:.5px !important; line-height:1.2 !important; }
+  .logo-text p{ font-size:9.5px !important; margin-top:1px !important; }
+  .header-right{ gap:8px !important; align-items:center !important; width:100% !important; }
+  .date-info{ font-size:11px !important; text-align:left !important; line-height:1.35 !important; }
+  .date-info span{ display:block; }
+
+  /* 3 ── BOTOES DIAGNOSTICO / MAPA LADO A LADO ───────────────
+     Estavam empilhados em coluna, somando altura. Alvo de toque
+     mantido em 42px (acima do minimo recomendado de 40px). */
+  .header-right > div:has(> #btnDiagnostico){
+    flex-direction: row !important; gap:8px !important; width:100% !important;
+  }
+  #btnDiagnostico, #btnMapa{
+    flex:1 1 0 !important; min-width:0 !important;
+    padding:10px 6px !important; font-size:11px !important;
+    min-height:42px !important; letter-spacing:.2px !important;
+    white-space:nowrap !important; overflow:hidden !important;
+  }
+  .header-right > div:has(> #livePill){
+    flex-direction: row !important; align-items:center !important;
+    justify-content:space-between !important; width:100% !important; gap:8px !important;
+  }
+  .live-pill{ font-size:10.5px !important; padding:5px 10px !important; }
+
+  /* 4 ── GRAFICOS DE ROSCA ───────────────────────────────────
+     Nunca estouram a largura disponivel e mantem a proporcao. */
+  .chart-body{ gap:10px !important; }
+  .chart-body canvas, .pizza-wrap canvas, canvas[id^="pizzaCanvas"]{
+    max-width:100% !important; height:auto !important; display:block; margin:0 auto;
+  }
+
+  /* 5 ── LEITURA E ESPACAMENTO ───────────────────────────────*/
+  main{ padding:10px 10px !important; }
+  .section-block{ padding:12px 10px !important; margin-bottom:12px !important; }
+  .chart-section{ padding:12px 10px !important; }
+  .chart-title{ font-size:12px !important; line-height:1.3 !important; }
+  .chart-subtitle{ font-size:10.5px !important; line-height:1.35 !important; }
+  .kpi-row, .kpi-row-4{ gap:12px !important; }
+  .kpi-card-title{ font-size:10.5px !important; line-height:1.3 !important; }
+  .kpi-card-value{ font-size:30px !important; line-height:1.1 !important; }
+
+  /* 6 ── NADA PODE VAZAR PARA FORA DA TELA ───────────────────*/
+  .desl-rank-row, .desl-rank-info, .desl-rank-summary{ min-width:0 !important; }
+  .desl-rank-info, .leg-info, .leg-name{ overflow-wrap:anywhere; min-width:0 !important; }
+  #versionBadge{ bottom:8px !important; right:8px !important; font-size:9px !important; }
+
+  /* 7 ── CONTROLES DO FILTRO CONFORTAVEIS AO TOQUE ───────────*/
+  .period-group select{ min-height:42px !important; }
+  .btn-apply{ min-height:44px !important; }
+}
+
+/* ═══ v140 — complemento: linhas rotulo/valor em flex ═══
+   Linhas "space-between" (rotulo a esquerda, valor a direita) nao
+   encolhiam: o rotulo mantinha seu min-content e empurrava o valor
+   para fora da tela. Passam a quebrar linha quando nao couberem.   */
+@media (max-width: 600px){
+  main div[style*="space-between"]{ flex-wrap: wrap !important; gap:2px 10px !important; }
+  main div[style*="space-between"] > *{ min-width:0 !important; }
+  .leg-detail-item{ white-space: normal !important; }
+  .qs-rank-val{ white-space: normal !important; }
+  .freq-solo-media{ flex-wrap: wrap !important; }
+}
+
+
+/* ═══ v140 — faixa 601–900px (tablet, e o iframe dentro do Gerente
+   Geral, que fica mais estreito que a janela). Somente as regras
+   estruturais que impedem estouro horizontal; nenhum restilo. ═══ */
+@media (min-width:601px) and (max-width:900px){
+  .kpi-row, .kpi-row-4, .chart-row-2, .chart-row-n{
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  }
+  .kpi-row > *, .kpi-row-4 > *, .chart-row-2 > *, .chart-row-n > *{ min-width:0; }
+  .chart-section, .section-block, .kpi-card, .chart-body{ min-width:0; }
+  .qs-solo-legend, .pizza-legend{ min-width:0; max-width:100%; }
+  .chart-body canvas, canvas[id^="pizzaCanvas"]{ max-width:100%; height:auto; }
+  header{ gap:10px; padding:12px 16px; }
+  .header-right{ min-width:0; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+  .logo-text h1{ font-size:17px; }
+  .date-info{ font-size:11.5px; }
+  .leg-detail-item, .qs-rank-val{ white-space:normal; }
+  .leg-info, .leg-name, .pizza-legend > *{ min-width:0; overflow-wrap:anywhere; }
+  main div[style*="space-between"]{ flex-wrap:wrap; }
+  html, body{ overflow-x:hidden; }
+}
+
 </style>
 </head>
 <body>
@@ -20180,7 +20325,7 @@ header {
     </div>
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
       <div class="live-pill" id="livePill">DADOS ATUALIZADOS</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v139</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.2px; font-weight:700;">01 · v140</div>
     </div>
   </div>
 </header>
@@ -20191,7 +20336,7 @@ header {
   font-size:10px; font-weight:700; letter-spacing:1.5px;
   color:rgba(255,255,255,0.45); pointer-events:none;
   font-family:'Inter',sans-serif;
-">SOGIPA · PAINEL 01 · v139</div>
+">SOGIPA · PAINEL 01 · v140</div>
 
 <main>
 
@@ -21038,7 +21183,7 @@ const TEMPLATE_DIAGNOSTICO = `<!DOCTYPE html>
 </div>
 
 <div class="footer">
-  SOGIPA · Dashboard Institucional · Painel 01 · v139 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
+  SOGIPA · Dashboard Institucional · Painel 01 · v140 · Diagnóstico {{PERIODO_TITULO}} · Documento interno
 </div>
 
 <script>
@@ -23456,7 +23601,7 @@ function gerarDiagnostico() {
 
   let html = TEMPLATE_DIAGNOSTICO;
   html = html.split('{{PERIODO_TITULO}}').join(periodoTitulo);
-  html = html.split('{{VERSAO}}').join('v139');
+  html = html.split('{{VERSAO}}').join('v140');
   const _st = getStatusDados();
   html = html.split('{{STATUS_TEXTO}}').join(_st.texto);
   html = html.split('{{STATUS_CLASS}}').join(_st.atualizando ? 'updating' : '');
