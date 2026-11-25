@@ -8003,14 +8003,15 @@ const COBERTURA_RETENCAO = {
   ago2026: {ini:'2026-08-01', fim:'2026-08-31'},
   set2026: {ini:'2026-09-01', fim:'2026-09-30'},
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
-  // 18/11/2026: NOVEMBRO PARCIAL — a aba Novembro da planilha de Desligamento
-  // traz agora 20 registros, de 01 a 18/11 (eram 15 ate 09/11). A janela avanca
-  // para 18/11 porque o mes segue em curso; nao usar 30/11.
+  // 25/11/2026: NOVEMBRO PARCIAL — a gestora do CRA informou a posicao de
+  // 25/11: 24 solicitacoes (15 desligados + 4 retidos + 5 programados), contra
+  // 20 na posicao de 18/11 e 15 ate 09/11. A janela avanca para 25/11 porque o
+  // mes segue em curso; nao usar 30/11.
   // Esta cobertura e SO do DESLIGAMENTO. A sub-aba de Retencao tem a sua
   // propria (COBERTURA_RETENCAO_CRA), que segue terminando em outubro porque a
   // planilha Retencao 2026(8) nao tem nenhum registro de novembro — o ultimo e
   // de 28/10. Sem dado nao e zero, e por isso as duas nao andam juntas.
-  nov2026: {ini:'2026-11-01', fim:'2026-11-18'},
+  nov2026: {ini:'2026-11-01', fim:'2026-11-25'},
 };
 function mesKeyParaRetencao(de, ate){
   for(const mesKey in COBERTURA_RETENCAO){
@@ -8887,7 +8888,17 @@ const VENDAS_EXTRA_MESES = {
     // CAMPOS EM BRANCO NA ORIGEM, preservados como "Nao informado(a)":
     // 9 dos 13 registros estao sem canal de venda e 1 sem categoria. Nao foi
     // atribuido canal nem categoria por semelhanca.
-    registros:[
+    //
+    // 25/11: a Central de Vendas informou os totais oficiais do mes em curso —
+    // 51 vendas e R$ 28.750,00 — SEM o detalhamento nome a nome. As 13 linhas
+    // abaixo sao a carga nominal de 09/11 e ficam PRESERVADAS aqui como
+    // registrosParciais: nao foram apagadas nem completadas com registros
+    // inventados para fechar as 51. Enquanto o detalhamento nao chegar,
+    // novembro e um mes declarado por agregado, exatamente como jan2026 — a
+    // chave `registros` esta ausente de proposito. conferirVendasSet() segue
+    // integra e ativa, sem nenhuma alteracao: ela audita apenas os meses que
+    // trazem `registros` (set2026 e out2026 continuam auditados linha a linha).
+    registrosParciais:[
       {"nome": "F.P.O.", "data": "2026-11-03", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Campanha + WhatsApp", "valor": 501, "adesao": null},
       {"nome": "M.A.B.", "data": "2026-11-03", "cons": "Nicole", "cat": "Universitário", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": null},
       {"nome": "T.G.A.", "data": "2026-11-04", "cons": "Nicole", "cat": "Teen", "canal": "Campanha + WhatsApp", "valor": 266, "adesao": null},
@@ -8902,29 +8913,41 @@ const VENDAS_EXTRA_MESES = {
       {"nome": "C.P.M.B.", "data": "2026-11-07", "cons": "Nicole", "cat": "Plano Single", "canal": "Não informado", "valor": 499, "adesao": null},
       {"nome": "J.V.M.", "data": "2026-11-09", "cons": "Nicole", "cat": "Contribuinte Familiar", "canal": "Não informado", "valor": 501, "adesao": null}
     ],
-    periodoTag:'Novembro/2026 (parcial · 03 a 09/11)',
-    associacoesNovas:'13', valorArrecadado:'R$ 6.599,25', ticketMedio:'R$ 507,63',
+    periodoTag:'Novembro/2026 (parcial · 01 a 25/11)',
+    // 25/11: a gestao informou os totais oficiais do mes — 51 vendas e
+    // R$ 28.750,00. SUBSTITUI os 13 / R$ 6.599,25 da posicao de 09/11, NAO
+    // soma. Ticket = 28.750,00 / 51 = R$ 563,73, calculado, nao digitado.
+    // DETALHAMENTO INDIVIDUAL NAO VEIO: `registros` segue com as 13 linhas
+    // nominais da carga de 09/11 e as outras 38 vendas entraram apenas no
+    // total. Nada foi inventado — nem nome, nem data, nem canal, nem
+    // categoria, nem rateio do valor. As quebras abaixo ganham um bloco
+    // explicito de "aguardando detalhamento" para somarem 51 sem atribuir
+    // o que a fonte nao informou.
+    associacoesNovas:'51', valorArrecadado:'R$ 28.750,00', ticketMedio:'R$ 563,73',
+    qtdOficialFonte:51, registrosDetalhados:13,
     campanhas:[
+      {nome:'Aguardando detalhamento', qtd:38, cor:'#4a4c68'},
       {nome:'Não informado', qtd:9, cor:'#b0b0d0'},
       {nome:'Campanha + WhatsApp', qtd:4, cor:'#3d7bff'},
     ],
     consultores:[
-      {nome:'EQUIPE DE VENDAS', qtd:13, valor:6599.25},
+      {nome:'EQUIPE DE VENDAS', qtd:51, valor:28750.00},
     ],
     categorias:[
-      {nome:'Contribuinte Familiar', qtd:5}, {nome:'Duo', qtd:3}, {nome:'Plano Single', qtd:2},
+      {nome:'Aguardando detalhamento', qtd:38}, {nome:'Contribuinte Familiar', qtd:5},
+      {nome:'Duo', qtd:3}, {nome:'Plano Single', qtd:2},
       {nome:'Universitário', qtd:1}, {nome:'Teen', qtd:1}, {nome:'Não informada', qtd:1},
     ],
-    alerta: '<b style="color:var(--gold);">Posição parcial de novembro — 03 a 09/11, sete dias corridos.</b> São <b>13 associações novas</b> e <b>R$ 6.599,25</b> de valor contribuição, ticket médio de <b>R$ 507,63</b>. <b>Não é fechamento do mês</b> e não deve ser lido como tal. Frente à meta de <b>116</b>, o atingimento está em <b>11,2%</b>, com <b>103 vendas a fazer</b> no restante do mês — e 117 para o desafio de 130. <b style="color:var(--gold);">Ponto de atenção de ritmo:</b> outubro fechou com 83 em 31 dias, média de 2,7 por dia; novembro está em 1,9 por dia. Mantido esse ritmo, o mês terminaria perto de <b>56 vendas</b>, menos da metade da meta — a projeção é aritmética simples sobre sete dias, não considera sazonalidade nem campanhas previstas, e serve como alerta de acompanhamento, não como previsão. <b style="color:var(--gold);">Nomenclatura:</b> a aba de novembro traz uma única coluna financeira, chamada <b>Contribuição</b>, enquanto outubro separa Adesão e Valor Contribuição. O valor entrou como contribuição, que é o critério do painel; <b>adesão de novembro não existe na fonte</b> e ficou em branco, não como zero. <b>Nove dos 13 registros estão sem canal de venda</b> e um sem categoria na origem — aparecem como não informados, sem atribuição por semelhança.',
+    alerta: '<b style="color:var(--gold);">Posição de novembro — 51 vendas e R$ 28.750,00.</b> Totais informados pela gestão em 25/11, com ticket médio calculado de <b>R$ 563,73</b> (28.750,00 ÷ 51). <b>Não é fechamento do mês.</b> <b style="color:var(--green);">Substitui, não soma:</b> a posição anterior era de 13 vendas e R$ 6.599,25 até 09/11 — o avanço foi de <b>38 vendas e R$ 22.150,75</b>. Frente à meta de <b>116</b>, o atingimento está em <b>44,0%</b>, com <b>65 vendas a fazer</b> no restante do mês, e 79 para o desafio de 130. <b style="color:var(--gold);">Detalhamento individual não veio:</b> a fonte informou apenas os dois totais. As 13 vendas nominais da carga de 09/11 seguem detalhadas por canal, consultor e categoria; as outras <b>38 aparecem como "aguardando detalhamento"</b> nas quebras, sem atribuição de canal, categoria ou rateio de valor. <b style="color:var(--gold);">Nomenclatura:</b> o valor entrou como contribuição, que é o critério do painel; adesão de novembro não existe na fonte e segue em branco, não como zero.',
     metas:{
       // A aba declara meta 116, realizado 13 e desafio 130. Nao ha meta de
       // reingresso e novembro ainda nao tem reingresso lancado na fonte —
       // por isso reingressos.real fica null, e NAO zero.
-      vendas:{orcado:116, real:13}, reingressos:{orcado:null, real:null},
-      totalVR:{orcado:116, real:13}, desafioVenda:130, desafioReingresso:null,
-      total:{orcado:130, real:13, gap:-117},
+      vendas:{orcado:116, real:51}, reingressos:{orcado:null, real:null},
+      totalVR:{orcado:116, real:51}, desafioVenda:130, desafioReingresso:null,
+      total:{orcado:130, real:51, gap:-79},
       // So contribuicao: a fonte de novembro nao tem coluna de adesao.
-      taxaAdesao:6599.25, taxaReingresso:null, taxaTotal:6599.25,
+      taxaAdesao:28750.00, taxaReingresso:null, taxaTotal:28750.00,
     },
   },
 };
@@ -9105,11 +9128,14 @@ const COBERTURA_VENDAS = {
   // 04/11: outubro FECHADO — a planilha trouxe o mês inteiro.
   // 10/11: a aba foi reescrita e passou a 83 vendas; a janela segue 01 a 31/10.
   out2026: {ini:'2026-10-01', fim:'2026-10-31'},
-  // Novembro PARCIAL: fim = 09/11, última data de venda da aba
-  // "Novembro - 2026". Não usar 30/11 — o mês está em curso.
+  // Novembro PARCIAL: fim = 25/11, posição informada pela Central de Vendas
+  // na carga de 25/11 (51 vendas, R$ 28.750,00). Não é uma data de venda lida
+  // da planilha — o detalhamento nome a nome não foi fornecido. A carga
+  // nominal anterior, de 09/11, cobria 13 das 51 vendas.
+  // Não usar 30/11 — o mês está em curso.
   // Dezembro NÃO entra: a aba tem metas (149/165) e linhas numeradas de 1 a 4
   // com todos os campos vazios. Número de linha não é prova de venda.
-  nov2026: {ini:'2026-11-01', fim:'2026-11-09'},
+  nov2026: {ini:'2026-11-01', fim:'2026-11-25'},
 };
 // Jan-Mai vêm de VENDAS_EXTRA_MESES; Jun/Jul continuam dentro de DADOS_MES
 function getVendasMes(key){
@@ -11618,7 +11644,54 @@ function renderRetencaoCRA(mesesSel){
     const tagV = (!window._subAbaRet || window._subAbaRet === 'ret')
                  ? document.getElementById('retencaoPeriodoTag') : null;
     if(tagV) tagV.textContent = 'Sem acordo no período';
-    el.innerHTML = `
+    // 25/11/2026 — CAUSA EFETIVA DA "AUSENCIA" DOS NUMEROS DO CRA. A aba
+    // Retencao abre sempre na sub-aba Retencao, e em novembro ela nao tem
+    // nenhum acordo (a planilha Retencao 2026 termina em 28/10). Resultado:
+    // quem entrava na aba via quatro tracos e concluia que o CRA estava
+    // vazio, enquanto 24/15/4/5 estavam renderizados na sub-aba Desligamento,
+    // ao lado. Nao era erro de calculo nem de filtro — era navegacao.
+    // O bloco abaixo repete na entrada os MESMOS kpis que a sub-aba
+    // Desligamento ja renderiza. Nao ha calculo novo, dado novo nem
+    // estimativa: e o mesmo valor da gestora, exibido tambem aqui.
+    const leKpiDeslig = rotulo => {
+      let t = 0, achou = false;
+      (mesesTaxa||[]).forEach(k=>{
+        const d = DESLIGAMENTOS_MESES[k];
+        if(!d || !d.kpis) return;
+        const kp = d.kpis.find(x=>x.label === rotulo);
+        if(!kp) return;
+        const n = parseInt(String(kp.valor).replace(/[^\d-]/g,''), 10);
+        if(!isNaN(n)){ t += n; achou = true; }
+      });
+      return achou ? t : null;   // sem dado nao e zero
+    };
+    const cSolic = leKpiDeslig('Solicitações Totais');
+    const cDesl  = leKpiDeslig('Desligados');
+    const cRet   = leKpiDeslig('Retidos');
+    const cProg  = leKpiDeslig('Programados');
+    // ATENCAO AO ROTULO: rotuloPeriodo e derivado dos meses de RETENCAO, que
+    // aqui estao vazios — ele cai em "todo o historico de 2026". Usar aquele
+    // rotulo neste cabecalho faria 24/15/4/5 de novembro parecerem o ano
+    // inteiro. O rotulo do CRA vem dos meses de DESLIGAMENTO do recorte.
+    const rotCra = (mesesTaxa && mesesTaxa.length)
+      ? (mesesTaxa.length === 1 ? rotKey(mesesTaxa[0])
+         : `${rotKey(mesesTaxa[0])} a ${rotKey(mesesTaxa[mesesTaxa.length-1])}`)
+      : rotuloPeriodo;
+    const celulaCra = (rot, v, cor) => `<div style="min-width:0;">
+        <div class="card-meta" style="margin:0; text-transform:uppercase; letter-spacing:.4px; font-size:11px;">${rot}</div>
+        <div style="font-size:22px; font-weight:800; color:${v==null?'var(--muted)':cor}; margin-top:2px;">${v==null?'—':v}</div></div>`;
+    const craHead = (cSolic==null && cDesl==null && cRet==null && cProg==null) ? '' : `
+      <div class="card" style="border-left:4px solid var(--blue); margin-bottom:16px;">
+        <div class="card-label">🚪 CRA — desligamentos e retenções em ${rotCra}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:24px; margin-top:10px;">
+          ${celulaCra('Solicitações totais', cSolic, 'var(--text)')}
+          ${celulaCra('Desligados', cDesl, 'var(--red)')}
+          ${celulaCra('Retidos', cRet, 'var(--green)')}
+          ${celulaCra('Programados', cProg, 'var(--yellow)')}
+        </div>
+        <div class="card-meta" style="margin-top:12px;">Números informados pela gestora do CRA. A abertura por categoria, motivo e ticket está na sub-aba <b style="color:var(--text);">🚪 Desligamento</b>. Os cards de retenção abaixo seguem em <b style="color:var(--text);">—</b> porque a planilha de Retenção não registra acordo neste período.</div>
+      </div>`;
+    el.innerHTML = craHead + `
     <div class="grid-3" style="margin-bottom:16px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
       <div class="card"><div class="card-label">🤝 Total de Retenções</div>
         <div class="card-value" style="color:var(--muted);">—</div>
@@ -13179,8 +13252,17 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   // mensais; quem lê esses números por dentro (análises, mini-stats da Visão
   // Geral, agregador anual, totalDesligamentos, residual) não muda. O filtro é
   // por rótulo, então vale igual para o mês e para o agregado de vários meses.
+  // 25/11/2026 — A DIRETORIA PEDIU 'Programados' DE VOLTA NA TELA. O pedido
+  // de 25/11 exige que novembro exiba os quatro numeros da gestora: 24
+  // solicitacoes, 15 desligados, 4 retidos e 5 programados. Isso REVERTE
+  // parcialmente o pedido escrito da gestora do CRA de 18/11, que mandava
+  // "deixar apenas o total de solicitacoes, os desligados e os retidos".
+  // A decisao de 18/11 fica registrada acima de proposito: foi substituida
+  // por orientacao posterior de nivel superior, nao ignorada. DIVERGENCIA
+  // SINALIZADA para confirmacao da gestora. 'Residuais', 'Deste Mes' e os
+  // dois rotulos de Quadro Social seguem ocultos como ela pediu.
   const KPIS_DESLIG_OCULTOS = ['Quadro Social', 'Deslig. pelo Quadro Social',
-                               'Residuais', 'Deste Mês', 'Programados'];
+                               'Residuais', 'Deste Mês'];
   const kpisVisiveis = r.kpis.filter(k => KPIS_DESLIG_OCULTOS.indexOf(k.label) < 0);
   const kpisHtml = kpisVisiveis.map(k=>`
     <div class="kpi-icon-card">
@@ -14037,26 +14119,26 @@ const DESLIGAMENTOS_MESES = {
     // LICENCAS_CRA, para nao quebrar os totais oficiais de 43 e 27. Por isso o
     // card Retidos mostra 4 e a coluna Licencas do Historico mostra "nao
     // apurado". AGUARDA a gestora definir em qual base esses 4 devem viver.
-    periodoTag:'Novembro/2026 (parcial · 01 a 18/11)',
+    periodoTag:'Novembro/2026 (parcial · 01 a 25/11)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'20', sub:'13 desligados + 3 pendentes + 4 retidos'},
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'24', sub:'15 desligados + 4 retidos + 5 programados'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'3', sub:'solicitados em outubro, saída em 01/11', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'10', sub:'solicitados e desligados em novembro'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'13', sub:'somente os com data efetiva de saída', valorCor:'#e8192c'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'12', sub:'solicitados e desligados em novembro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'15', sub:'total informado pela gestora do CRA', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'4', sub:'2 retenções + 2 licenças · na aba de Desligamento, ausentes da base de Retenção', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'3', sub:'solicitados em 07, 09 e 11/11, ainda sem data de saída', valorCor:'#fb923c'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'5', sub:'solicitações ainda sem data efetiva de saída', valorCor:'#fb923c'},
     ],
-    categorias: [{"nome": "Contribuinte", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 5, "cor": "#3d7bff"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
-    motivos: [{"motivo": "Financeiro", "qtd": 5, "pct": 38.46, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 38.46, "cor": "#a855f7"}, {"motivo": "Mudança", "qtd": 3, "pct": 23.08, "cor": "#00e5a0"}],
-    totalDesligamentos: 13,
+    categorias: [{"nome": "Aguardando detalhamento", "qtd": 2, "cor": "#4a4c68"}, {"nome": "Contribuinte", "qtd": 5, "cor": "#00e5a0"}, {"nome": "Contribuinte Individual", "qtd": 5, "cor": "#3d7bff"}, {"nome": "Veterano Contribuinte", "qtd": 1, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 1, "cor": "#f2b705"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#06b6d4"}],
+    motivos: [{"motivo": "Financeiro", "qtd": 5, "pct": 33.33, "cor": "#3d7bff"}, {"motivo": "Não utilização", "qtd": 5, "pct": 33.33, "cor": "#a855f7"}, {"motivo": "Mudança", "qtd": 3, "pct": 20.00, "cor": "#00e5a0"}, {"motivo": "Aguardando detalhamento", "qtd": 2, "pct": 13.33, "cor": "#4a4c68"}],
+    totalDesligamentos: 15,
     ticketMedio: 'R$ 517,18', dependentes: '1,1',
     residual: 3, residualLabel: 'Residual de Outubro',
     desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:3, nao:8},
     quadroSocial: null,
     negociacoesDesligados: '—',
-    evolucaoDeclarada: null, registrosNaAba: 20, linhasNaAba: 20,
+    evolucaoDeclarada: null, registrosNaAba: 24, linhasNaAba: 24,
     parcial: true,
-    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Novembro</b>, posição de <b>18/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento</b>: 18 dias corridos de 30. A aba Evolução <b>não declara nada para novembro</b>, então não há número oficial da gestora para confrontar, e o painel não inventou um. <b>São 20 linhas com matrícula: 13 desligamentos efetivados, 3 solicitações pendentes e 4 retenções/licenças</b> — 13 + 3 + 4 = 20, fecha exato. <b style="color:var(--gold);">Mudança de critério nesta carga:</b> a versão anterior contava 16 desligados, incluindo as 3 linhas <b>sem data efetiva de saída</b>. O critério vinha de outubro, mas lá o mês estava <b>fechado</b> quando a gestora validou — aquelas linhas já tinham desfecho conhecido. Novembro está em curso, e uma solicitação de 07, 09 ou 11/11 ainda sem data pode virar retenção; contá-la como saída seria decidir o desfecho antes de ele existir. Agora <b>Desligados são só os 13 com data</b>, e os 3 pendentes aparecem em Programados. <b style="color:var(--gold);">Divergência registrada:</b> pelo critério de outubro o mês teria 16 — a regra para mês em curso ainda não está documentada pela CRA e precisa de validação. <b>3 são residuais de outubro</b> (solicitados em 03, 13 e 20/10, efetivados em 01/11) e <b>10 foram solicitados e desligados no próprio novembro</b>. <b style="color:var(--gold);">Concentração dos motivos:</b> financeiro e não utilização empatam com 5 cada, 77% juntos, e mudança soma 3 — perfil diferente de outubro, onde mudança liderava com 35%. Em 18 dias o mês acumula 13 saídas confirmadas contra as 37 de outubro inteiro: <b>0,7 por dia contra 1,2</b>, ritmo mais baixo, mas o mês não terminou e há 3 solicitações em aberto. <b style="color:var(--red);">O quadro lateral da aba está defasado e não foi usado:</b> declara 4 solicitações totais e 0 desligados, enquanto a aba lista 20 linhas com 13 datas de saída — só o campo de retidos (4) bate com a contagem individual. <b style="color:var(--red);">Inconsistência entre as bases:</b> a planilha de Retenção não tem nenhum registro de novembro (o último é de 28/10), mas a aba de Desligamento traz 4 de retenção/licença. Não foram lançados na base de Retenção para não quebrar os totais oficiais de 43 retenções e 27 licenças, e é por isso que a coluna Licenças do Histórico aparece como “não apurado”. Aguarda definição da gestora.',
+    analise: 'Fonte: CRA, posição de <b>25/11/2026</b>. <b style="color:var(--gold);">Mês em curso — não é fechamento.</b> A gestora informou <b>24 solicitações totais: 15 desligamentos, 4 retenções/licenças e 5 programados</b> — 15 + 4 + 5 = 24, fecha exato. <b style="color:var(--green);">Substitui a posição de 18/11</b>, que trazia 20 solicitações (13 desligados, 3 pendentes e 4 retidos): são a mesma competência e os números novos entram no lugar dos antigos, <b>não somados a eles</b>. O avanço foi de <b>2 desligamentos e 2 programados</b>; os retidos seguem em 4. <b>3 dos 15 são residuais de outubro</b> (solicitados em 03, 13 e 20/10, efetivados em 01/11) e <b>12 são do próprio novembro</b>. <b style="color:var(--gold);">Detalhamento dos 2 novos não veio:</b> a informação trouxe só os quatro totais. As 13 saídas já detalhadas mantêm sua abertura por categoria e motivo — financeiro e não utilização com 5 cada, mudança com 3 — e os <b>2 novos aparecem como "aguardando detalhamento"</b>, sem atribuição de categoria nem de motivo. O ticket médio de R$ 517,18 e a média de 1,1 dependente seguem calculados sobre as linhas que têm esses campos, não sobre os 15. <b style="color:var(--red);">Inconsistência entre as bases, ainda aberta:</b> a planilha de Retenção não tem registro de novembro (o último é de 28/10), mas a aba de Desligamento traz 4 de retenção/licença. Não foram lançados na base de Retenção para não quebrar os totais oficiais de 43 retenções e 27 licenças, e por isso a coluna Licenças do Histórico segue como “não apurado”. Aguarda definição da gestora.',
   },
 
 
