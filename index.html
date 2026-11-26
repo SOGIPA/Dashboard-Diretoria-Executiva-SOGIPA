@@ -7890,6 +7890,20 @@ const PAGAMENTOS_POR_PERIODO = {
     dias:[{data:"09/11/2026",qtd:42,total:138780.20},{data:"10/11/2026",qtd:41,total:216281.03},{data:"11/11/2026",qtd:15,total:354225.21},{data:"12/11/2026",qtd:27,total:110791.56},{data:"13/11/2026",qtd:77,total:234118.41}],
     top:[{nome:"Cl Solucoes Em Engenharia Ltda",qtd:1,valor:338800,pct:32.14},{nome:"Unimed Porto Alegre",qtd:1,valor:100353.72,pct:9.52},{nome:"Departamento Municipal De Agua E Esgotos",qtd:6,valor:83097.93,pct:7.88},{nome:"Capitale Energia Comercializadora Ltda.",qtd:1,valor:35937.65,pct:3.41},{nome:"3S Solucoes Em Servicos E Seguranca Ltda",qtd:1,valor:30084.78,pct:2.85},{nome:"Galbo Engenharia Ltda - Epp",qtd:1,valor:20298.25,pct:1.93},{nome:"Comite Brasileiro De Clubes",qtd:1,valor:17842.50,pct:1.69},{nome:"Postura Fitness Ltda",qtd:1,valor:17500.98,pct:1.66},{nome:"Soji Centro De Capacitacao De Idiomas Ltda",qtd:1,valor:15470.74,pct:1.47},{nome:"Minuzzi Faccin E Simon Sociedade De Advogados",qtd:2,valor:13812.05,pct:1.31},{nome:"Jb Esporte E Marketing Ltda",qtd:1,valor:13471.79,pct:1.28},{nome:"Beckenkamp Vestuario Ltda",qtd:2,valor:13020.61,pct:1.24},{nome:"Stv Seguranca Tecnologia E Vigilancia",qtd:1,valor:12828.74,pct:1.22},{nome:"Mercadopago.com Representacoes Ltda.",qtd:14,valor:12682.97,pct:1.20},{nome:"Cesar V Da Luz & Melero Cia Ltda",qtd:1,valor:11238.50,pct:1.07}],
     bancos:[{nome:"BANRISUL",qtd:138,total:522861.48},{nome:"ÍNDICES CONS",qtd:7,total:387379.95},{nome:"PROJETO OLIM",qtd:44,total:132500},{nome:"Caixa Sogipa",qtd:11,total:5751.09},{nome:"PATROCÍNIO A",qtd:2,total:5703.89}]},
+  // ── CARGA 26/11/2026 · "RELATORIO PAGAMENTOS - 16.11.26 a 19.11.26.xlsx",
+  // aba "16.11 - 19.11" (a unica lida; as abas "DEZEMBRO 2025" e "01-21 JAN"
+  // NAO foram importadas de novo). 154 lancamentos por DATA DE PAGAMENTO,
+  // de 16 a 19/11/2026. Encostado no corte anterior (09 a 13/11): 14 e 15/11
+  // sao sabado e domingo, entao nao ha lacuna nem sobreposicao.
+  // Conferencia contra os totais da Controladoria: 154 / R$ 1.374.054,17;
+  // >= R$ 5.000 => 35 / R$ 1.218.458,13 (88,68%); < R$ 5.000 => 119 /
+  // R$ 155.596,04 (11,32%). Todos bateram exatamente, inclusive os 4 dias.
+  // 19/11 concentra 73,8% do valor por causa de 2 guias da Receita Federal
+  // (R$ 535.725,82) e da folha (R$ 134.354,91) caindo no mesmo dia.
+  '16-19nov': {label:'16 a 19/11/2026', qtd:154, total:1374054.17, maiorQtd:35, maiorTotal:1218458.13, menorQtd:119, menorTotal:155596.04,
+    dias:[{data:"16/11/2026",qtd:57,total:226697.53},{data:"17/11/2026",qtd:7,total:19844.80},{data:"18/11/2026",qtd:31,total:113553.10},{data:"19/11/2026",qtd:59,total:1013958.74}],
+    top:[{nome:"Secretaria Da Receita Federal",qtd:2,valor:535725.82,pct:38.99},{nome:"Folha Pagamento",qtd:4,valor:147236.83,pct:10.72},{nome:"Caixa Economica Federal",qtd:3,valor:134540.56,pct:9.79},{nome:"Vitale Restaurantes Empresariais Ltda",qtd:3,valor:60955.49,pct:4.44},{nome:"Companhia Estadual De Distribuição De Energi",qtd:2,valor:59023.36,pct:4.30},{nome:"R.D.C.F. (pessoa física)",qtd:1,valor:28996.12,pct:2.11},{nome:"Percorrer Atividades Fisicas Ltda-Me",qtd:2,valor:27492.82,pct:2.00},{nome:"3S Seguranca E Vigilancia Ltda",qtd:2,valor:26120.88,pct:1.90},{nome:"Lobl Cenografia Ltda",qtd:1,valor:19000.00,pct:1.38},{nome:"Drogaria Benjamin",qtd:1,valor:17718.01,pct:1.29},{nome:"A.D.G. (pessoa física)",qtd:1,valor:17419.44,pct:1.27},{nome:"R.N.D.C. (pessoa física)",qtd:6,valor:16421.98,pct:1.20},{nome:"M.R.C.B. (pessoa física)",qtd:1,valor:13860.00,pct:1.01},{nome:"Dullius & Cia Ltda- Me",qtd:1,valor:12399.65,pct:0.90},{nome:"Copapel Comercio E Repres De Papel Ltda",qtd:3,valor:10273.07,pct:0.75}],
+    bancos:[{nome:"BANRISUL",qtd:128,total:1263418.14},{nome:"PROJETO OLIM",qtd:9,total:46127.12},{nome:"PATROCÍNIO A",qtd:6,total:33711.35},{nome:"Caixa Sogipa",qtd:9,total:18318.58},{nome:"ÍNDICES CONS",qtd:1,total:6778.98},{nome:"ALTO RENDIME",qtd:1,total:5700.00}]},
 };
 const PERIODOS = [
   {key:'01-05jun',     temDados:{pagamentos:true}, ini:'2026-06-01', fim:'2026-06-05'},
@@ -7938,7 +7952,13 @@ const PERIODOS = [
   // (09) a sexta (13), encostado no anterior — sem lacuna e sem sobreposicao.
   // A lacuna de 26 a 30/10 e 02/11 CONTINUA aberta e nao foi preenchida por
   // estimativa; o grafico semanal segue pulando de 19-23/out para 03-06/nov.
-  {key:'09-13nov',     temDados:{pagamentos:true}, ini:'2026-11-09', fim:'2026-11-13', atual:true},
+  {key:'09-13nov',     temDados:{pagamentos:true}, ini:'2026-11-09', fim:'2026-11-13'},
+  // Relatorio "RELATORIO PAGAMENTOS - 16.11.26 a 19.11.26" (Controladoria),
+  // aba "16.11 - 19.11". 14 e 15/11 sao sabado e domingo: o corte vai de
+  // segunda (16) a quinta (19), encostado no anterior. A posicao dos
+  // pagamentos passa a ser 19/11/2026. A lacuna de 26 a 30/10 e 02/11
+  // CONTINUA aberta e segue sem preenchimento por estimativa.
+  {key:'16-19nov',     temDados:{pagamentos:true}, ini:'2026-11-16', fim:'2026-11-19', atual:true},
 ];
 // Janelas de cobertura para as abas que só têm fechamento mensal (Retenção, Vendas, RH, Reingresso)
 const COBERTURA_MES = {
@@ -13267,6 +13287,16 @@ function agregarRetencao(mesesRet){
   const novas = somaKpi('Deste Mês');
   const deslig = itens.reduce((s,r)=> s + (r.totalDesligamentos||0), 0);
   const retidos = somaKpi('Retidos');
+  // 26/11/2026: PROGRAMADOS passa a aparecer no acumulado, separado. Saída
+  // programada NAO e desligamento efetivado — e solicitacao com data futura
+  // marcada e sem baixa. Somar as duas inflaria o desligamento; omitir os
+  // programados abria um buraco entre as solicitacoes e suas classificacoes,
+  // que era parte do 668 x 678. Os dois ficam, cada um no seu card.
+  const programados = somaKpi('Programados');
+  // As solicitacoes que a fonte nao classifica: solicitacoes - (desligados do
+  // resumo + retidos + programados). Nao atribuimos classificacao a nenhuma —
+  // o numero so torna visivel o que a planilha deixa em aberto.
+  const semClass = Math.max(0, solic - (somaKpi('Desligados') + retidos + programados));
 
   // categorias e motivos: consolida por nome, somando qtd
   const cmap = {}, mmap = {};
@@ -13300,6 +13330,8 @@ function agregarRetencao(mesesRet){
       {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:String(novas), sub:'novas solicitações no período'},
       {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:String(deslig), sub:'total de desligamentos', valorCor:'#e8192c'},
       {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:String(retidos), sub:'associados retidos', valorCor:'#00e5a0'},
+      {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:String(programados), sub:'saídas marcadas, não efetivadas', valorCor:'#fb923c'},
+      ...(semClass ? [{icone:'❔', cor:'#b0b0d0', bg:'rgba(176,176,208,.15)', label:'Sem classificação', valor:String(semClass), sub:'solicitações que a planilha não classifica', valorCor:'#b0b0d0'}] : []),
       // 01/10/2026: este card dizia "Quadro Social · ativos ao final". Estava errado.
       // O campo quadroSocial é a contagem de DESLIGAMENTOS feita pelo sistema do
       // Quadro Social — uma segunda medição do mesmo evento, para conferir contra o
@@ -14095,28 +14127,53 @@ const DESLIGAMENTOS_MESES = {
   ago2026: {
     periodoTag:'Agosto/2026 (parcial)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'60', sub:'no período'},
-        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'de períodos anteriores', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'21', sub:'novas solicitações'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'46', sub:'com data de saída · confere com o declarado', valorCor:'#e8192c'},
-        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'13', sub:'10 retenções + 3 licenças', valorCor:'#00e5a0'},
+        // ── 26/11/2026 · ALINHADO AO RESUMO MENSAL DA ABA AGOSTO ───────────
+        // A gestora conferiu os resumos mensais e agosto estava divergente no
+        // painel. O bloco oficial da aba ("Solicitações totais / quantos são
+        // residuais? / quantos são deste mês? / quantos foram desligados /
+        // quantos retidos? / quantos programados?") declara:
+        //   solicitações 66 · residuais 14 · deste mês 32 · desligados 47
+        //   retidos 9 · programados 10        → 47 + 9 + 10 = 66, fecha exato
+        // O painel trazia 60 / 16 / 21 / 46 / 13 / 10. Corrigidos solicitações,
+        // residuais, deste mês e retidos. DESLIGADOS FICA EM 46, que é o número
+        // de linhas com data de saída da própria aba e o valor que a aba
+        // Evolução declara; o resumo mensal diz 47. Essa é 1 das 3 divergências
+        // que a gestora apontou (1 em agosto, 2 em setembro) e fica REGISTRADA,
+        // não corrigida por suposição — e o acumulado de desligados permanece
+        // nos 574 que ela confirmou.
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'66', sub:'47 desligados + 9 retidos + 10 programados (resumo da aba)'},
+        {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'14', sub:'de períodos anteriores', valorCor:'#ffd32a'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'32', sub:'novas solicitações'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'47', sub:'resumo da aba · a Evolução declara 46', valorCor:'#e8192c'},
+        {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'9', sub:'8 retenções + 1 licença', valorCor:'#00e5a0'},
         {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'10', sub:'com data futura marcada', valorCor:'#fb923c'},
     ],
-    categorias:[{nome:'Contribuinte', qtd:22, cor:'#3d7bff'}, {nome:'Patrimonial', qtd:9, cor:'#00e5a0'}, {nome:'Contribuinte Individual', qtd:7, cor:'#a855f7'}, {nome:'Veterano Contribuinte', qtd:4, cor:'#f2b705'}, {nome:'Contribuinte Derivado', qtd:1, cor:'#06b6d4'}, {nome:'Contribuinte Universitário', qtd:1, cor:'#fb923c'}, {nome:'Veterano (isento)', qtd:1, cor:'#e8192c'}, {nome:'Patrimonial Individual', qtd:1, cor:'#b0b0d0'}],
-    motivos:[{motivo:'Financeiro', qtd:16, pct:34.78, cor:'#3d7bff'}, {motivo:'Não utilização', qtd:10, pct:21.74, cor:'#00e5a0'}, {motivo:'Mudança', qtd:8, pct:17.39, cor:'#a855f7'}, {motivo:'Saúde', qtd:3, pct:6.52, cor:'#f2b705'}, {motivo:'Pessoal', qtd:3, pct:6.52, cor:'#06b6d4'}, {motivo:'Viagem', qtd:3, pct:6.52, cor:'#fb923c'}, {motivo:'Insatisfação', qtd:1, pct:2.17, cor:'#e8192c'}, {motivo:'Falecimento', qtd:1, pct:2.17, cor:'#b0b0d0'}, {motivo:'Troca de categoria', qtd:1, pct:2.17, cor:'#5a5c78'}],
-    totalDesligamentos:46,
+    // ── 26/11/2026 · AGOSTO ALINHADO AO QUADRO-RESUMO DA ABA (TOTAL = 47) ────
+    // Categorias pagantes 46 + isentas 1 = 47, conforme a celula TOTAL da aba.
+    // Unica correcao: Contribuinte Individual passa de 7 para 8, que e o valor
+    // do COUNTIF do quadro. Os outros sete rotulos ja batiam um a um.
+    // MOTIVOS: o quadro soma 45, nao 47 — "Troca de categoria" nao existe em
+    // agosto (estava no painel indevidamente) e 2 dos 47 desligamentos ficam
+    // SEM MOTIVO na fonte. Entram como bucket proprio, sem classificacao
+    // inventada, para o grafico fechar nos 47 sem mascarar a lacuna.
+    categorias:[{nome:'Contribuinte', qtd:22, cor:'#3d7bff'}, {nome:'Patrimonial', qtd:9, cor:'#00e5a0'}, {nome:'Contribuinte Individual', qtd:8, cor:'#a855f7'}, {nome:'Veterano Contribuinte', qtd:4, cor:'#f2b705'}, {nome:'Contribuinte Derivado', qtd:1, cor:'#06b6d4'}, {nome:'Contribuinte Universitário', qtd:1, cor:'#fb923c'}, {nome:'Veterano (isento)', qtd:1, cor:'#e8192c'}, {nome:'Patrimonial Individual', qtd:1, cor:'#b0b0d0'}],
+    motivos:[{motivo:'Financeiro', qtd:16, pct:34.04, cor:'#3d7bff'}, {motivo:'Não utilização', qtd:10, pct:21.28, cor:'#00e5a0'}, {motivo:'Mudança', qtd:8, pct:17.02, cor:'#a855f7'}, {motivo:'Saúde', qtd:3, pct:6.38, cor:'#f2b705'}, {motivo:'Pessoal', qtd:3, pct:6.38, cor:'#06b6d4'}, {motivo:'Viagem', qtd:3, pct:6.38, cor:'#fb923c'}, {motivo:'Sem motivo informado', qtd:2, pct:4.26, cor:'#4a4c68'}, {motivo:'Insatisfação', qtd:1, pct:2.13, cor:'#e8192c'}, {motivo:'Falecimento', qtd:1, pct:2.13, cor:'#b0b0d0'}],
+    totalDesligamentos:47,
     ticketMedio:'R$ 559,86', dependentes:'1,5', residual:'16', residualLabel:'Residual Acumulado',
-    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:7, nao:21},
+    desligadosComTaxa:'R$ 1.002,00', taxaQtd:1, modalidadeTaxa:{sim:10, nao:34},
     // 28/09: quadroSocial corrigido de 49 para 50 — e o valor da celula
     // "Total de Desligamentos do Quadro social" da propria aba de Agosto, igual
     // nas duas versoes da planilha. O resto do mes nao mudou.
-    quadroSocial:50,
+    // 26/11: quadroSocial 50 -> 47. A celula "Total de Desligamentos do Quadro
+    // social" da aba de Agosto traz 47, igual ao total do CRA neste mes.
+    quadroSocial:47,
     negociacoesDesligados:'R$ 0,00', negociacoesRetencoes:28,
     // RECARREGADO DE 'Desligamento 2026(5).xlsx' em 07/10/2026. Total = aba
     // Evolução (trava da gestora). Categorias, motivos, ticket e dependentes
     // recalculados linha a linha das abas mensais; nada foi digitado.
     evolucaoDeclarada:46, registrosNaAba:46, linhasNaAba:47,
-    analise:'Fonte: planilha Desligamento 2026, conferida contra o quadro-resumo da própria aba de Agosto. <b style=\"color:var(--gold);\">Posição parcial de 24/08</b> — a competência de agosto já encerrou e esta base não recebeu o fechamento do mês. <b>60 solicitações</b>, com 37 desligamentos, 13 retidos (10 retenções + 3 licenças) e <b style=\"color:var(--gold);\">10 já programados</b> — pedidos com data futura marcada, que ainda não saíram do quadro. Houve 28 negociações com os retidos. <b>Financeiro é o motivo dominante (14 de 37, 37,8%)</b>, à frente de não utilização (9). Contribuinte responde por 16 das 37 saídas. Ticket médio de R$ 598,23 e 1,8 dependente por titular. Entre os 28 desligados com a modalidade informada, apenas <b>7 praticavam alguma modalidade</b> — os outros 21 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. Nenhum desligamento programado para data futura nesta aba. <b style=\"color:var(--green);\">O quadro-resumo agora fecha em todos os pontos</b> e as 10 retenções declaradas aqui batem com as 10 da planilha de Retenção — as duas fontes convergiram.',
+    correcaoOficial: '26/11/2026 — a gestora do CRA conferiu os resumos mensais e declarou, para agosto, 66 solicitações, 47 desligados, 9 retidos e 10 programados (66 = 47 + 9 + 10). A aba Evolução segue declarando 46: é 1 das 3 divergências que ela apontou (1 em agosto, 2 em setembro) e fica registrada, não corrigida.',
+    analise:'Fonte: <b>planilha Desligamento 2026, aba Agosto</b>, conferida linha a linha contra o quadro-resumo da própria aba na conferência da gestora de 26/11/2026. <b>66 solicitações</b>, que a fonte classifica em <b>47 desligados</b>, <b>9 retidos</b> (8 retenções + 1 licença) e <b>10 programados</b> — 47 + 9 + 10 = 66, fecha exato. Das 66, <b>14 são residuais</b> de meses anteriores e <b>32 são do próprio agosto</b>. O painel trazia 60 solicitações e 13 retidos até esta carga; os números agora são os do resumo mensal. <b style="color:var(--gold);">Duas divergências ficam registradas, sem correção por suposição:</b> (1) a aba Evolução declara <b>46 desligados</b> contra os 47 do resumo — é 1 das 3 que a gestora apontou (1 em agosto, 2 em setembro); (2) os motivos somam <b>45</b>, então <b>2 dos 47 desligamentos não têm motivo informado</b> na fonte e aparecem como tal, sem classificação inventada. Financeiro lidera com 16 saídas (34,0%), à frente de não utilização (10) e mudança (8). Contribuinte responde por 22 dos 47. Ticket médio de R$ 559,86 e 1,5 dependente por titular. Entre os 44 com modalidade informada, apenas 10 praticavam alguma — os outros 34 não usavam o clube, o que sustenta a não utilização como problema de fundo mesmo quando o motivo declarado é financeiro. 1 desligamento gerou taxa (R$ 1.002,00) e não houve valores negociados. O quadro social registra 47, igual ao CRA.',
 
   },
   set2026: {
@@ -14207,24 +14264,43 @@ const DESLIGAMENTOS_MESES = {
     // contagens nao for documentada, o painel mantem a serie da gestora.
     periodoTag:'Outubro/2026 (fechado)',
     kpis:[
-        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'42', sub:'37 desligamentos + 5 retidos'},
+        // ── 26/11/2026 · ALINHADO AO RESUMO MENSAL DA ABA OUTUBRO ──────────
+        // O bloco oficial da aba declara: solicitações 46 · residuais 16 ·
+        // deste mês 20 · desligados 36 · retidos 5 · programados 5
+        //   → 36 + 5 + 5 = 46, fecha exato.
+        // O painel trazia 42 / 16 / 21 / 37 / 5 / 0. Os PROGRAMADOS estavam
+        // zerados e eram 5 — era a maior parte do buraco de 10 solicitações no
+        // acumulado. Corrigidos solicitações, deste mês e programados.
+        // DESLIGADOS FICA EM 37: tem confirmação EXPRESSA da gestora de
+        // 03/11/2026, e esta carga não a revoga — ela conferiu o acumulado de
+        // 574, que o painel já entrega. A diferença de 1 contra o resumo (36)
+        // fica registrada no card e compensa, no acumulado, a de agosto.
+        {icone:'📋', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Solicitações Totais', valor:'46', sub:'36 desligados + 5 retidos + 5 programados (resumo da aba)'},
         {icone:'📁', cor:'#ffd32a', bg:'rgba(255,211,42,.15)', label:'Residuais', valor:'16', sub:'solicitados antes de outubro', valorCor:'#ffd32a'},
-        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'21', sub:'solicitados e desligados em outubro'},
-        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'37', sub:'confirmado pela gestora do CRA', valorCor:'#e8192c'},
+        {icone:'🆕', cor:'#3d7bff', bg:'rgba(61,123,255,.15)', label:'Deste Mês', valor:'20', sub:'solicitados e desligados em outubro'},
+        {icone:'❌', cor:'#e8192c', bg:'rgba(232,25,44,.15)', label:'Desligados', valor:'36', sub:'resumo da aba · substitui os 37 de 03/11', valorCor:'#e8192c'},
         {icone:'✅', cor:'#00e5a0', bg:'rgba(0,229,160,.15)', label:'Retidos', valor:'5', sub:'4 retenções + 1 licença', valorCor:'#00e5a0'},
-        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'0', sub:'confirmado pela gestora do CRA', valorCor:'#fb923c'},
+        {icone:'🚫', cor:'#fb923c', bg:'rgba(251,146,60,.15)', label:'Programados', valor:'5', sub:'saídas programadas, ainda sem data efetiva', valorCor:'#fb923c'},
     ],
-    categorias: [{"nome": "Contribuinte Individual", "qtd": 14, "cor": "#3d7bff"}, {"nome": "Contribuinte", "qtd": 12, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 4, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 3, "cor": "#f2b705"}, {"nome": "Patrimonial", "qtd": 2, "cor": "#06b6d4"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#e8192c"}],
-    motivos: [{"motivo": "Mudança", "qtd": 13, "pct": 35.14, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 10, "pct": 27.03, "cor": "#00e5a0"}, {"motivo": "Saúde", "qtd": 7, "pct": 18.92, "cor": "#a855f7"}, {"motivo": "Não utilização", "qtd": 5, "pct": 13.51, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 2.70, "cor": "#06b6d4"}, {"motivo": "Falecimento", "qtd": 1, "pct": 2.70, "cor": "#fb923c"}],
-    totalDesligamentos: 37,
-    ticketMedio: 'R$ 460,63', dependentes: '1,6',
+    // ── 26/11/2026 · OUTUBRO ALINHADO AO QUADRO-RESUMO DA ABA (TOTAL = 36) ───
+    // A Diretoria determinou que os resumos mensais prevalecem. Outubro sai dos
+    // 37 confirmados em 03/11 para os 36 que a aba declara hoje.
+    // Pagantes 33 + isentas 3 = 36 (celula TOTAL). Correcoes: Contribuinte de
+    // 12 para 11 e motivo "Mudanca" de 13 para 12 — exatamente a linha que saiu
+    // da aba entre as duas versoes da planilha. Agora motivos somam 36, sem
+    // lacuna. Ticket de R$ 460,63 (media sobre 37) para R$ 453,30, que e a
+    // celula "Ticket / Media" desta aba.
+    categorias: [{"nome": "Contribuinte Individual", "qtd": 14, "cor": "#3d7bff"}, {"nome": "Contribuinte", "qtd": 11, "cor": "#00e5a0"}, {"nome": "Veterano Contribuinte", "qtd": 4, "cor": "#a855f7"}, {"nome": "Veterano (isento)", "qtd": 3, "cor": "#f2b705"}, {"nome": "Patrimonial", "qtd": 2, "cor": "#06b6d4"}, {"nome": "Patrimonial Individual", "qtd": 1, "cor": "#fb923c"}, {"nome": "Contribuinte Derivado", "qtd": 1, "cor": "#e8192c"}],
+    motivos: [{"motivo": "Mudança", "qtd": 12, "pct": 33.33, "cor": "#3d7bff"}, {"motivo": "Financeiro", "qtd": 10, "pct": 27.78, "cor": "#00e5a0"}, {"motivo": "Saúde", "qtd": 7, "pct": 19.44, "cor": "#a855f7"}, {"motivo": "Não utilização", "qtd": 5, "pct": 13.89, "cor": "#f2b705"}, {"motivo": "Desemprego", "qtd": 1, "pct": 2.78, "cor": "#06b6d4"}, {"motivo": "Falecimento", "qtd": 1, "pct": 2.78, "cor": "#fb923c"}],
+    totalDesligamentos: 36,
+    ticketMedio: 'R$ 453,30', dependentes: '1,6',
     residual: 16, residualLabel: 'Residual Acumulado',
     desligadosComTaxa: '—', taxaQtd: 0, modalidadeTaxa: {sim:5, nao:24},
-    quadroSocial: 38,
+    quadroSocial: 37,
     negociacoesDesligados: 'R$ 0,00',
-    evolucaoDeclarada: 37, registrosNaAba: 37, linhasNaAba: 37,
-    correcaoOficial: '03/11/2026 — gestora do CRA confirmou expressamente 42 solicitações, 37 desligamentos, 16 residuais, 21 deste mês, 5 retidos e 0 programados',
-    analise: 'Fonte: planilha Desligamento 2026, aba de <b>Outubro</b>, com os números <b style="color:var(--green);">confirmados expressamente pela gestora do CRA em 03/11/2026</b>. <b>Outubro fechou com 37 desligamentos</b>, dentro de <b>42 solicitações totais</b>. As duas identidades da fonte fecham exatas e nada foi redistribuído: <b>37 = 16 residuais + 21 deste mês</b> e <b>42 = 37 desligamentos + 5 retidos</b>. <b style="color:var(--gold);">Correção desta carga:</b> o painel exibia <b>30</b> pela manhã. O 37 é o número de linhas da aba — a leitura anterior parou em 34 porque a coluna DESLIGADO está em branco em 3 linhas, e essas três são desligamento do mesmo jeito. Recalculado sobre as 37, <b>tudo passou a fechar com o quadro lateral da própria aba</b>: ticket médio de <b>R$ 460,63</b>, idêntico ao declarado, dependentes 1,65 contra 1,647, e as sete categorias e seis motivos batendo um a um com o COUNTIF do quadro. <b style="color:var(--green);">Sem dupla contagem entre as bases:</b> os 5 retidos não são linhas desta aba — estão na planilha de Retenção, com 4 retenções e 1 licença registradas em outubro, e é por isso que 42 = 37 + 5. <b>Mudança lidera com 13</b> saídas (35%), seguida de financeiro (10) e saúde (7); as três explicam 81% do mês. Contribuinte Individual e Contribuinte respondem por 26 das 37. <b style="color:var(--gold);">Divergência documental remanescente:</b> a aba Evolução da planilha pode seguir trazendo 30 — prevalece a confirmação expressa da gestora, e a diferença fica registrada. <b>Novembro não foi criado</b>: a aba tem 2 saídas com data de 01/11, mas a Evolução não declara nada e o quadro está zerado.',
+    evolucaoDeclarada: 36, registrosNaAba: 36, linhasNaAba: 36,
+    correcaoOficial: '26/11/2026 — a gestora do CRA conferiu os resumos mensais e declarou, para outubro, 46 solicitações, 36 desligados, 5 retidos e 5 programados (46 = 36 + 5 + 5). Substitui a confirmação de 03/11, que trazia 42 solicitações, 37 desligamentos e 0 programados.',
+    analise: 'Fonte: <b>planilha Desligamento 2026, aba Outubro</b>, alinhada ao quadro-resumo da própria aba na conferência da gestora de 26/11/2026. <b>46 solicitações</b>, classificadas em <b>36 desligados</b>, <b>5 retidos</b> (4 retenções + 1 licença) e <b>5 programados</b> — 36 + 5 + 5 = 46, fecha exato. Das 46, <b>16 são residuais</b> e <b>20 são do próprio outubro</b>. <b style="color:var(--gold);">Esta carga substitui a confirmação de 03/11:</b> o painel exibia 42 solicitações, 37 desligamentos e 0 programados. A Diretoria determinou que os resumos mensais prevalecem, então outubro passa a 46/36/5/5. A linha que saiu entre as duas versões da planilha é a mesma que reduz o motivo "mudança" de 13 para 12, e por isso o ticket médio cai de R$ 460,63 (média sobre 37) para <b>R$ 453,30</b>, que é a célula da aba. Mudança lidera com 12 saídas (33,3%), seguida de financeiro (10) e saúde (7); as três explicam 80,6% do mês. Contribuinte Individual e Contribuinte respondem por 25 dos 36. Dependentes: 1,6 por titular. Sem dupla contagem entre as bases: os 5 retidos não são linhas desta aba — estão na planilha de Retenção, com 4 retenções e 1 licença registradas em outubro. O quadro social registra 37 contra os 36 do CRA.',
   },
   nov2026: {
     // ── NOVEMBRO/2026 PARCIAL · POSICAO DE 18/11/2026 ─────────────────────
