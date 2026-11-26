@@ -13444,13 +13444,24 @@ function renderRetencaoPeriodo(mesKeyRet, mesesRet){
   // por orientacao posterior de nivel superior, nao ignorada. DIVERGENCIA
   // SINALIZADA para confirmacao da gestora. 'Residuais', 'Deste Mes' e os
   // dois rotulos de Quadro Social seguem ocultos como ela pediu.
+  // 26/11/2026 — A gestora do CRA validou o somatorio e pediu que 'Programados'
+  // e 'Sem classificacao' SAIAM DA APRESENTACAO. E mudanca de exibicao apenas:
+  // os 33 programados e as 2 solicitacoes sem classificacao CONTINUAM na base,
+  // com os mesmos valores, e seguem entrando nas 678 solicitacoes totais. Nada
+  // foi excluido nem reclassificado — so deixou de ganhar card proprio.
+  // Esta lista filtra tanto os meses individuais quanto o acumulado, porque os
+  // dois passam por este mesmo render.
   const KPIS_DESLIG_OCULTOS = ['Quadro Social', 'Deslig. pelo Quadro Social',
-                               'Residuais', 'Deste Mês'];
+                               'Residuais', 'Deste Mês',
+                               'Programados', 'Sem classificação'];
   const kpisVisiveis = r.kpis.filter(k => KPIS_DESLIG_OCULTOS.indexOf(k.label) < 0);
   const kpisHtml = kpisVisiveis.map(k=>`
     <div class="kpi-icon-card">
       <div class="kpi-card-top"><div class="kpi-icon-circle" style="background:${k.bg}; color:${k.cor};">${k.icone}</div><div class="label">${k.label}</div></div>
-      <div class="kpi-icon-info"><div class="value"${k.valorCor?` style="color:${k.valorCor}"`:''}>${k.valor}</div><div class="delta muted">${k.sub}</div></div>
+      <div class="kpi-icon-info"><div class="value"${k.valorCor?` style="color:${k.valorCor}"`:''}>${k.valor}</div><div class="delta muted">${k.sub}</div>${
+        k.label === 'Solicitações Totais'
+          ? `<div class="delta muted" style="margin-top:6px; opacity:.75; font-size:11px; line-height:1.35;">Inclui desligados, retidos e também os demais status registrados pela CRA.</div>`
+          : ''}</div>
     </div>`).join('');
   const el = document.getElementById('desligamentoConteudo');   // Plano de Trabalho migrou para a sub-aba Desligamento
   el.innerHTML = linhaCompetencia(COBERTURA_RETENCAO) + avisoHtml + `
